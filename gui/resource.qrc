@@ -1,0 +1,9 @@
+<RCC>
+    <qresource prefix="/images">
+        <file alias="print-48x48">images/printer.png</file>
+        <file alias="next">images/go-next-view.png</file>
+        <file alias="frist">images/go-first-view.png</file>
+        <file alias="last">images/go-last-view.png</file>
+        <file alias="previous">images/go-previous-view.png</file>
+    </qresource>
+</RCC>

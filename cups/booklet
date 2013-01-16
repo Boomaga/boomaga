@@ -1,0 +1,88 @@
+#!/bin/bash
+
+TMP_DIR="/tmp"
+
+CUPS_BACKEND_OK=0
+CUPS_BACKEND_FAILED=1
+
+# Have debug info in /var/log/cups/error_log:
+#set -x
+
+# Output "device discovery" information on stdout:
+if test "$#" = "0"; then
+    echo 'file @MY_CUPS_URI@ "Booklet Printer" "Booklet" "MFG:Generic;MDL:Booklet Printer;DES:Booklet Printer;CLS:PRINTER;CMD:POSTSCRIPT;"'
+    exit 0
+fi
+
+jobID=$1
+user=$2
+title=$3
+count=$4
+options=$5
+psFile=$6
+
+if [ -z ${psFile} ]; then
+    psFile=${TMP_DIR}/brint_in_file-${jobID}.ps
+    cat - > ${psFile}
+fi
+
+
+uid=$(id -u $user)
+
+if [ "${uid}" == "" ]; then
+  echo "ERROR: Can't found UID for user '$user'" >&2
+  exit $CUPS_BACKEND_FAILED
+fi
+
+
+echo "DEBUG: User $user" >&2 
+echo "DEBUG: Uid  $uid" >&2 
+
+oldIfs=$IFS
+IFS=$(echo -en "\n")
+while read line; do
+  IFS="$oldIfs='"
+  read key value <<< $line;
+
+  case $key in
+    Session*)
+      if [ "$sesUid" = "$uid" -a "$sesActive" = "TRUE" -a "$sesDisplay" != "" ]; then
+        echo "DEBUG: Session=$line" >&2
+        echo "DEBUG: DISPLAY=$sesDisplay" >&2
+
+        xDisplay=$sesDisplay
+        break;
+      fi
+
+      unset sesUid
+      unset sesActive
+      unset sesADisplay
+      ;;
+
+    unix-user)
+       sesUid=$value
+       ;;
+
+    active)
+       sesActive=$value
+       ;;
+
+    x11-display)
+       sesDisplay=$value
+       ;;
+   esac
+done  <<< $(ck-list-sessions | tac );
+
+
+if [ "${xDisplay}" == "" ]; then
+  echo "ERROR: Can't found session for user '$user' (UID: $uid)" >&2
+  exit $CUPS_BACKEND_FAILED
+fi
+
+chown ${user} ${psFile}
+export DISPLAY=${xDisplay}
+su -c "@GUI_PROGRAM@ -t \"$title\" -n $count $psFile" $user  0<&- &>/tmp/booklet-${user}.log &
+
+exit $CUPS_BACKEND_OK
+
+
