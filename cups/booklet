@@ -27,13 +27,18 @@ if [ -z ${psFile} ]; then
 fi
 
 
-uid=$(id -u $user)
+uid=$(getent passwd ${user} | cut -d':' -f 3)
+homeDir=$(getent passwd ${user} | cut -d':' -f 6)
 
 if [ "${uid}" == "" ]; then
-  echo "ERROR: Can't found UID for user '$user'" >&2
+  echo "ERROR: Can't found UID for user '${user}'" >&2
   exit $CUPS_BACKEND_FAILED
 fi
 
+if [ "${homeDir}" == "" ]; then
+  echo "ERROR: Can't found home directory for user '$user' (UID: $uid)" >&2
+  exit $CUPS_BACKEND_FAILED
+fi
 
 echo "DEBUG: User $user" >&2 
 echo "DEBUG: Uid  $uid" >&2 
@@ -81,7 +86,8 @@ fi
 
 chown ${user} ${psFile}
 export DISPLAY=${xDisplay}
-su -c "@GUI_PROGRAM@ -t \"$title\" -n $count $psFile" $user  0<&- &>/tmp/booklet-${user}.log &
+export XAUTHORITY=${homeDir}/.Xauthority
+su -l -c "@GUI_PROGRAM@ -t \"$title\" -n $count $psFile" $user  0<&- &>/tmp/booklet-${user}.log &
 
 exit $CUPS_BACKEND_OK
 
