@@ -48,7 +48,7 @@ Settings *Settings::instance()
 
  ************************************************/
 Settings::Settings():
-    mSettings("bprint", "bprint")
+    mSettings("boomaga", "boomaga")
 {
 
 }

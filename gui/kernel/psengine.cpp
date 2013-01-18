@@ -215,7 +215,7 @@ void PsEngine::writeDocument(const QList<const PsSheet*> &sheets, QTextStream *o
 {
     *out << "%!PS-Adobe-3.0\n";
     *out << "%%BoundingBox: (atend)\n";
-    *out << "%%Creator: (bprint)\n";
+    *out << "%%Creator: (boomaga)\n";
     *out << "%%LanguageLevel: 2\n";
     *out << QString("%%Pages: %1\n").arg(sheets.count());
     *out << "%%EndComments\n";

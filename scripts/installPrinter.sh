@@ -1,8 +1,8 @@
 #!/bin/sh
 
-SCHEME="booklet"
+SCHEME="boomaga"
 URI="${SCHEME}:/"
-NAME="Booklet_Printer"
+NAME="Boomaga_Printer"
 PPD="lsb/usr/${SCHEME}/${SCHEME}.ppd"
 
 while [ $# -gt 0 ]; do
@@ -30,7 +30,7 @@ then
 fi
 
 printer=${NAME}
-while $(LC_ALL=C lpstat -h localhost -v 2>/dev/null | cut -d ':' -f 1 | cut -d ' ' -f 3 | grep -q ^$printer\$)
+while $(LC_ALL=C lpstat -h localhost -v 2>/dev/null | cut -d ':' -f 1 | cut -d ' ' -f 3 | grep -q "^${printer}"\$)
 do
   number=$(($number + 1))
   printer="${NAME}-${number}"
@@ -39,12 +39,12 @@ done
 pageSize="$(LC_ALL=C paperconf 2>/dev/null)" || size=a4
 
 
-lpadmin -h localhost -p ${printer} -v ${URI} -E -m ${PPD} -o printer-is-shared=no -o PageSize=${pageSize}
+lpadmin -h localhost -p "${printer}" -v ${URI} -E -m ${PPD} -o printer-is-shared=no -o PageSize=${pageSize}
 
 
 if [ -z "$(LC_ALL=C lpstat -h localhost -d 2>/dev/null | grep 'system default destination:')" ]
 then
-  echo lpadmin -h localhost -d $printer 2>/dev/null
+  lpadmin -h localhost -d "${printer}"
 fi
 
 echo "Printer ${printer} has been installed successfully."

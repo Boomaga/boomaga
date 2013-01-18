@@ -9,9 +9,10 @@ CUPS_BACKEND_FAILED=1
 #set -x
 
 # Output "device discovery" information on stdout:
+# http://www.cups.org/documentation.php/doc-1.6/man-backend.html
 if test "$#" = "0"; then
-    echo 'file @MY_CUPS_URI@ "Booklet Printer" "Booklet" "MFG:Generic;MDL:Booklet Printer;DES:Booklet Printer;CLS:PRINTER;CMD:POSTSCRIPT;"'
-    exit 0
+  echo "file @CUPS_BACKEND_URI@ \"@CUPS_BACKEND_MANUFACTURER@ @CUPS_BACKEND_MODEL@\" \"@CUPS_BACKEND_MANUFACTURER@ @CUPS_BACKEND_MODEL@\" \"@CUPS_BACKEND_ID@\""
+  exit 0
 fi
 
 jobID=$1
@@ -87,7 +88,7 @@ fi
 chown ${user} ${psFile}
 export DISPLAY=${xDisplay}
 export XAUTHORITY=${homeDir}/.Xauthority
-su -l -c "@GUI_PROGRAM@ -t \"$title\" -n $count $psFile" $user  0<&- &>/tmp/booklet-${user}.log &
+su -l -c "@GUI_PROGRAM@ -t \"$title\" -n $count $psFile" $user  0<&- &>/tmp/boomaga-${user}.log &
 
 exit $CUPS_BACKEND_OK
 

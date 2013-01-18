@@ -41,7 +41,7 @@
 void printHelp()
 {
     QTextStream out(stdout);
-    out << "Usage: booklet [options] file" << endl;
+    out << "Usage: boomaga [options] file" << endl;
     out << endl;
 
     out << "Print poscript file as booklet" << endl;
@@ -78,7 +78,7 @@ int main(int argc, char *argv[])
 
 
     QTranslator translator;
-    translator.load(QString("%1/booklet_%2.qm").arg(TRANSLATIONS_DIR, QLocale::system().name()));
+    translator.load(QString("%1/boomaga_%2.qm").arg(TRANSLATIONS_DIR, QLocale::system().name()));
     application.installTranslator(&translator);
 
 
@@ -158,7 +158,7 @@ int main(int argc, char *argv[])
 
     PsProject project;
     DBusProjectAdaptor dbus(&project);
-    QDBusConnection::sessionBus().registerService("org.bprint");
+    QDBusConnection::sessionBus().registerService("org.boomaga");
     QDBusConnection::sessionBus().registerObject("/Project", &project);
 
     project.addFile(file.absoluteFilePath());

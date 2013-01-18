@@ -44,7 +44,7 @@ PsProject::PsProject(QObject *parent) :
     mEngine(0),
     mPrinter(&mNullPrinter)
 {
-    mPsFile = new GsMergeFile(QDir::tempPath() + QString("/bprint_%1.ps").arg(QCoreApplication::applicationPid()), this);
+    mPsFile = new GsMergeFile(QDir::tempPath() + QString("/boomaga_%1.ps").arg(QCoreApplication::applicationPid()), this);
 
     setLayout(settings->layout());
 }

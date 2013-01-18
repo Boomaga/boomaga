@@ -70,7 +70,7 @@ MainWindow::MainWindow(PsProject *project, QWidget *parent):
 
 
     setWindowIcon(findIcon("document-print", ":/images/print-48x48"));
-    setWindowTitle(tr("Booklet print"));
+    setWindowTitle(tr("Boomaga"));
 
     setStyleSheet("QListView::item { padding: 2px;}");
 
@@ -154,7 +154,7 @@ QList<Printer *> MainWindow::availablePrinters()
         {
             Printer *printer = new Printer(pi);
 
-            if (printer->deviceUri() != MY_CUPS_URI)
+            if (printer->deviceUri() != CUPS_BACKEND_URI)
                 mAvailablePrinters << printer;
             else
                 delete printer;
@@ -414,7 +414,7 @@ void MainWindow::switchToFile(PsFile *file)
  ************************************************/
 QTemporaryFile *MainWindow::getTmpFile()
 {
-    QTemporaryFile *file = new QTemporaryFile(QDir::tempPath() + "/bprint_XXXXXX.ps");
+    QTemporaryFile *file = new QTemporaryFile(QDir::tempPath() + "/boomaga_XXXXXX.ps");
     if (!file->open()) //QFile::WriteOnly))
     {
         qWarning() << "Can't open temporary file:" << file->errorString();
@@ -422,7 +422,7 @@ QTemporaryFile *MainWindow::getTmpFile()
         return 0;
     }
 
-    file->setAutoRemove(false);
+    //file->setAutoRemove(false);
     return file;
 }
 

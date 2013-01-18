@@ -36,7 +36,7 @@ class PsProject;
 class DBusProjectAdaptor : public QDBusAbstractAdaptor
 {
     Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.bprint")
+    Q_CLASSINFO("D-Bus Interface", "org.boomaga")
 public:
     DBusProjectAdaptor(PsProject *project);
 

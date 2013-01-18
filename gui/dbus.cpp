@@ -47,7 +47,7 @@ DBusProjectAdaptor::DBusProjectAdaptor(PsProject *project) :
  ************************************************/
 bool DBusProjectAdaptor::openFileInExisting(const QString &fileName)
 {
-    QDBusInterface remote("org.bprint", "/Project");
+    QDBusInterface remote("org.boomaga", "/Project");
     if (!remote.isValid())
         return false;
 

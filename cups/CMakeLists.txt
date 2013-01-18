@@ -1,18 +1,25 @@
 cmake_minimum_required( VERSION 2.6 )
 
-project(bokletCups)
+project(boomagaCups)
 
+set(CUPS_BACKEND_ID "MFG:${CUPS_BACKEND_MANUFACTURER};MDL:${CUPS_BACKEND_MODEL};DES:${CUPS_BACKEND_MANUFACTURER} ${CUPS_BACKEND_MODEL};CLS:PRINTER;CMD:POSTSCRIPT;")
+add_definitions(-DCUPS_BACKEND_ID=\"${CUPS_BACKEND_ID}\")
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/booklet
-               ${CMAKE_CURRENT_BINARY_DIR}/booklet
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/boomaga
+               ${CMAKE_CURRENT_BINARY_DIR}/boomaga
                @ONLY)
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/booklet  
-  DESTINATION /usr/lib/cups/backend 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/boomaga.ppd
+               ${CMAKE_CURRENT_BINARY_DIR}/boomaga.ppd
+               @ONLY)
+
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/boomaga
+  DESTINATION /usr/lib/cups/backend
   PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
 )
 
-install(FILES booklet.ppd
-  DESTINATION /usr/share/ppd/booklet
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/boomaga.ppd
+  DESTINATION /usr/share/ppd/boomaga
   PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
 )

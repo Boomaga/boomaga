@@ -1,6 +1,6 @@
 cmake_minimum_required( VERSION 2.6 )
 
-project(bookletGui)
+project(boomagaGui)
 
 set(HEADERS
     kernel/psconstants.h
@@ -71,7 +71,7 @@ file (GLOB TS_FILES
 )
 
 set(DATA_DIR 
-    ${CMAKE_INSTALL_PREFIX}/share/booklet
+    ${CMAKE_INSTALL_PREFIX}/share/boomaga
 )
 
 set(TRANSLATIONS_DIR
@@ -110,11 +110,11 @@ qt4_wrap_ui(UI_HEADERS ${UI_FILES})
 qt4_add_translation(QM_FILES ${TS_FILES})
 
 
-add_executable(booklet ${HEADERS} ${SOURCES} ${MOC_SOURCES} ${QM_FILES} ${QRC_SOURCES} ${UI_HEADERS})
-target_link_libraries(booklet ${LIBRARIES} ${QT_LIBRARIES} ${GHOSTSCRIPT_LIBRARIES})
+add_executable(boomaga ${HEADERS} ${SOURCES} ${MOC_SOURCES} ${QM_FILES} ${QRC_SOURCES} ${UI_HEADERS})
+target_link_libraries(boomaga ${LIBRARIES} ${QT_LIBRARIES} ${GHOSTSCRIPT_LIBRARIES})
 
 install(FILES ${QM_FILES} DESTINATION ${TRANSLATIONS_DIR})
-install(TARGETS booklet RUNTIME DESTINATION ${GUI_DIR})
+install(TARGETS boomaga RUNTIME DESTINATION ${GUI_DIR})
 
 
 

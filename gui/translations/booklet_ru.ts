@@ -100,8 +100,8 @@
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="73"/>
-        <source>Booklet print</source>
-        <translation>Печать буклетов</translation>
+        <source>Boomaga</source>
+        <translation>Boomaga</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="263"/>
