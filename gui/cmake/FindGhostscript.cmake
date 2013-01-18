@@ -75,6 +75,7 @@ if (NOT GHOSTSCRIPT_FOUND)
   ##_____________________________________________________________________________
   ## Actions taken when all components have been found
 
+  include(FindPackageHandleStandardArgs)
   find_package_handle_standard_args (GHOSTSCRIPT DEFAULT_MSG GHOSTSCRIPT_LIBRARIES GHOSTSCRIPT_INCLUDES GS_EXECUTABLE)
 
   if (GHOSTSCRIPT_FOUND)
