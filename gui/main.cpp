@@ -36,12 +36,12 @@
 #include <QFileInfo>
 #include <QLibraryInfo>
 #include <QDebug>
-
+#include <QProcessEnvironment>
 
 void printHelp()
 {
     QTextStream out(stdout);
-    out << "Usage: boomaga [options] file" << endl;
+    out << "Usage: boomaga [options] [file]" << endl;
     out << endl;
 
     out << "Print poscript file as booklet" << endl;
@@ -140,28 +140,36 @@ int main(int argc, char *argv[])
         file.setFile(args.at(i));
     }
 
-    if (file.filePath().isEmpty())
-        return printError("Postscript file missing.");
 
-    if (!file.exists())
-        return printError(QString("Cannot open file \"%1\" (No such file or directory)")
-                          .arg(file.filePath()));
+    if (!file.filePath().isEmpty())
+    {
+        if (!file.exists())
+            return printError(QString("Cannot open file \"%1\" (No such file or directory)")
+                              .arg(file.filePath()));
 
-    if (!file.isReadable())
-        return printError(QString("Cannot open file \"%1\" (Access denied)")
-                          .arg(file.filePath()));
+        if (!file.isReadable())
+            return printError(QString("Cannot open file \"%1\" (Access denied)")
+                              .arg(file.filePath()));
+    }
 
-    // We try to open file in the another instanse (if it running).
-    if (DBusProjectAdaptor::openFileInExisting(file.absoluteFilePath()))
-        return 0;
-
+#if 0
+    QFile f(QString("/tmp/boomaga-%1.env").arg(QDateTime::currentDateTime().toString("yyyy.MM.dd-hh.mm.ss")));
+    f.open(QFile::WriteOnly | QFile::Text);
+    foreach(QString s, QProcessEnvironment::systemEnvironment().toStringList())
+    {
+        f.write(s.toLocal8Bit());
+        f.write("\n");
+    }
+    f.close();
+#endif
 
     PsProject project;
     DBusProjectAdaptor dbus(&project);
     QDBusConnection::sessionBus().registerService("org.boomaga");
     QDBusConnection::sessionBus().registerObject("/Project", &project);
 
-    project.addFile(file.absoluteFilePath());
+    if (!file.filePath().isEmpty())
+        project.addFile(file.absoluteFilePath());
 
     MainWindow mainWindow(&project);
     mainWindow.show();

@@ -2,22 +2,73 @@ cmake_minimum_required( VERSION 2.6 )
 
 project(boomaga)
 
+# Linux ***************************************
+if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+
+  set(DEF_CUPS_BACKEND_DIR /usr/lib/cups/backend)
+  set(DEF_CUPS_PPD_DIR /usr/share/ppd/boomaga)
+  set(DEF_DBUS_MACINE_ID_DIR /var/lib/dbus)
+  set(DEF_DBUS_SERVICE_DIR ${CMAKE_INSTALL_PREFIX}/share/dbus-1/services)
+
+# FreeBSD *************************************
+elseif(${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
+
+  set(DEF_CUPS_BACKEND_DIR /usr/local/libexec/cups/backend)
+  set(DEF_CUPS_PPD_DIR /usr/local/share/cups/model)
+  set(DEF_DBUS_MACINE_ID_DIR /var/db/dbus)
+  set(DEF_DBUS_SERVICE_DIR ${CMAKE_INSTALL_PREFIX}/share/dbus-1/services)
+
+endif()
+
 set(GUI_DIR ${CMAKE_INSTALL_PREFIX}/lib/boomaga)
 add_definitions(-DGUI_DIR=\"${GUI_DIR}\")
+
 
 set(GUI_PROGRAM ${GUI_DIR}/boomaga)
 add_definitions(-DGUI_PROGRAM=\"${GUI_PROGRAM}\")
 
+
 set(CUPS_BACKEND_URI "boomaga:/")
 add_definitions(-DCUPS_BACKEND_URI=\"${CUPS_BACKEND_URI}\")
+
+
+set(CUPS_BACKEND_INFO "Boomaga")
+add_definitions(-DCUPS_BACKEND_INFO=\"${CUPS_BACKEND_NAME}\")
+
+
+set(CUPS_BACKEND_MODEL "Virtual boomaga printer")
+add_definitions(-DCUPS_BACKEND_MODEL=\"${CUPS_BACKEND_MODEL}\")
+
 
 set(CUPS_BACKEND_MANUFACTURER "Generic")
 add_definitions(-DCUPS_BACKEND_MANUFACTURER=\"${CUPS_BACKEND_MANUFACTURER}\")
 
-set(CUPS_BACKEND_MODEL "Boomaga Printer")
-add_definitions(-DCUPS_BACKEND_MODEL=\"${CUPS_BACKEND_MODEL}\")
+
+
+###########################################################
+
+macro(setByDefault VAR_NAME VAR_VALUE)
+  if (NOT DEFINED ${VAR_NAME})
+    set (${VAR_NAME} ${VAR_VALUE})
+    add_definitions(-D${VAR_NAME}=\"${VAR_VALUE}\")
+  endif()
+endmacro()
+
+setByDefault(CUPS_BACKEND_DIR   ${DEF_CUPS_BACKEND_DIR})
+setByDefault(CUPS_PPD_DIR       ${DEF_CUPS_PPD_DIR})
+setByDefault(DBUS_MACINE_ID_DIR ${DEF_DBUS_MACINE_ID_DIR})
+setByDefault(DBUS_SERVICE_DIR   ${DEF_DBUS_SERVICE_DIR})
 
 
 add_subdirectory(cups)
 add_subdirectory(gui)
 
+message(STATUS "*****************************************************")
+message(STATUS "** You can change next directories using cmake options like.")
+message(STATUS "*   cmake -DCUPS_BACKEND_DIR=your_path")
+message(STATUS "*")
+message(STATUS "* CUPS_BACKEND_DIR   = ${CUPS_BACKEND_DIR}")
+message(STATUS "* CUPS_PPD_DIR       = ${CUPS_PPD_DIR}")
+message(STATUS "* DBUS_MACINE_ID_DIR = ${DBUS_MACINE_ID_DIR}")
+message(STATUS "* DBUS_SERVICE_DIR   = ${DBUS_SERVICE_DIR}")
+message(STATUS "*****************************************************")

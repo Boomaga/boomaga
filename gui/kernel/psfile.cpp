@@ -38,6 +38,16 @@
 /************************************************
 
  ************************************************/
+PsFilePos::PsFilePos()
+{
+    begin = 0;
+    end = 0;
+}
+
+
+/************************************************
+
+ ************************************************/
 PsFilePage::PsFilePage(PsFile *file, const PsFilePos &pos, int pageNum):
     mFile(file),
     mPageNum(pageNum),
@@ -63,7 +73,6 @@ PsFile::PsFile(const QString &fileName, QObject *parent):
     QObject(parent),
     mFile(fileName)
 {
-    parse();
 }
 
 
@@ -102,9 +111,12 @@ void PsFile::writeFilePart(long begin, long end, QTextStream *out)
     if (!mFile.isOpen())
         mFile.open(QIODevice::ReadOnly | QIODevice::Text);
 
-    mFile.seek(begin);
-    QByteArray buf = mFile.read(end - begin);
-    *out << buf;
+    if (mFile.isOpen())
+    {
+        mFile.seek(begin);
+        QByteArray buf = mFile.read(end - begin);
+        *out << buf;
+    }
 }
 
 

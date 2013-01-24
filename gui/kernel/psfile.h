@@ -36,8 +36,10 @@
 class PsFile;
 class QTextStream;
 
-struct PsFilePos
+class PsFilePos
 {
+public:
+    PsFilePos();
     long begin;
     long end;
 };
@@ -89,8 +91,9 @@ public:
     void writePageBody(const PsFilePos &pos, QTextStream *out);
     void writePageBody(long begin, long end, QTextStream *out);
 
-protected:
     bool parse();
+
+protected:
     QFile mFile;
     QList<PsFilePage> mPages;
 

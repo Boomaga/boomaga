@@ -91,17 +91,19 @@ set(CMAKE_BUILD_TYPE Debug)
 
 #*******************************************
 
+SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+find_package(Qt4 REQUIRED)
+find_package(Ghostscript REQUIRED)
+
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_CURRENT_SOURCE_DIR}/third-party
     ${CMAKE_CURRENT_SOURCE_DIR}/third-party/libspectre
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
+    ${GHOSTSCRIPT_INCLUDES}
 )
 
-SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-find_package(Qt4 REQUIRED)
-find_package(Ghostscript REQUIRED)
 
 include(${QT_USE_FILE})
 qt4_wrap_cpp(MOC_SOURCES ${MOCS})
@@ -113,9 +115,14 @@ qt4_add_translation(QM_FILES ${TS_FILES})
 add_executable(boomaga ${HEADERS} ${SOURCES} ${MOC_SOURCES} ${QM_FILES} ${QRC_SOURCES} ${UI_HEADERS})
 target_link_libraries(boomaga ${LIBRARIES} ${QT_LIBRARIES} ${GHOSTSCRIPT_LIBRARIES})
 
-install(FILES ${QM_FILES} DESTINATION ${TRANSLATIONS_DIR})
 install(TARGETS boomaga RUNTIME DESTINATION ${GUI_DIR})
+install(FILES ${QM_FILES} DESTINATION ${TRANSLATIONS_DIR})
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/org.boomaga.service
+               ${CMAKE_CURRENT_BINARY_DIR}/org.boomaga.service
+               @ONLY)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.boomaga.service DESTINATION ${DBUS_SERVICE_DIR})
 
 
 

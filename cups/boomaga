@@ -10,8 +10,10 @@ CUPS_BACKEND_FAILED=1
 
 # Output "device discovery" information on stdout:
 # http://www.cups.org/documentation.php/doc-1.6/man-backend.html
-if test "$#" = "0"; then
-  echo "file @CUPS_BACKEND_URI@ \"@CUPS_BACKEND_MANUFACTURER@ @CUPS_BACKEND_MODEL@\" \"@CUPS_BACKEND_MANUFACTURER@ @CUPS_BACKEND_MODEL@\" \"@CUPS_BACKEND_ID@\""
+# device-class device-uri "device-make-and-model" "device-info" "device-id"
+if test "$#" = "0";
+then
+  echo "file @CUPS_BACKEND_URI@ \"@CUPS_BACKEND_MODEL@\" \"@CUPS_BACKEND_INFO@\" \"@CUPS_BACKEND_ID@\""
   exit 0
 fi
 
@@ -22,27 +24,31 @@ count=$4
 options=$5
 psFile=$6
 
-if [ -z ${psFile} ]; then
-    psFile=${TMP_DIR}/brint_in_file-${jobID}.ps
+if [ -z ${psFile} ];
+then
+    psFile=${TMP_DIR}/boomaga_in_file-${jobID}.ps
     cat - > ${psFile}
 fi
+chown ${user} ${psFile}
 
 
 uid=$(getent passwd ${user} | cut -d':' -f 3)
 homeDir=$(getent passwd ${user} | cut -d':' -f 6)
 
-if [ "${uid}" == "" ]; then
+if [ "${uid}" == "" ];
+then
   echo "ERROR: Can't found UID for user '${user}'" >&2
   exit $CUPS_BACKEND_FAILED
 fi
 
-if [ "${homeDir}" == "" ]; then
+if [ "${homeDir}" == "" ];
+then
   echo "ERROR: Can't found home directory for user '$user' (UID: $uid)" >&2
   exit $CUPS_BACKEND_FAILED
 fi
 
-echo "DEBUG: User $user" >&2 
-echo "DEBUG: Uid  $uid" >&2 
+echo "DEBUG: User: $user" >&2
+echo "DEBUG: Uid:  $uid" >&2
 
 oldIfs=$IFS
 IFS=$(echo -en "\n")
@@ -52,10 +58,8 @@ while read line; do
 
   case $key in
     Session*)
-      if [ "$sesUid" = "$uid" -a "$sesActive" = "TRUE" -a "$sesDisplay" != "" ]; then
-        echo "DEBUG: Session=$line" >&2
-        echo "DEBUG: DISPLAY=$sesDisplay" >&2
-
+      if [ "$sesUid" = "$uid" -a "$sesActive" = "TRUE" -a "$sesDisplay" != "" ];
+      then
         xDisplay=$sesDisplay
         break;
       fi
@@ -77,19 +81,62 @@ while read line; do
        sesDisplay=$value
        ;;
    esac
-done  <<< $(ck-list-sessions | tac );
+done  <<< $(ck-list-sessions; echo "SessionEnd:");
+IFS=${oldIfs}
+echo "DEBUG: xDisplay: ${xDisplay}" >&2
 
-
-if [ "${xDisplay}" == "" ]; then
+if [ "${xDisplay}" == "" ];
+then
   echo "ERROR: Can't found session for user '$user' (UID: $uid)" >&2
   exit $CUPS_BACKEND_FAILED
 fi
 
-chown ${user} ${psFile}
-export DISPLAY=${xDisplay}
-export XAUTHORITY=${homeDir}/.Xauthority
-su -l -c "@GUI_PROGRAM@ -t \"$title\" -n $count $psFile" $user  0<&- &>/tmp/boomaga-${user}.log &
-
-exit $CUPS_BACKEND_OK
 
 
+
+# the X display without the screen number, with the following prefixes removed,
+# if present: ":", "localhost:" ."localhost.localdomain:". That is, a display
+# of "localhost:10.0" produces just the number "10"
+dbusDisplay=$(echo ${xDisplay} | cut -d ':' -f 2 | cut -d '.' -f 1)
+echo "DEBUG: dbusDisplay: ${dbusDisplay}" >&2
+if [ "${dbusDisplay}" == "" ];
+then
+  echo "ERROR: Can't extract D-Bus display num from '${xDisplay}' for user '$user' (UID: $uid)" >&2
+  exit $CUPS_BACKEND_FAILED
+fi
+echo "DEBUG: xDisplay: ${xDisplay}" >&2
+
+
+if [ ! -f "@DBUS_MACINE_ID_DIR@/machine-id" ];
+then
+  echo "ERROR: Dbus machine-id file '@DBUS_MACINE_ID_DIR@/machine-id' not found." >&2
+  exit $CUPS_BACKEND_FAILED
+fi
+
+
+dbusSessionFile=${homeDir}/.dbus/session-bus/$(cat "@DBUS_MACINE_ID_DIR@/machine-id")-${dbusDisplay}
+echo "DEBUG: dbusSessionFile: ${dbusSessionFile}" >&2
+if [ ! -f ${dbusSessionFile} ];
+then
+  echo "ERROR: Dbus session file '${dbusSessionFile}' not found." >&2
+  exit $CUPS_BACKEND_FAILED
+fi
+
+
+dbusSessionAddress=$(grep DBUS_SESSION_BUS_ADDRESS= ${dbusSessionFile} | cut -d "=" -f 2-)
+echo "DEBUG: dbusSessionAddress: ${dbusSessionAddress}" >&2
+if [ "${dbusSessionAddress}" == "" ];
+then
+  echo "ERROR: Can't extract D-Bus bus address from '${dbusSessionFile}' for user '$user' (UID: $uid)" >&2
+  exit $CUPS_BACKEND_FAILED
+fi
+
+
+cmd="dbus-send --session --type=method_call --print-reply --dest=org.boomaga /Project org.boomaga.addFile string:${psFile} "
+echo "DEBUG: command: ${cmd}" >&2
+
+errorLog="/tmp/boomaga_${jobID}.err"
+su -c "DBUS_SESSION_BUS_ADDRESS=${dbusSessionAddress} ${cmd}" ${user} 2>${errorLog} 1>/dev/null && exit $CUPS_BACKEND_OK
+
+cat ${errorLog} | sed -e"s/^/ERROR: /" 1>&2
+rm ${errorLog}
