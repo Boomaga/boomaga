@@ -38,13 +38,17 @@
 #include <QDebug>
 #include <QProcessEnvironment>
 
+/************************************************
+
+ ************************************************/
 void printHelp()
 {
     QTextStream out(stdout);
     out << "Usage: boomaga [options] [file]" << endl;
     out << endl;
 
-    out << "Print poscript file as booklet" << endl;
+    out << "Boomaga provides a virtual printer for CUPS. This can be used" << endl;
+    out << "for print preview or for print booklets." << endl;
     out << endl;
 
     out << "Options:" << endl;
@@ -52,6 +56,7 @@ void printHelp()
     out << "  -h, --help              Show help about options" << endl;
     out << "  -t, --title <title>     The job name/title" << endl;
     out << "  -n, --num <copies>      Sets the number of copies to print" << endl;
+    out << "  -V, --version           Print program version" << endl;
     out << endl;
 
     out << "Arguments:" << endl;
@@ -60,6 +65,20 @@ void printHelp()
 
 }
 
+
+/************************************************
+
+ ************************************************/
+void printVersion()
+{
+    QTextStream out(stdout);
+    out << "boomaga " << FULL_VERSION << endl;
+}
+
+
+/************************************************
+
+ ************************************************/
 int printError(const QString &msg)
 {
     QTextStream out(stdout);
@@ -68,6 +87,10 @@ int printError(const QString &msg)
     return 1;
 }
 
+
+/************************************************
+
+ ************************************************/
 int main(int argc, char *argv[])
 {
     QApplication application(argc, argv);
@@ -92,9 +115,16 @@ int main(int argc, char *argv[])
         QString arg = args.at(i);
 
         //*************************************************
-        if (arg == "--help" || arg == "-h")
+        if (arg == "-h" || arg == "--help")
         {
             printHelp();
+            return 0;
+        }
+
+        //*************************************************
+        if (arg == "-V" || arg == "--version")
+        {
+            printVersion();
             return 0;
         }
 

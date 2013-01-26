@@ -2,6 +2,17 @@ cmake_minimum_required( VERSION 2.6 )
 
 project(boomaga)
 
+set(MAJOR_VERSION 0)
+set(MINOR_VERSION 1)
+set(PATCH_VERSION 0)
+set(FULL_VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION})
+
+add_definitions(-DMAJOR_VERSION=\"${MAJOR_VERSION}\")
+add_definitions(-DMINOR_VERSION=\"${MINOR_VERSION}\")
+add_definitions(-DPATCH_VERSION=\"${PATCH_VERSION}\")
+add_definitions(-DFULL_VERSION=\"${FULL_VERSION}\")
+
+
 # Linux ***************************************
 if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 
@@ -20,12 +31,15 @@ elseif(${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
 
 endif()
 
-set(GUI_DIR ${CMAKE_INSTALL_PREFIX}/lib/boomaga)
+set(GUI_DIR ${CMAKE_INSTALL_PREFIX}/bin)
 add_definitions(-DGUI_DIR=\"${GUI_DIR}\")
-
 
 set(GUI_PROGRAM ${GUI_DIR}/boomaga)
 add_definitions(-DGUI_PROGRAM=\"${GUI_PROGRAM}\")
+
+set(GUI_SHARE_DIR ${CMAKE_INSTALL_PREFIX}/share/boomaga)
+add_definitions(-DGUI_SHARE_DIR=\"${GUI_SHARE_DIR}\")
+
 
 
 set(CUPS_BACKEND_URI "boomaga:/")
@@ -64,7 +78,9 @@ add_subdirectory(cups)
 add_subdirectory(gui)
 
 message(STATUS "*****************************************************")
-message(STATUS "** You can change next directories using cmake options like.")
+message(STATUS "* boomaga ver. ${FULL_VERSION}")
+message(STATUS "*")
+message(STATUS "* You can change next directories using cmake options like.")
 message(STATUS "*   cmake -DCUPS_BACKEND_DIR=your_path")
 message(STATUS "*")
 message(STATUS "* CUPS_BACKEND_DIR   = ${CUPS_BACKEND_DIR}")

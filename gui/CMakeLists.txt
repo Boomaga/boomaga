@@ -70,12 +70,8 @@ file (GLOB TS_FILES
     translations/*.ts
 )
 
-set(DATA_DIR 
-    ${CMAKE_INSTALL_PREFIX}/share/boomaga
-)
-
 set(TRANSLATIONS_DIR
-    "${DATA_DIR}/translations"
+    "${GUI_SHARE_DIR}/translations"
 )
 add_definitions(-DTRANSLATIONS_DIR=\"${TRANSLATIONS_DIR}\")
 
