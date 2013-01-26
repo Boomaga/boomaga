@@ -81,8 +81,15 @@
      <string>&amp;Preferences</string>
     </property>
    </widget>
+   <widget class="QMenu" name="menuHelp">
+    <property name="title">
+     <string>Help</string>
+    </property>
+    <addaction name="actionAbout"/>
+   </widget>
    <addaction name="menuFile"/>
    <addaction name="menuPreferences"/>
+   <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
   <widget class="QDockWidget" name="dockWidget">
@@ -249,6 +256,11 @@
   <action name="actionPreviousSheet">
    <property name="text">
     <string>Previous sheet</string>
+   </property>
+  </action>
+  <action name="actionAbout">
+   <property name="text">
+    <string>About Boomaga</string>
    </property>
   </action>
  </widget>

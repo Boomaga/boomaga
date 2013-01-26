@@ -1,0 +1,16 @@
+[main]
+host = https://www.transifex.com
+minimum_perc = 1
+type = QT
+
+[boomaga.gui]
+type = QT
+file_filter = gui/translations/boomaga_<lang>.ts
+source_file = gui/translations/src.boomaga.ts
+source_lang = en
+
+[boomaga.translators]
+source_file = gui/translations/translatorsinfo/translators.info.src
+source_lang = en
+file_filter = gui/translations/translatorsinfo/translators_<lang>.info
+type = MOZILLAPROPERTIES

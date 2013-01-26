@@ -31,6 +31,7 @@
 #include "kernel/printer.h"
 #include "printersettings/printersettings.h"
 #include "psrender.h"
+#include "aboutdialog/aboutdialog.h"
 
 #include <QRadioButton>
 #include <QMessageBox>
@@ -219,6 +220,9 @@ void MainWindow::initActions()
     act = ui->actionNextSheet;
     act->setIcon(findIcon("go-next-view", ":/images/next"));
     connect(act, SIGNAL(triggered()), this, SLOT(showNextSheet()));
+
+    act = ui->actionAbout;
+    connect(act, SIGNAL(triggered()), this, SLOT(showAboutDialog()));
 }
 
 
@@ -507,6 +511,15 @@ void MainWindow::printAndClose()
 }
 
 
+/************************************************
+
+ ************************************************/
+void MainWindow::showAboutDialog()
+{
+    AboutDialog dialog(this);
+    dialog.exec();
+
+}
 
 
 

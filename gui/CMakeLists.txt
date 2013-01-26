@@ -19,6 +19,9 @@ set(HEADERS
     printersettings/printersettings.h
     psrender.h
     psview.h
+
+    aboutdialog/aboutdialog.h
+    translations/translatorsinfo/translatorsinfo.h
 )
 
 set(SOURCES
@@ -37,6 +40,9 @@ set(SOURCES
     printersettings/printersettings.cpp
     psrender.cpp
     psview.cpp
+
+    aboutdialog/aboutdialog.cpp
+    translations/translatorsinfo/translatorsinfo.cpp
 )
 
 set (MOCS
@@ -48,6 +54,8 @@ set (MOCS
     printersettings/printersettings.h
     psrender.h
     psview.h
+
+    aboutdialog/aboutdialog.h
 )
 
 set(LIBRARIES
@@ -58,6 +66,7 @@ set(QT_USE_QTDBUS 1)
 set(UI_FILES
     mainwindow.ui
     printersettings/printersettings.ui
+    aboutdialog/aboutdialog.ui
 )
 
 # QRC files .................
@@ -107,8 +116,11 @@ qt4_add_resources(QRC_SOURCES ${RESOURCES})
 qt4_wrap_ui(UI_HEADERS ${UI_FILES})
 qt4_add_translation(QM_FILES ${TS_FILES})
 
+include(translations/translatorsinfo/CMakeLists.txt)
+get_translatorsinfo_qrc(translatorsinfo_qrc)
+qt4_add_resources(QRC_CXX_SOURCES ${translatorsinfo_qrc})
 
-add_executable(boomaga ${HEADERS} ${SOURCES} ${MOC_SOURCES} ${QM_FILES} ${QRC_SOURCES} ${UI_HEADERS})
+add_executable(boomaga ${HEADERS} ${SOURCES} ${MOC_SOURCES} ${QM_FILES} ${QRC_SOURCES} ${UI_HEADERS} ${QRC_CXX_SOURCES})
 target_link_libraries(boomaga ${LIBRARIES} ${QT_LIBRARIES} ${GHOSTSCRIPT_LIBRARIES})
 
 install(TARGETS boomaga RUNTIME DESTINATION ${GUI_DIR})

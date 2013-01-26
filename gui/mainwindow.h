@@ -73,6 +73,8 @@ private slots:
 
     void psViewWhell(int delta);
 
+    void showAboutDialog();
+
 private:
     Ui::MainWindow *ui;
     PsProject *mProject;

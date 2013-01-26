@@ -1,75 +1,77 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="ru" version="2.0">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.0">
 <context>
     <name>AboutDialog</name>
     <message>
         <location filename="../aboutdialog/aboutdialog.ui" line="14"/>
         <source> About Boomaga</source>
-        <translation>О программе</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../aboutdialog/aboutdialog.ui" line="66"/>
         <source>About</source>
-        <translation>О программе</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../aboutdialog/aboutdialog.ui" line="83"/>
         <source>Authors</source>
-        <translation>Авторы</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../aboutdialog/aboutdialog.ui" line="100"/>
         <source>Thanks</source>
-        <translation>Благодарности</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../aboutdialog/aboutdialog.ui" line="117"/>
         <source>Translations</source>
-        <translation>Переводы</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../aboutdialog/aboutdialog.cpp" line="84"/>
         <source>Version: %1</source>
-        <translation>Версия: %1</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../aboutdialog/aboutdialog.cpp" line="95"/>
         <source>Boomaga provides a virtual printer for CUPS. This can be used for print preview or for print booklets.</source>
-        <translation>Boomaga это виртуальный принтер для CUPS. Программа можно  использовать для предпросмотра или для печати буклетов.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../aboutdialog/aboutdialog.cpp" line="96"/>
         <source>Copyright: %1-%2 %3</source>
-        <translation>Авторские права: %1-%2 %3</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../aboutdialog/aboutdialog.cpp" line="98"/>
         <source>Homepage: %1</source>
-        <translation>Домашняя страница: %1</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../aboutdialog/aboutdialog.cpp" line="99"/>
         <source>License: %1</source>
-        <translation>Лицензия: %1</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../aboutdialog/aboutdialog.cpp" line="113"/>
         <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on Github.</source>
-        <translation>Boomaga разрабатывается &lt;a %1&gt;командой Razor-qt и помощниками &lt;/a&gt; на Github.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../aboutdialog/aboutdialog.cpp" line="115"/>
         <source>If you are interested in working with our development team, &lt;a %1&gt;join us&lt;/a&gt;.</source>
-        <translation>Если есть желание работать вместе с нашей командой разработчиков - &lt;a %1&gt;присоединяйтесь&lt;/a&gt;.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../aboutdialog/aboutdialog.cpp" line="130"/>
         <source>Special thanks to:</source>
-        <translation>Отдельное спасибо:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../aboutdialog/aboutdialog.cpp" line="141"/>
         <source>If you want to help translate we will be glad to see you in our translation team on &lt;a %1&gt;Transifex server&lt;/a&gt;.</source>
-        <translation>Если Вы хотите помочь с переводом мы будем рады видеть вас в нашей команде переводчиков на  &lt;a %1&gt;Transifex server&lt;/a&gt;.</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -77,147 +79,147 @@
     <message>
         <location filename="../mainwindow.ui" line="72"/>
         <source>&amp;File</source>
-        <translation>&amp;Файл</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="81"/>
         <source>&amp;Preferences</source>
-        <translation>&amp;Настройки</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="86"/>
         <source>Help</source>
-        <translation>Помощь</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="103"/>
         <source>Options</source>
-        <translation>Опции</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="113"/>
         <source>Layout</source>
-        <translation>Расположение</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="119"/>
         <source>1 up</source>
-        <translation>1 страница на лист</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="126"/>
         <source>2 up</source>
-        <translation>2 страницы на лист</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="133"/>
         <source>4 up</source>
-        <translation>4 страницы на лист</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="140"/>
         <source>8 up</source>
-        <translation>8 страниц на лист</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="147"/>
         <source>Booklet</source>
-        <translation>Книгой</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="157"/>
         <source>Jobs</source>
-        <translation>Задания</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="179"/>
         <source>Printer</source>
-        <translation>Принтер</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="191"/>
         <source>Configure ...</source>
-        <translation>Настроить ...</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="216"/>
         <source>toolBar</source>
-        <translation>тулбар</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="235"/>
         <source>&amp;Print</source>
-        <translation>&amp;Печать</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="240"/>
         <source>E&amp;xit</source>
-        <translation>В&amp;ыход</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="245"/>
         <source>Print and Close</source>
-        <translation>Печать и выход</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="248"/>
         <source>Ctrl+P</source>
-        <translation>Ctrl+P</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="253"/>
         <source>Next sheet</source>
-        <translation>Следующий</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="258"/>
         <source>Previous sheet</source>
-        <translation>Предыдущий</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.ui" line="263"/>
         <source>About Boomaga</source>
-        <translation>О программе</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="74"/>
         <source>Boomaga</source>
-        <translation>Boomaga</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="267"/>
         <source>%1 pages</source>
-        <translation>%1 страниц</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="267"/>
         <source>%1 page</source>
-        <translation>%1 страница</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="268"/>
         <source>%1 sheets</source>
-        <translation>%1 листов</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="268"/>
         <source>%1 sheet</source>
-        <translation>%1 лист</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="275"/>
         <source>Sheet %1 of %2</source>
-        <translation>Стр. %1 из %2</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="474"/>
         <source>I print the odd pages.&lt;p&gt;When finished, turn the pages, insert them into the printer&lt;br&gt;and click the Continue button.</source>
-        <translation>Сейчас печатаются нечетные страницы.&lt;p&gt;После окончания переверните страницы, вставьте их в принтер&lt;br&gt;и нажмите кнопку &quot;Продолжить&quot;.</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="481"/>
         <source>Continue</source>
-        <translation>Продолжить</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -225,47 +227,47 @@
     <message>
         <location filename="../printersettings/printersettings.ui" line="17"/>
         <source>Margins (mm)</source>
-        <translation>Поля (мм)</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../printersettings/printersettings.ui" line="53"/>
         <source>Right:</source>
-        <translation>Правое:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../printersettings/printersettings.ui" line="60"/>
         <source>Bottom:</source>
-        <translation>Нижнее:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../printersettings/printersettings.ui" line="67"/>
         <source>Internal:</source>
-        <translation>Внутренние:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../printersettings/printersettings.ui" line="80"/>
         <source>Left:</source>
-        <translation>Левое:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../printersettings/printersettings.ui" line="87"/>
         <source>Top:</source>
-        <translation>Верхнее:</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../printersettings/printersettings.ui" line="110"/>
         <source>Printer has a duplex</source>
-        <translation>Принтер имеет двухстороннюю печать</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../printersettings/printersettings.ui" line="117"/>
         <source>Draw border</source>
-        <translation>Печатать рамку</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../printersettings/printersettings.cpp" line="98"/>
         <source>Prefferences of &quot;%1&quot;</source>
-        <translation>Настройки &quot;%1&quot;</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -273,17 +275,17 @@
     <message>
         <location filename="../widgets.cpp" line="152"/>
         <source>( %1 pages ) </source>
-        <translation>( %1 стр.) </translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../widgets.cpp" line="153"/>
         <source>Untitled</source>
-        <translation>Без имени</translation>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <location filename="../widgets.cpp" line="170"/>
         <source>Delete job</source>
-        <translation>Удалить</translation>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>
