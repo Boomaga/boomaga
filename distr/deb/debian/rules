@@ -1,0 +1,36 @@
+#!/usr/bin/make -f
+
+# Uncomment this to turn on verbose mode.
+#export DH_VERBOSE=1
+
+
+%ifnot RELEASE lucid maverick lenny etch squeeze
+DEB_HOST_MULTIARCH ?= $(shell dpkg-architecture -qDEB_HOST_MULTIARCH)
+%endif
+
+# the  -Wl,--as-needed will fail under lenny/etch, umm i dont care stupid winbuntu but added for razorqt happy team..
+%ifnot RELEASE lucid maverick lenny etch squeeze
+#export DEB_BUILD_MAINT_OPTIONS   := hardening=+all
+export DEB_LDFLAGS_MAINT_APPEND  := -Wl,--as-needed
+%endif
+# CMake doesn't use CPPFLAGS, pass them to CFLAGS/CXXFLAGS instead (bug #662833)
+%ifnot RELEASE lucid lenny etch
+export DEB_CFLAGS_MAINT_APPEND   := -pipe -Wall $(shell dpkg-buildflags --get CPPFLAGS)
+export DEB_CXXFLAGS_MAINT_APPEND := -pipe -Wall $(shell dpkg-buildflags --get CPPFLAGS)
+%endif
+
+
+%:
+#	dh $@ --buildsystem=cmake --parallel
+%ifnot RELEASE lucid maverick lenny etch
+	dh $@ --buildsystem=cmake
+%endif
+%if RELEASE lucid maverick lenny etch
+	dh $@
+%endif
+
+%ifnot RELEASE lucid maverick lenny etch squeeze
+override_dh_auto_configure:
+	dh_auto_configure -- -DLIB_SUFFIX="/$(DEB_HOST_MULTIARCH)"
+%endif
+

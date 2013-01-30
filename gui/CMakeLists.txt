@@ -76,7 +76,7 @@ set(RESOURCES
 
 # add translations ...
 file (GLOB TS_FILES 
-    translations/*.ts
+    translations/boomaga*.ts
 )
 
 set(TRANSLATIONS_DIR

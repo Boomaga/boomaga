@@ -1,0 +1,27 @@
+%ifnot RELEASE lucid maverick lenny etch squeeze
+    %set MULTIARCH yes
+%endif
+Source: boomaga
+Section: utils
+Priority: extra
+Maintainer: Alexander Sokolov <sokoloff.a@gmail.com>
+Build-Depends: pkg-config,
+%if MULTIARCH yes
+    debhelper (>= 8.0.0~),
+    dpkg-dev (>= 1.16.0~),
+%else
+    debhelper (>= 7.0.50~),
+%endif
+    cmake,
+    libqt4-dev (>= 4.6.0),
+    libcups2-dev,
+    libgs-dev
+Standards-Version: 3.9.1
+Homepage: https://github.com/Boomaga/boomaga
+
+Package: boomaga
+Architecture: any
+Depends:  cups, ${shlibs:Depends}, ${misc:Depends}
+Description: Post-processing backend for CUPS
+ Boomaga provides a virtual printer for CUPS. This can be used for 
+ print preview or for print booklets.
