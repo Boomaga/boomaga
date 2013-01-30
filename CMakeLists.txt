@@ -76,6 +76,7 @@ setByDefault(DBUS_SERVICE_DIR   ${DEF_DBUS_SERVICE_DIR})
 
 add_subdirectory(cups)
 add_subdirectory(gui)
+install(FILES boomaga.1.gz  DESTINATION share/man/man1)
 
 message(STATUS "*****************************************************")
 message(STATUS "* boomaga ver. ${FULL_VERSION}")
