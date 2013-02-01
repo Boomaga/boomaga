@@ -20,8 +20,8 @@ Boomaga makes it possible to:
     * Booklet. Folding the sheets in two, you’ll get a book.
 
 Boomaga is an open source project distributed under the GPLv2 license (some files are distributed
-under the LGPLv2+ license). It would be more convenient to install the program from the packet for your
-distributive; you can access the list of the packets at [our site](https://github.com/Boomaga/boomaga). You can also build the program from the sources; you can download the sources of the latest stable version here. 
+under the LGPLv2+ license). It would be more convenient to install the program from the package for your
+distribution; you can access the list of the packages at [our site](https://github.com/Boomaga/boomaga). You can also build the program from the sources; you can download the sources of the latest stable version here. 
 The version for developers is available on our page at [github](https://github.com/Boomaga/boomaga).
 
 Address your preferences and error messages to our [Issue tracker](https://github.com/Boomaga/boomaga/issues).
