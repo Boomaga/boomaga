@@ -98,6 +98,7 @@ set(CMAKE_BUILD_TYPE Debug)
 
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
 find_package(Qt4 REQUIRED)
+find_package(Cups REQUIRED)
 find_package(Ghostscript REQUIRED)
 
 include_directories(
@@ -106,6 +107,7 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}/third-party/libspectre
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
+    ${CUPS_INCLUDE_DIR}
     ${GHOSTSCRIPT_INCLUDES}
 )
 
@@ -121,7 +123,7 @@ get_translatorsinfo_qrc(translatorsinfo_qrc)
 qt4_add_resources(QRC_CXX_SOURCES ${translatorsinfo_qrc})
 
 add_executable(boomaga ${HEADERS} ${SOURCES} ${MOC_SOURCES} ${QM_FILES} ${QRC_SOURCES} ${UI_HEADERS} ${QRC_CXX_SOURCES})
-target_link_libraries(boomaga ${LIBRARIES} ${QT_LIBRARIES} ${GHOSTSCRIPT_LIBRARIES})
+target_link_libraries(boomaga ${LIBRARIES} ${QT_LIBRARIES} ${CUPS_LIBRARIES} ${GHOSTSCRIPT_LIBRARIES})
 
 install(TARGETS boomaga RUNTIME DESTINATION ${GUI_DIR})
 install(FILES ${QM_FILES} DESTINATION ${TRANSLATIONS_DIR})
