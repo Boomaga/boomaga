@@ -92,27 +92,25 @@ done  <<< $(ck-list-sessions; echo "SessionEnd:");
 IFS=${oldIfs}
 echo "DEBUG: xDisplay: ${xDisplay}" >&2
 
-if [ "${xDisplay}" == "" ];
+if [ "${xDisplay}" != "" ];
 then
-  echo "ERROR: Can't found session for user '$user' (UID: $uid)" >&2
-  exit $CUPS_BACKEND_FAILED
+  # the X display without the screen number, with the following prefixes removed,
+  # if present: ":", "localhost:" ."localhost.localdomain:". That is, a display
+  # of "localhost:10.0" produces just the number "10"
+  dbusDisplay=$(echo ${xDisplay} | cut -d ':' -f 2 | cut -d '.' -f 1)
+  echo "DEBUG: dbusDisplay: ${dbusDisplay}" >&2
+  if [ "${dbusDisplay}" == "" ];
+  then
+    echo "ERROR: Can't extract D-Bus display num from '${xDisplay}' for user '$user' (UID: $uid)" >&2
+    exit $CUPS_BACKEND_FAILED
+  fi
+  echo "DEBUG: xDisplay: ${xDisplay}" >&2
+  
+else
+  echo "INFO: Can't found session for user '$user' (UID: $uid)." >&2
+  dbusDisplay='*'
+  
 fi
-
-
-
-
-# the X display without the screen number, with the following prefixes removed,
-# if present: ":", "localhost:" ."localhost.localdomain:". That is, a display
-# of "localhost:10.0" produces just the number "10"
-dbusDisplay=$(echo ${xDisplay} | cut -d ':' -f 2 | cut -d '.' -f 1)
-echo "DEBUG: dbusDisplay: ${dbusDisplay}" >&2
-if [ "${dbusDisplay}" == "" ];
-then
-  echo "ERROR: Can't extract D-Bus display num from '${xDisplay}' for user '$user' (UID: $uid)" >&2
-  exit $CUPS_BACKEND_FAILED
-fi
-echo "DEBUG: xDisplay: ${xDisplay}" >&2
-
 
 if [ ! -f "@DBUS_MACINE_ID_DIR@/machine-id" ];
 then
@@ -121,7 +119,7 @@ then
 fi
 
 
-dbusSessionFile=${homeDir}/.dbus/session-bus/$(cat "@DBUS_MACINE_ID_DIR@/machine-id")-${dbusDisplay}
+dbusSessionFile=$(ls ${homeDir}/.dbus/session-bus/$(cat "@DBUS_MACINE_ID_DIR@/machine-id" 2>/dev/null)-${dbusDisplay} 2>/dev/null | head -n 1 ) 
 echo "DEBUG: dbusSessionFile: ${dbusSessionFile}" >&2
 if [ ! -f ${dbusSessionFile} ];
 then
@@ -137,7 +135,6 @@ then
   echo "ERROR: Can't extract D-Bus bus address from '${dbusSessionFile}' for user '$user' (UID: $uid)" >&2
   exit $CUPS_BACKEND_FAILED
 fi
-
 
 cmd="dbus-send --session --type=method_call --print-reply --dest=org.boomaga /Project org.boomaga.addFile string:${psFile} "
 echo "DEBUG: command: ${cmd}" >&2
