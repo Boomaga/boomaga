@@ -73,6 +73,7 @@ void PsProject::addFile(QString fileName)
     mFiles << file;
 
     file->parse();
+    qApp->processEvents();
     for (int i=0; i<file->pageCount(); ++i)
     {
         PsProjectPage *p = new PsProjectPage(file, i);
