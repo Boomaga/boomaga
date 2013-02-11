@@ -115,6 +115,7 @@ void Printer::init()
     mDeviceUri = "";
 
     mDuplex = false;
+    mReverseOrder = false;
     mPaperSize = QSizeF(A4_WIDTH_PT, A4_HEIGHT_PT);
     mLeftMargin = 0;
     mRightMargin = 0;
@@ -198,6 +199,8 @@ void Printer::readSettings()
 {
     mDuplex         = settings->printerDuplex(mPrinterInfo.printerName(), mDuplex);
     mDrawBorder     = settings->printerBorder(mPrinterInfo.printerName(), mDrawBorder);
+    mReverseOrder   = settings->printerReverseOrder(mPrinterInfo.printerName(), mReverseOrder);
+
     mLeftMargin     = settings->printerMargin(mPrinterInfo.printerName(), "Left",     mLeftMargin);
     mRightMargin    = settings->printerMargin(mPrinterInfo.printerName(), "Right",    mRightMargin);
     mTopMargin      = settings->printerMargin(mPrinterInfo.printerName(), "Top",      mTopMargin);
@@ -213,6 +216,8 @@ void Printer::saveSettings()
 {
     settings->setPrinterDuplex(mPrinterInfo.printerName(), mDuplex);
     settings->setPrinterBorder(mPrinterInfo.printerName(), mDrawBorder);
+    settings->setPrinterReverseOrder(mPrinterInfo.printerName(), mReverseOrder);
+
     settings->setPrinterMargin(mPrinterInfo.printerName(), "Left",     mLeftMargin);
     settings->setPrinterMargin(mPrinterInfo.printerName(), "Right",    mRightMargin);
     settings->setPrinterMargin(mPrinterInfo.printerName(), "Top",      mTopMargin);
@@ -377,6 +382,15 @@ void Printer::setDrawBorder(bool value)
 void Printer::setDuplex(bool duplex)
 {
     mDuplex = duplex;
+}
+
+
+/************************************************
+
+ ************************************************/
+void Printer::setReverseOrder(bool value)
+{
+    mReverseOrder = value;
 }
 
 

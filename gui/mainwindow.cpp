@@ -444,7 +444,8 @@ void MainWindow::print()
             return;
 
         QTextStream stream(file);
-        mProject->writeDocument(PsProject::AllPages, &stream);
+        PsProject::PagesOrder order = (mProject->printer()->reverseOrder() ? PsProject::BackOrder : PsProject::ForwardOrder);
+        mProject->writeDocument(PsProject::AllPages, order, &stream);
         file->close();
 
         mProject->printer()->print(file->fileName(), "", 1);
@@ -459,7 +460,8 @@ void MainWindow::print()
                 return;
 
             QTextStream stream(file);
-            mProject->writeDocument(PsProject::OddPages, &stream);
+            PsProject::PagesOrder order = (mProject->printer()->reverseOrder() ? PsProject::BackOrder : PsProject::ForwardOrder);
+            mProject->writeDocument(PsProject::OddPages, order, &stream);
             file->close();
 
             mProject->printer()->print(file->fileName(), "", 1);

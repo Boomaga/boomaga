@@ -179,7 +179,25 @@ bool Settings::printerBorder(const QString &printerName, bool defaultValue)
  ************************************************/
 void Settings::setPrinterBorder(const QString &printerName, bool value)
 {
-   mSettings.setValue(printersKey(printerName, "Border") , value);
+    mSettings.setValue(printersKey(printerName, "Border") , value);
+}
+
+
+/************************************************
+
+ ************************************************/
+bool Settings::printerReverseOrder(const QString &printerName, bool defaultValue)
+{
+    return mSettings.value(printersKey(printerName, "ReverseOrder"), defaultValue).toBool();
+}
+
+
+/************************************************
+
+ ************************************************/
+void Settings::setPrinterReverseOrder(const QString &printerName, bool value)
+{
+    mSettings.setValue(printersKey(printerName, "ReverseOrder") , value);
 }
 
 

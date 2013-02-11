@@ -86,6 +86,9 @@ public:
     bool duplex() const { return mDuplex; }
     void setDuplex(bool duplex);
 
+    bool reverseOrder() const { return mReverseOrder; }
+    void setReverseOrder(bool value);
+
     void print(const QString &fileName, const QString &jobName, int numCopies);
 
     QString deviceUri() const { return mDeviceUri; }
@@ -103,6 +106,7 @@ private:
     qreal mInternalMargin;
     bool mDuplex;
     bool mDrawBorder;
+    bool mReverseOrder;
 
     void init();
     void initFromCups();

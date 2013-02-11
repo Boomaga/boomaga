@@ -54,6 +54,9 @@ public:
     bool printerBorder(const QString &printerName, bool defaultValue);
     void setPrinterBorder(const QString &printerName, bool value);
 
+    bool printerReverseOrder(const QString &printerName, bool defaultValue);
+    void setPrinterReverseOrder(const QString &printerName, bool value);
+
     QSize printerPageSize(const QString &printerName, QSize defaultValue);
     void setPrinterPageSize(const QString &printerName, QSize value);
 

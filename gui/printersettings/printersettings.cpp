@@ -136,6 +136,7 @@ void PrinterSettings::updateWidgets()
 {
     ui->duplexCbx->setChecked(mPrinter->duplex());
     ui->borderCbx->setChecked(mPrinter->drawBorder());
+    ui->reverseOrderCbx->setChecked(mPrinter->reverseOrder());
 
     ui->leftMarginSpin->setValue(mPrinter->leftMargin(mUnit));
     ui->rightMarginSpin->setValue(mPrinter->rightMargin(mUnit));
@@ -161,6 +162,7 @@ void PrinterSettings::btnClicked(QAbstractButton *button)
 
         mPrinter->setDuplex(ui->duplexCbx->isChecked());
         mPrinter->setDrawBorder(ui->borderCbx->isChecked());
+        mPrinter->setReverseOrder(ui->reverseOrderCbx->isChecked());
 
         if (ui->buttonBox->standardButton(button) == QDialogButtonBox::Ok)
             close();

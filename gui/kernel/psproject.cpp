@@ -228,7 +228,7 @@ void PsProject::writeDocument(PsProject::PagesType pages, PsProject::PagesOrder 
     }
     else
     {
-        for (int i=end; i >=start; i -= inc)
+        for (int i=end-1; i >=start; i -= inc)
             sheets << mSheets.at(i);
     }
 
