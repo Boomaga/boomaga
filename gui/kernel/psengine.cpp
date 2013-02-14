@@ -136,7 +136,7 @@ void PsEngine::writeProcSetText(QTextStream *out)
 void PsEngine::writePage(const PsProjectPage *page, QTextStream *out)
 {
     if (page)
-        mProject->psFile()->writePageBody(page->begin(), page->end(), out);
+        page->writePage(out);
     else
         *out << "showpage\n";
 }
@@ -222,8 +222,8 @@ void PsEngine::writeDocument(const QList<const PsSheet*> &sheets, QTextStream *o
 
     writeProcSetText(out);
 
-    mProject->psFile()->writeFilePart(mProject->psFile()->prologPos(), out);
-    mProject->psFile()->writeFilePart(mProject->psFile()->setupPos(), out);
+    mProject->psFile()->writeProlog(out);
+    mProject->psFile()->writeSetup(out);
 
     int n=1;
     foreach(const PsSheet *sheet, sheets)
@@ -231,7 +231,7 @@ void PsEngine::writeDocument(const QList<const PsSheet*> &sheets, QTextStream *o
         *out << QString("%%Page: %1\n").arg(n++);
         writeSheet(*sheet, out);
     }
-    mProject->psFile()->writeFilePart(mProject->psFile()->trailerPos(), out);
+    mProject->psFile()->writeTrailer(out);
 }
 
 

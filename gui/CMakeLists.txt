@@ -46,7 +46,6 @@ set(SOURCES
 )
 
 set (MOCS
-    kernel/psfile.h
     kernel/psproject.h
     mainwindow.h
     widgets.h

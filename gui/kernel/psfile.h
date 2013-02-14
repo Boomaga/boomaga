@@ -32,6 +32,7 @@
 #include <QList>
 #include <QFile>
 #include <QRect>
+#include <QHash>
 
 class PsFile;
 class QTextStream;
@@ -67,11 +68,10 @@ private:
 };
 
 
-class PsFile : public QObject
+class PsFile
 {
-    Q_OBJECT
 public:
-    explicit PsFile(const QString &fileName, QObject *parent = 0);
+    explicit PsFile(const QString &fileName);
     virtual ~PsFile();
 
     QString fileName() const;
@@ -81,21 +81,18 @@ public:
     PsFilePage page(int index) { return mPages[index]; }
     int pageCount() const { return mPages.count(); }
 
-    PsFilePos prologPos() const { return mPrologPos; }
-    PsFilePos setupPos() const { return mSetupPos; }
-    PsFilePos trailerPos() const { return mTrailerPos; }
-
-    void writeFilePart(const PsFilePos &pos, QTextStream *out);
-    void writeFilePart(long begin, long end, QTextStream *out);
-
-    void writePageBody(const PsFilePos &pos, QTextStream *out);
-    void writePageBody(long begin, long end, QTextStream *out);
-
-    bool parse();
+    void writeProlog(QTextStream *out) const;
+    void writeSetup(QTextStream *out) const;
+    void writeTrailer(QTextStream *out) const;
 
 protected:
+    PsFile();
+
     QFile mFile;
     QList<PsFilePage> mPages;
+
+    bool parse();
+    void writeFilePart(long begin, long end, QTextStream *out) const;
 
 private:
     QString mTitle;
@@ -107,16 +104,19 @@ private:
 
 class GsMergeFile: public PsFile
 {
-    Q_OBJECT
 public:
-    GsMergeFile(const QString &fileName, QObject *parent = 0);
+    GsMergeFile(const QString &fileName);
     virtual ~GsMergeFile();
 
-    bool merge(const QStringList inputFiles);
     bool merge(const QList<PsFile*> inputFiles);
 
-private:
+    void writePage(const PsFile* mergedFile, int pageNum, QTextStream *out) const;
+    QRect pageRect(const PsFile* mergedFile, int pageNum) const;
 
+private:
+    QHash<const PsFile*, int> mMergedFiles;
+
+    int pageIndex(const PsFile* mergedFile, int pageNum) const;
 };
 
 #endif // PSFILE_H

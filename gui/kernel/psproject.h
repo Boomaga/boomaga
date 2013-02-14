@@ -42,6 +42,7 @@ class PsProject : public QObject
 {
     Q_OBJECT
     friend class PsEngine;
+    friend class PsProjectPage;
 public:
     enum PsLayout
     {
@@ -84,6 +85,10 @@ public:
     void writeDocument(PagesType pages, QTextStream *out);
     void writeDocument(PagesType pages, PagesOrder order, QTextStream *out);
 
+    void writeDocument(const QList<const PsSheet*> &sheets, const QString &fileName);
+    void writeDocument(PagesType pages, const QString &fileName);
+    void writeDocument(PagesType pages, PagesOrder order, const QString &fileName);
+
 
     PsLayout layout() const { return mLayout; }
 
@@ -97,6 +102,7 @@ public:
 public slots:
     void addFile(QString fileName);
     void removeFile(int index);
+    void moveFile(int from, int to);
 
     void setLayout(PsLayout layout);
 
@@ -106,9 +112,12 @@ signals:
     void fileAdded(const PsFile *file);
     void fileAboutToBeRemoved(const PsFile *file);
     void fileRemoved();
+    void fileAboutToBeMoved(const PsFile *file);
+    void fileMoved();
+
 
 protected:
-    PsFile *psFile() { return mPsFile; }
+    GsMergeFile *psFile() { return mPsFile; }
 
 private:
     PsLayout mLayout;
@@ -122,45 +131,33 @@ private:
     PsEngine *mEngine;
 
     GsMergeFile *mPsFile;
-
-    void updatePages();
-    void updateSheets();
-
     Printer mNullPrinter;
+
+    void updateSheets();
 };
 
 
 class PsProjectPage
 {
-    friend class PsProject;
 public:
-    PsProjectPage(PsFile *file, int pageNum);
+    PsProjectPage(PsFile *file, int pageNum, PsProject *project);
 
     PsFile *file() const { return mFile; }
-
-    long begin() const { return mBegin; }
-    long end() const { return mEnd; }
 
     bool visible() const { return mVisible;}
     void setVisible(bool value);
 
     int pageNum() const { return mPageNum; }
 
-    QRect rect() const { return mRect; }
-protected:
-    void setBegin(long value) { mBegin = value; }
-    void setEnd(long value) { mEnd = value; }
-    void setRect(const QRect &value) { mRect = value; }
+    QRect rect() const;
+    void writePage(QTextStream *out) const;
 
 private:
     PsFile *mFile;
-    long mBegin;
-    long mEnd;
     bool mVisible;
 
     int mPageNum;
-    QRect mRect;
-
+    PsProject *mProject;
 };
 
 

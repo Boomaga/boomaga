@@ -123,6 +123,7 @@ PsFilesListView::PsFilesListView(QWidget *parent):
 {
     setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showContextMenu(QPoint)));
+    connect(this->model(), SIGNAL(layoutChanged()), this, SLOT(layoutChanged()));
 }
 
 
@@ -151,7 +152,7 @@ void PsFilesListView::updateItems()
 
         item->setText(tr("( %1 pages ) ").arg(file->pageCount()) +
                     (file->title().isEmpty() ? tr("Untitled") : file->title()));
-                      ;
+
         addItem(item);
     }
 }
@@ -192,7 +193,7 @@ void PsFilesListView::deleteFile()
 /************************************************
 
  ************************************************/
-void PsFilesListView::mousePressEvent(QMouseEvent *event)
+void PsFilesListView::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
     {
@@ -207,6 +208,20 @@ void PsFilesListView::mousePressEvent(QMouseEvent *event)
             }
         }
     }
+    QListWidget::mouseReleaseEvent(event);
 }
 
+
+/************************************************
+
+ ************************************************/
+void PsFilesListView::layoutChanged()
+{
+    for (int i=0; i<count()-1; ++i)
+    {
+        int from = item(i)->data(Qt::UserRole).toInt();
+        if (from != i)
+            mProject->moveFile(from, i);
+    }
+}
 

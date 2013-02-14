@@ -44,7 +44,7 @@ PsProject::PsProject(QObject *parent) :
     mEngine(0),
     mPrinter(&mNullPrinter)
 {
-    mPsFile = new GsMergeFile(QDir::tempPath() + QString("/boomaga_%1.ps").arg(QCoreApplication::applicationPid()), this);
+    mPsFile = new GsMergeFile(QDir::tempPath() + QString("/boomaga_%1.ps").arg(QCoreApplication::applicationPid()));
 
     setLayout(settings->layout());
 }
@@ -59,6 +59,7 @@ PsProject::~PsProject()
     settings->sync();
     qDeleteAll(mPages);
     qDeleteAll(mFiles);
+    delete mPsFile;
 }
 
 
@@ -69,19 +70,17 @@ void PsProject::addFile(QString fileName)
 {
     emit fileAboutToBeAdded(fileName);
 
-    PsFile *file =  new PsFile(fileName, this);
+    PsFile *file =  new PsFile(fileName);
     mFiles << file;
 
-    file->parse();
     qApp->processEvents();
     for (int i=0; i<file->pageCount(); ++i)
     {
-        PsProjectPage *p = new PsProjectPage(file, i);
+        PsProjectPage *p = new PsProjectPage(file, i, this);
         mPages << p;
     }
 
     mPsFile->merge(mFiles);
-    updatePages();
     updateSheets();
 
     emit fileAdded(file);
@@ -107,7 +106,6 @@ void PsProject::removeFile(int index)
     delete oldFile;
 
     mPsFile->merge(mFiles);
-    updatePages();
     updateSheets();
 
     emit fileRemoved();
@@ -117,24 +115,35 @@ void PsProject::removeFile(int index)
 /************************************************
 
  ************************************************/
-void PsProject::updatePages()
+void PsProject::moveFile(int from, int to)
 {
-    int n=0;
-    foreach(const PsFile *f, mFiles)
-    {
-        foreach(PsProjectPage *page, mPages)
-        {
-            if (page->file() == f)
-            {
-                const PsFilePage &fPage = mPsFile->page(n + page->pageNum());
-                page->setBegin(fPage.filePos().begin);
-                page->setEnd(fPage.filePos().end);
-                page->setRect(fPage.rect());
-            }
-        }
+    PsFile *movedFile = mFiles.at(from);
+    emit fileAboutToBeMoved(movedFile);
 
-        n+=f->pageCount();
+    mFiles.move(from, to);
+
+    int insertIdx = 0;
+    for (int i=0; i<to; ++i)
+        insertIdx+=mFiles.at(i)->pageCount();
+
+
+    QList<PsProjectPage*> movedPages;
+    for(int i=mPages.count()-1; i>-1; --i)
+    {
+        if (mPages.at(i)->file() == movedFile)
+        {
+            movedPages << mPages.takeAt(i);
+        }
     }
+
+    for(int i=0; i<movedPages.count(); ++i)
+    {
+        mPages.insert(insertIdx, movedPages.at(i));
+    }
+
+    updateSheets();
+
+    emit fileMoved();
 }
 
 
@@ -240,6 +249,41 @@ void PsProject::writeDocument(PsProject::PagesType pages, PsProject::PagesOrder 
 /************************************************
 
  ************************************************/
+void PsProject::writeDocument(const QList<const PsSheet *> &sheets, const QString &fileName)
+{
+    QFile f(fileName);
+    f.open(QIODevice::Text | QIODevice::WriteOnly);
+    QTextStream stream(&f);
+    writeDocument(sheets, &stream);
+    f.close();
+}
+
+
+/************************************************
+
+ ************************************************/
+void PsProject::writeDocument(PsProject::PagesType pages, const QString &fileName)
+{
+    writeDocument(pages, ForwardOrder, fileName);
+}
+
+
+/************************************************
+
+ ************************************************/
+void PsProject::writeDocument(PsProject::PagesType pages, PsProject::PagesOrder order, const QString &fileName)
+{
+    QFile f(fileName);
+    f.open(QIODevice::Text | QIODevice::WriteOnly);
+    QTextStream stream(&f);
+    writeDocument(pages, order, &stream);
+    f.close();
+}
+
+
+/************************************************
+
+ ************************************************/
 void PsProject::setLayout(PsProject::PsLayout layout)
 {
     if (!mEngine || mLayout != layout)
@@ -326,11 +370,30 @@ void PsProject::setPrinter(Printer *value)
 /************************************************
 
  ************************************************/
-PsProjectPage::PsProjectPage(PsFile *file, int pageNum):
+PsProjectPage::PsProjectPage(PsFile *file, int pageNum, PsProject *project):
     mFile(file),
-    mPageNum(pageNum)
+    mPageNum(pageNum),
+    mProject(project)
 {
 
+}
+
+
+/************************************************
+
+ ************************************************/
+QRect PsProjectPage::rect() const
+{
+    return mProject->psFile()->pageRect(mFile, mPageNum);
+}
+
+
+/************************************************
+
+ ************************************************/
+void PsProjectPage::writePage(QTextStream *out) const
+{
+    mProject->psFile()->writePage(mFile, mPageNum, out);
 }
 
 

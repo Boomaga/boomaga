@@ -34,6 +34,7 @@
 #include <ghostscript/iapi.h>
 #include <ghostscript/ierrors.h>
 
+#define EMPTY_PS_PAGE "showpage\n"
 
 /************************************************
 
@@ -69,10 +70,18 @@ void PsFilePage::setRect(const QRect &value)
 /************************************************
 
  ************************************************/
-PsFile::PsFile(const QString &fileName, QObject *parent):
-    QObject(parent),
+PsFile::PsFile()
+{
+}
+
+
+/************************************************
+
+ ************************************************/
+PsFile::PsFile(const QString &fileName):
     mFile(fileName)
 {
+    parse();
 }
 
 
@@ -97,51 +106,45 @@ QString PsFile::fileName() const
 /************************************************
 
  ************************************************/
-void PsFile::writeFilePart(const PsFilePos &pos, QTextStream *out)
+void PsFile::writeProlog(QTextStream *out) const
 {
-    writeFilePart(pos.begin, pos.end, out);
+    writeFilePart(mPrologPos.begin, mPrologPos.end, out);
 }
 
 
 /************************************************
 
  ************************************************/
-void PsFile::writeFilePart(long begin, long end, QTextStream *out)
+void PsFile::writeSetup(QTextStream *out) const
 {
-    if (!mFile.isOpen())
-        mFile.open(QIODevice::ReadOnly | QIODevice::Text);
+    writeFilePart(mSetupPos.begin, mSetupPos.end, out);
+}
 
-    if (mFile.isOpen())
+
+/************************************************
+
+ ************************************************/
+void PsFile::writeTrailer(QTextStream *out) const
+{
+    writeFilePart(mTrailerPos.begin, mTrailerPos.end, out);
+}
+
+
+/************************************************
+
+ ************************************************/
+void PsFile::writeFilePart(long begin, long end, QTextStream *out) const
+{
+    QFile *f = const_cast<QFile*>(&mFile);
+    if (!f->isOpen())
+        f->open(QIODevice::ReadOnly | QIODevice::Text);
+
+    if (f->isOpen())
     {
-        mFile.seek(begin);
-        QByteArray buf = mFile.read(end - begin);
+        f->seek(begin);
+        QByteArray buf = f->read(end - begin);
         *out << buf;
     }
-}
-
-
-/************************************************
-
- ************************************************/
-void PsFile::writePageBody(const PsFilePos &pos, QTextStream *out)
-{
-    writePageBody(pos.begin, pos.end, out);
-}
-
-
-/************************************************
-
- ************************************************/
-void PsFile::writePageBody(long begin, long end, QTextStream *out)
-{
-    mFile.seek(begin);
-
-    // Skeep %%Page: tag line
-    QString s = mFile.readLine();
-    qint64 len = end - begin - s.length();
-
-    QByteArray buf = mFile.read(len);
-    *out << buf;
 }
 
 
@@ -182,6 +185,7 @@ bool PsFile::parse()
         int ly=0;
         psgetpagebox(doc, i, &rx, &ry, &lx, &ly);
         psPage.setRect(QRect(lx, ly, rx - lx, ry - ly));
+
         mPages << psPage;
     }
 
@@ -194,9 +198,10 @@ bool PsFile::parse()
 /************************************************
 
  ************************************************/
-GsMergeFile::GsMergeFile(const QString &fileName, QObject *parent):
-    PsFile(fileName, parent)
+GsMergeFile::GsMergeFile(const QString &fileName):
+    PsFile()
 {
+    mFile.setFileName(fileName);
 }
 
 
@@ -212,8 +217,10 @@ GsMergeFile::~GsMergeFile()
 /************************************************
 
  ************************************************/
-bool GsMergeFile::merge(const QStringList inputFiles)
+bool GsMergeFile::merge(const QList<PsFile *> inputFiles)
 {
+    mMergedFiles.clear();
+
     if (inputFiles.isEmpty())
     {
         mPages.clear();
@@ -222,13 +229,19 @@ bool GsMergeFile::merge(const QStringList inputFiles)
         return true;
     }
 
+    int n=0;
+    for (int i=0; i<inputFiles.count(); ++i)
+    {
+        mMergedFiles.insert(inputFiles.at(i), n);
+        n += inputFiles.at(i)->pageCount();
+    }
+
     mFile.close();
     void  *gsInstance;
     int gsRes;
     gsRes = gsapi_new_instance(&gsInstance, 0);
     if (gsRes < 0)
         return false;
-
 
     QList<QByteArray> args;
     args << "merge";
@@ -239,7 +252,9 @@ bool GsMergeFile::merge(const QStringList inputFiles)
     args << "-sDEVICE=ps2write";
     args << QString("-sOutputFile=%1").arg(fileName()).toLocal8Bit();
     for (int i=0; i<inputFiles.count(); ++i)
-        args << inputFiles.at(i).toLocal8Bit();
+    {
+        args << inputFiles.at(i)->fileName().toLocal8Bit();
+    }
 
     int argc = args.count();
     char *argv[100];
@@ -271,11 +286,64 @@ bool GsMergeFile::merge(const QStringList inputFiles)
 /************************************************
 
  ************************************************/
-bool GsMergeFile::merge(const QList<PsFile *> inputFiles)
+int GsMergeFile::pageIndex(const PsFile *mergedFile, int pageNum) const
 {
-    QStringList files;
-    foreach (PsFile *f, inputFiles)
-        files << f->fileName();
+    if (!mMergedFiles.contains(mergedFile))
+        return -1;
 
-    return merge(files);
+    int res = mMergedFiles.value(mergedFile) + pageNum;
+    if (res < mPages.count())
+        return res;
+    else
+        return -1;
 }
+
+
+/************************************************
+
+ ************************************************/
+void GsMergeFile::writePage(const PsFile *mergedFile, int pageNum, QTextStream *out) const
+{
+    int n = pageIndex(mergedFile, pageNum);
+    if (n<0)
+    {
+        *out << EMPTY_PS_PAGE;
+        return;
+    }
+
+    const PsFilePage &page = mPages.at(n);
+
+    QFile *f = const_cast<QFile*>(&mFile);
+    if (!f->isOpen())
+        f->open(QIODevice::ReadOnly | QIODevice::Text);
+
+    if (!f->isOpen())
+    {
+        *out << EMPTY_PS_PAGE;
+        return;
+    }
+
+    f->seek(page.filePos().begin);
+
+    // Skeep %%Page: tag line
+    QString s = f->readLine();
+    qint64 len = page.filePos().end - page.filePos().begin - s.length();
+
+    QByteArray buf = f->read(len);
+    *out << buf;
+}
+
+
+/************************************************
+
+ ************************************************/
+QRect GsMergeFile::pageRect(const PsFile *mergedFile, int pageNum) const
+{
+    int n = pageIndex(mergedFile, pageNum);
+
+    if (n>-1)
+        return mPages.at(n).rect();
+    else
+        return QRect();
+}
+

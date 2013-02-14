@@ -89,9 +89,10 @@ private slots:
     void updateItems();
     void showContextMenu(const QPoint &pos);
     void deleteFile();
+    void layoutChanged();
 
 protected:
-    void mousePressEvent(QMouseEvent *event);
+    void mouseReleaseEvent(QMouseEvent *event);
 
 private:
     PsProject *mProject;

@@ -122,6 +122,9 @@ MainWindow::MainWindow(PsProject *project, QWidget *parent):
     connect(mProject, SIGNAL(fileAdded(const PsFile*)), mRender, SLOT(refresh()));
     connect(mProject, SIGNAL(fileRemoved()), mRender, SLOT(refresh()));
     connect(mProject, SIGNAL(fileRemoved()), this, SLOT(updateCurrentSheet()));
+    connect(mProject, SIGNAL(fileMoved()), mRender, SLOT(refresh()));
+    connect(mProject, SIGNAL(fileMoved()), this, SLOT(updateCurrentSheet()));
+
 
     connect(mRender, SIGNAL(finished()), this, SLOT(updateWidgets()));
 
