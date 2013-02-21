@@ -29,47 +29,47 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../aboutdialog/aboutdialog.cpp" line="84"/>
+        <location filename="../aboutdialog/aboutdialog.cpp" line="81"/>
         <source>Version: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../aboutdialog/aboutdialog.cpp" line="95"/>
+        <location filename="../aboutdialog/aboutdialog.cpp" line="92"/>
         <source>Boomaga provides a virtual printer for CUPS. This can be used for print preview or for print booklets.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../aboutdialog/aboutdialog.cpp" line="96"/>
+        <location filename="../aboutdialog/aboutdialog.cpp" line="93"/>
         <source>Copyright: %1-%2 %3</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../aboutdialog/aboutdialog.cpp" line="98"/>
+        <location filename="../aboutdialog/aboutdialog.cpp" line="95"/>
         <source>Homepage: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../aboutdialog/aboutdialog.cpp" line="99"/>
+        <location filename="../aboutdialog/aboutdialog.cpp" line="96"/>
         <source>License: %1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../aboutdialog/aboutdialog.cpp" line="113"/>
+        <location filename="../aboutdialog/aboutdialog.cpp" line="110"/>
         <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on Github.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../aboutdialog/aboutdialog.cpp" line="115"/>
+        <location filename="../aboutdialog/aboutdialog.cpp" line="112"/>
         <source>If you are interested in working with our development team, &lt;a %1&gt;join us&lt;/a&gt;.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../aboutdialog/aboutdialog.cpp" line="130"/>
+        <location filename="../aboutdialog/aboutdialog.cpp" line="127"/>
         <source>Special thanks to:</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../aboutdialog/aboutdialog.cpp" line="141"/>
+        <location filename="../aboutdialog/aboutdialog.cpp" line="138"/>
         <source>If you want to help translate we will be glad to see you in our translation team on &lt;a %1&gt;Transifex server&lt;/a&gt;.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -132,52 +132,52 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="179"/>
+        <location filename="../mainwindow.ui" line="191"/>
         <source>Printer</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="191"/>
+        <location filename="../mainwindow.ui" line="203"/>
         <source>Configure ...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="216"/>
+        <location filename="../mainwindow.ui" line="228"/>
         <source>toolBar</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="235"/>
+        <location filename="../mainwindow.ui" line="247"/>
         <source>&amp;Print</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="240"/>
+        <location filename="../mainwindow.ui" line="252"/>
         <source>E&amp;xit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="245"/>
+        <location filename="../mainwindow.ui" line="257"/>
         <source>Print and Close</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="248"/>
+        <location filename="../mainwindow.ui" line="260"/>
         <source>Ctrl+P</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="253"/>
+        <location filename="../mainwindow.ui" line="265"/>
         <source>Next sheet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="258"/>
+        <location filename="../mainwindow.ui" line="270"/>
         <source>Previous sheet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="263"/>
+        <location filename="../mainwindow.ui" line="275"/>
         <source>About Boomaga</source>
         <translation type="unfinished"></translation>
     </message>
@@ -187,37 +187,47 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="267"/>
+        <location filename="../mainwindow.cpp" line="270"/>
         <source>%1 pages</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="267"/>
+        <location filename="../mainwindow.cpp" line="270"/>
         <source>%1 page</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="268"/>
+        <location filename="../mainwindow.cpp" line="271"/>
         <source>%1 sheets</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="268"/>
+        <location filename="../mainwindow.cpp" line="271"/>
         <source>%1 sheet</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="275"/>
+        <location filename="../mainwindow.cpp" line="278"/>
         <source>Sheet %1 of %2</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="474"/>
-        <source>I print the odd pages.&lt;p&gt;When finished, turn the pages, insert them into the printer&lt;br&gt;and click the Continue button.</source>
+        <location filename="../mainwindow.cpp" line="450"/>
+        <source>I print the all pages on %1.</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="481"/>
+        <location filename="../mainwindow.cpp" line="489"/>
+        <source>I print the odd pages on %1.&lt;p&gt;When finished, turn the pages, insert them into the printer&lt;br&gt;and click the Continue button.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="504"/>
+        <source>I print the even pages on %1.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="495"/>
         <source>Continue</source>
         <translation type="unfinished"></translation>
     </message>
@@ -265,6 +275,11 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <location filename="../printersettings/printersettings.ui" line="137"/>
+        <source>Print in reverse order</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <location filename="../printersettings/printersettings.cpp" line="98"/>
         <source>Prefferences of &quot;%1&quot;</source>
         <translation type="unfinished"></translation>
@@ -273,17 +288,17 @@
 <context>
     <name>PsFilesListView</name>
     <message>
-        <location filename="../widgets.cpp" line="152"/>
+        <location filename="../widgets.cpp" line="153"/>
         <source>( %1 pages ) </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets.cpp" line="153"/>
+        <location filename="../widgets.cpp" line="154"/>
         <source>Untitled</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <location filename="../widgets.cpp" line="170"/>
+        <location filename="../widgets.cpp" line="171"/>
         <source>Delete job</source>
         <translation type="unfinished"></translation>
     </message>

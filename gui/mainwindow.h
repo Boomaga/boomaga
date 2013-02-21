@@ -58,7 +58,7 @@ private slots:
 
     void switchToFile(PsFile *file);
 
-    void print();
+    void print(bool close = false);
     void printAndClose();
 
     void updateCurrentSheet();

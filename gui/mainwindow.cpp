@@ -40,7 +40,7 @@
 #include <QDir>
 #include <QProcess>
 #include <QDebug>
-
+#include <QTimer>
 
 
 /************************************************
@@ -438,10 +438,19 @@ QTemporaryFile *MainWindow::getTmpFile()
 /************************************************
 
  ************************************************/
-void MainWindow::print()
+void MainWindow::print(bool close)
 {
+    QMessageBox *infoDialog = new QMessageBox(this);
+    infoDialog->setWindowTitle(this->windowTitle() + " ");
+    infoDialog->setIconPixmap(QPixmap(":/images/print-48x48"));
+    infoDialog->setStandardButtons(QMessageBox::NoButton);
+
     if (mProject->printer()->duplex())
     {
+        infoDialog->setText(tr("I print the all pages on %1.").arg(mProject->printer()->printerName()));
+        infoDialog->show();
+        qApp->processEvents();
+
         QTemporaryFile *file = getTmpFile();
         if (!file)
             return;
@@ -472,25 +481,30 @@ void MainWindow::print()
         }
 
         // Show dialog ....................................
-        QMessageBox dialog(this);
-        dialog.setWindowTitle(this->windowTitle() + " ");
-        dialog.setIconPixmap(QPixmap(":/images/print-48x48"));
+        {
+            QMessageBox dialog(this);
+            dialog.setWindowTitle(this->windowTitle() + " ");
+            dialog.setIconPixmap(QPixmap(":/images/print-48x48"));
 
-        dialog.setText(tr("I print the odd pages.<p>"
-                "When finished, turn the pages, insert them into the printer<br>"
-                "and click the Continue button."));
+            dialog.setText(tr("I print the odd pages on %1.<p>"
+                              "When finished, turn the pages, insert them into the printer<br>"
+                              "and click the Continue button.").arg(mProject->printer()->printerName()));
 
-        dialog.addButton(QMessageBox::Abort);
+            dialog.addButton(QMessageBox::Abort);
+            QPushButton *btn = dialog.addButton(QMessageBox::Ok);
+            btn->setText(tr("Continue"));
 
-        QPushButton *btn = dialog.addButton(QMessageBox::Ok);
-        btn->setText(tr("Continue"));
-
-        if (dialog.exec() != QMessageBox::Ok)
-            return;
+            if (dialog.exec() != QMessageBox::Ok)
+                return;
+        }
         // ................................................
 
         // Print even pages ...............................
         {
+            infoDialog->setText(tr("I print the even pages on %1.").arg(mProject->printer()->printerName()));
+            infoDialog->show();
+            qApp->processEvents();
+
             QTemporaryFile *file = getTmpFile();
             if (!file)
                 return;
@@ -503,6 +517,11 @@ void MainWindow::print()
             delete file;
         }
     }
+
+    if (close)
+        QTimer::singleShot(200, this, SLOT(close()));
+    else
+        QTimer::singleShot(200, infoDialog, SLOT(deleteLater()));
 }
 
 
@@ -511,8 +530,7 @@ void MainWindow::print()
  ************************************************/
 void MainWindow::printAndClose()
 {
-    print();
-    close();
+    print(true);
 }
 
 

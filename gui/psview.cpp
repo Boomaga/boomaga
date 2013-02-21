@@ -101,12 +101,12 @@ void PsView::paintEvent(QPaintEvent *event)
     if (!mSheet)
         return;
 
-    QImage img = mImage.scaled(event->rect().width() - 20, event->rect().height() - 20, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+    QImage img = mImage.scaled(this->geometry().width() - 20, this->geometry().height() - 20, Qt::KeepAspectRatio, Qt::SmoothTransformation);
 
     QRect dRect = img.rect();
     QRect sRect = img.rect();
 
-    dRect.moveCenter(event->rect().center());
+    dRect.moveCenter(this->geometry().center());
 
     QPoint foldStart, foldEnd;
     if (mSheet->hints().testFlag(PsSheet::HintDrawFold))
