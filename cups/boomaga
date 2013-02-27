@@ -7,8 +7,6 @@
 #
 
 
-TMP_DIR="/tmp"
-
 CUPS_BACKEND_OK=0
 CUPS_BACKEND_FAILED=1
 
@@ -29,15 +27,7 @@ user=$2
 title=$3
 count=$4
 options=$5
-psFile=$6
-
-if [ -z ${psFile} ];
-then
-    psFile=${TMP_DIR}/boomaga_in_file-${jobID}.ps
-    cat - > ${psFile}
-fi
-chown ${user} ${psFile}
-
+inputFile=$6
 
 uid=$(getent passwd ${user} | cut -d':' -f 3)
 homeDir=$(getent passwd ${user} | cut -d':' -f 6)
@@ -56,6 +46,25 @@ fi
 
 echo "DEBUG: User: $user" >&2
 echo "DEBUG: Uid:  $uid" >&2
+
+psFileDir=${homeDir}/.cache
+psFile=${psFileDir}/boomaga_in_file-${jobID}.ps
+
+if [ ! -d ${psFileDir} ];
+then
+  mkdir ${psFileDir}
+  chmod 700 ${psFileDir}
+  chown ${user} ${psFileDir}
+fi
+
+if [ -z ${inputFile} ];
+then
+  cat - > ${psFile}
+else
+  cp ${inputFile} ${psFile}
+fi
+chown ${user} ${psFile}
+
 
 oldIfs=$IFS
 IFS=$(echo -en "\n")
