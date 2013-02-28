@@ -29,6 +29,7 @@
 
 #include <QMainWindow>
 #include <QLabel>
+#include <QProgressBar>
 
 class PsProject;
 class PsRender;
@@ -75,6 +76,10 @@ private slots:
 
     void showAboutDialog();
 
+    void showProgressBar();
+    void updateProgressBar(int value);
+    void hideProgressBar();
+
 private:
     Ui::MainWindow *ui;
     PsProject *mProject;
@@ -85,6 +90,8 @@ private:
 
     QLabel mStatusBarSheetsLabel;
     QLabel mStatusBarCurrentSheetLabel;
+
+    QProgressBar mProgressBar;
 
     void initActions();
     void initStatusBar();

@@ -69,6 +69,7 @@ MainWindow::MainWindow(PsProject *project, QWidget *parent):
     ui->setupUi(this);
     ui->preview->setRender(mRender);
 
+    delete ui->menuPreferences;
 
     setWindowIcon(findIcon("document-print", ":/images/print-48x48"));
     setWindowTitle(tr("Boomaga"));
@@ -125,8 +126,11 @@ MainWindow::MainWindow(PsProject *project, QWidget *parent):
     connect(mProject, SIGNAL(fileMoved()), mRender, SLOT(refresh()));
     connect(mProject, SIGNAL(fileMoved()), this, SLOT(updateCurrentSheet()));
 
-
     connect(mRender, SIGNAL(finished()), this, SLOT(updateWidgets()));
+
+    connect(mRender, SIGNAL(started()), this, SLOT(showProgressBar()));
+    connect(mRender, SIGNAL(changed(int)), this, SLOT(updateProgressBar(int)));
+    connect(mRender, SIGNAL(finished()), this, SLOT(hideProgressBar()));
 
     connect(ui->preview, SIGNAL(whellScrolled(int)), this, SLOT(psViewWhell(int)));
     mRender->refresh();
@@ -239,6 +243,14 @@ void MainWindow::initStatusBar()
     ui->statusbar->addPermanentWidget(&mStatusBarSheetsLabel);
     mStatusBarSheetsLabel.setMinimumWidth(200);
     mStatusBarSheetsLabel.setAlignment(Qt::AlignRight);
+
+    ui->statusbar->addWidget(&mProgressBar);
+    mProgressBar.setFixedWidth(200);
+    mProgressBar.setSizePolicy(mProgressBar.sizePolicy().horizontalPolicy(),
+                               QSizePolicy::Maximum);
+
+    mProgressBar.setFormat(tr("%v of %m"));
+    mProgressBar.hide();
 }
 
 
@@ -542,6 +554,35 @@ void MainWindow::showAboutDialog()
     AboutDialog dialog(this);
     dialog.exec();
 
+}
+
+
+/************************************************
+
+ ************************************************/
+void MainWindow::showProgressBar()
+{
+    mProgressBar.setValue(0);
+    mProgressBar.setMaximum(mProject->previewSheetCount());
+    mProgressBar.show();
+}
+
+
+/************************************************
+
+ ************************************************/
+void MainWindow::updateProgressBar(int value)
+{
+    mProgressBar.setValue(value);
+}
+
+
+/************************************************
+
+ ************************************************/
+void MainWindow::hideProgressBar()
+{
+    mProgressBar.hide();
 }
 
 
