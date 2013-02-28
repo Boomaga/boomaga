@@ -198,10 +198,13 @@ int main(int argc, char *argv[])
     QDBusConnection::sessionBus().registerService("org.boomaga");
     QDBusConnection::sessionBus().registerObject("/Project", &project);
 
+    MainWindow mainWindow(&project);
+    mainWindow.show();
+    application.processEvents();
+
     if (!file.filePath().isEmpty())
         project.addFile(file.absoluteFilePath());
 
-    MainWindow mainWindow(&project);
-    mainWindow.show();
+
     return application.exec();
 }

@@ -237,47 +237,56 @@ bool GsMergeFile::merge(const QList<PsFile *> inputFiles)
     }
 
     mFile.close();
-    void  *gsInstance;
-    int gsRes;
-    gsRes = gsapi_new_instance(&gsInstance, 0);
-    if (gsRes < 0)
-        return false;
 
-    QList<QByteArray> args;
-    args << "merge";
-    args << "-q";
-    args << "-dNOPAUSE";
-    args << "-dBATCH";
-    args << "-dHaveTrueTypes=false";
-    args << "-sDEVICE=ps2write";
-    args << QString("-sOutputFile=%1").arg(fileName()).toLocal8Bit();
-    for (int i=0; i<inputFiles.count(); ++i)
+    if (inputFiles.count() == 1)
     {
-        args << inputFiles.at(i)->fileName().toLocal8Bit();
+        QFile::copy(inputFiles.first()->fileName(), mFile.fileName());
     }
-
-    int argc = args.count();
-    char *argv[100];
-    for (int i = 0; i < argc; ++i)
+    else
     {
-        argv[i] = args[i].data();
-    }
 
-    // qDebug() << args;
+        void  *gsInstance;
+        int gsRes;
+        gsRes = gsapi_new_instance(&gsInstance, 0);
+        if (gsRes < 0)
+            return false;
 
-    gsRes = gsapi_init_with_args(gsInstance, argc, argv);
-    if (gsRes < -100)
-    {
+        QList<QByteArray> args;
+        args << "merge";
+        args << "-q";
+        args << "-dNOPAUSE";
+        args << "-dBATCH";
+        args << "-dHaveTrueTypes=false";
+        args << "-sDEVICE=ps2write";
+        args << QString("-sOutputFile=%1").arg(fileName()).toLocal8Bit();
+        for (int i=0; i<inputFiles.count(); ++i)
+        {
+            args << inputFiles.at(i)->fileName().toLocal8Bit();
+        }
+
+        int argc = args.count();
+        char *argv[100];
+        for (int i = 0; i < argc; ++i)
+        {
+            argv[i] = args[i].data();
+        }
+
+        // qDebug() << args;
+
+        gsRes = gsapi_init_with_args(gsInstance, argc, argv);
+        if (gsRes < -100)
+        {
+            gsapi_delete_instance(gsInstance);
+            return false;
+        }
+
+        gsRes = gsapi_exit(gsInstance);
         gsapi_delete_instance(gsInstance);
-        return false;
+
+        mPages.clear();
+        if (gsRes != 0 && gsRes != e_Quit)
+            return false;
     }
-
-    gsRes = gsapi_exit(gsInstance);
-    gsapi_delete_instance(gsInstance);
-
-    mPages.clear();
-    if (gsRes != 0 && gsRes != e_Quit)
-        return false;
 
     return parse();
 }
