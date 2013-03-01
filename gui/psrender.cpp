@@ -30,10 +30,32 @@
 #include <ghostscript/gdevdsp.h>
 #include <ghostscript/iapi.h>
 #include <ghostscript/ierrors.h>
+#include <snappy.h>
 
 #include "kernel/psproject.h"
 #include <QCoreApplication>
 #include <QDebug>
+
+
+class CompressedImage
+{
+public:
+    CompressedImage(const uchar *data, int width, int height, int bytesPerLine);
+    ~CompressedImage();
+
+    QImage image();
+
+    int width() const { return mWidth; }
+    int height() const { return mHeight; }
+    int bytesPerLine() const { return mBytesPerLine; }
+
+private:
+    char * mData;
+    size_t mDataLen;
+    int mWidth;
+    int mHeight;
+    int mBytesPerLine;
+};
 
 
 class PsRenderPrivate
@@ -62,7 +84,7 @@ public:
 
 
     QList<const PsSheet*> mSheets;
-    QList<QImage> mImages;
+    QList<CompressedImage*> mImages;
     PsProject *mProject;
     void  *mGsInstance;
     QByteArray mInputData;
@@ -125,6 +147,7 @@ int PsRenderPrivate::pageCallback (void *handle, void * device, int copies, int 
 
     PsRenderPrivate *render = static_cast<PsRenderPrivate*>(handle);
     render->newImage(render->mGsImage, render->mGsImageWidth, render->mGsImageHeight, render->mGsImageRowLength);
+
     return 0;
 }
 
@@ -135,9 +158,7 @@ int PsRenderPrivate::pageCallback (void *handle, void * device, int copies, int 
 void PsRenderPrivate::newImage(const uchar *data, int width, int height, int bytesPerLine)
 {
     Q_Q(PsRender);
-    QImage img(data, width, height, bytesPerLine, QImage::Format_RGB32);
-    // I use convert for deep copy of the QImage data.
-    mImages.append(img.convertToFormat(QImage::Format_ARGB32));
+    mImages.append(new CompressedImage(data, width, height, bytesPerLine));
     emit q->changed(mImages.count() - 1);
     QCoreApplication::processEvents();
 }
@@ -174,6 +195,7 @@ PsRenderPrivate::PsRenderPrivate(PsRender *parent):
  ************************************************/
 PsRenderPrivate::~PsRenderPrivate()
 {
+    clear();
 }
 
 
@@ -183,6 +205,7 @@ PsRenderPrivate::~PsRenderPrivate()
 void PsRenderPrivate::clear()
 {
     mSheets.clear();
+    qDeleteAll(mImages);
     mImages.clear();
 }
 
@@ -233,7 +256,7 @@ const PsSheet *PsRender::sheet(int index) const
 QImage PsRender::image(int index)
 {
     Q_D(PsRender);
-    return d->mImages[index];
+    return d->mImages.at(index)->image();
 }
 
 
@@ -416,6 +439,46 @@ bool PsRenderPrivate::gsRunString(const QByteArray &data)
         return true;
 
     return false;
+}
+
+
+/************************************************
+
+ ************************************************/
+CompressedImage::CompressedImage(const uchar *data, int width, int height, int bytesPerLine):
+    mWidth(width),
+    mHeight(height),
+    mBytesPerLine(bytesPerLine)
+{
+    mData = new char[snappy::MaxCompressedLength(bytesPerLine * height)];
+    snappy::RawCompress((const char*)data, bytesPerLine * height, mData, &mDataLen);
+}
+
+
+/************************************************
+
+ ************************************************/
+CompressedImage::~CompressedImage()
+{
+    delete [] mData;
+}
+
+
+/************************************************
+
+ ************************************************/
+QImage CompressedImage::image()
+{
+    size_t bufLen;
+    snappy::GetUncompressedLength(mData, mDataLen, &bufLen);
+
+    uchar *buf = new uchar[bufLen];
+    snappy::RawUncompress(mData, mDataLen, (char *)buf);
+
+    // I use convert for deep copy of the QImage data.
+    QImage img = QImage(buf, mWidth, mHeight, mBytesPerLine, QImage::Format_RGB32).convertToFormat(QImage::Format_ARGB32);
+    delete buf;
+    return img;
 }
 
 
