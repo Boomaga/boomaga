@@ -93,3 +93,18 @@ message(STATUS "* CUPS_PPD_DIR       = ${CUPS_PPD_DIR}")
 message(STATUS "* DBUS_MACINE_ID_DIR = ${DBUS_MACINE_ID_DIR}")
 message(STATUS "* DBUS_SERVICE_DIR   = ${DBUS_SERVICE_DIR}")
 message(STATUS "*****************************************************")
+
+########## Add make dist target ################
+SET(CPACK_PACKAGE_VERSION "${FULL_VERSION}")
+SET(CPACK_SOURCE_GENERATOR "TBZ2")
+SET(CPACK_SOURCE_PACKAGE_FILE_NAME "boomaga-${CPACK_PACKAGE_VERSION}")
+SET(CPACK_IGNORE_FILES
+    \\\\.git
+    build
+    CMakeLists.txt.user
+    \\\\~
+)
+SET(CPACK_SOURCE_IGNORE_FILES ${CPACK_IGNORE_FILES})
+INCLUDE(CPack)
+# simulate autotools' "make dist"
+add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
