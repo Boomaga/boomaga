@@ -15,7 +15,8 @@ Build-Depends: pkg-config,
     cmake,
     libqt4-dev (>= 4.6.0),
     libcups2-dev,
-    libgs-dev
+    libgs-dev,
+    libsnappy-dev
 Standards-Version: 3.9.1
 Homepage: https://github.com/Boomaga/boomaga
 
