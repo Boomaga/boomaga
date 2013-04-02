@@ -180,52 +180,58 @@
         <translation>О программе</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="74"/>
+        <location filename="../mainwindow.cpp" line="75"/>
         <source>Boomaga</source>
         <translation>Boomaga</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="270"/>
+        <location filename="../mainwindow.cpp" line="252"/>
+        <source>%v of %m</source>
+        <comment>Format for QProgressBar (http://qt-project.org/doc/qt-4.8/qprogressbar.html#format-prop)</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <location filename="../mainwindow.cpp" line="282"/>
         <source>%1 pages</source>
         <translation>%1 страниц</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="270"/>
+        <location filename="../mainwindow.cpp" line="282"/>
         <source>%1 page</source>
         <translation>%1 страница</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="271"/>
+        <location filename="../mainwindow.cpp" line="283"/>
         <source>%1 sheets</source>
         <translation>%1 листов</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="271"/>
+        <location filename="../mainwindow.cpp" line="283"/>
         <source>%1 sheet</source>
         <translation>%1 лист</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="278"/>
+        <location filename="../mainwindow.cpp" line="290"/>
         <source>Sheet %1 of %2</source>
         <translation>Стр. %1 из %2</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="450"/>
+        <location filename="../mainwindow.cpp" line="462"/>
         <source>I print the all pages on %1.</source>
         <translation>Сейчас печатаются все страницы на %1.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="489"/>
+        <location filename="../mainwindow.cpp" line="501"/>
         <source>I print the odd pages on %1.&lt;p&gt;When finished, turn the pages, insert them into the printer&lt;br&gt;and click the Continue button.</source>
         <translation>Сейчас печатаются нечетные страницы на %1.&lt;p&gt;После окончания переверните страницы, вставьте их в принтер&lt;br&gt;и нажмите кнопку &quot;Продолжить&quot;.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="504"/>
+        <location filename="../mainwindow.cpp" line="516"/>
         <source>I print the even pages on %1.</source>
         <translation>Сейчас печатаются четные страницы на %1.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="495"/>
+        <location filename="../mainwindow.cpp" line="507"/>
         <source>Continue</source>
         <translation>Продолжить</translation>
     </message>

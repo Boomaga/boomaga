@@ -249,7 +249,7 @@ void MainWindow::initStatusBar()
     mProgressBar.setSizePolicy(mProgressBar.sizePolicy().horizontalPolicy(),
                                QSizePolicy::Maximum);
 
-    mProgressBar.setFormat(tr("%v of %m"));
+    mProgressBar.setFormat(tr("%v of %m", "Format for QProgressBar (http://qt-project.org/doc/qt-4.8/qprogressbar.html#format-prop)"));
     mProgressBar.hide();
 }
 
