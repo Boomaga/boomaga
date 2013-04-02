@@ -331,17 +331,15 @@ QList<QByteArray> PsRenderPrivate::gsArgs()
     args << "-sDEVICE=display";
 
     // Quality vs speed
-    //args << QString("-r%1x%2").arg(200).toLatin1();
     args << QString("-r%1x%2").arg(150).toLatin1();
 
-    //"-g%dx%d", sWidth, sHeight); // Size of page
-    //"-r%fx%f", sWidth * mXDpi    , scale * mYDpi  );
-    //"-r%fx%f", scale * mXDpi, scale * mYDpi);
+    QSizeF pageSize = mProject->printer()->paperSize(Printer::Point);
+    args << QString("-dDEVICEWIDTHPOINTS=%1").arg(pageSize.width()).toAscii();
+    args << QString("-dDEVICEHEIGHTPOINTS=%1").arg(pageSize.height()).toAscii();
 
-    //if (mUsePlatformFonts == FALSE)
-    //    sprintf(args[arg++], "-dNOPLATFONTS");
+    //args << QString("-dDEVICEWIDTH=%1").arg(pageSize.width()).toAscii();
+    //args << QString("-dDEVICEHEIGHT=%1").arg(pageSize.height()).toAscii();
 
-    //"-dDEVICEWIDTHPOINTS=%d",  width); Размеры страницы, перекрывают размеры прописанные в PS.
     //"-dDEVICEHEIGHTPOINTS=%d", height);
     //"-dDEVICEWIDTH=%d",  width);
     //"-dDEVICEHEIGHT=%d", height);
@@ -392,7 +390,7 @@ void PsRenderPrivate::run()
 
     // Init .....................................
     gsRes = gsapi_init_with_args(mGsInstance, argc, argv);
-    if (gsRes < -100)
+    if (gsRes < 0)
     {
         qWarning() << "Error gsapi_init_with_args" << gsRes;
         gsapi_delete_instance(mGsInstance);
