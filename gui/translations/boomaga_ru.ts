@@ -68,8 +68,8 @@
     </message>
     <message>
         <location filename="../aboutdialog/aboutdialog.cpp" line="138"/>
-        <source>If you want to help translate we will be glad to see you in our translation team on &lt;a %1&gt;Transifex server&lt;/a&gt;.</source>
-        <translation>Если Вы хотите помочь с переводом мы будем рады видеть вас в нашей команде переводчиков на  &lt;a %1&gt;Transifex server&lt;/a&gt;.</translation>
+        <source>If you want to help translate, we will be glad to see you in our translation team on &lt;a %1&gt;Transifex server&lt;/a&gt;.</source>
+        <translation>Если Вы хотите помочь с переводом, мы будем рады видеть вас в нашей команде переводчиков на  &lt;a %1&gt;Transifex server&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
@@ -141,7 +141,7 @@
     </message>
     <message>
         <location filename="../mainwindow.ui" line="228"/>
-        <source>toolBar</source>
+        <source>Toolbar</source>
         <translation>тулбар</translation>
     </message>
     <message>
@@ -188,7 +188,7 @@
         <location filename="../mainwindow.cpp" line="252"/>
         <source>%v of %m</source>
         <comment>Format for QProgressBar (http://qt-project.org/doc/qt-4.8/qprogressbar.html#format-prop)</comment>
-        <translation type="unfinished"/>
+        <translation>%v из %m</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="282"/>
@@ -217,17 +217,17 @@
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="462"/>
-        <source>I print the all pages on %1.</source>
+        <source>Print the all pages on %1.</source>
         <translation>Сейчас печатаются все страницы на %1.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="501"/>
-        <source>I print the odd pages on %1.&lt;p&gt;When finished, turn the pages, insert them into the printer&lt;br&gt;and click the Continue button.</source>
+        <source>Print the odd pages on %1.&lt;p&gt;When finished, turn the pages, insert them into the printer&lt;br&gt;and click the Continue button.</source>
         <translation>Сейчас печатаются нечетные страницы на %1.&lt;p&gt;После окончания переверните страницы, вставьте их в принтер&lt;br&gt;и нажмите кнопку &quot;Продолжить&quot;.</translation>
     </message>
     <message>
         <location filename="../mainwindow.cpp" line="516"/>
-        <source>I print the even pages on %1.</source>
+        <source>Print the even pages on %1.</source>
         <translation>Сейчас печатаются четные страницы на %1.</translation>
     </message>
     <message>
@@ -285,7 +285,7 @@
     </message>
     <message>
         <location filename="../printersettings/printersettings.cpp" line="98"/>
-        <source>Prefferences of &quot;%1&quot;</source>
+        <source>Preferences of &quot;%1&quot;</source>
         <translation>Настройки &quot;%1&quot;</translation>
     </message>
 </context>
