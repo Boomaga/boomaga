@@ -95,7 +95,7 @@ PrinterSettings::~PrinterSettings()
 void PrinterSettings::setCurrentPrinter(Printer *printer)
 {
     mPrinter = printer;
-    setWindowTitle(tr("Prefferences of \"%1\"").arg(mPrinter->printerName()));
+    setWindowTitle(tr("Preferences of \"%1\"").arg(mPrinter->printerName()));
     updateWidgets();
 }
 

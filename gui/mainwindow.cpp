@@ -459,7 +459,7 @@ void MainWindow::print(bool close)
 
     if (mProject->printer()->duplex())
     {
-        infoDialog->setText(tr("I print the all pages on %1.").arg(mProject->printer()->printerName()));
+        infoDialog->setText(tr("Print the all pages on %1.").arg(mProject->printer()->printerName()));
         infoDialog->show();
         qApp->processEvents();
 
@@ -498,7 +498,7 @@ void MainWindow::print(bool close)
             dialog.setWindowTitle(this->windowTitle() + " ");
             dialog.setIconPixmap(QPixmap(":/images/print-48x48"));
 
-            dialog.setText(tr("I print the odd pages on %1.<p>"
+            dialog.setText(tr("Print the odd pages on %1.<p>"
                               "When finished, turn the pages, insert them into the printer<br>"
                               "and click the Continue button.").arg(mProject->printer()->printerName()));
 
@@ -513,7 +513,7 @@ void MainWindow::print(bool close)
 
         // Print even pages ...............................
         {
-            infoDialog->setText(tr("I print the even pages on %1.").arg(mProject->printer()->printerName()));
+            infoDialog->setText(tr("Print the even pages on %1.").arg(mProject->printer()->printerName()));
             infoDialog->show();
             qApp->processEvents();
 
