@@ -13,6 +13,160 @@ CUPS_BACKEND_FAILED=1
 # Have debug info in /var/log/cups/error_log:
 #set -x
 
+DBUS_MACINE_ID_DIR='@DBUS_MACINE_ID_DIR@'
+
+#*******************************************
+#
+#*******************************************
+function createPsFileDir
+{
+  if [ ! -d ${psFileDir} ];
+  then
+    mkdir ${psFileDir}
+    chmod 700 ${psFileDir}
+    chown ${user} ${psFileDir}
+  fi
+}
+
+
+#*******************************************
+#
+#*******************************************
+function copyInputFile
+{
+  if [ -z ${inputFile} ];
+  then
+    cat - > ${psFile}
+  else
+    cp ${inputFile} ${psFile}
+  fi
+  chown ${user} ${psFile}
+}
+
+
+#*******************************************
+#
+#*******************************************
+function getActiveSessionDisplay
+{
+  oldIfs=$IFS
+  IFS=$(echo -en "\n")
+  while read line; do
+    IFS="$oldIfs='"
+    read key value <<< $line;
+
+    case $key in
+      Session*)
+        if [ "$sesUid" = "$uid" -a "$sesActive" = "TRUE" -a "$sesDisplay" != "" ];
+        then
+          xDisplay=$sesDisplay
+          break;
+        fi
+
+        unset sesUid
+        unset sesActive
+        unset sesADisplay
+        ;;
+
+      unix-user)
+        sesUid=$value
+        ;;
+
+      active)
+        sesActive=$value
+        ;;
+
+      x11-display)
+        sesDisplay=$value
+        ;;
+    esac
+  done  <<< $(ck-list-sessions; echo "SessionEnd:");
+  IFS=${oldIfs}
+}
+
+
+#*******************************************
+#
+#*******************************************
+function getDbusAddr_Linux_SessionFile
+{
+
+  if [ "${xDisplay}" != "" ];
+  then
+    # the X display without the screen number, with the following prefixes removed,
+    # if present: ":", "localhost:" ."localhost.localdomain:". That is, a display
+    # of "localhost:10.0" produces just the number "10"
+    dbusDisplay=$(echo ${xDisplay} | cut -d ':' -f 2 | cut -d '.' -f 1)
+    echo "DEBUG: [Boomaga] dbusDisplay: ${dbusDisplay}" >&2
+    if [ "${dbusDisplay}" == "" ];
+    then
+      echo "ERROR: Can't extract D-Bus display num from '${xDisplay}' for user '$user' (UID: $uid)" >&2
+      exit $CUPS_BACKEND_FAILED
+    fi
+  else
+    dbusDisplay='*'
+  fi
+
+  if [ ! -f "${DBUS_MACINE_ID_DIR}/machine-id" ];
+  then
+    echo "ERROR: Dbus machine-id file '${DBUS_MACINE_ID_DIR}/machine-id' not found." >&2
+    exit $CUPS_BACKEND_FAILED
+  fi
+
+  userDbusDir="${homeDir}/.dbus/session-bus/"
+  if [ ! -d "${userDbusDir}" ]; then
+    echo "ERROR: User Dbus session directory '${userDbusDir}' not found." >&2
+    exit $CUPS_BACKEND_FAILED
+  fi
+  echo "DEBUG: [Boomaga] User Dbus session directory '${userDbusDir}." >&2
+
+  dbusSessionFile=$(ls ${userDbusDir}$(cat "${DBUS_MACINE_ID_DIR}/machine-id" 2>/dev/null)-${dbusDisplay} 2>/dev/null | head -n 1 )
+  if [ -z "${dbusSessionFile}" ] || [ ! -f ${dbusSessionFile} ];
+  then
+   echo "ERROR: Dbus session file '${dbusSessionFile}' not found." >&2
+   exit $CUPS_BACKEND_FAILED
+ fi
+  echo "DEBUG: [Boomaga] dbusSessionFile: ${dbusSessionFile}" >&2
+
+  dbusSessionAddress=$(grep DBUS_SESSION_BUS_ADDRESS= ${dbusSessionFile} | cut -d "=" -f 2-)
+  if [ "${dbusSessionAddress}" == "" ];
+  then
+    echo "ERROR: Can't extract D-Bus bus address from '${dbusSessionFile}' for user '$user' (UID: $uid)" >&2
+    exit $CUPS_BACKEND_FAILED
+  fi
+  echo "DEBUG: [Boomaga] dbusSessionAddress: ${dbusSessionAddress}" >&2
+}
+
+
+#*******************************************
+#
+#*******************************************
+function getDbusAddr_Linux_Proc
+{
+  for file in $(find /proc -user "${user}" -type f -regex '/proc/[0-9]+/environ'); do
+    disp=$(grep -z DISPLAY "${file}"  | cut -d= -f2)
+    addr=$(grep -z DBUS_SESSION_BUS_ADDRESS "${file}"  | cut -d= -f2-)
+
+    if [ -n "${addr}" ];
+    then
+      if [ "${disp}" = "${xDisplay}" ] || [ "${xDisplay}" = "" ];
+      then
+        dbusSessionAddress=${addr}
+        break
+      fi
+    fi
+  done
+
+  if [ "${dbusSessionAddress}" == "" ];
+  then
+    echo "ERROR: Can't extract D-Bus bus address from /proc files for user '$user' (UID: $uid)" >&2
+    exit $CUPS_BACKEND_FAILED
+  fi
+}
+
+
+
+###########################################################
 # Output "device discovery" information on stdout:
 # http://www.cups.org/documentation.php/doc-1.6/man-backend.html
 # device-class device-uri "device-make-and-model" "device-info" "device-id"
@@ -44,112 +198,36 @@ then
   exit $CUPS_BACKEND_FAILED
 fi
 
-echo "DEBUG: User: $user" >&2
-echo "DEBUG: Uid:  $uid" >&2
+echo "DEBUG: [Boomaga] User: $user" >&2
+echo "DEBUG: [Boomaga] Uid:  $uid" >&2
 
 psFileDir=${homeDir}/.cache
 psFile=${psFileDir}/boomaga_in_file-${jobID}.ps
 
-if [ ! -d ${psFileDir} ];
+
+createPsFileDir
+copyInputFile
+getActiveSessionDisplay
+
+if [ "${xDisplay}" = "" ];
 then
-  mkdir ${psFileDir}
-  chmod 700 ${psFileDir}
-  chown ${user} ${psFileDir}
+  echo "INFO: Can't found active session for user '$user' (UID: $uid)." >&2
 fi
-
-if [ -z ${inputFile} ];
-then
-  cat - > ${psFile}
-else
-  cp ${inputFile} ${psFile}
-fi
-chown ${user} ${psFile}
+echo "DEBUG: [Boomaga] xDisplay: ${xDisplay}" >&2
 
 
-oldIfs=$IFS
-IFS=$(echo -en "\n")
-while read line; do
-  IFS="$oldIfs='"
-  read key value <<< $line;
+#getDbusAddr_Linux_SessionFile
+getDbusAddr_Linux_Proc
+echo "DEBUG: [Boomaga] dbusSessionAddress: ${dbusSessionAddress}" >&2
 
-  case $key in
-    Session*)
-      if [ "$sesUid" = "$uid" -a "$sesActive" = "TRUE" -a "$sesDisplay" != "" ];
-      then
-        xDisplay=$sesDisplay
-        break;
-      fi
-
-      unset sesUid
-      unset sesActive
-      unset sesADisplay
-      ;;
-
-    unix-user)
-       sesUid=$value
-       ;;
-
-    active)
-       sesActive=$value
-       ;;
-
-    x11-display)
-       sesDisplay=$value
-       ;;
-   esac
-done  <<< $(ck-list-sessions; echo "SessionEnd:");
-IFS=${oldIfs}
-echo "DEBUG: xDisplay: ${xDisplay}" >&2
-
-if [ "${xDisplay}" != "" ];
-then
-  # the X display without the screen number, with the following prefixes removed,
-  # if present: ":", "localhost:" ."localhost.localdomain:". That is, a display
-  # of "localhost:10.0" produces just the number "10"
-  dbusDisplay=$(echo ${xDisplay} | cut -d ':' -f 2 | cut -d '.' -f 1)
-  echo "DEBUG: dbusDisplay: ${dbusDisplay}" >&2
-  if [ "${dbusDisplay}" == "" ];
-  then
-    echo "ERROR: Can't extract D-Bus display num from '${xDisplay}' for user '$user' (UID: $uid)" >&2
-    exit $CUPS_BACKEND_FAILED
-  fi
-  echo "DEBUG: xDisplay: ${xDisplay}" >&2
-  
-else
-  echo "INFO: Can't found session for user '$user' (UID: $uid)." >&2
-  dbusDisplay='*'
-  
-fi
-
-if [ ! -f "@DBUS_MACINE_ID_DIR@/machine-id" ];
-then
-  echo "ERROR: Dbus machine-id file '@DBUS_MACINE_ID_DIR@/machine-id' not found." >&2
-  exit $CUPS_BACKEND_FAILED
-fi
-
-
-dbusSessionFile=$(ls ${homeDir}/.dbus/session-bus/$(cat "@DBUS_MACINE_ID_DIR@/machine-id" 2>/dev/null)-${dbusDisplay} 2>/dev/null | head -n 1 ) 
-echo "DEBUG: dbusSessionFile: ${dbusSessionFile}" >&2
-if [ ! -f ${dbusSessionFile} ];
-then
-  echo "ERROR: Dbus session file '${dbusSessionFile}' not found." >&2
-  exit $CUPS_BACKEND_FAILED
-fi
-
-
-dbusSessionAddress=$(grep DBUS_SESSION_BUS_ADDRESS= ${dbusSessionFile} | cut -d "=" -f 2-)
-echo "DEBUG: dbusSessionAddress: ${dbusSessionAddress}" >&2
-if [ "${dbusSessionAddress}" == "" ];
-then
-  echo "ERROR: Can't extract D-Bus bus address from '${dbusSessionFile}' for user '$user' (UID: $uid)" >&2
-  exit $CUPS_BACKEND_FAILED
-fi
 
 cmd="dbus-send --session --type=method_call --print-reply --dest=org.boomaga /Project org.boomaga.addFile string:${psFile} "
-echo "DEBUG: command: ${cmd}" >&2
+echo "DEBUG: [Boomaga] command: ${cmd}" >&2
+
 
 errorLog="/tmp/boomaga_${jobID}.err"
 su -c "DBUS_SESSION_BUS_ADDRESS=${dbusSessionAddress} ${cmd}" ${user} 2>${errorLog} 1>/dev/null && exit $CUPS_BACKEND_OK
+
 
 cat ${errorLog} | sed -e"s/^/ERROR: /" 1>&2
 rm ${errorLog}
