@@ -30,23 +30,16 @@
 #define PROJECT_GROUP "Project"
 #define PRINTERS_GROUP "Printer"
 
-QString Settings::mFileName;
-
 /************************************************
 
  ************************************************/
 Settings *Settings::instance()
 {
     static Settings *inst = 0;
-
     if (!inst)
     {
-        if (mFileName.isEmpty())
-            inst = new Settings("boomaga", "boomaga");
-        else
-            inst = new Settings(mFileName);
+        inst = new Settings();
     }
-
     return inst;
 }
 
@@ -54,152 +47,192 @@ Settings *Settings::instance()
 /************************************************
 
  ************************************************/
-void Settings::setFileName(const QString &fileName)
+Settings::Settings():
+    mSettings("boomaga", "boomaga")
 {
-    mFileName = fileName;
+
 }
 
 
 /************************************************
 
  ************************************************/
-Settings::Settings(const QString &organization, const QString &application):
-    QSettings(organization, application)
+void Settings::sync()
 {
-    init();
+    mSettings.sync();
 }
 
 
 /************************************************
 
  ************************************************/
-Settings::Settings(const QString &fileName):
-    QSettings(fileName, QSettings::IniFormat)
+QByteArray Settings::mainWindowGeometry()
 {
-    init();
+    return mSettings.value(MAINWINDOW_GROUP "/Geometry").toByteArray();
 }
 
 
 /************************************************
 
  ************************************************/
-Settings::~Settings()
+void Settings::setMainWindowGeometry(const QByteArray &value)
 {
-
-}
-
-/************************************************
-
- ************************************************/
-QString Settings::keyToString(Settings::Key key) const
-{
-    switch (key)
-    {
-    case Layout:                    return "Project/Layout";
-    case Printer:                   return "Project/Printer";
-
-        // Printer ******************************
-    case Printer_Duplex:            return "Duplex";
-    case Printer_DrawBorder:        return "Border";
-    case Printer_ReverseOrder:      return "ReverseOrder";
-
-    case Printer_LeftMargin:        return "LeftMargin";
-    case Printer_RightMargin:       return "RightMargin";
-    case Printer_TopMargin:         return "TopMargin";
-    case Printer_BottomMargin:      return "BottomMargin";
-    case Printer_InternalMargin:    return "InternalMargin";
-
-
-    // MainWindow **************************
-    case MainWindow_Geometry:       return "MainWindow/Geometry";
-    case MainWindow_State:          return "MainWindow/State";
-
-    }
-
-    return "";
+    mSettings.setValue(MAINWINDOW_GROUP "/Geometry", value);
 }
 
 
 /************************************************
 
  ************************************************/
-void Settings::init()
+QByteArray Settings::mainWindowState()
 {
-    setDefaultValue(Layout,   "1up");
+    return mSettings.value(MAINWINDOW_GROUP "/State").toByteArray();
 }
 
 
 /************************************************
 
  ************************************************/
-void Settings::setDefaultValue(const QString &key, const QVariant &defaultValue)
+void Settings::setMainWindowState(const QByteArray &value)
 {
-    setValue(key, value(key, defaultValue));
+    mSettings.setValue(MAINWINDOW_GROUP "/State", value);
 }
 
 
 /************************************************
 
  ************************************************/
-void Settings::setDefaultValue(Settings::Key key, const QVariant &defaultValue)
+PsProject::PsLayout Settings::layout()
 {
-    setValue(key, value(key, defaultValue));
+    return PsProject::strToLayout(
+                mSettings.value(PROJECT_GROUP "/Layout", "").toString()
+                );
 }
 
 
 /************************************************
 
  ************************************************/
-QVariant Settings::value(Settings::Key key, const QVariant &defaultValue) const
+void Settings::setLayout(PsProject::PsLayout value)
 {
-    return value(keyToString(key), defaultValue);
+    mSettings.setValue(PROJECT_GROUP "/Layout",
+                       PsProject::layoutToStr(value)
+                       );
 }
 
 
 /************************************************
 
  ************************************************/
-QVariant Settings::value(const QString &key, const QVariant &defaultValue) const
+QString Settings::currentPrinter() const
 {
-    return QSettings::value(key, defaultValue);
+    return mSettings.value(PROJECT_GROUP "/Printer", "").toString();
 }
 
 
 /************************************************
 
  ************************************************/
-QVariant Settings::printerValue(const QString &printerId, Settings::Key key, const QVariant &defaultValue) const
+void Settings::setCurrentPrinter(const QString &value)
 {
-    return value(QString("Printer_%1/%2").arg(printerId, keyToString(key)), defaultValue);
+    mSettings.setValue(PROJECT_GROUP "/Printer", value);
 }
 
 
 /************************************************
 
  ************************************************/
-void Settings::setValue(Settings::Key key, const QVariant &value)
+QString printersKey(const QString &printerName, const QString &key)
 {
-    setValue(keyToString(key), value);
+    return QString("%1_%2/%3").arg(PRINTERS_GROUP, printerName, key);
+}
+
+/************************************************
+
+ ************************************************/
+bool Settings::printerDuplex(const QString &printerName, bool defaultValue)
+{
+    return mSettings.value(printersKey(printerName, "Duplex"), defaultValue).toBool();
 }
 
 
 /************************************************
 
  ************************************************/
-void Settings::setValue(const QString &key, const QVariant &value)
+void Settings::setPrinterDuplex(const QString &printerName, bool value)
 {
-    QSettings::setValue(key, value);
+    mSettings.setValue(printersKey(printerName, "Duplex") , value);
 }
 
 
 /************************************************
 
  ************************************************/
-void Settings::setPrinterValue(const QString &printerId, Key key, const QVariant &value)
+bool Settings::printerBorder(const QString &printerName, bool defaultValue)
 {
-    setValue(QString("Printer_%1/%2").arg(printerId, keyToString(key)), value);
+    return mSettings.value(printersKey(printerName, "Border"), defaultValue).toBool();
 }
 
 
+/************************************************
+
+ ************************************************/
+void Settings::setPrinterBorder(const QString &printerName, bool value)
+{
+    mSettings.setValue(printersKey(printerName, "Border") , value);
+}
+
+
+/************************************************
+
+ ************************************************/
+bool Settings::printerReverseOrder(const QString &printerName, bool defaultValue)
+{
+    return mSettings.value(printersKey(printerName, "ReverseOrder"), defaultValue).toBool();
+}
+
+
+/************************************************
+
+ ************************************************/
+void Settings::setPrinterReverseOrder(const QString &printerName, bool value)
+{
+    mSettings.setValue(printersKey(printerName, "ReverseOrder") , value);
+}
+
+
+/************************************************
+
+ ************************************************/
+QSize Settings::printerPageSize(const QString &printerName, QSize defaultValue)
+{
+    return mSettings.value(printersKey(printerName, "PageSize"), defaultValue).toSize();
+}
+
+
+/************************************************
+
+ ************************************************/
+void Settings::setPrinterPageSize(const QString &printerName, QSize value)
+{
+    mSettings.setValue(printersKey(printerName, "PageSize") , value);
+}
+
+
+/************************************************
+
+ ************************************************/
+double Settings::printerMargin(const QString &printerName, const QString &margin, double defaultValue)
+{
+    return mSettings.value(printersKey(printerName, margin + "Margin"), defaultValue).toDouble();
+}
+
+/************************************************
+
+ ************************************************/
+void Settings::setPrinterMargin(const QString &printerName, const QString &margin, double value)
+{
+    mSettings.setValue(printersKey(printerName, margin + "Margin") , value);
+}
 
 

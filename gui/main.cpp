@@ -24,7 +24,7 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#include "kernel/project.h"
+#include "kernel/psproject.h"
 #include "mainwindow.h"
 #include "dbus.h"
 
@@ -44,7 +44,7 @@
 void printHelp()
 {
     QTextStream out(stdout);
-    out << "Usage: boomaga [options] [files...]" << endl;
+    out << "Usage: boomaga [options] [file]" << endl;
     out << endl;
 
     out << "Boomaga provides a virtual printer for CUPS. This can be used" << endl;
@@ -57,11 +57,10 @@ void printHelp()
     out << "  -t, --title <title>     The job name/title" << endl;
     out << "  -n, --num <copies>      Sets the number of copies to print" << endl;
     out << "  -V, --version           Print program version" << endl;
-    out << "      --autoremove        Automatically delete the input file" << endl;
     out << endl;
 
     out << "Arguments:" << endl;
-    out << "  files                    One or more PDF files" << endl;
+    out << "  file                    Postscript file" << endl;
 
 
 }
@@ -106,10 +105,9 @@ int main(int argc, char *argv[])
     application.installTranslator(&translator);
 
 
-    QFileInfoList files;
+    QFileInfo file;
     QString jobTitle;
-    int copiesCount = 0;
-    bool autoRemove = false;
+    int copiesCount=0;
 
     QStringList args = application.arguments();
     for (int i=1; i < args.count(); ++i)
@@ -146,13 +144,6 @@ int main(int argc, char *argv[])
         }
 
         //*************************************************
-        if (arg == "--autoremove")
-        {
-            autoRemove = true;
-            continue;
-        }
-
-        //*************************************************
         if (arg == "-n" || arg == "--num")
         {
             if (i+1 < args.count())
@@ -176,23 +167,19 @@ int main(int argc, char *argv[])
         }
 
         //*************************************************
-        files << QFileInfo(args.at(i));
+        file.setFile(args.at(i));
     }
 
-    QList<Job> jobs;
-    foreach (const QFileInfo &file, files)
-    {
-        if (!file.filePath().isEmpty())
-        {
-            if (!file.exists())
-                return printError(QString("Cannot open file \"%1\" (No such file or directory)")
-                                  .arg(file.filePath()));
 
-            if (!file.isReadable())
-                return printError(QString("Cannot open file \"%1\" (Access denied)")
-                                  .arg(file.filePath()));
-        }
-        jobs << Job(file.absoluteFilePath(), "", autoRemove);
+    if (!file.filePath().isEmpty())
+    {
+        if (!file.exists())
+            return printError(QString("Cannot open file \"%1\" (No such file or directory)")
+                              .arg(file.filePath()));
+
+        if (!file.isReadable())
+            return printError(QString("Cannot open file \"%1\" (Access denied)")
+                              .arg(file.filePath()));
     }
 
 #if 0
@@ -206,15 +193,17 @@ int main(int argc, char *argv[])
     f.close();
 #endif
 
-    BoomagaDbus dbus("org.boomaga", "/boomaga");
+    PsProject project;
+    DBusProjectAdaptor dbus(&project);
+    QDBusConnection::sessionBus().registerService("org.boomaga");
+    QDBusConnection::sessionBus().registerObject("/Project", &project);
 
-    MainWindow mainWindow;
+    MainWindow mainWindow(&project);
     mainWindow.show();
     application.processEvents();
 
-
-    if (!jobs.isEmpty())
-        project->addFiles(jobs);
+    if (!file.filePath().isEmpty())
+        project.addFile(file.absoluteFilePath());
 
 
     return application.exec();

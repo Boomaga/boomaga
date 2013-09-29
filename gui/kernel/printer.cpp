@@ -26,6 +26,7 @@
 
 #include "printer.h"
 #include "settings.h"
+#include "kernel/psconstants.h"
 
 #include <QProcess>
 #include <QSharedData>
@@ -51,15 +52,6 @@
 #ifndef CUPS_SIDES_TWO_SIDED_LANDSCAPE
 #  define CUPS_SIDES_TWO_SIDED_LANDSCAPE "two-sided-short-edge"
 #endif
-
-
-#define A4_HEIGHT_MM    297
-#define A4_HEIGHT_PT    842
-#define A4_WIDTH_MM     210
-#define A4_WIDTH_PT     595
-
-#define MM_TO_PT    (A4_HEIGHT_PT * 1.0 / A4_HEIGHT_MM)
-#define PT_TO_MM    (A4_HEIGHT_MM * 1.0 / A4_HEIGHT_PT)
 
 
 /************************************************
@@ -158,26 +150,24 @@ void Printer::initFromCups()
     // Read values from PPD
     // The returned filename is stored in a static buffer
     const char * ppdFile = cupsGetPPD(mPrinterInfo.printerName().toLocal8Bit().data());
-    if (ppdFile != 0)
+    ppd_file_t *ppd = ppdOpenFile(ppdFile);
+    if (ppd)
     {
-        ppd_file_t *ppd = ppdOpenFile(ppdFile);
-        if (ppd)
-        {
-            ppdMarkDefaults(ppd);
+        ppdMarkDefaults(ppd);
 
-            ppd_size_t *size = ppdPageSize(ppd, 0);
-            if (size)
-            {
-                mPaperSize = QSizeF(size->width, size->length);
-                mLeftMargin   = size->left;
-                mRightMargin  = size->width - size->right;
-                mTopMargin    = size->length - size->top;
-                mBottomMargin = size->bottom;
-            }
-            ppdClose(ppd);
+        ppd_size_t *size = ppdPageSize(ppd, 0);
+        if (size)
+        {
+            mPaperSize = QSizeF(size->width, size->length);
+            mLeftMargin   = size->left;
+            mRightMargin  = size->width - size->right;
+            mTopMargin    = size->length - size->top;
+            mBottomMargin = size->bottom;
         }
-        QFile::remove(ppdFile);
+        ppdClose(ppd);
     }
+    QFile::remove(ppdFile);
+
 
     bool ok;
     int n;
@@ -207,17 +197,15 @@ void Printer::initFromCups()
  ************************************************/
 void Printer::readSettings()
 {
-    QString id = mPrinterInfo.printerName();
+    mDuplex         = settings->printerDuplex(mPrinterInfo.printerName(), mDuplex);
+    mDrawBorder     = settings->printerBorder(mPrinterInfo.printerName(), mDrawBorder);
+    mReverseOrder   = settings->printerReverseOrder(mPrinterInfo.printerName(), mReverseOrder);
 
-    mDuplex         = settings->printerValue(id, Settings::Printer_Duplex,          mDuplex).toBool();
-    mDrawBorder     = settings->printerValue(id, Settings::Printer_DrawBorder,      mDrawBorder).toBool();
-    mReverseOrder   = settings->printerValue(id, Settings::Printer_ReverseOrder,    mReverseOrder).toBool();
-
-    mLeftMargin     = settings->printerValue(id, Settings::Printer_LeftMargin,      mLeftMargin).toDouble();
-    mRightMargin    = settings->printerValue(id, Settings::Printer_RightMargin,     mRightMargin).toDouble();
-    mTopMargin      = settings->printerValue(id, Settings::Printer_TopMargin,       mTopMargin).toDouble();
-    mBottomMargin   = settings->printerValue(id, Settings::Printer_BottomMargin,    mBottomMargin).toDouble();
-    mInternalMargin = settings->printerValue(id, Settings::Printer_InternalMargin,  mInternalMargin).toDouble();
+    mLeftMargin     = settings->printerMargin(mPrinterInfo.printerName(), "Left",     mLeftMargin);
+    mRightMargin    = settings->printerMargin(mPrinterInfo.printerName(), "Right",    mRightMargin);
+    mTopMargin      = settings->printerMargin(mPrinterInfo.printerName(), "Top",      mTopMargin);
+    mBottomMargin   = settings->printerMargin(mPrinterInfo.printerName(), "Bottom",   mBottomMargin);
+    mInternalMargin = settings->printerMargin(mPrinterInfo.printerName(), "Internal", mInternalMargin);
 }
 
 
@@ -226,17 +214,15 @@ void Printer::readSettings()
  ************************************************/
 void Printer::saveSettings()
 {
-    QString id = mPrinterInfo.printerName();
+    settings->setPrinterDuplex(mPrinterInfo.printerName(), mDuplex);
+    settings->setPrinterBorder(mPrinterInfo.printerName(), mDrawBorder);
+    settings->setPrinterReverseOrder(mPrinterInfo.printerName(), mReverseOrder);
 
-    settings->setPrinterValue(id, Settings::Printer_Duplex,         mDuplex);
-    settings->setPrinterValue(id, Settings::Printer_DrawBorder,     mDrawBorder);
-    settings->setPrinterValue(id, Settings::Printer_ReverseOrder,   mReverseOrder);
-
-    settings->setPrinterValue(id, Settings::Printer_LeftMargin,     mLeftMargin);
-    settings->setPrinterValue(id, Settings::Printer_RightMargin,    mRightMargin);
-    settings->setPrinterValue(id, Settings::Printer_TopMargin,      mTopMargin);
-    settings->setPrinterValue(id, Settings::Printer_BottomMargin,   mBottomMargin);
-    settings->setPrinterValue(id, Settings::Printer_InternalMargin, mInternalMargin);
+    settings->setPrinterMargin(mPrinterInfo.printerName(), "Left",     mLeftMargin);
+    settings->setPrinterMargin(mPrinterInfo.printerName(), "Right",    mRightMargin);
+    settings->setPrinterMargin(mPrinterInfo.printerName(), "Top",      mTopMargin);
+    settings->setPrinterMargin(mPrinterInfo.printerName(), "Bottom",   mBottomMargin);
+    settings->setPrinterMargin(mPrinterInfo.printerName(), "Internal", mInternalMargin);
 }
 
 
@@ -411,18 +397,21 @@ void Printer::setReverseOrder(bool value)
 /************************************************
 
  ************************************************/
-void Printer::print(const QList<Sheet *> &sheets, const QString &jobName, int numCopies) const
+void Printer::print(const QString &fileName, const QString &jobName, int numCopies)
 {
     QStringList args;
     args << "-P" << printerName();               // Prints files to the named printer.
     args << "-#" << QString("%1").arg(numCopies);// Sets the number of copies to print
+    //args << "-r";                              // Specifies that the named print files should be deleted after printing them.
     args << "-T" << jobName;                     // Sets the job name.
+
+    args << fileName;
+
+    //qDebug() << args;
+    //QProcess::startDetached("okular " + fileName);
 
     QProcess proc;
     proc.start("lpr", args);
-    proc.waitForStarted();
-    project->writeDocument(sheets, &proc);
-    proc.closeWriteChannel();
     proc.waitForFinished();
 }
 

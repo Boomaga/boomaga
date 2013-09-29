@@ -27,15 +27,11 @@
 #ifndef PRINTER_H
 #define PRINTER_H
 
-
 #include <QObject>
 #include <QList>
 #include <QString>
 #include <QPrinterInfo>
 #include <QExplicitlySharedDataPointer>
-#include <QIODevice>
-
-class Sheet;
 
 class Printer
 {
@@ -93,7 +89,7 @@ public:
     bool reverseOrder() const { return mReverseOrder; }
     void setReverseOrder(bool value);
 
-    void print(const QList<Sheet*> &sheets, const QString &jobName, int numCopies = 1) const;
+    void print(const QString &fileName, const QString &jobName, int numCopies);
 
     QString deviceUri() const { return mDeviceUri; }
 

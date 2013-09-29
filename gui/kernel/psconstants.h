@@ -24,30 +24,16 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#ifndef DBUS_H
-#define DBUS_H
+#ifndef PSCONSTANTS_H
+#define PSCONSTANTS_H
+
+#define A4_HEIGHT_MM    297
+#define A4_HEIGHT_PT    842
+#define A4_WIDTH_MM     210
+#define A4_WIDTH_PT     595
+
+#define MM_TO_PT    (A4_HEIGHT_PT * 1.0 / A4_HEIGHT_MM)
+#define PT_TO_MM    (A4_HEIGHT_MM * 1.0 / A4_HEIGHT_PT)
 
 
-#include <QDBusAbstractAdaptor>
-#include <QApplication>
-
-class PsProject;
-
-class DBusProjectAdaptor : public QDBusAbstractAdaptor
-{
-    Q_OBJECT
-    Q_CLASSINFO("D-Bus Interface", "org.boomaga")
-public:
-    DBusProjectAdaptor(PsProject *project);
-
-    static bool openFileInExisting(const QString &fileName);
-
-public slots:
-    void addFile(const QString &fileName);
-
-private:
-    PsProject *mProject;
-};
-
-
-#endif // DBUS_H
+#endif // PSCONSTANTS_H

@@ -27,14 +27,13 @@
 #ifndef WIDGETS_H
 #define WIDGETS_H
 
-#include "kernel/project.h"
+#include "kernel/psproject.h"
 
 #include <QRadioButton>
 #include <QComboBox>
 #include <QListWidget>
 
 class Printer;
-class Layout;
 
 class LayoutRadioButton : public QRadioButton
 {
@@ -44,14 +43,14 @@ public:
     explicit LayoutRadioButton(const QString &text, QWidget *parent=0);
 
 
-    Layout *layout() const { return mLayout; }
-    void setLayout(Layout *value) { mLayout = value; }
+    PsProject::PsLayout psLayout() const { return mPsLayout; }
+    void setPsLayout(PsProject::PsLayout value) { mPsLayout = value; }
 signals:
     
 public slots:
     
 private:
-    Layout *mLayout;
+    PsProject::PsLayout mPsLayout;
 };
 
 
@@ -74,17 +73,17 @@ private:
 };
 
 
-class InputFilesListView: public QListWidget
+class PsFilesListView: public QListWidget
 {
     Q_OBJECT
 public:
-    explicit InputFilesListView(QWidget *parent = 0);
+    explicit PsFilesListView(QWidget *parent = 0);
 
-public slots:
-    void setSheetNum(int sheetNum);
+    PsProject *project() const { return mProject; }
+    void setProject(PsProject *project);
 
 signals:
-    void fileSelected(InputFile *file);
+    void fileSelected(PsFile *file);
 
 private slots:
     void updateItems();
@@ -96,6 +95,7 @@ protected:
     void mouseReleaseEvent(QMouseEvent *event);
 
 private:
+    PsProject *mProject;
 };
 
 
