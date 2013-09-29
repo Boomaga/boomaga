@@ -491,6 +491,7 @@ void TmpPdfFile::mergerOutputReady()
         else if (data.at(0) == "E")
         {
             project->error(data.at(1));
+            return;
         }
 
         line = "";
