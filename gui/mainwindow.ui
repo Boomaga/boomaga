@@ -25,36 +25,18 @@
      <number>0</number>
     </property>
     <item>
-     <widget class="QScrollArea" name="previewFrame">
-      <property name="frameShape">
-       <enum>QFrame::NoFrame</enum>
-      </property>
-      <property name="widgetResizable">
-       <bool>true</bool>
-      </property>
-      <widget class="QWidget" name="scrollAreaWidgetContents">
-       <property name="geometry">
-        <rect>
-         <x>0</x>
-         <y>0</y>
-         <width>901</width>
-         <height>766</height>
-        </rect>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <item>
-         <widget class="PsView" name="preview">
-          <property name="frameShape">
-           <enum>QFrame::StyledPanel</enum>
-          </property>
-          <property name="frameShadow">
-           <enum>QFrame::Raised</enum>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </widget>
+     <layout class="QVBoxLayout" name="verticalLayout_3">
+      <item>
+       <widget class="PreviewWidget" name="preview">
+        <property name="frameShape">
+         <enum>QFrame::StyledPanel</enum>
+        </property>
+        <property name="frameShadow">
+         <enum>QFrame::Raised</enum>
+        </property>
+       </widget>
+      </item>
+     </layout>
     </item>
    </layout>
   </widget>
@@ -158,7 +140,7 @@
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
-         <widget class="PsFilesListView" name="filesView">
+         <widget class="InputFilesListView" name="filesView">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
             <horstretch>0</horstretch>
@@ -288,14 +270,14 @@
    <header location="global">widgets.h</header>
   </customwidget>
   <customwidget>
-   <class>PsFilesListView</class>
+   <class>InputFilesListView</class>
    <extends>QListWidget</extends>
    <header location="global">widgets.h</header>
   </customwidget>
   <customwidget>
-   <class>PsView</class>
+   <class>PreviewWidget</class>
    <extends>QFrame</extends>
-   <header>psview.h</header>
+   <header location="global">previewwidget.h</header>
    <container>1</container>
   </customwidget>
  </customwidgets>

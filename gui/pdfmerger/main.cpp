@@ -23,47 +23,30 @@
  *
  * END_COMMON_COPYRIGHT_HEADER */
 
+#include "../kernel/project.h"
+#include "pdfmerger.h"
+#include <QTextStream>
+#include <QDebug>
+//#include <QProcessEnvironment>
 
-#ifndef PSVIEW_H
-#define PSVIEW_H
 
+/************************************************
 
-#include <QFrame>
-#include <QImage>
-
-class PsSheet;
-class PsRender;
-
-class PsView : public QFrame
+ ************************************************/
+int main(int argc, char *argv[])
 {
-    Q_OBJECT
-public:
-    explicit PsView(QWidget *parent = 0);
-    ~PsView();
-    
-    int currentSheet() const { return mSheetNum; }
 
-    PsRender *render() const { return  mRender; }
-    void setRender(PsRender *value);
+    if (argc < 3)
+        return 1;
 
-public slots:
-    void setCurrentSheet(int sheetNum);
+    PdfMerger merger;
+    for (int i=1; i<argc-1; ++i)
+    {
+        merger.addFile(argv[i]);
+    }
 
-signals:
-    void whellScrolled(int delta);
 
-protected:
-    void paintEvent(QPaintEvent *event);
-    void wheelEvent(QWheelEvent *event);
+    merger.run(argv[argc-1]);
 
-private slots:
-    void renderChanged(int sheetNum);
-
-private:
-    QImage mImage;
-    int mSheetNum;
-    const PsSheet *mSheet;
-    PsRender *mRender;
-};
-
-#endif // PSVIEW_H
+    return 0;
+}
