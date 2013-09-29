@@ -384,6 +384,9 @@ void Project::tmpFileMerged()
     // ...............................................
     delete mTmpFile;
     mTmpFile = mLastTmpFile;
+    connect(mTmpFile, SIGNAL(imageChanged(int)),
+            this, SIGNAL(sheetImageChanged(int)));
+
     mLastTmpFile = 0;
 
     updateSheets();
