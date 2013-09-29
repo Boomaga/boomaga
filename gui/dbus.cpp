@@ -25,19 +25,27 @@
 
 
 #include "dbus.h"
-#include "kernel/psproject.h"
+#include "kernel/project.h"
 
 #include <QDBusConnection>
-#include <QDBusInterface>
-#include <QDBusMessage>
 #include <QDebug>
 
+
 /************************************************
 
  ************************************************/
-DBusProjectAdaptor::DBusProjectAdaptor(PsProject *project) :
-    QDBusAbstractAdaptor(project),
-    mProject(project)
+BoomagaDbus::BoomagaDbus(const QString &serviceName, const QString &dbusPath):
+    QObject()
+{
+    QDBusConnection::sessionBus().registerService(serviceName);
+    QDBusConnection::sessionBus().registerObject(dbusPath, this, QDBusConnection::ExportAllSlots);
+}
+
+
+/************************************************
+
+ ************************************************/
+BoomagaDbus::~BoomagaDbus()
 {
 }
 
@@ -45,25 +53,8 @@ DBusProjectAdaptor::DBusProjectAdaptor(PsProject *project) :
 /************************************************
 
  ************************************************/
-bool DBusProjectAdaptor::openFileInExisting(const QString &fileName)
+void BoomagaDbus::add(const QString &file, const QString &title, bool autoRemove)
 {
-    QDBusInterface remote("org.boomaga", "/Project");
-    if (!remote.isValid())
-        return false;
-
-    QDBusMessage res = remote.call("addFile", fileName);
-    if (res.errorName().isEmpty())
-        return true;
-
-    qWarning() << res.errorMessage();
-    return false;
-}
-
-
-/************************************************
-
- ************************************************/
-void DBusProjectAdaptor::addFile(const QString &fileName)
-{
-    mProject->addFile(fileName);
+    Job job(file, title, autoRemove);
+    project->addFile(job);
 }

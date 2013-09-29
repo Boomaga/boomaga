@@ -24,43 +24,43 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#ifndef PSRENDER_H
-#define PSRENDER_H
+#ifndef PREVIEWWIDGET_H
+#define PREVIEWWIDGET_H
 
-#include <QThread>
-#include <QTextStream>
-#include <QStringList>
-#include <QImage>
 
-class PsProject;
-class PsSheet;
-class PsRenderPrivate;
+#include <QFrame>
+#include "kernel/sheet.h"
 
-class PsRender : public QObject
+class PreviewWidget : public QFrame
 {
     Q_OBJECT
 public:
-    explicit PsRender(PsProject *project, QObject *parent = 0);
-    ~PsRender();
-
-    int sheetCount() const;
-    const PsSheet *sheet(int index) const;
-    QImage image(int index);
+    explicit PreviewWidget(QWidget *parent = 0);
+    ~PreviewWidget();
+    
+    int currentSheet() const { return mSheetNum; }
 
 public slots:
+    void setCurrentSheet(int sheetNum);
+    void nextSheet();
+    void prevSheet();
     void refresh();
 
 signals:
-    void changed(int sheetIndex);
-    void started();
-    void finished();
+    void changed(int sheetNum);
+
+protected:
+    void paintEvent(QPaintEvent *event);
+    void wheelEvent(QWheelEvent *event);
+    void keyPressEvent(QKeyEvent *event);
+
+private slots:
+    void sheetImageChanged(int sheetNum);
 
 private:
-    PsRenderPrivate* const d_ptr;
-    Q_DECLARE_PRIVATE(PsRender)
-
-
-
+    QImage mImage;
+    int mSheetNum;
+    Sheet::Hints mHints;
 };
 
-#endif // PSRENDER_H
+#endif // PREVIEWWIDGET_H

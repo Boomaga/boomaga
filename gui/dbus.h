@@ -27,26 +27,18 @@
 #ifndef DBUS_H
 #define DBUS_H
 
-
-#include <QDBusAbstractAdaptor>
 #include <QApplication>
 
-class PsProject;
-
-class DBusProjectAdaptor : public QDBusAbstractAdaptor
+class BoomagaDbus: public QObject
 {
     Q_OBJECT
     Q_CLASSINFO("D-Bus Interface", "org.boomaga")
 public:
-    DBusProjectAdaptor(PsProject *project);
-
-    static bool openFileInExisting(const QString &fileName);
+    BoomagaDbus(const QString &serviceName, const QString &dbusPath);
+    ~BoomagaDbus();
 
 public slots:
-    void addFile(const QString &fileName);
-
-private:
-    PsProject *mProject;
+    void add(const QString &file, const QString &title, bool autoRemove = false);
 };
 
 

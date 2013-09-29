@@ -3,57 +3,54 @@ cmake_minimum_required( VERSION 2.6 )
 project(boomagaGui)
 
 set(HEADERS
-    kernel/psconstants.h
-    kernel/psfile.h
-    kernel/psproject.h
-    kernel/pssheet.h
-    kernel/psengine.h
+    kernel/sheet.h
+    kernel/inputfile.h
+    kernel/tmppdffile.h
+    kernel/layout.h
+    kernel/render.h
+    kernel/project.h
     kernel/printer.h
-    third-party/libspectre/ps.h
-    third-party/libspectre/spectre-utils.h
     mainwindow.h
     settings.h
     widgets.h
-
     dbus.h
     printersettings/printersettings.h
-    psrender.h
-    psview.h
-
+    previewwidget.h
     aboutdialog/aboutdialog.h
     translations/translatorsinfo/translatorsinfo.h
 )
 
 set(SOURCES
     main.cpp
-    kernel/psfile.cpp
-    kernel/psproject.cpp
-    kernel/pssheet.cpp
-    kernel/psengine.cpp
+    kernel/sheet.cpp
+    kernel/inputfile.cpp
+    kernel/tmppdffile.cpp
+    kernel/layout.cpp
+    kernel/render.cpp
+    kernel/project.cpp
     kernel/printer.cpp
-    third-party/libspectre/ps.c
-    third-party/libspectre/spectre-utils.c
     mainwindow.cpp
     settings.cpp
     widgets.cpp
     dbus.cpp
     printersettings/printersettings.cpp
-    psrender.cpp
-    psview.cpp
-
+    previewwidget.cpp
     aboutdialog/aboutdialog.cpp
     translations/translatorsinfo/translatorsinfo.cpp
 )
 
 set (MOCS
-    kernel/psproject.h
+    kernel/project.h
+    kernel/tmppdffile.h
+    kernel/render.h
+
+    settings.h
+
     mainwindow.h
     widgets.h
     dbus.h
     printersettings/printersettings.h
-    psrender.h
-    psview.h
-
+    previewwidget.h
     aboutdialog/aboutdialog.h
 )
 
@@ -74,7 +71,7 @@ set(RESOURCES
 )
 
 # add translations ...
-file (GLOB TS_FILES 
+file (GLOB TS_FILES
     translations/boomaga*.ts
 )
 
@@ -96,10 +93,10 @@ set(CMAKE_BUILD_TYPE Debug)
 #*******************************************
 
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-find_package(Qt4 REQUIRED)
-find_package(Cups REQUIRED)
-find_package(Ghostscript REQUIRED)
-find_package(snappy REQUIRED)
+find_package(Qt4 REQUIRED QUIET)
+find_package(Cups REQUIRED QUIET)
+find_package(snappy REQUIRED QUIET)
+find_package(Poppler REQUIRED QUIET)
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -108,10 +105,10 @@ include_directories(
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CUPS_INCLUDE_DIR}
-    ${GHOSTSCRIPT_INCLUDES}
     ${SNAPPY_INCLUDE_DIRS}
+    ${POPPLER_INCLUDE_DIRS}
+    ${POPPLERQT_INCLUDE_DIRS}
 )
-
 
 include(${QT_USE_FILE})
 qt4_wrap_cpp(MOC_SOURCES ${MOCS})
@@ -124,7 +121,7 @@ get_translatorsinfo_qrc(translatorsinfo_qrc)
 qt4_add_resources(QRC_CXX_SOURCES ${translatorsinfo_qrc})
 
 add_executable(boomaga ${HEADERS} ${SOURCES} ${MOC_SOURCES} ${QM_FILES} ${QRC_SOURCES} ${UI_HEADERS} ${QRC_CXX_SOURCES})
-target_link_libraries(boomaga ${LIBRARIES} ${QT_LIBRARIES} ${CUPS_LIBRARIES} ${GHOSTSCRIPT_LIBRARIES} ${SNAPPY_LIBRARIES})
+target_link_libraries(boomaga ${LIBRARIES} ${QT_LIBRARIES} ${CUPS_LIBRARIES} ${SNAPPY_LIBRARIES} ${POPPLER_LIBRARIES} ${POPPLERQT_LIBRARIES})
 
 install(TARGETS boomaga RUNTIME DESTINATION ${GUI_DIR})
 install(FILES ${QM_FILES} DESTINATION ${TRANSLATIONS_DIR})
@@ -136,4 +133,4 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/org.boomaga.service
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.boomaga.service DESTINATION ${DBUS_SERVICE_DIR})
 
 
-
+add_subdirectory(pdfmerger)

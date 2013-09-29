@@ -27,7 +27,6 @@
 #include "printersettings.h"
 #include "ui_printersettings.h"
 #include "kernel/printer.h"
-#include "kernel/psconstants.h"
 
 #include <QListWidget>
 #include <QListWidgetItem>
