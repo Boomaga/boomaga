@@ -23,11 +23,11 @@
  *
  * END_COMMON_COPYRIGHT_HEADER */
 
+
 #include "../kernel/project.h"
 #include "pdfmerger.h"
 #include <QTextStream>
 #include <QDebug>
-//#include <QProcessEnvironment>
 
 
 /************************************************
