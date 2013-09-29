@@ -338,9 +338,7 @@ void Project::tmpFileMerged()
 
     if (!tmpPdf->isValid())
     {
-        qDebug() << Q_FUNC_INFO << "before tmpPdf->deleteLater";
         tmpPdf->deleteLater();
-        qDebug() << Q_FUNC_INFO << "after tmpPdf->deleteLater";
         mLastTmpFile = 0;
         return;
     }
