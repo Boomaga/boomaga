@@ -14,6 +14,7 @@ CUPS_BACKEND_FAILED=1
 #set -x
 
 DBUS_MACINE_ID_DIR='@DBUS_MACINE_ID_DIR@'
+SYSTEM_NAME='@CMAKE_SYSTEM_NAME@'
 
 #*******************************************
 #
@@ -88,7 +89,7 @@ function getActiveSessionDisplay
 #*******************************************
 #
 #*******************************************
-function getDbusAddr_Linux_SessionFile
+function getDbusAddr_SessionFile
 {
 
   if [ "${xDisplay}" != "" ];
@@ -134,7 +135,6 @@ function getDbusAddr_Linux_SessionFile
     echo "ERROR: Can't extract D-Bus bus address from '${dbusSessionFile}' for user '$user' (UID: $uid)" >&2
     exit $CUPS_BACKEND_FAILED
   fi
-  echo "DEBUG: [Boomaga] dbusSessionAddress: ${dbusSessionAddress}" >&2
 }
 
 
@@ -156,14 +156,7 @@ function getDbusAddr_Linux_Proc
       fi
     fi
   done
-
-  if [ "${dbusSessionAddress}" == "" ];
-  then
-    echo "ERROR: Can't extract D-Bus bus address from /proc files for user '$user' (UID: $uid)" >&2
-    exit $CUPS_BACKEND_FAILED
-  fi
 }
-
 
 
 ###########################################################
@@ -215,9 +208,21 @@ then
 fi
 echo "DEBUG: [Boomaga] xDisplay: ${xDisplay}" >&2
 
+if [ "$SYSTEM_NAME" == 'Linux' ]; then
+  getDbusAddr_Linux_Proc
+fi;
 
-#getDbusAddr_Linux_SessionFile
-getDbusAddr_Linux_Proc
+if [ "$SYSTEM_NAME" == 'FreeBSD' ]; then
+  getDbusAddr_SessionFile
+fi
+
+if [ "${dbusSessionAddress}" == "" ];
+then
+  echo "ERROR: Can't extract D-Bus bus address from /proc files for user '$user' (UID: $uid)" >&2
+  exit $CUPS_BACKEND_FAILED
+fi
+
+
 echo "DEBUG: [Boomaga] dbusSessionAddress: ${dbusSessionAddress}" >&2
 
 
