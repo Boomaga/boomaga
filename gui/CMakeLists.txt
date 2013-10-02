@@ -146,10 +146,10 @@ include(translations/translatorsinfo/CMakeLists.txt)
 get_translatorsinfo_qrc(translatorsinfo_qrc)
 qt4_add_resources(QRC_CXX_SOURCES ${translatorsinfo_qrc})
 
-add_executable(boomaga ${HEADERS} ${SOURCES} ${MOC_SOURCES} ${QM_FILES} ${QRC_SOURCES} ${UI_HEADERS} ${QRC_CXX_SOURCES})
-target_link_libraries(boomaga ${LIBRARIES} ${QT_LIBRARIES} ${CUPS_LIBRARIES} ${SNAPPY_LIBRARIES} ${POPPLER_LIBRARIES} ${POPPLERQT_LIBRARIES})
+add_executable(${INSTANCE_NAME} ${HEADERS} ${SOURCES} ${MOC_SOURCES} ${QM_FILES} ${QRC_SOURCES} ${UI_HEADERS} ${QRC_CXX_SOURCES})
+target_link_libraries(${INSTANCE_NAME} ${LIBRARIES} ${QT_LIBRARIES} ${CUPS_LIBRARIES} ${SNAPPY_LIBRARIES} ${POPPLER_LIBRARIES} ${POPPLERQT_LIBRARIES})
 
-install(TARGETS boomaga RUNTIME DESTINATION ${GUI_DIR})
+install(TARGETS ${INSTANCE_NAME} RUNTIME DESTINATION ${GUI_DIR})
 install(FILES ${QM_FILES} DESTINATION ${TRANSLATIONS_DIR})
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/org.boomaga.service

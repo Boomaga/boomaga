@@ -62,42 +62,36 @@ elseif(${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
 
 endif()
 
-set(GUI_DIR ${CMAKE_INSTALL_PREFIX}/bin)
-add_definitions(-DGUI_DIR=\"${GUI_DIR}\")
-
-set(GUI_PROGRAM ${GUI_DIR}/boomaga)
-add_definitions(-DGUI_PROGRAM=\"${GUI_PROGRAM}\")
-
-set(GUI_SHARE_DIR ${CMAKE_INSTALL_PREFIX}/share/boomaga)
-add_definitions(-DGUI_SHARE_DIR=\"${GUI_SHARE_DIR}\")
-
-
-
-set(CUPS_BACKEND_URI "boomaga:/")
-add_definitions(-DCUPS_BACKEND_URI=\"${CUPS_BACKEND_URI}\")
-
-
-set(CUPS_BACKEND_INFO "Boomaga")
-add_definitions(-DCUPS_BACKEND_INFO=\"${CUPS_BACKEND_NAME}\")
-
-
-set(CUPS_BACKEND_MODEL "Virtual boomaga printer")
-add_definitions(-DCUPS_BACKEND_MODEL=\"${CUPS_BACKEND_MODEL}\")
-
-
-set(CUPS_BACKEND_MANUFACTURER "Generic")
-add_definitions(-DCUPS_BACKEND_MANUFACTURER=\"${CUPS_BACKEND_MANUFACTURER}\")
-
-
-
-###########################################################
-
 macro(setByDefault VAR_NAME VAR_VALUE)
   if (NOT DEFINED ${VAR_NAME})
     set (${VAR_NAME} ${VAR_VALUE})
     add_definitions(-D${VAR_NAME}=\"${VAR_VALUE}\")
   endif()
 endmacro()
+
+macro(setFirstUpper VAR_NAME VAR_VALUE)
+  string(SUBSTRING ${VAR_VALUE} 0 1 FIRST_LETTER)
+  string(TOUPPER ${FIRST_LETTER} FIRST_LETTER)
+  string(REGEX REPLACE "^.(.*)" "${FIRST_LETTER}\\1" ${VAR_NAME} "${VAR_VALUE}")
+endmacro()
+
+set(GUI_DIR ${CMAKE_INSTALL_PREFIX}/bin)
+add_definitions(-DGUI_DIR=\"${GUI_DIR}\")
+
+
+###########################################################
+
+setByDefault(INSTANCE_NAME      "boomaga")
+setFirstUpper(CUPS_BACKEND_NAME "${INSTANCE_NAME}")
+
+setByDefault(CUPS_BACKEND_URI   "${INSTANCE_NAME}:/")
+setByDefault(CUPS_BACKEND_INFO  "${CUPS_BACKEND_NAME}")
+setByDefault(CUPS_BACKEND_MODEL "${CUPS_BACKEND_NAME} printer")
+setByDefault(CUPS_BACKEND_DESCRIPTION  "Virtual ${INSTANCE_NAME} printer")
+setByDefault(CUPS_BACKEND_MANUFACTURER "Generic")
+
+setByDefault(GUI_PROGRAM    ${GUI_DIR}/${INSTANCE_NAME})
+setByDefault(GUI_SHARE_DIR  ${CMAKE_INSTALL_PREFIX}/share/${INSTANCE_NAME})
 
 setByDefault(CUPS_BACKEND_DIR   ${DEF_CUPS_BACKEND_DIR})
 setByDefault(CUPS_PPD_DIR       ${DEF_CUPS_PPD_DIR})
@@ -113,11 +107,20 @@ message(STATUS "*****************************************************")
 message(STATUS "* boomaga ver. ${FULL_VERSION}")
 message(STATUS "*")
 message(STATUS "* You can change the following directories using cmake options like:")
-message(STATUS "*   cmake -DCUPS_PPD_DIR=your_path")
+message(STATUS "*   -DCUPS_PPD_DIR=your_path")
 message(STATUS "*")
-message(STATUS "* CUPS_PPD_DIR       = ${CUPS_PPD_DIR}")
-message(STATUS "* DBUS_MACINE_ID_DIR = ${DBUS_MACINE_ID_DIR}")
-message(STATUS "* DBUS_SERVICE_DIR   = ${DBUS_SERVICE_DIR}")
+message(STATUS "*  CUPS_PPD_DIR         =  ${CUPS_PPD_DIR}")
+message(STATUS "*  DBUS_MACINE_ID_DIR   =  ${DBUS_MACINE_ID_DIR}")
+message(STATUS "*  DBUS_SERVICE_DIR     =  ${DBUS_SERVICE_DIR}")
+message(STATUS "*")
+message(STATUS "* You can change the following options using cmake options:")
+message(STATUS "*  INSTANCE_NAME        =  ${INSTANCE_NAME}")
+message(STATUS "*  CUPS_BACKEND_URI     =  ${CUPS_BACKEND_URI}")
+message(STATUS "*  CUPS_BACKEND_INFO    =  ${CUPS_BACKEND_INFO}")
+message(STATUS "*  CUPS_BACKEND_MODEL   =  ${CUPS_BACKEND_MODEL}")
+message(STATUS "*  CUPS_BACKEND_DESCRIPTION  = ${CUPS_BACKEND_DESCRIPTION}")
+message(STATUS "*  CUPS_BACKEND_MANUFACTURER = ${CUPS_BACKEND_MANUFACTURER}")
+
 message(STATUS "*****************************************************")
 
 ########## Add make dist target ################
