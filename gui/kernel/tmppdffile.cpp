@@ -127,14 +127,24 @@ void TmpPdfFile::merge()
 
     args << mFileName;
 
+    QStringList dirs;
+    dirs << QApplication::applicationDirPath() + "/";
+    dirs << QApplication::applicationDirPath() + "/../lib/boomaga/";
+
     QString boomagamerger;
-    if (QFileInfo(QApplication::applicationDirPath() + "/boomagamerger").exists())
+    foreach (QString dir, dirs)
     {
-        boomagamerger = QApplication::applicationDirPath() + "/boomagamerger";
+        if (QFileInfo(dir + "boomagamerger").exists())
+        {
+            boomagamerger = dir + "boomagamerger";
+            break;
+        }
     }
-    else
+
+    if (boomagamerger.isEmpty())
     {
-        boomagamerger = QApplication::applicationDirPath() + "/..share/boomaga/boomagamerger";
+        project->error(tr("Something wrong. I can't find boomagamerger program.\nPlease reinstall me."));
+        return;
     }
 
     mMerger->start(boomagamerger, args);
