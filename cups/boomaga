@@ -226,7 +226,6 @@ fi
 
 echo "DEBUG: [Boomaga] dbusSessionAddress: ${dbusSessionAddress}" >&2
 
-echo "ERROR: [Boomaga] "`file ${jobFile}` >&2
 cmd="dbus-send --session --type=method_call --print-reply \
   --dest=org.boomaga /boomaga \
   org.boomaga.add \

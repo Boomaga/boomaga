@@ -28,7 +28,7 @@
 SCHEME="boomaga"
 URI="${SCHEME}:/"
 NAME="Boomaga_Printer"
-PPD="lsb/usr/${SCHEME}/${SCHEME}.ppd"
+PPD="lsb/usr/boomaga/${SCHEME}.ppd"
 
 while [ $# -gt 0 ]; do
   case $1 in
