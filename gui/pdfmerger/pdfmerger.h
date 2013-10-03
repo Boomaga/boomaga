@@ -50,10 +50,13 @@
                             left,top,width,height
     E:msg           Error message
 
+    D:msg           Debug message
+
     A:cnt           All pages count
 
     S:page          Progress status:
                         page - page num
+
  ******************************************/
 
 struct PdfPageInfo

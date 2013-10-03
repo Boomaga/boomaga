@@ -552,7 +552,6 @@ Project *Project::instance()
 }
 
 
-
 /************************************************
 
  ************************************************/
@@ -565,11 +564,11 @@ QImage Project::sheetImage(int sheetNum) const
 }
 
 
+/************************************************
 
-
-
-
-
-
-
-
+ ************************************************/
+QDebug operator<<(QDebug dbg, const Job &job)
+{
+    dbg << QString("%1 (%2) [%3]").arg(job.fileName(), job.title()).arg(job.autoRemove());
+    return dbg.space();
+}

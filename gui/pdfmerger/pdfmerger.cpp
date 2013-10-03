@@ -79,6 +79,16 @@ void error(const QString &message)
 /************************************************
 
  ************************************************/
+void debug(const QString &message)
+{
+    QTextStream out(stdout);
+    out << "D:" << message << endl;
+}
+
+
+/************************************************
+
+ ************************************************/
 void print(const QString &message)
 {
     QTextStream out(stdout);
@@ -456,10 +466,10 @@ bool PdfMerger::writePageAsXObject(PdfPageInfo *pageInfo)
     *mStream << "/FormType 1\n";
     *mStream << "/Boomaga  1\n";
     *mStream << "/BBox " << pageInfo->cropBox <<"\n";
-    writeDictValue(pageDict, "Resources", pageInfo->numOffset);
-    writeDictValue(pageDict, "Metadata", pageInfo->numOffset);
-    writeDictValue(pageDict, "PieceInfo", pageInfo->numOffset);
-    writeDictValue(pageDict, "LastModified", pageInfo->numOffset);
+    writeDictValue(pageDict, "Resources",     pageInfo->numOffset);
+    writeDictValue(pageDict, "Metadata",      pageInfo->numOffset);
+    writeDictValue(pageDict, "PieceInfo",     pageInfo->numOffset);
+    writeDictValue(pageDict, "LastModified",  pageInfo->numOffset);
     writeDictValue(pageDict, "StructParents", pageInfo->numOffset);
     // ..........................................
 

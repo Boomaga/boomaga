@@ -468,6 +468,8 @@ void TmpPdfFile::mergerOutputReady()
                                     left,top,width,height
             E:msg           Error message
 
+            D:msg           Debug message
+
             A:cnt           All pages count
 
             S:page          Progress status:
@@ -528,6 +530,11 @@ void TmpPdfFile::mergerOutputReady()
         {
             project->error(data.at(1));
             return;
+        }
+
+        else if (data.at(0) == "D")
+        {
+            qDebug() << data.at(1);
         }
 
         line = "";

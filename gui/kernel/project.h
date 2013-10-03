@@ -199,5 +199,6 @@ private:
 
 #define project Project::instance()
 
+QDebug operator<<(QDebug dbg, const Job &job);
 
 #endif // PROJECT_H
