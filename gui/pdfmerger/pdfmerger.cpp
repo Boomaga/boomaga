@@ -483,7 +483,7 @@ bool PdfMerger::writePageAsXObject(PdfPageInfo *pageInfo)
         for (int i=0; i<dict->getLength(); ++i)
         {
             Object value;
-            dict->getValNF(i, &value);
+            dict->getVal(i, &value);
             *mStream << "/" << dict->getKey(i) << " ";
             POPPLER_WriteObject(&value, 0, mStream, &mXRef, pageInfo->numOffset);
             *mStream << "\n";
