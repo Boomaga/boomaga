@@ -19,13 +19,13 @@ SYSTEM_NAME='@CMAKE_SYSTEM_NAME@'
 #*******************************************
 #
 #*******************************************
-function createPsFileDir
+function createJobFileDir
 {
-  if [ ! -d ${psFileDir} ];
+  if [ ! -d ${jobFileDir} ];
   then
-    mkdir ${psFileDir}
-    chmod 700 ${psFileDir}
-    chown ${user} ${psFileDir}
+    mkdir ${jobFileDir}
+    chmod 700 ${jobFileDir}
+    chown ${user} ${jobFileDir}
   fi
 }
 
@@ -35,13 +35,9 @@ function createPsFileDir
 #*******************************************
 function copyInputFile
 {
-  if [ -z ${inputFile} ];
-  then
-    cat - > ${psFile}
-  else
-    cp ${inputFile} ${psFile}
-  fi
-  chown ${user} ${psFile}
+  # Remove PJL commands
+  grep  -v '^@PJL\|%-12345X' $1 > $2
+  chown ${user} $2
 }
 
 
@@ -176,6 +172,10 @@ count=$4
 options=$5
 inputFile=$6
 
+if [ -z "${inputFile}" ]; then
+  inputFile='-'
+fi
+
 uid=$(getent passwd ${user} | cut -d':' -f 3)
 homeDir=$(getent passwd ${user} | cut -d':' -f 6)
 
@@ -194,13 +194,14 @@ fi
 echo "DEBUG: [Boomaga] User: $user" >&2
 echo "DEBUG: [Boomaga] Uid:  $uid" >&2
 
-psFileDir=${homeDir}/.cache
-psFile=${psFileDir}/boomaga_in_file-${jobID}.ps
+jobFileDir=${homeDir}/.cache
+jobFile=${jobFileDir}/boomaga_in_file-${jobID}.pdf
 
 
-createPsFileDir
-copyInputFile
+createJobFileDir
+copyInputFile "${inputFile}" "${jobFile}"
 getActiveSessionDisplay
+
 
 if [ "${xDisplay}" = "" ];
 then
@@ -225,14 +226,24 @@ fi
 
 echo "DEBUG: [Boomaga] dbusSessionAddress: ${dbusSessionAddress}" >&2
 
-echo "ERROR: [Boomaga] "`file ${psFile}` >&2
-cmd="dbus-send --session --type=method_call --print-reply --dest=org.boomaga /Project org.boomaga.addFile string:${psFile} "
+echo "ERROR: [Boomaga] "`file ${jobFile}` >&2
+cmd="dbus-send --session --type=method_call --print-reply \
+  --dest=org.boomaga /boomaga \
+  org.boomaga.add \
+  string:'${jobFile}' \
+  string:'${title}' \
+  boolean:true"
+  
 echo "DEBUG: [Boomaga] command: ${cmd}" >&2
 
-
 errorLog="/tmp/boomaga_${jobID}.err"
-su -c "DBUS_SESSION_BUS_ADDRESS=${dbusSessionAddress} ${cmd}" ${user} 2>${errorLog} 1>/dev/null && exit $CUPS_BACKEND_OK
+res=${CUPS_BACKEND_OK}
+su -c "DBUS_SESSION_BUS_ADDRESS=${dbusSessionAddress} ${cmd}" ${user} 2>${errorLog} 1>/dev/null || res=${CUPS_BACKEND_FAILED}
 
+if [ "$res" !=  $CUPS_BACKEND_OK ]; 
+then
+  cat ${errorLog} | sed -e"s/^/ERROR: /" 1>&2
+fi
 
-cat ${errorLog} | sed -e"s/^/ERROR: /" 1>&2
 rm ${errorLog}
+exit $res
