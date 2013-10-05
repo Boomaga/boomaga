@@ -57,7 +57,7 @@ public:
     void updateSheets(QList<Sheet *> &sheets);
     void stop();
 
-    QList<Job> jobs() const  { return  mJobs; }
+    Jobs jobs() const  { return  mJobs; }
 
     QString fileName() const { return mFileName; }
 
@@ -85,7 +85,7 @@ private:
 
     static QString genFileName();
 
-    QList<Job> mJobs;
+    Jobs mJobs;
 
     QHash<QString,int> mJobsPageCounts;
     QVector<TmpPdfFilePage> mPages;
