@@ -79,6 +79,7 @@ class InputFilesListView: public QListWidget
     Q_OBJECT
 public:
     explicit InputFilesListView(QWidget *parent = 0);
+    InputFile *currentFile() const;
 
 public slots:
     void setSheetNum(int sheetNum);

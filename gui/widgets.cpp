@@ -32,6 +32,7 @@
 
 #include <QMenu>
 #include <QMouseEvent>
+#include <QDebug>
 
 /************************************************
 
@@ -132,6 +133,22 @@ InputFilesListView::InputFilesListView(QWidget *parent):
 /************************************************
 
  ************************************************/
+InputFile *InputFilesListView::currentFile() const
+{
+    if (currentItem())
+    {
+        int n = currentItem()->data(Qt::UserRole).toInt();
+        if (n<project->filesCount())
+            return project->file(n);
+    }
+
+    return 0;
+}
+
+
+/************************************************
+
+ ************************************************/
 void InputFilesListView::setSheetNum(int sheetNum)
 {
     if (count()<1)
@@ -143,8 +160,19 @@ void InputFilesListView::setSheetNum(int sheetNum)
         return;
     }
 
-
     Sheet *sheet = project->previewSheet(sheetNum);
+    InputFile *cur = currentFile();
+
+    for (int i=0; i<sheet->count(); ++i)
+    {
+        ProjectPage *page = sheet->page(i);
+        if (!page)
+            continue;
+
+        if (page->inputFile() == cur)
+            return;
+    }
+
     for (int i=0; i<sheet->count(); ++i)
     {
         ProjectPage *page = sheet->page(i);
@@ -152,20 +180,12 @@ void InputFilesListView::setSheetNum(int sheetNum)
             continue;
 
         int n = project->inputFiles()->indexOf(page->inputFile());
+
         if (n>-1)
         {
-            item(n)->setSelected(true);
+            setCurrentItem(item(n));
             return;
         }
-
-//        for (int j=0; j<project->filesCount(); ++j)
-//        {
-//            if (project->file(j) == page->inputFile())
-//            {
-//                item(j)->setSelected(true);
-//                return;
-//            }
-//        }
     }
 
     this->clearSelection();
