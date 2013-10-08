@@ -36,7 +36,7 @@ function createJobFileDir
 function copyInputFile
 {
   # Remove PJL commands
-  grep  -v '^@PJL\|%-12345X' $1 > $2
+  grep --text -v '^@PJL\|%-12345X' $1 > $2
   chown ${user} $2
 }
 

@@ -27,7 +27,7 @@
 
 SCHEME="boomaga"
 URI="${SCHEME}:/"
-NAME="Boomaga_Printer"
+NAME="Boomaga"
 PPD="lsb/usr/boomaga/${SCHEME}.ppd"
 
 while [ $# -gt 0 ]; do
