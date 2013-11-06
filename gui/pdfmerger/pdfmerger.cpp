@@ -43,17 +43,17 @@ static GBool printHelp = true;
 
 void POPPLER_WriteObject(Object *obj, Ref *ref, OutStream* outStr, XRef *xref, Guint numOffset)
 {
-// 0.18.14
-//static Guint writeObject (Object *obj, Ref *ref, OutStream* outStr, XRef *xref, Guint numOffset);
+#if POPPLER_VERSION < 2100
+    //static Guint writeObject (Object *obj, Ref *ref, OutStream* outStr, XRef *xref, Guint numOffset);
     PDFDoc::writeObject(obj, 0, outStr, xref, numOffset);
+#else
+    //static void writeObject (Object *obj, OutStream* outStr, XRef *xref, Guint numOffset, Guchar *fileKey,
+    //                         CryptAlgorithm encAlgorithm, int keyLength, int objNum, int objGen);
 
-// 0.24.1
-//static void writeObject (Object *obj, OutStream* outStr, XRef *xref, Guint numOffset, Guchar *fileKey,
-//                         CryptAlgorithm encAlgorithm, int keyLength, int objNum, int objGen);
-// PDFDoc::writeObject(&value, outStr, yRef, offsets[i], NULL, cryptRC4, 0, 0, 0);
-
-//    PDFDoc::writeObject(obj, outStr, xref, numOffset, NULL, cryptRC4, 0, 0, 0);
+    PDFDoc::writeObject(obj, outStr, xref, numOffset, NULL, cryptRC4, 0, 0, 0);
+#endif
 }
+
 
 void POPPLER_WritePageObjects(PDFDoc *doc, OutStream *outStr, XRef *xRef, Guint numOffset)
 {
@@ -64,6 +64,32 @@ void POPPLER_WritePageObjects(PDFDoc *doc, OutStream *outStr, XRef *xRef, Guint 
 #endif
 }
 
+
+void writeTrailer(XRef *xRef, int rootNum, OutStream* stream)
+{
+
+#if POPPLER_VERSION < 1904
+    xRef->writeToFile(stream, false);
+
+    Ref ref;
+    ref.num = rootNum;
+    ref.gen = 0;
+
+    PDFDoc::writeTrailer(stream->getPos(), xRef->getNumObjects(), stream, false, 0,
+                         &ref, xRef, "fileNamef", stream->getPos());
+#else
+    int uxrefOffset = stream->getPos();
+    Ref ref;
+    ref.num = rootNum;
+    ref.gen = 0;
+
+    Dict *trailerDict = PDFDoc::createTrailerDict(xRef->getNumObjects(), false, 0, &ref, xRef,
+                                                  "fileName", stream->getPos());
+    PDFDoc::writeXRefTableTrailer(trailerDict, xRef, false /* do not write unnecessary entries */,
+                                  uxrefOffset, stream, xRef);
+    delete trailerDict;
+#endif
+}
 
 /************************************************
 
@@ -397,14 +423,8 @@ bool PdfMerger::run(const QString &outFileName)
     }
 
     mXrefPos = mStream->getPos();
-    mXRef.writeToFile(mStream, false);
 
-    Ref ref;
-    ref.num = rootNum;
-    ref.gen = 0;
-
-    PDFDoc::writeTrailer(mXrefPos, mXRef.getNumObjects(), mStream, false, 0,
-      &ref, &mXRef, outFileName.toLocal8Bit(), mStream->getPos());
+    writeTrailer(&mXRef, rootNum, mStream);
 
     //*mStream  << "\n% End update **************************************\n\n";
 
