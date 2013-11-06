@@ -44,7 +44,9 @@ PreviewWidget::PreviewWidget(QWidget *parent) :
     QFrame(parent),
     mSheetNum(0)
 {
-    setBackgroundRole(QPalette::Dark);
+    QPalette pal(palette());
+    pal.setColor(QPalette::Background, QColor(105, 101, 98));
+    setPalette(pal);
     setAutoFillBackground(true);
 
     connect(project, SIGNAL(changed()),
