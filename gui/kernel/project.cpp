@@ -482,12 +482,12 @@ QList<Sheet*> Project::selectSheets(Project::PagesType pages, Project::PagesOrde
     if (order == Project::ForwardOrder)
     {
         for (int i=start; i < end; i += inc)
-            res << mSheets.at(i);
+            res.append(mSheets.at(i));
     }
     else
     {
-        for (int i=end-1; i >=start; i -= inc)
-            res << mSheets.at(i);
+        for (int i=start; i < end; i += inc)
+            res.insert(0, mSheets.at(i));
     }
 
     return res;

@@ -383,43 +383,64 @@ void MainWindow::print(bool close)
     }
     else
     {
+        Project::PagesOrder order = (project->printer()->reverseOrder() ? Project::BackOrder : Project::ForwardOrder);
+
+        Project::PagesOrder oddOrder  = order;
+        Project::PagesOrder evenOrder = order;
+
         // Print odd pages ................................
-        {
-            Project::PagesOrder order = (project->printer()->reverseOrder() ? Project::BackOrder : Project::ForwardOrder);
+        QList<Sheet*> oddSheets = project->selectSheets(Project::OddPages, oddOrder);
 
-            QList<Sheet*> sheets = project->selectSheets(Project::OddPages, order);
-            project->printer()->print(sheets, "", 1);
-        }
+        project->printer()->print(oddSheets, "", 1);
 
-        // Show dialog ....................................
-        {
-            QMessageBox dialog(this);
-            dialog.setWindowTitle(this->windowTitle() + " ");
-            dialog.setIconPixmap(QPixmap(":/images/print-48x48"));
-
-            dialog.setText(tr("Print the odd pages on %1.<p>"
-                              "When finished, turn the pages, insert them into the printer<br>"
-                              "and click the Continue button.").arg(project->printer()->printerName()));
-
-            dialog.addButton(QMessageBox::Abort);
-            QPushButton *btn = dialog.addButton(QMessageBox::Ok);
-            btn->setText(tr("Continue"));
-
-            if (dialog.exec() != QMessageBox::Ok)
-                return;
-        }
-        // ................................................
 
         // Print even pages ...............................
+        QList<Sheet*> evenSheets = project->selectSheets(Project::EvenPages, evenOrder);
+        //QList<Sheet*> evenSheets = project->selectSheets(Project::EvenPages, Project::ForwardOrder);
+
+        if (evenSheets.count())
         {
+            // Show dialog ....................................
+            {
+                QMessageBox dialog(this);
+                dialog.setWindowTitle(this->windowTitle() + " ");
+                dialog.setIconPixmap(QPixmap(":/images/print-48x48"));
+
+                dialog.setText(tr("Print the odd pages on %1.<p>"
+                                  "When finished, turn the pages, insert them into the printer<br>"
+                                  "and click the Continue button.").arg(project->printer()->printerName()));
+
+                dialog.addButton(QMessageBox::Abort);
+                QPushButton *btn = dialog.addButton(QMessageBox::Ok);
+                btn->setText(tr("Continue"));
+
+                if (dialog.exec() != QMessageBox::Ok)
+                    return;
+            }
+            // ................................................
+
+
             infoDialog->setText(tr("Print the even pages on %1.").arg(project->printer()->printerName()));
             infoDialog->show();
             qApp->processEvents();
 
-            QList<Sheet*> sheets = project->selectSheets(Project::EvenPages, Project::ForwardOrder);
-            project->printer()->print(sheets, "", 1);
+            Sheet emptySheet(1, 0);
+
+            if (evenOrder == Project::BackOrder)
+            {
+                while (evenSheets.count() < oddSheets.count())
+                    evenSheets.insert(0, &emptySheet);
+            }
+            else
+            {
+                while (evenSheets.count() < oddSheets.count())
+                    evenSheets.append(&emptySheet);
+            }
+
+            project->printer()->print(evenSheets, "", 1);
         }
     }
+
 
     if (close)
         QTimer::singleShot(200, this, SLOT(close()));

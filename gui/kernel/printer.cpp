@@ -33,6 +33,7 @@
 #include <cups/ppd.h>
 #include <QFileInfo>
 #include <QDebug>
+#include <QTemporaryFile>
 
 #define CUPS_DEVICE_URI                  "device-uri"
 
@@ -413,6 +414,22 @@ void Printer::setReverseOrder(bool value)
  ************************************************/
 void Printer::print(const QList<Sheet *> &sheets, const QString &jobName, int numCopies) const
 {
+//#define DEBUG_PRINT
+#ifdef DEBUG_PRINT
+
+    QString fileName;
+    {
+        QTemporaryFile f;
+        f.open();
+        fileName = f.fileName();
+        f.close();
+    }
+
+    project->writeDocument(sheets, fileName);
+
+    qDebug() << Q_FUNC_INFO << jobName << sheets;
+    QProcess::startDetached("okular", QStringList() << fileName);
+#else
     QStringList args;
     args << "-P" << printerName();               // Prints files to the named printer.
     args << "-#" << QString("%1").arg(numCopies);// Sets the number of copies to print
@@ -424,5 +441,6 @@ void Printer::print(const QList<Sheet *> &sheets, const QString &jobName, int nu
     project->writeDocument(sheets, &proc);
     proc.closeWriteChannel();
     proc.waitForFinished();
+#endif
 }
 
