@@ -46,7 +46,7 @@
      <x>0</x>
      <y>0</y>
      <width>1188</width>
-     <height>21</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -127,6 +127,16 @@
          <widget class="LayoutRadioButton" name="layoutBookletBtn">
           <property name="text">
            <string>Booklet</string>
+          </property>
+         </widget>
+        </item>
+        <item>
+         <widget class="QCheckBox" name="doubleSidedCbx">
+          <property name="toolTip">
+           <string comment="MainForm::Double-sided checkbox tooltip">Print on both sides of a sheet.</string>
+          </property>
+          <property name="text">
+           <string comment="MainForm::Double-sided checkbox">Double-sided</string>
           </property>
          </widget>
         </item>

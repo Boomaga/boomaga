@@ -191,7 +191,8 @@ Project::Project(QObject *parent) :
     mLayout(0),
     mTmpFile(0),
     mLastTmpFile(0),
-    mPrinter(&mNullPrinter)
+    mPrinter(&mNullPrinter),
+    mDoubleSided(true)
 {
 }
 
@@ -516,12 +517,33 @@ void Project::writeDocument(const QList<Sheet *> &sheets, const QString &fileNam
 
 
 /************************************************
+ *
+ ************************************************/
+bool Project::doubleSided() const
+{
+    if (mLayout->id() == "Booklet")
+        return true;
+    else
+        return mDoubleSided;
+}
+
+
+/************************************************
 
  ************************************************/
 void Project::setLayout(const Layout *layout)
 {
     mLayout = layout;
     updateSheets();
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Project::setDoubleSided(bool value)
+{
+    mDoubleSided = value;
 }
 
 

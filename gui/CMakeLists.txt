@@ -36,6 +36,7 @@ set(HEADERS
     kernel/render.h
     kernel/project.h
     kernel/printer.h
+    boomagatypes.h
     mainwindow.h
     settings.h
     widgets.h
@@ -55,6 +56,7 @@ set(SOURCES
     kernel/render.cpp
     kernel/project.cpp
     kernel/printer.cpp
+    boomagatypes.cpp
     mainwindow.cpp
     settings.cpp
     widgets.cpp
@@ -71,7 +73,6 @@ set (MOCS
     kernel/render.h
 
     settings.h
-
     mainwindow.h
     widgets.h
     dbus.h

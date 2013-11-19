@@ -123,7 +123,7 @@ void Printer::init()
 {
     mDeviceUri = "";
 
-    mDuplex = false;
+    mDuplexType = DuplexManualReverse;
     mReverseOrder = false;
     mPaperSize = QSizeF(A4_WIDTH_PT, A4_HEIGHT_PT);
     mLeftMargin = 0;
@@ -154,7 +154,13 @@ void Printer::initFromCups()
 
     mDeviceUri = cupsGetOption(CUPS_DEVICE_URI, dest->num_options, dest->options);
     QString duplexStr = cupsGetOption(CUPS_SIDES, dest->num_options, dest->options);
-    mDuplex = (duplexStr != CUPS_SIDES_ONE_SIDED);
+
+    bool duplex = false;
+    duplex = duplex || QString(cupsGetOption(CUPS_SIDES, dest->num_options, dest->options)).toUpper().startsWith("TWO-");
+    duplex = duplex || QString(cupsGetOption("Duplex", dest->num_options, dest->options)).toUpper().startsWith("DUPLEX-");
+    duplex = duplex || QString(cupsGetOption("JCLDuplex", dest->num_options, dest->options)).toUpper().startsWith("DUPLEX-");
+    duplex = duplex || QString(cupsGetOption("EFDuplex", dest->num_options, dest->options)).toUpper().startsWith("DUPLEX-");
+    duplex = duplex || QString(cupsGetOption("KD03Duplex", dest->num_options, dest->options)).toUpper().startsWith("DUPLEX-");
 
     // Read values from PPD
     // The returned filename is stored in a static buffer
@@ -175,10 +181,24 @@ void Printer::initFromCups()
                 mTopMargin    = size->length - size->top;
                 mBottomMargin = size->bottom;
             }
+
+            duplex = duplex || ppdIsMarked(ppd, "Duplex",     "DuplexNoTumble");
+            duplex = duplex || ppdIsMarked(ppd, "Duplex",     "DuplexTumble");
+            duplex = duplex || ppdIsMarked(ppd, "JCLDuplex",  "DuplexNoTumble");
+            duplex = duplex || ppdIsMarked(ppd, "JCLDuplex",  "DuplexTumble");
+            duplex = duplex || ppdIsMarked(ppd, "EFDuplex",   "DuplexNoTumble");
+            duplex = duplex || ppdIsMarked(ppd, "EFDuplex",   "DuplexTumble");
+            duplex = duplex || ppdIsMarked(ppd, "KD03Duplex", "DuplexNoTumble");
+            duplex = duplex || ppdIsMarked(ppd, "KD03Duplex", "DuplexTumble");
+
             ppdClose(ppd);
         }
         QFile::remove(ppdFile);
     }
+
+    if (duplex)
+        mDuplexType = DuplexAuto;
+
 
     bool ok;
     int n;
@@ -209,8 +229,7 @@ void Printer::initFromCups()
 void Printer::readSettings()
 {
     QString id = mPrinterInfo.printerName();
-
-    mDuplex         = settings->printerValue(id, Settings::Printer_Duplex,          mDuplex).toBool();
+    mDuplexType     = static_cast<DuplexType>(settings->printerValue(id, Settings::Printer_DuplexType, mDuplexType).toInt());
     mDrawBorder     = settings->printerValue(id, Settings::Printer_DrawBorder,      mDrawBorder).toBool();
     mReverseOrder   = settings->printerValue(id, Settings::Printer_ReverseOrder,    mReverseOrder).toBool();
 
@@ -219,6 +238,7 @@ void Printer::readSettings()
     mTopMargin      = settings->printerValue(id, Settings::Printer_TopMargin,       mTopMargin).toDouble();
     mBottomMargin   = settings->printerValue(id, Settings::Printer_BottomMargin,    mBottomMargin).toDouble();
     mInternalMargin = settings->printerValue(id, Settings::Printer_InternalMargin,  mInternalMargin).toDouble();
+
 }
 
 
@@ -228,8 +248,7 @@ void Printer::readSettings()
 void Printer::saveSettings()
 {
     QString id = mPrinterInfo.printerName();
-
-    settings->setPrinterValue(id, Settings::Printer_Duplex,         mDuplex);
+    settings->setPrinterValue(id, Settings::Printer_DuplexType,     mDuplexType);
     settings->setPrinterValue(id, Settings::Printer_DrawBorder,     mDrawBorder);
     settings->setPrinterValue(id, Settings::Printer_ReverseOrder,   mReverseOrder);
 
@@ -394,9 +413,9 @@ void Printer::setDrawBorder(bool value)
 /************************************************
 
  ************************************************/
-void Printer::setDuplex(bool duplex)
+void Printer::setDuplexType(DuplexType duplexType)
 {
-    mDuplex = duplex;
+    mDuplexType = duplexType;
 }
 
 
@@ -412,7 +431,7 @@ void Printer::setReverseOrder(bool value)
 /************************************************
 
  ************************************************/
-void Printer::print(const QList<Sheet *> &sheets, const QString &jobName, int numCopies) const
+void Printer::print(const QList<Sheet *> &sheets, const QString &jobName, bool duplex, int numCopies) const
 {
 //#define DEBUG_PRINT
 #ifdef DEBUG_PRINT
@@ -427,13 +446,14 @@ void Printer::print(const QList<Sheet *> &sheets, const QString &jobName, int nu
 
     project->writeDocument(sheets, fileName);
 
-    qDebug() << Q_FUNC_INFO << jobName << sheets;
     QProcess::startDetached("okular", QStringList() << fileName);
 #else
     QStringList args;
     args << "-P" << printerName();               // Prints files to the named printer.
     args << "-#" << QString("%1").arg(numCopies);// Sets the number of copies to print
     args << "-T" << jobName;                     // Sets the job name.
+    if (mDuplexType == DuplexAuto && !duplex)
+        args << "-o sides=one-sided";            // Turn off duplex printing
 
     QProcess proc;
     proc.start("lpr", args);

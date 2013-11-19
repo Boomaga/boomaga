@@ -25,6 +25,7 @@
 
 
 #include "settings.h"
+#include <QDebug>
 
 #define MAINWINDOW_GROUP "MainWindow"
 #define PROJECT_GROUP "Project"
@@ -97,9 +98,10 @@ QString Settings::keyToString(Settings::Key key) const
     {
     case Layout:                    return "Project/Layout";
     case Printer:                   return "Project/Printer";
+    case DoubleSided:               return "Project/DoubleSided";
 
         // Printer ******************************
-    case Printer_Duplex:            return "Duplex";
+    case Printer_DuplexType:        return "DuplexType";
     case Printer_DrawBorder:        return "Border";
     case Printer_ReverseOrder:      return "ReverseOrder";
 
@@ -126,6 +128,7 @@ QString Settings::keyToString(Settings::Key key) const
 void Settings::init()
 {
     setDefaultValue(Layout,   "1up");
+    setDefaultValue(DoubleSided, true);
 }
 
 
@@ -170,7 +173,14 @@ QVariant Settings::value(const QString &key, const QVariant &defaultValue) const
  ************************************************/
 QVariant Settings::printerValue(const QString &printerId, Settings::Key key, const QVariant &defaultValue) const
 {
-    return value(QString("Printer_%1/%2").arg(printerId, keyToString(key)), defaultValue);
+    QString keyStr = QString("Printer_%1/%2").arg(printerId, keyToString(key));
+    if (key == Printer_DuplexType)
+    {
+        QString s = value(keyStr, duplexTypetoStr(static_cast<DuplexType>(defaultValue.toInt()))).toString();
+        return strToDuplexType(s);
+    }
+
+    return value(keyStr, defaultValue);
 }
 
 
@@ -197,7 +207,15 @@ void Settings::setValue(const QString &key, const QVariant &value)
  ************************************************/
 void Settings::setPrinterValue(const QString &printerId, Key key, const QVariant &value)
 {
-    setValue(QString("Printer_%1/%2").arg(printerId, keyToString(key)), value);
+    QVariant v;
+    if (key == Printer_DuplexType)
+    {
+        v = duplexTypetoStr(static_cast<DuplexType>(value.toInt()));
+    }
+    else
+        v = value;
+
+    setValue(QString("Printer_%1/%2").arg(printerId, keyToString(key)), v);
 }
 
 

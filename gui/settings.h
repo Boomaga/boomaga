@@ -30,6 +30,7 @@
 #include "kernel/project.h"
 #include <QSettings>
 #include <QSet>
+#include "boomagatypes.h"
 
 class Settings : public QSettings
 {
@@ -38,9 +39,10 @@ public:
     enum Key{
         Layout,
         Printer,
+        DoubleSided,
 
         // Printer ******************************
-        Printer_Duplex,
+        Printer_DuplexType,
         Printer_DrawBorder,
         Printer_ReverseOrder,
 

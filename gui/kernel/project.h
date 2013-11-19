@@ -149,6 +149,7 @@ public:
     void writeDocument(const QList<Sheet*> &sheets, const QString &fileName);
 
     const Layout *layout() const { return mLayout; }
+    bool doubleSided() const;
 
     Printer *printer() const { return mPrinter; }
     void setPrinter(Printer *value);
@@ -165,6 +166,7 @@ public slots:
     void removeFile(int index);
     void moveFile(int from, int to);
     void setLayout(const Layout *layout);
+    void setDoubleSided(bool value);
 
 signals:
     void changed();
@@ -190,6 +192,7 @@ private:
 
     Printer *mPrinter;
     Printer mNullPrinter;
+    bool mDoubleSided;
 
     void updateSheets();
     TmpPdfFile *createTmpPdfFile(QList<Job> jobs);

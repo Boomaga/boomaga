@@ -35,6 +35,7 @@ class Layout;
 class Project;
 class Printer;
 class InputFile;
+class QMessageBox;
 
 namespace Ui {
 class MainWindow;
@@ -56,7 +57,7 @@ private slots:
 
     void switchToFile(InputFile *file);
 
-    void print(bool close = false);
+    void print();
     void printAndClose();
 
     void updateWidgets();
@@ -87,6 +88,8 @@ private:
 
     void loadSettings();
     void saveSettings();
+
+    QMessageBox *showPrintDialog(const QString &text);
 };
 
 #endif // MAINWINDOW_H
