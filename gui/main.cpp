@@ -110,11 +110,9 @@ void readEnvFile()
             if ((value.startsWith('\'') && value.endsWith('\'')) ||
                 (value.startsWith('"') && value.endsWith('"')))
             {
-                qDebug() << value << value.mid(1, value.length() - 2);
                 value = value.mid(1, value.length() - 2);
             }
 
-            qDebug() << name << value;
             qputenv(name.toLocal8Bit(), value.toLocal8Bit());
         }
         envFile.close();
