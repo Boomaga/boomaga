@@ -37,6 +37,8 @@
 #include <QLibraryInfo>
 #include <QDebug>
 #include <QProcessEnvironment>
+#include <QFile>
+#include <QDir>
 
 /************************************************
 
@@ -89,11 +91,45 @@ int printError(const QString &msg)
 }
 
 
+
+/************************************************
+ *
+ ************************************************/
+void readEnvFile()
+{
+    QFile envFile(QDir::homePath() + "/.cache/boomaga.env");
+    if (envFile.exists())
+    {
+        envFile.open(QFile::ReadOnly);
+        while (!envFile.atEnd())
+        {
+            QString line = QString::fromLocal8Bit(envFile.readLine());
+            QString name = line.section("=", 0, 0).trimmed();
+            QString value = line.section("=", 1).trimmed();
+
+            if ((value.startsWith('\'') && value.endsWith('\'')) ||
+                (value.startsWith('"') && value.endsWith('"')))
+            {
+                qDebug() << value << value.mid(1, value.length() - 2);
+                value = value.mid(1, value.length() - 2);
+            }
+
+            qDebug() << name << value;
+            qputenv(name.toLocal8Bit(), value.toLocal8Bit());
+        }
+        envFile.close();
+    }
+
+}
+
+
 /************************************************
 
  ************************************************/
 int main(int argc, char *argv[])
 {
+    readEnvFile();
+
     QApplication application(argc, argv);
 
     QTranslator qtTranslator;

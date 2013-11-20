@@ -148,6 +148,16 @@ function getDbusAddr_Linux_Proc
       if [ "${disp}" = "${xDisplay}" ] || [ "${xDisplay}" = "" ];
       then
         dbusSessionAddress=${addr}
+        BOOMAGA_ENV_FILE=${homeDir}/.cache/boomaga.env
+        echo '' > ${BOOMAGA_ENV_FILE}
+        grep -z KDE_FULL_SESSION "${file}" >> ${BOOMAGA_ENV_FILE}
+        echo '' >> ${BOOMAGA_ENV_FILE}
+        grep -z QT_PLUGIN_PATH "${file}" >> ${BOOMAGA_ENV_FILE}
+        echo '' >> ${BOOMAGA_ENV_FILE}
+        grep -z GTK_RC_FILES   "${file}" >> ${BOOMAGA_ENV_FILE}
+        echo '' >> ${BOOMAGA_ENV_FILE}
+        grep -z GTK2_RC_FILES  "${file}" >> ${BOOMAGA_ENV_FILE}
+        echo '' >> ${BOOMAGA_ENV_FILE}
         break
       fi
     fi
