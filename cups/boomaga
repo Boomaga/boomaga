@@ -139,7 +139,7 @@ function getDbusAddr_SessionFile
 #*******************************************
 function getDbusAddr_Linux_Proc
 {
-  for file in $(find /proc -user "${user}" -type f -regex '/proc/[0-9]+/environ'); do
+  for file in $(find /proc -user "${user}" -type f -regex '/proc/[0-9]+/environ' | sort -V -r); do
     disp=$(grep -z DISPLAY "${file}"  | cut -d= -f2)
     addr=$(grep -z DBUS_SESSION_BUS_ADDRESS "${file}"  | cut -d= -f2-)
 
