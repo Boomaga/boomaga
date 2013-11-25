@@ -310,15 +310,15 @@ void MainWindow::updateWidgets()
     // Update status bar ..........................
     if (project->pageCount())
     {
-        QString pagesTmpl = (project->pageCount() > 1) ? tr("%1 pages") : tr("%1 page");
-        QString sheetsTmpl = (project->sheetCount() > 2) ? tr("%1 sheets") : tr("%1 sheet");
+        QString pagesTmpl = (project->pageCount() > 1) ? tr("%1 pages", "Status bar") : tr("%1 page", "Status bar");
+        QString sheetsTmpl = (project->sheetCount() > 2) ? tr("%1 sheets", "Status bar") : tr("%1 sheet", "Status bar");
         mStatusBarSheetsLabel.setText(pagesTmpl.arg(project->pageCount()) +
                                    " ( " +
                                    sheetsTmpl.arg(project->sheetCount() / 2) +
                                    " )"
                                       );
 
-        mStatusBarCurrentSheetLabel.setText(tr("Sheet %1 of %2")
+        mStatusBarCurrentSheetLabel.setText(tr("Sheet %1 of %2", "Status bar")
                                 .arg(ui->preview->currentSheet() + 1)
                                 .arg(project->previewSheetCount()));
     }

@@ -1,61 +1,61 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="fr" version="2.0">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="pl_PL" version="2.0">
 <context>
     <name>AboutDialog</name>
     <message>
         <source> About Boomaga</source>
-        <translation>À propos de Boomaga</translation>
+        <translation>O programie Boomaga</translation>
     </message>
     <message>
         <source>About</source>
-        <translation>À propos</translation>
+        <translation>O programie</translation>
     </message>
     <message>
         <source>Authors</source>
-        <translation>Auteurs</translation>
+        <translation>Autorzy</translation>
     </message>
     <message>
         <source>Thanks</source>
-        <translation>Remerciements</translation>
+        <translation>Podziękowania</translation>
     </message>
     <message>
         <source>Translations</source>
-        <translation>Traductions</translation>
+        <translation>Tłumaczenia</translation>
     </message>
     <message>
         <source>Version: %1</source>
-        <translation>Version : %1</translation>
+        <translation>Wersja: %1</translation>
     </message>
     <message>
         <source>Boomaga provides a virtual printer for CUPS. This can be used for print preview or for print booklets.</source>
-        <translation>Boomaga fournit une imprimante virtuelle pour CUPS. Elle peut être utilisée pour prévisualiser des impressions ou pour imprimer des livrets.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Copyright: %1-%2 %3</source>
-        <translation>Tous droits réservés : %1-%2 %3</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Homepage: %1</source>
-        <translation>Page d&apos;accueil : %1</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>License: %1</source>
-        <translation>Licence : %1</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on Github.</source>
-        <translation>Boomaga est développé par l&apos;&lt;a %1&gt;équipe Boomaga et ses contributeurs&lt;/a&gt; sur Github.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>If you are interested in working with our development team, &lt;a %1&gt;join us&lt;/a&gt;.</source>
-        <translation>Si tu es intéressé à travailler avec notre équipe de développement, &lt;a %1&gt;joins-toi à nous&lt;/a&gt;.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Special thanks to:</source>
-        <translation>Remerciements particuliers à :</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>If you want to help translate, we will be glad to see you in our translation team on &lt;a %1&gt;Transifex server&lt;/a&gt;.</source>
-        <translation>Si tu désires aider à traduire, nous serons heureux de t&apos;accueillir dans notre équipe de traduction sur le &lt;a %1&gt;serveur Transifex&lt;/a&gt;.</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -77,43 +77,43 @@
     <name>MainWindow</name>
     <message>
         <source>&amp;File</source>
-        <translation>&amp;Fichiers</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>&amp;Preferences</source>
-        <translation>&amp;Préférences</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Help</source>
-        <translation>Aide</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Options</source>
-        <translation>Options</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Layout</source>
-        <translation>Mise en page</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>1 up</source>
-        <translation>1 dans 1</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>2 up</source>
-        <translation>2 dans 1</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>4 up</source>
-        <translation>4 dans 1</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>8 up</source>
-        <translation>8 dans 1</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Booklet</source>
-        <translation>Livret</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Print on both sides of a sheet.</source>
@@ -127,72 +127,72 @@
     </message>
     <message>
         <source>Jobs</source>
-        <translation>Travaux</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Printer</source>
-        <translation>Imprimante</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Configure ...</source>
-        <translation>Configure...</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Toolbar</source>
-        <translation>Barre d&apos;outils</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>&amp;Print</source>
-        <translation>&amp;Imprime</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>E&amp;xit</source>
-        <translation>&amp;Sortie</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Print and Close</source>
-        <translation>Imprime et ferme</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Ctrl+P</source>
-        <translation>Ctrl+P</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Next sheet</source>
-        <translation>Prochaine feuille</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Previous sheet</source>
-        <translation>Feuille précédente</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>About Boomaga</source>
-        <translation>À propos de Boomaga</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Boomaga</source>
-        <translation>Boomaga</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>%v of %m</source>
         <comment>Format for QProgressBar (http://qt-project.org/doc/qt-4.8/qprogressbar.html#format-prop)</comment>
-        <translation>%v de %m</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Print the all pages on %1.</source>
-        <translation>Imprime toutes les pages sur %1.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Print the odd pages on %1.&lt;p&gt;When finished, turn the pages, insert them into the printer&lt;br&gt;and click the Continue button.</source>
-        <translation>Imprime toutes les pages impaires sur %1.&lt;p&gt;Une fois terminé, tourne les pages, insère-les dans l&apos;imprimante&lt;br&gt;et clique sur le bouton Continue.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Print the even pages on %1.</source>
-        <translation>Imprime les pages paires sur %1.</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Continue</source>
-        <translation>Continue</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>%1 pages</source>
@@ -224,27 +224,27 @@
     <name>PrinterSettings</name>
     <message>
         <source>Margins (mm)</source>
-        <translation>Marges (mm)</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Right:</source>
-        <translation>Droite :</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Bottom:</source>
-        <translation>Bas :</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Internal:</source>
-        <translation>Interne :</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Left:</source>
-        <translation>Gauche :</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Top:</source>
-        <translation>Haut :</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Duplex:</source>
@@ -252,11 +252,11 @@
     </message>
     <message>
         <source>Draw border</source>
-        <translation>Encadre</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Print in reverse order</source>
-        <translation>Imprime en ordre inversé</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>Printer has duplexer</source>
@@ -272,7 +272,7 @@
     </message>
     <message>
         <source>Preferences of &quot;%1&quot;</source>
-        <translation>Préférences de &quot;%1&quot;</translation>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
