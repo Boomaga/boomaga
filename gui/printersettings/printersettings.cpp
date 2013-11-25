@@ -78,6 +78,11 @@ PrinterSettings::PrinterSettings(QWidget *parent) :
     ui->duplexTypeComboBox->addItem(tr("Printer has duplexer"), DuplexAuto);
     ui->duplexTypeComboBox->addItem(tr("Manual with reverse (suitable for most printers)"), DuplexManualReverse);
     ui->duplexTypeComboBox->addItem(tr("Manual without reverse"), DuplexManual);
+
+    QPalette pal(palette());
+    pal.setColor(QPalette::Background, QColor(105, 101, 98));
+    ui->marginsPereview->setPalette(pal);
+    ui->marginsPereview->setAutoFillBackground(true);
 }
 
 
