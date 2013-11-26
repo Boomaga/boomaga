@@ -34,6 +34,7 @@
 #include "printersettings/printersettings.h"
 #include "aboutdialog/aboutdialog.h"
 
+#include <math.h>
 #include <QRadioButton>
 #include <QMessageBox>
 #include <QPushButton>
@@ -310,13 +311,14 @@ void MainWindow::updateWidgets()
     // Update status bar ..........................
     if (project->pageCount())
     {
+        int sheetsCount = project->doubleSided() ?
+                          ceil(project->sheetCount() / 2.0) :
+                          project->sheetCount();
+
         QString pagesTmpl = (project->pageCount() > 1) ? tr("%1 pages", "Status bar") : tr("%1 page", "Status bar");
-        QString sheetsTmpl = (project->sheetCount() > 2) ? tr("%1 sheets", "Status bar") : tr("%1 sheet", "Status bar");
+        QString sheetsTmpl = (sheetsCount > 1) ? tr("%1 sheets", "Status bar") : tr("%1 sheet", "Status bar");
         mStatusBarSheetsLabel.setText(pagesTmpl.arg(project->pageCount()) +
-                                   " ( " +
-                                   sheetsTmpl.arg(project->sheetCount() / 2) +
-                                   " )"
-                                      );
+                                   " ( " + sheetsTmpl.arg(sheetsCount) + " )");
 
         mStatusBarCurrentSheetLabel.setText(tr("Sheet %1 of %2", "Status bar")
                                 .arg(ui->preview->currentSheet() + 1)

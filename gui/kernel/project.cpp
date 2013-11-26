@@ -544,6 +544,7 @@ void Project::setLayout(const Layout *layout)
 void Project::setDoubleSided(bool value)
 {
     mDoubleSided = value;
+    emit changed();
 }
 
 
