@@ -29,6 +29,7 @@
 #include "pdfmerger.h"
 #include <QtAlgorithms>
 #include <QDebug>
+#include <QDir>
 
 #include "../kernel/project.h"
 
@@ -307,6 +308,8 @@ PDFDoc *PdfMerger::addFile(const QString &fileName)
  ************************************************/
 bool PdfMerger::run(const QString &outFileName)
 {
+    QDir().mkpath(outFileName + "/..");
+
     FILE *f = fopen(outFileName.toLocal8Bit(), "wb");
     if (!f)
         error(QObject::tr("I can't open file \"%1\"").arg(outFileName));

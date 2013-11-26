@@ -340,7 +340,9 @@ void Project::tmpFileMerged()
 
     if (!tmpPdf->isValid())
     {
-        mJobs = mTmpFile->jobs();
+        if (mTmpFile)
+            mJobs = mTmpFile->jobs();
+
         tmpPdf->deleteLater();
         mLastTmpFile = 0;
         return;

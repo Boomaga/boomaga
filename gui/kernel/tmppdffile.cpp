@@ -70,8 +70,8 @@ QString TmpPdfFile::genFileName()
     static int num = 0;
     num++;
 
-    return QString("%1/boomaga_tmp_%2-%3.pdf")
-            .arg(QDir::tempPath())
+    return QString("%1/.cache/boomaga_tmp_%2-%3.pdf")
+            .arg(QDir::homePath())
             .arg(QCoreApplication::applicationPid())
             .arg(num);
 }
@@ -166,7 +166,12 @@ void TmpPdfFile::updateSheets(QList<Sheet *> &sheets)
     if (mValid)
     {
         QFile file(mFileName);
-        file.open(QFile::ReadWrite);
+        if (!file.open(QFile::ReadWrite))
+        {
+            project->error(tr("I can't create temporary file \"%1\"")
+                           .arg(mFileName));
+            return;
+        }
         file.seek(mOrigFileSize);
 
         writeSheets(&file, sheets);
