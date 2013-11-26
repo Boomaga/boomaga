@@ -212,6 +212,7 @@ Project::~Project()
 void Project::free()
 {
     delete mTmpFile;
+    qDeleteAll(mFiles);
 }
 
 
