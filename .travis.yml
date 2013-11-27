@@ -1,0 +1,10 @@
+language: cpp
+compiler:
+  - gcc
+  - clang
+  
+install:
+  - sudo apt-get update
+  - sudo apt-get install cmake libqt4-dev libcups2-dev libsnappy-dev libpoppler-dev libpoppler-qt4-dev
+# Change this to your needs
+script: cmake . && make
