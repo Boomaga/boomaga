@@ -28,23 +28,25 @@
 #include "pdfmerger.h"
 #include <QTextStream>
 #include <QDebug>
-
+#include <QCoreApplication>
+#include <iostream>
 
 /************************************************
 
  ************************************************/
 int main(int argc, char *argv[])
 {
-
     if (argc < 3)
         return 1;
 
     PdfMerger merger;
-    for (int i=1; i<argc-1; ++i)
-    {
-        merger.addFile(argv[i]);
-    }
+    QCoreApplication app(argc, argv);
 
+    QStringList args = app.arguments();
+    for (int i=1; i<args.count() - 1; ++i)
+    {
+        merger.addFile(args.at(i));
+    }
 
     merger.run(argv[argc-1]);
 
