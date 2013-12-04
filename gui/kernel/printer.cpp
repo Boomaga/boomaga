@@ -34,6 +34,8 @@
 #include <QFileInfo>
 #include <QDebug>
 #include <QTemporaryFile>
+#include <QDir>
+#include <QCoreApplication>
 
 #define CUPS_DEVICE_URI                  "device-uri"
 
@@ -448,19 +450,24 @@ void Printer::print(const QList<Sheet *> &sheets, const QString &jobName, bool d
 
     QProcess::startDetached("okular", QStringList() << fileName);
 #else
+    QString file = QString("%1/.cache/boomaga_tmp_%2-print.pdf")
+                          .arg(QDir::homePath())
+                          .arg(QCoreApplication::applicationPid());
+
+    project->writeDocument(sheets, file);
+
     QStringList args;
     args << "-P" << printerName();               // Prints files to the named printer.
     args << "-#" << QString("%1").arg(numCopies);// Sets the number of copies to print
     args << "-T" << jobName;                     // Sets the job name.
+    args << "-r";                                // The print files should be deleted after printing them
     if (mDuplexType == DuplexAuto && !duplex)
         args << "-o sides=one-sided";            // Turn off duplex printing
 
+    args << file.toLocal8Bit();
+
     QProcess proc;
-    proc.start("lpr", args);
-    proc.waitForStarted();
-    project->writeDocument(sheets, &proc);
-    proc.closeWriteChannel();
-    proc.waitForFinished();
+    proc.startDetached("lpr", args);
 #endif
 }
 
