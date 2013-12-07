@@ -16,6 +16,8 @@ CUPS_BACKEND_FAILED=1
 DBUS_MACINE_ID_DIR='@DBUS_MACINE_ID_DIR@'
 SYSTEM_NAME='@CMAKE_SYSTEM_NAME@'
 
+PREF_ENV_PROGS="kdeinit4 firefox chromium-browser razor-session gnome-session lxsession Xfce4-session"
+
 #*******************************************
 #
 #*******************************************
@@ -139,7 +141,15 @@ function getDbusAddr_SessionFile
 #*******************************************
 function getDbusAddr_Linux_Proc
 {
-  for file in $(find /proc -user "${user}" -type f -regex '/proc/[0-9]+/environ' | sort -V -r); do
+
+  prefFiles=""
+  for proc in ${PREF_ENV_PROGS}; do
+    pid=$(pidof ${proc})
+    [ -n "$pid" ] && prefFiles="${prefFiles}/proc/$pid/environ "
+  done
+
+
+  for file in ${prefFiles} $(find /proc -user "${user}" -type f -regex '/proc/[0-9]+/environ' | sort -V -r); do
     disp=$(grep -z DISPLAY "${file}"  | cut -d= -f2)
     addr=$(grep -z DBUS_SESSION_BUS_ADDRESS "${file}"  | cut -d= -f2-)
 
@@ -152,6 +162,9 @@ function getDbusAddr_Linux_Proc
         echo '' > ${BOOMAGA_ENV_FILE}
         chmod 600 ${BOOMAGA_ENV_FILE}
         chown ${user} ${BOOMAGA_ENV_FILE}
+
+        echo "BOOMAGA_PROC_FILE=${file}" >> ${BOOMAGA_ENV_FILE}
+
         grep -z KDE_FULL_SESSION "${file}" >> ${BOOMAGA_ENV_FILE}
         echo '' >> ${BOOMAGA_ENV_FILE}
         grep -z QT_PLUGIN_PATH "${file}" >> ${BOOMAGA_ENV_FILE}
