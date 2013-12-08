@@ -311,5 +311,9 @@ Please reinstall me.</source>
         <source>I can read file &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>I can&apos;t create temporary file &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 </TS>

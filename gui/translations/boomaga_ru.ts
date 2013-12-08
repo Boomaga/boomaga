@@ -207,7 +207,7 @@
     <message>
         <source>%1 sheets</source>
         <comment>Status bar</comment>
-        <translation>%1 листов</translation>
+        <translation>%1 лист.</translation>
     </message>
     <message>
         <source>%1 sheet</source>
@@ -308,6 +308,10 @@ Please reinstall me.</source>
     <message>
         <source>I can read file &apos;%1&apos;</source>
         <translation>Не получилось прочитать файл: &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>I can&apos;t create temporary file &quot;%1&quot;</source>
+        <translation>Не получилось создать временный файл: &quot;%1&quot;</translation>
     </message>
 </context>
 </TS>
