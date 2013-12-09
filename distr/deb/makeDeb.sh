@@ -257,9 +257,10 @@ done
 
 
 if [ -z "${SRC}" ]; then
-    echo "missing path-to-source operand" >&2
-    help
-    exit 2
+    SRC=$(dirname $0)/../../
+    #echo "missing path-to-source operand" >&2
+    #help
+    #exit 2
 fi
 
 SRC=`readlink -m ${SRC}`
