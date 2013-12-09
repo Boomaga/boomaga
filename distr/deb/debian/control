@@ -15,14 +15,22 @@ Build-Depends: pkg-config,
     cmake,
     libqt4-dev (>= 4.6.0),
     libcups2-dev,
-    libgs-dev,
-    libsnappy-dev
+    libsnappy-dev,
+    libpoppler-dev,
+    libpoppler-qt4-dev
 Standards-Version: 3.9.1
 Homepage: https://github.com/Boomaga/boomaga
 
 Package: boomaga
 Architecture: any
 Depends:  cups, ${shlibs:Depends}, ${misc:Depends}
-Description: Post-processing backend for CUPS
- Boomaga provides a virtual printer for CUPS. This can be used for 
- print preview or for print booklets.
+Description: virtual printer for viewing a document before printing
+ Boomaga (BOOklet MAnager) is a virtual printer for viewing a document before
+ printing it out using the physical printer.
+ The program is very simple to work with. Running any program, click “print”
+ and select “Boomaga” to see in several seconds (CUPS takes some time to
+ respond) the Boomaga window open.
+ If you print out one more document, it gets added to the previous one, and you
+ can also print them out as one.
+ Regardless of whether your printer supports duplex printing or not, you would
+ be able to easily print on both sides of the sheet.
