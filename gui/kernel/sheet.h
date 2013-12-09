@@ -24,23 +24,16 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#ifndef PSSHEET_H
-#define PSSHEET_H
+#ifndef SHEET_H
+#define SHEET_H
 
-
-#include "psfile.h"
-
-
-#include <QObject>
+#include <QtGlobal>
 #include <QVector>
-#include <QList>
-#include <QRect>
-#include <QDebug>
+#include <QRectF>
 
-class PsProject;
-class PsProjectPage;
+class ProjectPage;
 
-class PsSheetPageSpec
+class SheetPageSpec
 {
 public:
     enum Rotation
@@ -51,8 +44,8 @@ public:
         Rotate270 = 270
     };
 
-    PsSheetPageSpec();
-    PsSheetPageSpec(const QRectF &rect, double scale, Rotation rotete);
+    SheetPageSpec();
+    SheetPageSpec(const QRectF &rect, double scale, Rotation rotete);
 
     QRectF rect() const { return mRect; }
     void setRect(const QRectF &value) { mRect = value; }
@@ -69,7 +62,8 @@ private:
     Rotation mRotate;
 };
 
-class PsSheet
+
+class Sheet
 {
 public:
     enum Hint{
@@ -81,50 +75,38 @@ public:
 
     Q_DECLARE_FLAGS(Hints, Hint)
 
-    explicit PsSheet(PsProject *project, int count);
-    ~PsSheet();
-
-    PsProject *project() const { return mProject; }
-
-    int count() const { return mPages.count(); }
-
-    PsProjectPage *page(int index) { return mPages[index]; }
-    const PsProjectPage *page(int index) const { return mPages.at(index); }
-    void setPage(int index, PsProjectPage *page);
-
-    PsSheetPageSpec pageSpec(int index) const { return mSpecs[index]; }
-    void setPageSpec(int index, PsSheetPageSpec spec);
-
-    int sheetNum() const { return mSheetNum; }
-    void setSheetNum(int value) { mSheetNum = value; }
-
     Hints hints() const { return mHints; }
     void setHints(Hints value);
     void setHint(Hint hint, bool enable);
 
-    //void write(QTextStream *out) const;
-signals:
-    
-public slots:
-    
-protected:
-    PsProject *mProject;
-    QVector<PsProjectPage*> mPages;
-    QVector<PsSheetPageSpec> mSpecs;
-    int mSheetNum;
+    explicit Sheet(int count, int sheetNum);
+    virtual ~Sheet();
+
+    ProjectPage *page(int index) { return mPages[index]; }
+    const ProjectPage *page(int index) const { return mPages.at(index); }
+    void setPage(int index, ProjectPage *page);
+
+    int count() const { return mPages.count(); }
+
+    int sheetNum() const { return mSheetNum; }
+    //void setSheetNum(int value) { mSheetNum = value; }
+
+    SheetPageSpec pageSpec(int index) const { return mSpecs[index]; }
+    void setPageSpec(int index, SheetPageSpec spec);
+
+    qint64 id() const { return mId; }
+
+private:
+    QVector<ProjectPage*> mPages;
+    QVector<SheetPageSpec> mSpecs;
     Hints mHints;
+    int mSheetNum;
+    qint64 mId;
+    static qint64 genId();
 };
 
-Q_DECLARE_OPERATORS_FOR_FLAGS(PsSheet::Hints)
-
-QDebug operator<<(QDebug dbg, const PsSheet &sheet);
-QDebug operator<<(QDebug dbg, const PsSheet *sheet);
-
-QDebug operator<<(QDebug dbg, const QList<PsSheet *> &sheets);
-QDebug operator<<(QDebug dbg, const QList<PsSheet *> *sheets);
+typedef QList<Sheet*> SheetList;
 
 
-QDebug operator<<(QDebug dbg, const PsSheetPageSpec &spec);
-QDebug operator<<(QDebug dbg, const PsSheetPageSpec *spec);
-
-#endif // PSSHEET_H
+Q_DECLARE_OPERATORS_FOR_FLAGS(Sheet::Hints)
+#endif // SHEET_H

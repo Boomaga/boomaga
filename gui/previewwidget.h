@@ -24,16 +24,43 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#ifndef PSCONSTANTS_H
-#define PSCONSTANTS_H
-
-#define A4_HEIGHT_MM    297
-#define A4_HEIGHT_PT    842
-#define A4_WIDTH_MM     210
-#define A4_WIDTH_PT     595
-
-#define MM_TO_PT    (A4_HEIGHT_PT * 1.0 / A4_HEIGHT_MM)
-#define PT_TO_MM    (A4_HEIGHT_MM * 1.0 / A4_HEIGHT_PT)
+#ifndef PREVIEWWIDGET_H
+#define PREVIEWWIDGET_H
 
 
-#endif // PSCONSTANTS_H
+#include <QFrame>
+#include "kernel/sheet.h"
+
+class PreviewWidget : public QFrame
+{
+    Q_OBJECT
+public:
+    explicit PreviewWidget(QWidget *parent = 0);
+    ~PreviewWidget();
+    
+    int currentSheet() const { return mSheetNum; }
+
+public slots:
+    void setCurrentSheet(int sheetNum);
+    void nextSheet();
+    void prevSheet();
+    void refresh();
+
+signals:
+    void changed(int sheetNum);
+
+protected:
+    void paintEvent(QPaintEvent *event);
+    void wheelEvent(QWheelEvent *event);
+    void keyPressEvent(QKeyEvent *event);
+
+private slots:
+    void sheetImageChanged(int sheetNum);
+
+private:
+    QImage mImage;
+    int mSheetNum;
+    Sheet::Hints mHints;
+};
+
+#endif // PREVIEWWIDGET_H

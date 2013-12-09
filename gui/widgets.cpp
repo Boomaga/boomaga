@@ -27,17 +27,19 @@
 #include "widgets.h"
 #include "settings.h"
 #include "kernel/printer.h"
-
+#include "kernel/inputfile.h"
+#include "kernel/sheet.h"
 
 #include <QMenu>
 #include <QMouseEvent>
+#include <QDebug>
 
 /************************************************
 
  ************************************************/
 LayoutRadioButton::LayoutRadioButton(QWidget *parent):
     QRadioButton(parent),
-    mPsLayout(PsProject::LayoutBooklet)
+    mLayout(0)
 {
 
 }
@@ -48,7 +50,7 @@ LayoutRadioButton::LayoutRadioButton(QWidget *parent):
  ************************************************/
 LayoutRadioButton::LayoutRadioButton(const QString &text, QWidget *parent):
     QRadioButton(text, parent),
-    mPsLayout(PsProject::LayoutBooklet)
+    mLayout(0)
 {
 }
 
@@ -117,22 +119,12 @@ Printer *PrintersComboBox::itemPrinter(int index)
 /************************************************
 
  ************************************************/
-PsFilesListView::PsFilesListView(QWidget *parent):
-    QListWidget(parent),
-    mProject(0)
+InputFilesListView::InputFilesListView(QWidget *parent):
+    QListWidget(parent)
 {
     setContextMenuPolicy(Qt::CustomContextMenu);
     connect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showContextMenu(QPoint)));
     connect(this->model(), SIGNAL(layoutChanged()), this, SLOT(layoutChanged()));
-}
-
-
-/************************************************
-
- ************************************************/
-void PsFilesListView::setProject(PsProject *project)
-{
-    mProject = project;
     connect(project, SIGNAL(changed()), this, SLOT(updateItems()));
     updateItems();
 }
@@ -141,14 +133,76 @@ void PsFilesListView::setProject(PsProject *project)
 /************************************************
 
  ************************************************/
-void PsFilesListView::updateItems()
+InputFile *InputFilesListView::currentFile() const
+{
+    if (currentItem())
+    {
+        int n = currentItem()->data(Qt::UserRole).toInt();
+        if (n<project->filesCount())
+            return project->file(n);
+    }
+
+    return 0;
+}
+
+
+/************************************************
+
+ ************************************************/
+void InputFilesListView::setSheetNum(int sheetNum)
+{
+    if (count()<1)
+        return;
+
+    if (sheetNum >= project->previewSheetCount())
+    {
+        item(0)->setSelected(true);
+        return;
+    }
+
+    Sheet *sheet = project->previewSheet(sheetNum);
+    InputFile *cur = currentFile();
+
+    for (int i=0; i<sheet->count(); ++i)
+    {
+        ProjectPage *page = sheet->page(i);
+        if (!page)
+            continue;
+
+        if (page->inputFile() == cur)
+            return;
+    }
+
+    for (int i=0; i<sheet->count(); ++i)
+    {
+        ProjectPage *page = sheet->page(i);
+        if (!page)
+            continue;
+
+        int n = project->inputFiles()->indexOf(page->inputFile());
+
+        if (n>-1)
+        {
+            setCurrentItem(item(n));
+            return;
+        }
+    }
+
+    this->clearSelection();
+}
+
+
+/************************************************
+
+ ************************************************/
+void InputFilesListView::updateItems()
 {
     clear();
-    for (int i=0; i<mProject->filesCount(); ++i)
+    for (int i=0; i<project->filesCount(); ++i)
     {
         QListWidgetItem *item = new QListWidgetItem(this);
         item->setData(Qt::UserRole, i);
-        PsFile *file = mProject->file(i);
+        InputFile *file = project->file(i);
 
         item->setText(tr("( %1 pages ) ").arg(file->pageCount()) +
                     (file->title().isEmpty() ? tr("Untitled") : file->title()));
@@ -161,7 +215,7 @@ void PsFilesListView::updateItems()
 /************************************************
 
  ************************************************/
-void PsFilesListView::showContextMenu(const QPoint &pos)
+void InputFilesListView::showContextMenu(const QPoint &pos)
 {
     QListWidgetItem *item = itemAt(pos);
     if (!item)
@@ -178,13 +232,13 @@ void PsFilesListView::showContextMenu(const QPoint &pos)
 /************************************************
 
  ************************************************/
-void PsFilesListView::deleteFile()
+void InputFilesListView::deleteFile()
 {
     QAction *act = qobject_cast<QAction*>(sender());
     if (act)
     {
         int index = act->data().toInt();
-        mProject->removeFile(index);
+        project->removeFile(index);
     }
     updateItems();
 }
@@ -193,7 +247,7 @@ void PsFilesListView::deleteFile()
 /************************************************
 
  ************************************************/
-void PsFilesListView::mouseReleaseEvent(QMouseEvent *event)
+void InputFilesListView::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
     {
@@ -202,9 +256,9 @@ void PsFilesListView::mouseReleaseEvent(QMouseEvent *event)
         {
             setCurrentItem(item);
             int n = item->data(Qt::UserRole).toInt();
-            if (n<mProject->filesCount())
+            if (n<project->filesCount())
             {
-                emit fileSelected(mProject->file(n));
+                emit fileSelected(project->file(n));
             }
         }
     }
@@ -215,13 +269,15 @@ void PsFilesListView::mouseReleaseEvent(QMouseEvent *event)
 /************************************************
 
  ************************************************/
-void PsFilesListView::layoutChanged()
+void InputFilesListView::layoutChanged()
 {
     for (int i=0; i<count()-1; ++i)
     {
         int from = item(i)->data(Qt::UserRole).toInt();
         if (from != i)
-            mProject->moveFile(from, i);
+            project->moveFile(from, i);
     }
 }
+
+
 

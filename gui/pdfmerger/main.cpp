@@ -24,43 +24,31 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#ifndef PSRENDER_H
-#define PSRENDER_H
-
-#include <QThread>
+#include "../kernel/project.h"
+#include "pdfmerger.h"
 #include <QTextStream>
-#include <QStringList>
-#include <QImage>
+#include <QDebug>
+#include <QCoreApplication>
+#include <iostream>
 
-class PsProject;
-class PsSheet;
-class PsRenderPrivate;
+/************************************************
 
-class PsRender : public QObject
+ ************************************************/
+int main(int argc, char *argv[])
 {
-    Q_OBJECT
-public:
-    explicit PsRender(PsProject *project, QObject *parent = 0);
-    ~PsRender();
+    if (argc < 3)
+        return 1;
 
-    int sheetCount() const;
-    const PsSheet *sheet(int index) const;
-    QImage image(int index);
+    PdfMerger merger;
+    QCoreApplication app(argc, argv);
 
-public slots:
-    void refresh();
+    QStringList args = app.arguments();
+    for (int i=1; i<args.count() - 1; ++i)
+    {
+        merger.addFile(args.at(i));
+    }
 
-signals:
-    void changed(int sheetIndex);
-    void started();
-    void finished();
+    merger.run(argv[argc-1]);
 
-private:
-    PsRenderPrivate* const d_ptr;
-    Q_DECLARE_PRIVATE(PsRender)
-
-
-
-};
-
-#endif // PSRENDER_H
+    return 0;
+}

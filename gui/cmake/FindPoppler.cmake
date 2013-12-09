@@ -23,29 +23,23 @@
  #
  # END_COMMON_COPYRIGHT_HEADER
 
+#
+# Find snappy compression library and includes. This module defines:
+#   POPPLER_INCLUDE_DIR - The directories containing snappy's headers.
+#   POPPLER_LIBRARY    - A list of snappy's libraries.
+#   POPPLER_FOUND        - Whether snappy was found.
 
-cmake_minimum_required( VERSION 2.6 )
-
-project(boomagaCups)
-
-set(CUPS_BACKEND_ID "MFG:${CUPS_BACKEND_MANUFACTURER};CMD:PJL,PDF;MDL:${CUPS_BACKEND_MODEL};CLS:PRINTER;DES:${CUPS_BACKEND_DESCRIPTION};DRV:DPDF,R1,M0;")
-add_definitions(-DCUPS_BACKEND_ID=\"${CUPS_BACKEND_ID}\")
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/boomaga
-               ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}
-               @ONLY)
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/boomaga.ppd
-               ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}.ppd
-               @ONLY)
+include(FindPkgConfig)
+pkg_search_module(POPPLER REQUIRED QUIET poppler)
 
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}
-  DESTINATION ${CUPS_BACKEND_DIR}
-  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
-)
+string(REGEX REPLACE "([0-9]+).([0-9]+).([0-9]+)" "\\1" POPPLER_MAJOR_VERSION ${POPPLER_VERSION})
+string(REGEX REPLACE "([0-9]+).([0-9]+).([0-9]+)" "\\2" POPPLER_MINOR_VERSION ${POPPLER_VERSION})
+string(REGEX REPLACE "([0-9]+).([0-9]+).([0-9]+)" "\\3" POPPLER_PATCH_VERSION ${POPPLER_VERSION})
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}.ppd
-  DESTINATION ${CUPS_PPD_DIR}
-  PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
-)
+math(EXPR POPPLER_VER_INT "(10000 * ${POPPLER_MAJOR_VERSION}) + (100 * ${POPPLER_MINOR_VERSION}) + (${POPPLER_PATCH_VERSION})")
+add_definitions(-DPOPPLER_VERSION=${POPPLER_VER_INT})
+
+
+pkg_search_module(POPPLERQT REQUIRED QUIET poppler-qt4)
+

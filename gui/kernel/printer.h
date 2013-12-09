@@ -27,11 +27,15 @@
 #ifndef PRINTER_H
 #define PRINTER_H
 
+#include "boomagatypes.h"
 #include <QObject>
 #include <QList>
 #include <QString>
 #include <QPrinterInfo>
 #include <QExplicitlySharedDataPointer>
+#include <QIODevice>
+
+class Sheet;
 
 class Printer
 {
@@ -83,13 +87,13 @@ public:
     bool drawBorder() const { return mDrawBorder; }
     void setDrawBorder(bool value);
 
-    bool duplex() const { return mDuplex; }
-    void setDuplex(bool duplex);
+    DuplexType duplexType() const { return mDuplexType; }
+    void setDuplexType(DuplexType duplexType);
 
     bool reverseOrder() const { return mReverseOrder; }
     void setReverseOrder(bool value);
 
-    void print(const QString &fileName, const QString &jobName, int numCopies);
+    void print(const QList<Sheet*> &sheets, const QString &jobName, bool duplex, int numCopies = 1) const;
 
     QString deviceUri() const { return mDeviceUri; }
 
@@ -104,7 +108,7 @@ private:
     qreal mTopMargin;
     qreal mBottomMargin;
     qreal mInternalMargin;
-    bool mDuplex;
+    DuplexType mDuplexType;
     bool mDrawBorder;
     bool mReverseOrder;
 

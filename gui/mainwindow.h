@@ -31,11 +31,11 @@
 #include <QLabel>
 #include <QProgressBar>
 
-class PsProject;
-class PsRender;
-class QTemporaryFile;
-class PsFile;
+class Layout;
+class Project;
 class Printer;
+class InputFile;
+class QMessageBox;
 
 namespace Ui {
 class MainWindow;
@@ -46,47 +46,37 @@ class MainWindow : public QMainWindow
     Q_OBJECT
     
 public:
-    explicit MainWindow(PsProject *project, QWidget *parent = 0);
+    explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
     
-    PsProject *project() const { return mProject; }
-
     QList<Printer*> availablePrinters();
 
 private slots:
     void switchLayout();
     void switchPrinter();
 
-    void switchToFile(PsFile *file);
+    void switchToFile(InputFile *file);
 
-    void print(bool close = false);
+    void print();
     void printAndClose();
 
-    void updateCurrentSheet();
     void updateWidgets();
-    void updateStatusBar();
 
     void showPrinterSettingsDialog();
     void applyPrinterSettings();
 
-    void showPrevSheet();
-    void showNextSheet();
-
-    void psViewWhell(int delta);
-
     void showAboutDialog();
 
-    void showProgressBar();
-    void updateProgressBar(int value);
-    void hideProgressBar();
+    void updateProgressBar(int value, int all);
+
+protected:
+    void closeEvent(QCloseEvent *event);
 
 private:
     Ui::MainWindow *ui;
-    PsProject *mProject;
-    PsRender *mRender;
-    int mCurrentSheet;
 
     QList<Printer*> mAvailablePrinters;
+    QList<Layout*> mAvailableLayouts;
 
     QLabel mStatusBarSheetsLabel;
     QLabel mStatusBarCurrentSheetLabel;
@@ -98,10 +88,8 @@ private:
 
     void loadSettings();
     void saveSettings();
-    QTemporaryFile *getTmpFile();
 
-    int currentSheet() const { return mCurrentSheet; }
-    void setCurrentSheet(int value);
+    QMessageBox *showPrintDialog(const QString &text);
 };
 
 #endif // MAINWINDOW_H

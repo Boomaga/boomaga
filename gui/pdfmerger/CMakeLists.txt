@@ -26,26 +26,46 @@
 
 cmake_minimum_required( VERSION 2.6 )
 
-project(boomagaCups)
+project(boomagamerger)
 
-set(CUPS_BACKEND_ID "MFG:${CUPS_BACKEND_MANUFACTURER};CMD:PJL,PDF;MDL:${CUPS_BACKEND_MODEL};CLS:PRINTER;DES:${CUPS_BACKEND_DESCRIPTION};DRV:DPDF,R1,M0;")
-add_definitions(-DCUPS_BACKEND_ID=\"${CUPS_BACKEND_ID}\")
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/boomaga
-               ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}
-               @ONLY)
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/boomaga.ppd
-               ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}.ppd
-               @ONLY)
-
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}
-  DESTINATION ${CUPS_BACKEND_DIR}
-  PERMISSIONS OWNER_READ OWNER_WRITE OWNER_EXECUTE
+set(MERGER_HEADERS
+    pdfmerger.h
 )
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}.ppd
-  DESTINATION ${CUPS_PPD_DIR}
-  PERMISSIONS OWNER_READ OWNER_WRITE GROUP_READ WORLD_READ
+set(MERGER_SOURCES
+    main.cpp
+    pdfmerger.cpp
 )
+
+set(MERGER_MOCS
+    #pdfmerger.h
+)
+
+
+
+#*******************************************
+#message("CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}")
+#message("EXECUTABLE_OUTPUT_PATH: ${PROJECT_BINARY_DIR}")
+set(EXECUTABLE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/..")
+SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+#find_package(Qt4 REQUIRED QUIET)
+#find_package(Poppler REQUIRED QUIET)
+
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
+    ${CUPS_INCLUDE_DIR}
+    ${POPPLER_INCLUDE_DIRS}
+)
+
+include(${QT_USE_FILE})
+qt4_wrap_cpp(MERGER_MOC_SOURCES ${MERGER_MOCS})
+
+add_executable(${PROJECT_NAME} ${MERGER_HEADERS} ${MERGER_SOURCES} ${MERGER_MOC_SOURCES})
+target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${POPPLER_LIBRARIES})
+
+install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION lib/boomaga/)
+
+
+

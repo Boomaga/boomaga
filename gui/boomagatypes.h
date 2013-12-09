@@ -23,38 +23,22 @@
  *
  * END_COMMON_COPYRIGHT_HEADER */
 
+#ifndef BOOMAGATYPES_H
+#define BOOMAGATYPES_H
+#include <QMetaType>
+#include <QDataStream>
+#include <QVariant>
 
-#include "dbus.h"
-#include "kernel/project.h"
-
-#include <QDBusConnection>
-#include <QDebug>
-
-
-/************************************************
-
- ************************************************/
-BoomagaDbus::BoomagaDbus(const QString &serviceName, const QString &dbusPath):
-    QObject()
+enum DuplexType
 {
-    QDBusConnection::sessionBus().registerService(serviceName);
-    QDBusConnection::sessionBus().registerObject(dbusPath, this, QDBusConnection::ExportAllSlots);
-}
+    DuplexAuto          = 1,
+    DuplexManual        = 2,
+    DuplexManualReverse = 3
+};
 
+Q_DECLARE_METATYPE(DuplexType)
 
-/************************************************
+QString duplexTypetoStr(DuplexType value);
+DuplexType strToDuplexType(const QString &str);
 
- ************************************************/
-BoomagaDbus::~BoomagaDbus()
-{
-}
-
-
-/************************************************
-
- ************************************************/
-void BoomagaDbus::add(const QString &file, const QString &title, bool autoRemove)
-{
-    Job job(file, title, autoRemove);
-    project->addFile(job);
-}
+#endif // BOOMAGATYPES_H

@@ -24,7 +24,7 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#include "kernel/psproject.h"
+#include "kernel/project.h"
 #include "mainwindow.h"
 #include "dbus.h"
 
@@ -37,6 +37,8 @@
 #include <QLibraryInfo>
 #include <QDebug>
 #include <QProcessEnvironment>
+#include <QFile>
+#include <QDir>
 
 /************************************************
 
@@ -44,7 +46,7 @@
 void printHelp()
 {
     QTextStream out(stdout);
-    out << "Usage: boomaga [options] [file]" << endl;
+    out << "Usage: boomaga [options] [files...]" << endl;
     out << endl;
 
     out << "Boomaga provides a virtual printer for CUPS. This can be used" << endl;
@@ -57,10 +59,11 @@ void printHelp()
     out << "  -t, --title <title>     The job name/title" << endl;
     out << "  -n, --num <copies>      Sets the number of copies to print" << endl;
     out << "  -V, --version           Print program version" << endl;
+    out << "      --autoremove        Automatically delete the input file" << endl;
     out << endl;
 
     out << "Arguments:" << endl;
-    out << "  file                    Postscript file" << endl;
+    out << "  files                    One or more PDF files" << endl;
 
 
 }
@@ -88,11 +91,43 @@ int printError(const QString &msg)
 }
 
 
+
+/************************************************
+ *
+ ************************************************/
+void readEnvFile()
+{
+    QFile envFile(QDir::homePath() + "/.cache/boomaga.env");
+    if (envFile.exists())
+    {
+        envFile.open(QFile::ReadOnly);
+        while (!envFile.atEnd())
+        {
+            QString line = QString::fromLocal8Bit(envFile.readLine());
+            QString name = line.section("=", 0, 0).trimmed();
+            QString value = line.section("=", 1).trimmed();
+
+            if ((value.startsWith('\'') && value.endsWith('\'')) ||
+                (value.startsWith('"') && value.endsWith('"')))
+            {
+                value = value.mid(1, value.length() - 2);
+            }
+
+            qputenv(name.toLocal8Bit(), value.toLocal8Bit());
+        }
+        envFile.close();
+    }
+
+}
+
+
 /************************************************
 
  ************************************************/
 int main(int argc, char *argv[])
 {
+    readEnvFile();
+
     QApplication application(argc, argv);
 
     QTranslator qtTranslator;
@@ -105,9 +140,10 @@ int main(int argc, char *argv[])
     application.installTranslator(&translator);
 
 
-    QFileInfo file;
+    QFileInfoList files;
     QString jobTitle;
-    int copiesCount=0;
+    int copiesCount = 0;
+    bool autoRemove = false;
 
     QStringList args = application.arguments();
     for (int i=1; i < args.count(); ++i)
@@ -144,6 +180,13 @@ int main(int argc, char *argv[])
         }
 
         //*************************************************
+        if (arg == "--autoremove")
+        {
+            autoRemove = true;
+            continue;
+        }
+
+        //*************************************************
         if (arg == "-n" || arg == "--num")
         {
             if (i+1 < args.count())
@@ -167,19 +210,23 @@ int main(int argc, char *argv[])
         }
 
         //*************************************************
-        file.setFile(args.at(i));
+        files << QFileInfo(args.at(i));
     }
 
-
-    if (!file.filePath().isEmpty())
+    QList<Job> jobs;
+    foreach (const QFileInfo &file, files)
     {
-        if (!file.exists())
-            return printError(QString("Cannot open file \"%1\" (No such file or directory)")
-                              .arg(file.filePath()));
+        if (!file.filePath().isEmpty())
+        {
+            if (!file.exists())
+                return printError(QString("Cannot open file \"%1\" (No such file or directory)")
+                                  .arg(file.filePath()));
 
-        if (!file.isReadable())
-            return printError(QString("Cannot open file \"%1\" (Access denied)")
-                              .arg(file.filePath()));
+            if (!file.isReadable())
+                return printError(QString("Cannot open file \"%1\" (Access denied)")
+                                  .arg(file.filePath()));
+        }
+        jobs << Job(file.absoluteFilePath(), "", autoRemove);
     }
 
 #if 0
@@ -193,17 +240,15 @@ int main(int argc, char *argv[])
     f.close();
 #endif
 
-    PsProject project;
-    DBusProjectAdaptor dbus(&project);
-    QDBusConnection::sessionBus().registerService("org.boomaga");
-    QDBusConnection::sessionBus().registerObject("/Project", &project);
+    BoomagaDbus dbus("org.boomaga", "/boomaga");
 
-    MainWindow mainWindow(&project);
+    MainWindow mainWindow;
     mainWindow.show();
     application.processEvents();
 
-    if (!file.filePath().isEmpty())
-        project.addFile(file.absoluteFilePath());
+
+    if (!jobs.isEmpty())
+        project->addFiles(jobs);
 
 
     return application.exec();

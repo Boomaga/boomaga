@@ -92,7 +92,7 @@ QString AboutDialog::aboutText() const
                 tr("Boomaga provides a virtual printer for CUPS. This can be used for print preview or for print booklets."),
                 tr("Copyright: %1-%2 %3").arg("2012", QDate::currentDate().toString("yyyy"), "Boomaga team"),
 
-                tr("Homepage: %1").arg("<a href='https://github.com/Boomaga/boomaga'>https://github.com/Boomaga/boomaga</a>"),
+                tr("Homepage: %1").arg("<a href='http://boomaga.github.io'>http://boomaga.github.io</a>"),
                 tr("License: %1").arg("<a href='http://www.gnu.org/licenses/gpl-2.0.html'>GNU General Public License version 2</a>"
                                       "and partly under the "
                                       "<a href='http://www.gnu.org/licenses/lgpl-2.1.html'>GNU Lesser General Public License version 2.1 or later</a> "

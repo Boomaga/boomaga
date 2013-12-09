@@ -27,51 +27,62 @@
 #ifndef SETTINGS_H
 #define SETTINGS_H
 
-#include "kernel/psproject.h"
+#include "kernel/project.h"
 #include <QSettings>
+#include <QSet>
+#include "boomagatypes.h"
 
-class Settings
+class Settings : public QSettings
 {
+    Q_OBJECT
 public:
+    enum Key{
+        Layout,
+        Printer,
+        DoubleSided,
+
+        // Printer ******************************
+        Printer_DuplexType,
+        Printer_DrawBorder,
+        Printer_ReverseOrder,
+
+        Printer_LeftMargin,
+        Printer_RightMargin,
+        Printer_TopMargin,
+        Printer_BottomMargin,
+        Printer_InternalMargin,
+
+        // MainWindow ***************************
+        MainWindow_Geometry,
+        MainWindow_State
+    };
+
     static Settings *instance();
+    static void setFileName(const QString &fileName);
 
-    QByteArray mainWindowGeometry();
-    void setMainWindowGeometry(const QByteArray &value);
+    QVariant value(Key key, const QVariant &defaultValue = QVariant()) const;
+    QVariant value(const QString &key, const QVariant &defaultValue = QVariant()) const;
+    QVariant printerValue(const QString &printerId, Key key, const QVariant &defaultValue = QVariant()) const;
 
-    QByteArray mainWindowState();
-    void setMainWindowState(const QByteArray &value);
-
-
-    PsProject::PsLayout layout();
-    void setLayout(PsProject::PsLayout value);
-
-    QString currentPrinter() const;
-    void setCurrentPrinter(const QString &value);
-
-    bool printerDuplex(const QString &printerName, bool defaultValue);
-    void setPrinterDuplex(const QString &printerName, bool value);
-
-    bool printerBorder(const QString &printerName, bool defaultValue);
-    void setPrinterBorder(const QString &printerName, bool value);
-
-    bool printerReverseOrder(const QString &printerName, bool defaultValue);
-    void setPrinterReverseOrder(const QString &printerName, bool value);
-
-    QSize printerPageSize(const QString &printerName, QSize defaultValue);
-    void setPrinterPageSize(const QString &printerName, QSize value);
-
-    double printerMargin(const QString &printerName, const QString &margin, double defaultValue);
-    void setPrinterMargin(const QString &printerName, const QString &margin, double value);
-
-    void sync();
-protected:
-    Settings();
+    void setValue(Key key, const QVariant &value);
+    void setValue(const QString &key, const QVariant &value);
+    void setPrinterValue(const QString &printerId, Key key, const QVariant &value);
 
 private:
-    QSettings mSettings;
+    explicit Settings(const QString &organization, const QString &application);
+    explicit Settings(const QString &fileName);
+    virtual ~Settings();
 
+    void init();
+    void setDefaultValue(const QString &key, const QVariant &defaultValue);
+    void setDefaultValue(Key key, const QVariant &defaultValue);
+
+    QString keyToString(Key key) const;
+    QSet<QString> mPrograms;
+    static QString mFileName;
 };
 
 #define settings Settings::instance()
+
 
 #endif // SETTINGS_H

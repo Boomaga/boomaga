@@ -26,22 +26,23 @@
 
 #include "mainwindow.h"
 #include "ui_mainwindow.h"
-#include "kernel/psproject.h"
+#include "kernel/project.h"
 #include "settings.h"
 #include "kernel/printer.h"
+#include "kernel/layout.h"
+#include "kernel/inputfile.h"
 #include "printersettings/printersettings.h"
-#include "psrender.h"
 #include "aboutdialog/aboutdialog.h"
 
+#include <math.h>
 #include <QRadioButton>
 #include <QMessageBox>
 #include <QPushButton>
-#include <QTemporaryFile>
 #include <QDir>
 #include <QProcess>
 #include <QDebug>
 #include <QTimer>
-
+#include <QKeyEvent>
 
 /************************************************
 
@@ -59,15 +60,11 @@ QIcon findIcon(const QString theme1, const QString fallback)
 /************************************************
 
  ************************************************/
-MainWindow::MainWindow(PsProject *project, QWidget *parent):
+MainWindow::MainWindow(QWidget *parent):
     QMainWindow(parent),
-    ui(new Ui::MainWindow),
-    mProject(project),
-    mCurrentSheet(-1)
+    ui(new Ui::MainWindow)
 {
-    mRender = new PsRender(mProject, this);
     ui->setupUi(this);
-    ui->preview->setRender(mRender);
 
     delete ui->menuPreferences;
 
@@ -76,67 +73,81 @@ MainWindow::MainWindow(PsProject *project, QWidget *parent):
 
     setStyleSheet("QListView::item { padding: 2px;}");
 
-
-    ui->previewFrame->setBackgroundRole(QPalette::Dark);
-    ui->previewFrame->setAutoFillBackground(true);
-
-    ui->filesView->setProject(mProject);
-
     foreach(Printer *printer, availablePrinters())
     {
         ui->printersCbx->addPrinter(printer);
     }
-
     initStatusBar();
     initActions();
 
-    ui->layout1UpBtn->setPsLayout(PsProject::Layout1Up);
-    ui->layout2UpBtn->setPsLayout(PsProject::Layout2Up);
-    ui->layout4UpBtn->setPsLayout(PsProject::Layout4Up);
-    ui->layout8UpBtn->setPsLayout(PsProject::Layout8Up);
-    ui->layoutBookletBtn->setPsLayout(PsProject::LayoutBooklet);
+    Layout *layout = new LayoutNUp(1, 1);
+    mAvailableLayouts << layout;
+    ui->layout1UpBtn->setLayout(layout);
+
+    layout = new LayoutNUp(2, 1);
+    mAvailableLayouts << layout;
+    ui->layout2UpBtn->setLayout(layout);
+
+    layout = new LayoutNUp(2, 2);
+    mAvailableLayouts << layout;
+    ui->layout4UpBtn->setLayout(layout);
+
+    layout = new LayoutNUp(4, 2);
+    mAvailableLayouts << layout;
+    ui->layout8UpBtn->setLayout(layout);
+
+    layout = new LayoutBooklet();
+    mAvailableLayouts << layout;
+    ui->layoutBookletBtn->setLayout(layout);
 
 
     loadSettings();
     switchPrinter();
     updateWidgets();
-    updateStatusBar();
+    updateWidgets();
 
-    connect(ui->layout1UpBtn,     SIGNAL(clicked(bool)), this, SLOT(switchLayout()));
-    connect(ui->layout2UpBtn,     SIGNAL(clicked(bool)), this, SLOT(switchLayout()));
-    connect(ui->layout4UpBtn,     SIGNAL(clicked(bool)), this, SLOT(switchLayout()));
-    connect(ui->layout8UpBtn,     SIGNAL(clicked(bool)), this, SLOT(switchLayout()));
-    connect(ui->layoutBookletBtn, SIGNAL(clicked(bool)), this, SLOT(switchLayout()));
+    connect(ui->layout1UpBtn,     SIGNAL(clicked(bool)),
+            this, SLOT(switchLayout()));
 
-    connect(ui->filesView, SIGNAL(fileSelected(PsFile*)), this, SLOT(switchToFile(PsFile*)));
+    connect(ui->layout2UpBtn,     SIGNAL(clicked(bool)),
+            this, SLOT(switchLayout()));
 
+    connect(ui->layout4UpBtn,     SIGNAL(clicked(bool)),
+            this, SLOT(switchLayout()));
 
-    connect(ui->printersCbx, SIGNAL(activated(int)), this, SLOT(switchPrinter()));
+    connect(ui->layout8UpBtn,     SIGNAL(clicked(bool)),
+            this, SLOT(switchLayout()));
 
-    connect(mProject, SIGNAL(changed()), this, SLOT(updateWidgets()));
-    connect(mProject, SIGNAL(changed()), this, SLOT(updateStatusBar()));
-    connect(mProject, SIGNAL(changed()), this, SLOT(updateCurrentSheet()));
+    connect(ui->layoutBookletBtn, SIGNAL(clicked(bool)),
+            this, SLOT(switchLayout()));
 
-    connect(ui->printerConfigBtn, SIGNAL(clicked()), this, SLOT(showPrinterSettingsDialog()));
+    connect(ui->doubleSidedCbx, SIGNAL(clicked(bool)),
+            project, SLOT(setDoubleSided(bool)));
 
+    connect(ui->filesView, SIGNAL(fileSelected(InputFile*)),
+            this, SLOT(switchToFile(InputFile*)));
 
-    connect(mProject, SIGNAL(fileAdded(const PsFile*)), mRender, SLOT(refresh()));
-    connect(mProject, SIGNAL(fileRemoved()), mRender, SLOT(refresh()));
-    connect(mProject, SIGNAL(fileRemoved()), this, SLOT(updateCurrentSheet()));
-    connect(mProject, SIGNAL(fileMoved()), mRender, SLOT(refresh()));
-    connect(mProject, SIGNAL(fileMoved()), this, SLOT(updateCurrentSheet()));
+    connect(ui->printersCbx, SIGNAL(activated(int)),
+            this, SLOT(switchPrinter()));
 
-    connect(mRender, SIGNAL(finished()), this, SLOT(updateWidgets()));
+    connect(project, SIGNAL(changed()),
+            this, SLOT(updateWidgets()));
 
-    connect(mRender, SIGNAL(started()), this, SLOT(showProgressBar()));
-    connect(mRender, SIGNAL(changed(int)), this, SLOT(updateProgressBar(int)));
-    connect(mRender, SIGNAL(finished()), this, SLOT(hideProgressBar()));
+    connect(ui->printerConfigBtn, SIGNAL(clicked()),
+            this, SLOT(showPrinterSettingsDialog()));
 
-    connect(ui->preview, SIGNAL(whellScrolled(int)), this, SLOT(psViewWhell(int)));
-    mRender->refresh();
+    connect(project, SIGNAL(progress(int,int)),
+            this, SLOT(updateProgressBar(int, int)));
 
+    connect(ui->preview, SIGNAL(changed(int)),
+            this, SLOT(updateWidgets()));
 
-    setCurrentSheet(0);
+    connect(ui->preview, SIGNAL(changed(int)),
+            ui->filesView, SLOT(setSheetNum(int)));
+
+    ui->preview->setFocusPolicy(Qt::StrongFocus);
+    ui->preview->setFocus();
+
 }
 
 
@@ -161,7 +172,6 @@ QList<Printer *> MainWindow::availablePrinters()
         foreach (const QPrinterInfo &pi, printers)
         {
             Printer *printer = new Printer(pi);
-
             if (printer->deviceUri() != CUPS_BACKEND_URI)
                 mAvailablePrinters << printer;
             else
@@ -178,14 +188,26 @@ QList<Printer *> MainWindow::availablePrinters()
  ************************************************/
 void MainWindow::loadSettings()
 {
-    restoreGeometry(settings->mainWindowGeometry());
-    restoreState(settings->mainWindowState());
+    restoreGeometry(settings->value(Settings::MainWindow_Geometry).toByteArray());
+    restoreState(settings->value(Settings::MainWindow_State).toByteArray());
 
 
-   ui->printersCbx->setCurrentPrinter(settings->currentPrinter());
-   if (ui->printersCbx->currentIndex() < 0)
-       ui->printersCbx->setCurrentIndex(0);
+    ui->printersCbx->setCurrentPrinter(settings->value(Settings::Printer).toString());
+    if (ui->printersCbx->currentIndex() < 0)
+        ui->printersCbx->setCurrentIndex(0);
 
+    QString layoutId = settings->value(Settings::Layout).toString();
+
+    foreach(Layout *layout, mAvailableLayouts)
+    {
+        if (layout->id() == layoutId)
+            project->setLayout(layout);
+    }
+
+    if (!project->layout())
+        project->setLayout(mAvailableLayouts.at(0));
+
+    project->setDoubleSided(settings->value(Settings::DoubleSided).toBool());
 }
 
 
@@ -194,12 +216,16 @@ void MainWindow::loadSettings()
  ************************************************/
 void MainWindow::saveSettings()
 {
-    settings->setMainWindowGeometry(saveGeometry());
-    settings->setMainWindowState(saveState());
-    settings->sync();
+    settings->setValue(Settings::MainWindow_Geometry, saveGeometry());
+    settings->setValue(Settings::MainWindow_State, saveState());
 
     Printer *printer = ui->printersCbx->currentPrinter();
-    settings->setCurrentPrinter(printer->printerName());
+    settings->setValue(Settings::Printer, printer->printerName());
+
+    settings->setValue(Settings::Layout, project->layout()->id());
+    settings->setValue(Settings::DoubleSided, project->doubleSided());
+
+    settings->sync();
 }
 
 
@@ -222,11 +248,11 @@ void MainWindow::initActions()
 
     act = ui->actionPreviousSheet;
     act->setIcon(findIcon("go-previous-view", ":/images/previous"));
-    connect(act, SIGNAL(triggered()), this, SLOT(showPrevSheet()));
+    connect(act, SIGNAL(triggered()), ui->preview, SLOT(prevSheet()));
 
     act = ui->actionNextSheet;
     act->setIcon(findIcon("go-next-view", ":/images/next"));
-    connect(act, SIGNAL(triggered()), this, SLOT(showNextSheet()));
+    connect(act, SIGNAL(triggered()), ui->preview, SLOT(nextSheet()));
 
     act = ui->actionAbout;
     connect(act, SIGNAL(triggered()), this, SLOT(showAboutDialog()));
@@ -261,35 +287,42 @@ void MainWindow::updateWidgets()
 {
     foreach (LayoutRadioButton* btn, this->findChildren<LayoutRadioButton*>())
     {
-        btn->setChecked(btn->psLayout() == mProject->layout());
+        btn->setChecked(btn->layout() == project->layout());
     }
 
-    ui->actionPrint->setEnabled(mProject->pageCount() > 0);
+    ui->actionPrint->setEnabled(project->pageCount() > 0);
     ui->actionPrintAndClose->setEnabled(ui->actionPrint->isEnabled());
 
-    ui->actionPreviousSheet->setEnabled(mCurrentSheet > 0);
-    ui->actionNextSheet->setEnabled(mCurrentSheet < mProject->previewSheetCount() - 1);
-}
+    ui->actionPreviousSheet->setEnabled(ui->preview->currentSheet() > 0);
+    ui->actionNextSheet->setEnabled(ui->preview->currentSheet() < project->previewSheetCount() - 1);
 
 
-/************************************************
-
- ************************************************/
-void MainWindow::updateStatusBar()
-{
-    if (mProject->pageCount())
+    if (project->layout()->id() == "Booklet")
     {
-        QString pagesTmpl = (mProject->pageCount() > 1) ? tr("%1 pages") : tr("%1 page");
-        QString sheetsTmpl = (mProject->sheetCount() > 2) ? tr("%1 sheets") : tr("%1 sheet");
-        mStatusBarSheetsLabel.setText(pagesTmpl.arg(mProject->pageCount()) +
-                                   " ( " +
-                                   sheetsTmpl.arg(mProject->sheetCount() / 2) +
-                                   " )"
-                                      );
+        ui->doubleSidedCbx->setChecked(true);
+        ui->doubleSidedCbx->setEnabled(false);
+    }
+    else
+    {
+        ui->doubleSidedCbx->setChecked(project->doubleSided());
+        ui->doubleSidedCbx->setEnabled(true);
+    }
 
-        mStatusBarCurrentSheetLabel.setText(tr("Sheet %1 of %2")
-                                .arg(mCurrentSheet + 1)
-                                .arg(mRender->sheetCount()));
+    // Update status bar ..........................
+    if (project->pageCount())
+    {
+        int sheetsCount = project->doubleSided() ?
+                          ceil(project->sheetCount() / 2.0) :
+                          project->sheetCount();
+
+        QString pagesTmpl = (project->pageCount() > 1) ? tr("%1 pages", "Status bar") : tr("%1 page", "Status bar");
+        QString sheetsTmpl = (sheetsCount > 1) ? tr("%1 sheets", "Status bar") : tr("%1 sheet", "Status bar");
+        mStatusBarSheetsLabel.setText(pagesTmpl.arg(project->pageCount()) +
+                                   " ( " + sheetsTmpl.arg(sheetsCount) + " )");
+
+        mStatusBarCurrentSheetLabel.setText(tr("Sheet %1 of %2", "Status bar")
+                                .arg(ui->preview->currentSheet() + 1)
+                                .arg(project->previewSheetCount()));
     }
     else
     {
@@ -315,68 +348,8 @@ void MainWindow::showPrinterSettingsDialog()
  ************************************************/
 void MainWindow::applyPrinterSettings()
 {
-    mProject->printer()->saveSettings();
+    project->printer()->saveSettings();
     switchPrinter();
-}
-
-
-/************************************************
-
- ************************************************/
-void MainWindow::showPrevSheet()
-{
-    setCurrentSheet(mCurrentSheet-1);
-}
-
-
-/************************************************
-
- ************************************************/
-void MainWindow::showNextSheet()
-{
-    setCurrentSheet(mCurrentSheet+1);
-}
-
-
-/************************************************
-
- ************************************************/
-void MainWindow::psViewWhell(int delta)
-{
-    setCurrentSheet(mCurrentSheet + (delta < 0 ? 1 : -1));
-}
-
-
-/************************************************
-
- ************************************************/
-void MainWindow::updateCurrentSheet()
-{
-    setCurrentSheet(mCurrentSheet);
-}
-
-
-/************************************************
-
- ************************************************/
-void MainWindow::setCurrentSheet(int value)
-{
-    if (mProject->sheetCount())
-    {
-        int n = qBound(0, value, mProject->previewSheetCount()-1);
-        if (n != mCurrentSheet)
-        {
-            mCurrentSheet = n;
-            ui->preview->setCurrentSheet(mCurrentSheet);
-        }
-    }
-    else
-    {
-        mCurrentSheet = 0;
-        ui->preview->setCurrentSheet(mCurrentSheet);
-    }
-    updateWidgets();
-    updateStatusBar();
 }
 
 
@@ -388,8 +361,7 @@ void MainWindow::switchLayout()
     LayoutRadioButton *btn = qobject_cast<LayoutRadioButton*>(sender());
     if (btn)
     {
-        mProject->setLayout(btn->psLayout());
-        mRender->refresh();
+        project->setLayout(btn->layout());
     }
 }
 
@@ -399,27 +371,24 @@ void MainWindow::switchLayout()
  ************************************************/
 void MainWindow::switchPrinter()
 {
-    mProject->setPrinter(ui->printersCbx->currentPrinter());
-    mRender->refresh();
+    project->setPrinter(ui->printersCbx->currentPrinter());
 }
 
 
 /************************************************
 
  ************************************************/
-void MainWindow::switchToFile(PsFile *file)
+void MainWindow::switchToFile(InputFile *file)
 {
-    for (int i=0; i<mProject->previewSheetCount(); ++i)
+    ProjectPage *page = file->pages().first();
+    for (int i=0; i<project->previewSheetCount(); ++i)
     {
-        const PsSheet *sheet = mProject->previewSheet(i);
+        const Sheet *sheet = project->previewSheet(i);
         for (int j=0; j<sheet->count(); ++j)
         {
-            const PsProjectPage *page = sheet->page(j);
-            if (page &&
-                    page->file() == file &&
-                    page->pageNum() == 0)
+            if (sheet->page(j) == page)
             {
-                setCurrentSheet(i);
+                ui->preview->setCurrentSheet(i);
                 return;
             }
         }
@@ -429,110 +398,180 @@ void MainWindow::switchToFile(PsFile *file)
 
 
 /************************************************
-
+ *
  ************************************************/
-QTemporaryFile *MainWindow::getTmpFile()
-{
-    QTemporaryFile *file = new QTemporaryFile(QDir::tempPath() + "/boomaga_XXXXXX.ps");
-    if (!file->open()) //QFile::WriteOnly))
-    {
-        qWarning() << "Can't open temporary file:" << file->errorString();
-        delete file;
-        return 0;
-    }
-
-    //file->setAutoRemove(false);
-    return file;
-}
-
-
-
-/************************************************
-
- ************************************************/
-void MainWindow::print(bool close)
+QMessageBox *MainWindow::showPrintDialog(const QString &text)
 {
     QMessageBox *infoDialog = new QMessageBox(this);
     infoDialog->setWindowTitle(this->windowTitle() + " ");
     infoDialog->setIconPixmap(QPixmap(":/images/print-48x48"));
     infoDialog->setStandardButtons(QMessageBox::NoButton);
 
-    if (mProject->printer()->duplex())
+    infoDialog->setText(text);
+    infoDialog->show();
+    qApp->processEvents();
+
+    return infoDialog;
+}
+
+
+/************************************************
+
+ ************************************************/
+void MainWindow::print()
+{
+    if (!project->sheetCount())
+        return;
+
+    QMessageBox *infoDialog = 0;
+    Sheet emptySheet(1, 0);
+
+    bool split = project->doubleSided() &&
+                 project->printer()->duplexType() != DuplexAuto;
+
+    if (split)
     {
-        infoDialog->setText(tr("Print the all pages on %1.").arg(mProject->printer()->printerName()));
-        infoDialog->show();
-        qApp->processEvents();
+        Project::PagesOrder order_1;
+        Project::PagesOrder order_2;
+        Project::PagesType  pagesType_1;
+        Project::PagesType  pagesType_2;
 
-        QTemporaryFile *file = getTmpFile();
-        if (!file)
-            return;
+        if (project->printer()->duplexType() == DuplexManual)
+        {
+            if (!project->printer()->reverseOrder())
+            {
+                order_1 = Project::ForwardOrder;
+                order_2 = Project::ForwardOrder;
+                pagesType_1 = Project::OddPages;
+                pagesType_2 = Project::EvenPages;
+            }
+            else
+            {
+                order_1 = Project::BackOrder;
+                order_2 = Project::BackOrder;
+                pagesType_1 = Project::EvenPages;
+                pagesType_2 = Project::OddPages;
+            }
+        }
+        else
+        {
+            if (!project->printer()->reverseOrder())
+            {
+                order_1 = Project::ForwardOrder;
+                order_2 = Project::BackOrder;
+                pagesType_1 = Project::OddPages;
+                pagesType_2 = Project::EvenPages;
+            }
+            else
+            {
+                order_1 = Project::BackOrder;
+                order_2 = Project::ForwardOrder;
+                pagesType_1 = Project::EvenPages;
+                pagesType_2 = Project::OddPages;
+            }
+        }
 
-        QTextStream stream(file);
-        PsProject::PagesOrder order = (mProject->printer()->reverseOrder() ? PsProject::BackOrder : PsProject::ForwardOrder);
-        mProject->writeDocument(PsProject::AllPages, order, &stream);
-        file->close();
 
-        mProject->printer()->print(file->fileName(), "", 1);
-        delete file;
+         QList<Sheet*> sheets_1 = project->selectSheets(pagesType_1, order_1);
+         QList<Sheet*> sheets_2 = project->selectSheets(pagesType_2, order_2);
+
+
+         if (sheets_1.count())
+         {
+             if (order_1 == Project::BackOrder)
+             {
+                 while (sheets_1.count() < sheets_2.count())
+                     sheets_1.insert(0, &emptySheet);
+             }
+             else
+             {
+                 while (sheets_1.count() < sheets_2.count())
+                     sheets_1.append(&emptySheet);
+             }
+
+
+             if (! sheets_2.count())
+             {
+                 infoDialog = showPrintDialog(tr("Print the all pages on %1.").arg(project->printer()->printerName()));
+             }
+
+
+             project->printer()->print(sheets_1, "", false, 1);
+         }
+
+
+         // Show dialog ....................................
+         if (sheets_1.count() && sheets_2.count())
+         {
+             QMessageBox dialog(this);
+             dialog.setWindowTitle(this->windowTitle() + " ");
+             dialog.setIconPixmap(QPixmap(":/images/print-48x48"));
+
+             dialog.setText(tr("Print the odd pages on %1.<p>"
+                               "When finished, turn the pages, insert them into the printer<br>"
+                               "and click the Continue button.").arg(project->printer()->printerName()));
+
+             dialog.addButton(QMessageBox::Abort);
+             QPushButton *btn = dialog.addButton(QMessageBox::Ok);
+             btn->setText(tr("Continue"));
+
+             if (dialog.exec() != QMessageBox::Ok)
+                 return;
+         }
+         // ................................................
+
+
+         if (sheets_2.count())
+         {
+             if (order_2 == Project::BackOrder)
+             {
+                 while (sheets_2.count() < sheets_1.count())
+                     sheets_2.insert(0, &emptySheet);
+             }
+             else
+             {
+                 while (sheets_2.count() < sheets_1.count())
+                     sheets_2.append(&emptySheet);
+             }
+
+             infoDialog = showPrintDialog(tr("Print the even pages on %1.").arg(project->printer()->printerName()));
+
+             project->printer()->print(sheets_2, "", false, 1);
+         }
+
     }
     else
     {
-        // Print odd pages ................................
+        infoDialog = showPrintDialog(tr("Print the all pages on %1.").arg(project->printer()->printerName()));
+
+        Project::PagesOrder order;
+        if (project->printer()->reverseOrder())
+            order = Project::BackOrder;
+        else
+            order = Project::ForwardOrder;
+
+        QList<Sheet*> sheets = project->selectSheets(Project::AllPages, order);
+
+        if (project->doubleSided() && sheets.count() % 2)
         {
-            QTemporaryFile *file = getTmpFile();
-            if (!file)
-                return;
-
-            QTextStream stream(file);
-            PsProject::PagesOrder order = (mProject->printer()->reverseOrder() ? PsProject::BackOrder : PsProject::ForwardOrder);
-            mProject->writeDocument(PsProject::OddPages, order, &stream);
-            file->close();
-
-            mProject->printer()->print(file->fileName(), "", 1);
-            delete file;
+            if (order == Project::BackOrder)
+            {
+                sheets.insert(0, &emptySheet);
+                qDebug() << Q_FUNC_INFO << "insert";
+            }
+            else
+            {
+                sheets.append(&emptySheet);
+                qDebug() << Q_FUNC_INFO << "append";
+            }
         }
 
-        // Show dialog ....................................
-        {
-            QMessageBox dialog(this);
-            dialog.setWindowTitle(this->windowTitle() + " ");
-            dialog.setIconPixmap(QPixmap(":/images/print-48x48"));
-
-            dialog.setText(tr("Print the odd pages on %1.<p>"
-                              "When finished, turn the pages, insert them into the printer<br>"
-                              "and click the Continue button.").arg(mProject->printer()->printerName()));
-
-            dialog.addButton(QMessageBox::Abort);
-            QPushButton *btn = dialog.addButton(QMessageBox::Ok);
-            btn->setText(tr("Continue"));
-
-            if (dialog.exec() != QMessageBox::Ok)
-                return;
-        }
-        // ................................................
-
-        // Print even pages ...............................
-        {
-            infoDialog->setText(tr("Print the even pages on %1.").arg(mProject->printer()->printerName()));
-            infoDialog->show();
-            qApp->processEvents();
-
-            QTemporaryFile *file = getTmpFile();
-            if (!file)
-                return;
-
-            QTextStream stream(file);
-            mProject->writeDocument(PsProject::EvenPages, &stream);
-            file->close();
-
-            mProject->printer()->print(file->fileName(), "", 1);
-            delete file;
-        }
+        project->printer()->print(sheets, "", project->doubleSided(), 1);
     }
 
-    if (close)
-        QTimer::singleShot(200, this, SLOT(close()));
-    else
+
+
+    if (infoDialog)
         QTimer::singleShot(200, infoDialog, SLOT(deleteLater()));
 }
 
@@ -542,7 +581,8 @@ void MainWindow::print(bool close)
  ************************************************/
 void MainWindow::printAndClose()
 {
-    print(true);
+    print();
+    QTimer::singleShot(200, this, SLOT(close()));
 }
 
 
@@ -560,29 +600,30 @@ void MainWindow::showAboutDialog()
 /************************************************
 
  ************************************************/
-void MainWindow::showProgressBar()
+void MainWindow::updateProgressBar(int value, int all)
 {
-    mProgressBar.setValue(0);
-    mProgressBar.setMaximum(mProject->previewSheetCount());
-    mProgressBar.show();
-}
+    if (all <1)
+    {
+        mProgressBar.hide();
+        return;
+    }
 
+    if (mProgressBar.maximum() != all)
+        mProgressBar.setMaximum(all);
 
-/************************************************
-
- ************************************************/
-void MainWindow::updateProgressBar(int value)
-{
     mProgressBar.setValue(value);
+
+    if (all > 0)
+        mProgressBar.show();
 }
 
 
 /************************************************
 
  ************************************************/
-void MainWindow::hideProgressBar()
+void MainWindow::closeEvent(QCloseEvent *event)
 {
-    mProgressBar.hide();
+    project->free();
 }
 
 

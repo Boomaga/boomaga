@@ -23,38 +23,31 @@
  *
  * END_COMMON_COPYRIGHT_HEADER */
 
-
-#include "dbus.h"
-#include "kernel/project.h"
-
-#include <QDBusConnection>
-#include <QDebug>
+#include "boomagatypes.h"
 
 
 /************************************************
 
  ************************************************/
-BoomagaDbus::BoomagaDbus(const QString &serviceName, const QString &dbusPath):
-    QObject()
+QString duplexTypetoStr(DuplexType value)
 {
-    QDBusConnection::sessionBus().registerService(serviceName);
-    QDBusConnection::sessionBus().registerObject(dbusPath, this, QDBusConnection::ExportAllSlots);
+    switch (value)
+    {
+    case DuplexAuto:          return "Auto";
+    case DuplexManual:        return "Manual";
+    case DuplexManualReverse: return "ManualReverse";
+    }
+    return "";
 }
 
 
 /************************************************
 
  ************************************************/
-BoomagaDbus::~BoomagaDbus()
+DuplexType strToDuplexType(const QString &str)
 {
-}
-
-
-/************************************************
-
- ************************************************/
-void BoomagaDbus::add(const QString &file, const QString &title, bool autoRemove)
-{
-    Job job(file, title, autoRemove);
-    project->addFile(job);
+    QString s = str.toUpper();
+    if (s == "AUTO")        return DuplexAuto;
+    if (s == "MANUAL")      return DuplexManual;
+    return DuplexManualReverse;
 }

@@ -2,309 +2,316 @@
 <context>
     <name>AboutDialog</name>
     <message>
-        <location filename="../aboutdialog/aboutdialog.ui" line="14"/>
         <source> About Boomaga</source>
         <translation>À propos de Boomaga</translation>
     </message>
     <message>
-        <location filename="../aboutdialog/aboutdialog.ui" line="66"/>
         <source>About</source>
         <translation>À propos</translation>
     </message>
     <message>
-        <location filename="../aboutdialog/aboutdialog.ui" line="83"/>
         <source>Authors</source>
         <translation>Auteurs</translation>
     </message>
     <message>
-        <location filename="../aboutdialog/aboutdialog.ui" line="100"/>
         <source>Thanks</source>
         <translation>Remerciements</translation>
     </message>
     <message>
-        <location filename="../aboutdialog/aboutdialog.ui" line="117"/>
         <source>Translations</source>
         <translation>Traductions</translation>
     </message>
     <message>
-        <location filename="../aboutdialog/aboutdialog.cpp" line="81"/>
         <source>Version: %1</source>
         <translation>Version : %1</translation>
     </message>
     <message>
-        <location filename="../aboutdialog/aboutdialog.cpp" line="92"/>
         <source>Boomaga provides a virtual printer for CUPS. This can be used for print preview or for print booklets.</source>
-        <translation>Boomaga fournit une imprimante virtuelle pour CUPS. Ceci peut être utilisé pour imprimer des prévisualisations ou  pour imprimer des livrets.</translation>
+        <translation>Boomaga fournit une imprimante virtuelle pour CUPS. Elle peut être utilisée pour prévisualiser des impressions ou pour imprimer des livrets.</translation>
     </message>
     <message>
-        <location filename="../aboutdialog/aboutdialog.cpp" line="93"/>
         <source>Copyright: %1-%2 %3</source>
-        <translation>Copyright : %1-%2 %3</translation>
+        <translation>Tous droits réservés : %1-%2 %3</translation>
     </message>
     <message>
-        <location filename="../aboutdialog/aboutdialog.cpp" line="95"/>
         <source>Homepage: %1</source>
         <translation>Page d&apos;accueil : %1</translation>
     </message>
     <message>
-        <location filename="../aboutdialog/aboutdialog.cpp" line="96"/>
         <source>License: %1</source>
         <translation>Licence : %1</translation>
     </message>
     <message>
-        <location filename="../aboutdialog/aboutdialog.cpp" line="110"/>
         <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on Github.</source>
         <translation>Boomaga est développé par l&apos;&lt;a %1&gt;équipe Boomaga et ses contributeurs&lt;/a&gt; sur Github.</translation>
     </message>
     <message>
-        <location filename="../aboutdialog/aboutdialog.cpp" line="112"/>
         <source>If you are interested in working with our development team, &lt;a %1&gt;join us&lt;/a&gt;.</source>
-        <translation>Si vous êtes intéressé à travailler avec notre équipe de développement, &lt;a %1&gt;joigniez-vous à nous&lt;/a&gt;.</translation>
+        <translation>Si tu es intéressé à travailler avec notre équipe de développement, &lt;a %1&gt;joins-toi à nous&lt;/a&gt;.</translation>
     </message>
     <message>
-        <location filename="../aboutdialog/aboutdialog.cpp" line="127"/>
         <source>Special thanks to:</source>
         <translation>Remerciements particuliers à :</translation>
     </message>
     <message>
-        <location filename="../aboutdialog/aboutdialog.cpp" line="138"/>
         <source>If you want to help translate, we will be glad to see you in our translation team on &lt;a %1&gt;Transifex server&lt;/a&gt;.</source>
+        <translation>Si tu désires aider à traduire, nous serons heureux de t&apos;accueillir dans notre équipe de traduction sur le &lt;a %1&gt;serveur Transifex&lt;/a&gt;.</translation>
+    </message>
+</context>
+<context>
+    <name>InputFilesListView</name>
+    <message>
+        <source>( %1 pages ) </source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Untitled</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Delete job</source>
         <translation type="unfinished"/>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
-        <location filename="../mainwindow.ui" line="72"/>
         <source>&amp;File</source>
         <translation>&amp;Fichiers</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="81"/>
         <source>&amp;Preferences</source>
         <translation>&amp;Préférences</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="86"/>
         <source>Help</source>
         <translation>Aide</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="103"/>
         <source>Options</source>
         <translation>Options</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="113"/>
         <source>Layout</source>
         <translation>Mise en page</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="119"/>
         <source>1 up</source>
-        <translation type="unfinished"/>
+        <translation>1 dans 1</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="126"/>
         <source>2 up</source>
-        <translation type="unfinished"/>
+        <translation>2 dans 1</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="133"/>
         <source>4 up</source>
-        <translation type="unfinished"/>
+        <translation>4 dans 1</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="140"/>
         <source>8 up</source>
-        <translation type="unfinished"/>
+        <translation>8 dans 1</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="147"/>
         <source>Booklet</source>
         <translation>Livret</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="157"/>
+        <source>Print on both sides of a sheet.</source>
+        <comment>MainForm::Double-sided checkbox tooltip</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Double-sided</source>
+        <comment>MainForm::Double-sided checkbox</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
         <source>Jobs</source>
         <translation>Travaux</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="191"/>
         <source>Printer</source>
         <translation>Imprimante</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="203"/>
         <source>Configure ...</source>
-        <translation>Configurer...</translation>
+        <translation>Configure...</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="228"/>
         <source>Toolbar</source>
-        <translation type="unfinished"/>
+        <translation>Barre d&apos;outils</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="247"/>
         <source>&amp;Print</source>
-        <translation>&amp;Imprimer</translation>
+        <translation>&amp;Imprime</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="252"/>
         <source>E&amp;xit</source>
         <translation>&amp;Sortie</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="257"/>
         <source>Print and Close</source>
-        <translation>Imprimer et fermer</translation>
+        <translation>Imprime et ferme</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="260"/>
         <source>Ctrl+P</source>
         <translation>Ctrl+P</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="265"/>
         <source>Next sheet</source>
         <translation>Prochaine feuille</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="270"/>
         <source>Previous sheet</source>
         <translation>Feuille précédente</translation>
     </message>
     <message>
-        <location filename="../mainwindow.ui" line="275"/>
         <source>About Boomaga</source>
         <translation>À propos de Boomaga</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="75"/>
         <source>Boomaga</source>
         <translation>Boomaga</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="252"/>
         <source>%v of %m</source>
         <comment>Format for QProgressBar (http://qt-project.org/doc/qt-4.8/qprogressbar.html#format-prop)</comment>
         <translation>%v de %m</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="282"/>
-        <source>%1 pages</source>
-        <translation>%1 pages</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="282"/>
-        <source>%1 page</source>
-        <translation>%1 page</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="283"/>
-        <source>%1 sheets</source>
-        <translation>%1 feuilles</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="283"/>
-        <source>%1 sheet</source>
-        <translation>%1 feuille</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="290"/>
-        <source>Sheet %1 of %2</source>
-        <translation>Feuille %1 de %2</translation>
-    </message>
-    <message>
-        <location filename="../mainwindow.cpp" line="462"/>
         <source>Print the all pages on %1.</source>
-        <translation type="unfinished"/>
+        <translation>Imprime toutes les pages sur %1.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="501"/>
         <source>Print the odd pages on %1.&lt;p&gt;When finished, turn the pages, insert them into the printer&lt;br&gt;and click the Continue button.</source>
-        <translation type="unfinished"/>
+        <translation>Imprime toutes les pages impaires sur %1.&lt;p&gt;Une fois terminé, tourne les pages, insère-les dans l&apos;imprimante&lt;br&gt;et clique sur le bouton Continue.</translation>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="516"/>
         <source>Print the even pages on %1.</source>
+        <translation>Imprime les pages paires sur %1.</translation>
+    </message>
+    <message>
+        <source>Continue</source>
+        <translation>Continue</translation>
+    </message>
+    <message>
+        <source>%1 pages</source>
+        <comment>Status bar</comment>
         <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../mainwindow.cpp" line="507"/>
-        <source>Continue</source>
-        <translation>Continuer</translation>
+        <source>%1 page</source>
+        <comment>Status bar</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1 sheets</source>
+        <comment>Status bar</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1 sheet</source>
+        <comment>Status bar</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Sheet %1 of %2</source>
+        <comment>Status bar</comment>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
     <name>PrinterSettings</name>
     <message>
-        <location filename="../printersettings/printersettings.ui" line="17"/>
         <source>Margins (mm)</source>
         <translation>Marges (mm)</translation>
     </message>
     <message>
-        <location filename="../printersettings/printersettings.ui" line="53"/>
         <source>Right:</source>
         <translation>Droite :</translation>
     </message>
     <message>
-        <location filename="../printersettings/printersettings.ui" line="60"/>
         <source>Bottom:</source>
         <translation>Bas :</translation>
     </message>
     <message>
-        <location filename="../printersettings/printersettings.ui" line="67"/>
         <source>Internal:</source>
         <translation>Interne :</translation>
     </message>
     <message>
-        <location filename="../printersettings/printersettings.ui" line="80"/>
         <source>Left:</source>
         <translation>Gauche :</translation>
     </message>
     <message>
-        <location filename="../printersettings/printersettings.ui" line="87"/>
         <source>Top:</source>
         <translation>Haut :</translation>
     </message>
     <message>
-        <location filename="../printersettings/printersettings.ui" line="110"/>
-        <source>Printer has a duplex</source>
-        <translation>L&apos;imprimante est recto-verso</translation>
+        <source>Duplex:</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../printersettings/printersettings.ui" line="117"/>
         <source>Draw border</source>
-        <translation>Encadrer</translation>
+        <translation>Encadre</translation>
     </message>
     <message>
-        <location filename="../printersettings/printersettings.ui" line="137"/>
         <source>Print in reverse order</source>
-        <translation>Imprimer en ordre inversé</translation>
+        <translation>Imprime en ordre inversé</translation>
     </message>
     <message>
-        <location filename="../printersettings/printersettings.cpp" line="98"/>
+        <source>Printer has duplexer</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Manual with reverse (suitable for most printers)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Manual without reverse</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
         <source>Preferences of &quot;%1&quot;</source>
+        <translation>Préférences de &quot;%1&quot;</translation>
+    </message>
+</context>
+<context>
+    <name>Project</name>
+    <message>
+        <source>Boomaga</source>
+        <comment>Error message title</comment>
         <translation type="unfinished"/>
     </message>
 </context>
 <context>
-    <name>PsFilesListView</name>
+    <name>QObject</name>
     <message>
-        <location filename="../widgets.cpp" line="153"/>
-        <source>( %1 pages ) </source>
-        <translation>( %1 pages ) </translation>
+        <source>PDF file &quot;%1&quot; is damaged.</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../widgets.cpp" line="154"/>
-        <source>Untitled</source>
-        <translation>Sans titre</translation>
+        <source>PDF file &quot;%1&quot; is encripted.</source>
+        <translation type="unfinished"/>
     </message>
     <message>
-        <location filename="../widgets.cpp" line="171"/>
-        <source>Delete job</source>
-        <translation>Effacer le travail</translation>
+        <source>I can&apos;t open file &quot;%1&quot;</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>TmpPdfFile</name>
+    <message>
+        <source>Something wrong. I can't find boomagamerger program.
+Please reinstall me.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>I can read file &apos;%1&apos;</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>I can&apos;t create temporary file &quot;%1&quot;</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 </TS>

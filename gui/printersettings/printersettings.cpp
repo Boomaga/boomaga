@@ -27,7 +27,6 @@
 #include "printersettings.h"
 #include "ui_printersettings.h"
 #include "kernel/printer.h"
-#include "kernel/psconstants.h"
 
 #include <QListWidget>
 #include <QListWidgetItem>
@@ -75,6 +74,15 @@ PrinterSettings::PrinterSettings(QWidget *parent) :
 
     connect(ui->buttonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(btnClicked(QAbstractButton*)));
     connect(ui->borderCbx, SIGNAL(toggled(bool)), this, SLOT(updatePreview()));
+
+    ui->duplexTypeComboBox->addItem(tr("Printer has duplexer"), DuplexAuto);
+    ui->duplexTypeComboBox->addItem(tr("Manual with reverse (suitable for most printers)"), DuplexManualReverse);
+    ui->duplexTypeComboBox->addItem(tr("Manual without reverse"), DuplexManual);
+
+    QPalette pal(palette());
+    pal.setColor(QPalette::Background, QColor(105, 101, 98));
+    ui->marginsPereview->setPalette(pal);
+    ui->marginsPereview->setAutoFillBackground(true);
 }
 
 
@@ -134,7 +142,8 @@ bool PrinterSettings::eventFilter(QObject *obj, QEvent *event)
  ************************************************/
 void PrinterSettings::updateWidgets()
 {
-    ui->duplexCbx->setChecked(mPrinter->duplex());
+    int n = ui->duplexTypeComboBox->findData(mPrinter->duplexType());
+    ui->duplexTypeComboBox->setCurrentIndex(n);
     ui->borderCbx->setChecked(mPrinter->drawBorder());
     ui->reverseOrderCbx->setChecked(mPrinter->reverseOrder());
 
@@ -160,7 +169,8 @@ void PrinterSettings::btnClicked(QAbstractButton *button)
         mPrinter->setBottomMargin(ui->bottomMarginSpin->value(), mUnit);
         mPrinter->setInternalMargin(ui->internalMarginSpin->value(), mUnit);
 
-        mPrinter->setDuplex(ui->duplexCbx->isChecked());
+        QVariant v =ui->duplexTypeComboBox->itemData(ui->duplexTypeComboBox->currentIndex());
+        mPrinter->setDuplexType(static_cast<DuplexType>(v.toInt()));
         mPrinter->setDrawBorder(ui->borderCbx->isChecked());
         mPrinter->setReverseOrder(ui->reverseOrderCbx->isChecked());
 

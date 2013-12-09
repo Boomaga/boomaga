@@ -23,38 +23,48 @@
  *
  * END_COMMON_COPYRIGHT_HEADER */
 
-
-#include "dbus.h"
-#include "kernel/project.h"
-
-#include <QDBusConnection>
+#include "inputfile.h"
+#include <QFile>
 #include <QDebug>
+#include "project.h"
 
 
 /************************************************
 
  ************************************************/
-BoomagaDbus::BoomagaDbus(const QString &serviceName, const QString &dbusPath):
-    QObject()
+InputFile::InputFile(const QString &fileName, int pageCount):
+    mFileName(fileName),
+    mAutoRemove(false),
+    mPages(pageCount)
 {
-    QDBusConnection::sessionBus().registerService(serviceName);
-    QDBusConnection::sessionBus().registerObject(dbusPath, this, QDBusConnection::ExportAllSlots);
+    for (int i=0; i<pageCount; ++i)
+        mPages[i] = new ProjectPage(this, i);
 }
 
 
 /************************************************
 
  ************************************************/
-BoomagaDbus::~BoomagaDbus()
+InputFile::InputFile(const Job &job, int pageCount):
+    mFileName(job.fileName()),
+    mTitle(job.title()),
+    mAutoRemove(job.autoRemove()),
+    mPages(pageCount)
 {
+    for (int i=0; i<pageCount; ++i)
+        mPages[i] = new ProjectPage(this, i);
 }
 
 
 /************************************************
 
  ************************************************/
-void BoomagaDbus::add(const QString &file, const QString &title, bool autoRemove)
+InputFile::~InputFile()
 {
-    Job job(file, title, autoRemove);
-    project->addFile(job);
+    qDeleteAll(mPages);
+
+    if (mAutoRemove)
+        QFile::remove(mFileName);
 }
+
+

@@ -24,46 +24,42 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#ifndef PSVIEW_H
-#define PSVIEW_H
+#ifndef INPUTFILE_H
+#define INPUTFILE_H
 
+#include <QString>
+#include <QVector>
 
-#include <QFrame>
-#include <QImage>
+class ProjectPage;
+class Job;
 
-class PsSheet;
-class PsRender;
-
-class PsView : public QFrame
+class InputFile
 {
-    Q_OBJECT
 public:
-    explicit PsView(QWidget *parent = 0);
-    ~PsView();
-    
-    int currentSheet() const { return mSheetNum; }
+    explicit InputFile(const QString &fileName, int pageCount);
+    explicit InputFile(const Job &job, int pageCount);
+    virtual ~InputFile();
 
-    PsRender *render() const { return  mRender; }
-    void setRender(PsRender *value);
+    QString fileName() const { return mFileName; }
 
-public slots:
-    void setCurrentSheet(int sheetNum);
+    QString title() const { return mTitle; }
+    void setTile(const QString &value) { mTitle = value; }
 
-signals:
-    void whellScrolled(int delta);
+    int pageCount() const { return mPages.count(); }
+    QVector<ProjectPage*> pages() { return mPages; }
+    QVector<ProjectPage*> pages() const { return mPages; }
+
+    bool autoRemove() const {return mAutoRemove;}
+    void setAutoRemove(bool value) { mAutoRemove = value; }
 
 protected:
-    void paintEvent(QPaintEvent *event);
-    void wheelEvent(QWheelEvent *event);
-
-private slots:
-    void renderChanged(int sheetNum);
+    QVector<ProjectPage*> mPages;
 
 private:
-    QImage mImage;
-    int mSheetNum;
-    const PsSheet *mSheet;
-    PsRender *mRender;
+    QString mFileName;
+    QString mTitle;
+    bool mAutoRemove;
 };
 
-#endif // PSVIEW_H
+
+#endif // INPUTFILE_H

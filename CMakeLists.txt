@@ -1,10 +1,36 @@
+ # BEGIN_COMMON_COPYRIGHT_HEADER
+ # (c)LGPL2+
+ #
+ #
+ # Copyright: 2012-2013 Boomaga team https://github.com/Boomaga
+ # Authors:
+ #   Alexander Sokoloff <sokoloff.a@gmail.com>
+ #
+ # This program or library is free software; you can redistribute it
+ # and/or modify it under the terms of the GNU Lesser General Public
+ # License as published by the Free Software Foundation; either
+ # version 2.1 of the License, or (at your option) any later version.
+ #
+ # This library is distributed in the hope that it will be useful,
+ # but WITHOUT ANY WARRANTY; without even the implied warranty of
+ # MERCHANTABILITY or FITNESS FOR A PARTICULAR PURPOSE.  See the GNU
+ # Lesser General Public License for more details.
+ #
+ # You should have received a copy of the GNU Lesser General
+ # Public License along with this library; if not, write to the
+ # Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
+ # Boston, MA 02110-1301 USA
+ #
+ # END_COMMON_COPYRIGHT_HEADER
+
+
 cmake_minimum_required( VERSION 2.6 )
 
 project(boomaga)
 
 set(MAJOR_VERSION 0)
 set(MINOR_VERSION 2)
-set(PATCH_VERSION 0)
+set(PATCH_VERSION 992)
 set(FULL_VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION})
 
 add_definitions(-DMAJOR_VERSION=\"${MAJOR_VERSION}\")
@@ -36,42 +62,36 @@ elseif(${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
 
 endif()
 
-set(GUI_DIR ${CMAKE_INSTALL_PREFIX}/bin)
-add_definitions(-DGUI_DIR=\"${GUI_DIR}\")
-
-set(GUI_PROGRAM ${GUI_DIR}/boomaga)
-add_definitions(-DGUI_PROGRAM=\"${GUI_PROGRAM}\")
-
-set(GUI_SHARE_DIR ${CMAKE_INSTALL_PREFIX}/share/boomaga)
-add_definitions(-DGUI_SHARE_DIR=\"${GUI_SHARE_DIR}\")
-
-
-
-set(CUPS_BACKEND_URI "boomaga:/")
-add_definitions(-DCUPS_BACKEND_URI=\"${CUPS_BACKEND_URI}\")
-
-
-set(CUPS_BACKEND_INFO "Boomaga")
-add_definitions(-DCUPS_BACKEND_INFO=\"${CUPS_BACKEND_NAME}\")
-
-
-set(CUPS_BACKEND_MODEL "Virtual boomaga printer")
-add_definitions(-DCUPS_BACKEND_MODEL=\"${CUPS_BACKEND_MODEL}\")
-
-
-set(CUPS_BACKEND_MANUFACTURER "Generic")
-add_definitions(-DCUPS_BACKEND_MANUFACTURER=\"${CUPS_BACKEND_MANUFACTURER}\")
-
-
-
-###########################################################
-
 macro(setByDefault VAR_NAME VAR_VALUE)
   if (NOT DEFINED ${VAR_NAME})
     set (${VAR_NAME} ${VAR_VALUE})
     add_definitions(-D${VAR_NAME}=\"${VAR_VALUE}\")
   endif()
 endmacro()
+
+macro(setFirstUpper VAR_NAME VAR_VALUE)
+  string(SUBSTRING ${VAR_VALUE} 0 1 FIRST_LETTER)
+  string(TOUPPER ${FIRST_LETTER} FIRST_LETTER)
+  string(REGEX REPLACE "^.(.*)" "${FIRST_LETTER}\\1" ${VAR_NAME} "${VAR_VALUE}")
+endmacro()
+
+set(GUI_DIR ${CMAKE_INSTALL_PREFIX}/bin)
+add_definitions(-DGUI_DIR=\"${GUI_DIR}\")
+
+
+###########################################################
+
+setByDefault(INSTANCE_NAME      "boomaga")
+setFirstUpper(CUPS_BACKEND_NAME "${INSTANCE_NAME}")
+
+setByDefault(CUPS_BACKEND_URI   "${INSTANCE_NAME}:/")
+setByDefault(CUPS_BACKEND_INFO  "${CUPS_BACKEND_NAME}")
+setByDefault(CUPS_BACKEND_MODEL "${CUPS_BACKEND_NAME} printer")
+setByDefault(CUPS_BACKEND_DESCRIPTION  "Virtual ${INSTANCE_NAME} printer")
+setByDefault(CUPS_BACKEND_MANUFACTURER "Generic")
+
+setByDefault(GUI_PROGRAM    ${GUI_DIR}/${INSTANCE_NAME})
+setByDefault(GUI_SHARE_DIR  ${CMAKE_INSTALL_PREFIX}/share/${INSTANCE_NAME})
 
 setByDefault(CUPS_BACKEND_DIR   ${DEF_CUPS_BACKEND_DIR})
 setByDefault(CUPS_PPD_DIR       ${DEF_CUPS_PPD_DIR})
@@ -87,11 +107,20 @@ message(STATUS "*****************************************************")
 message(STATUS "* boomaga ver. ${FULL_VERSION}")
 message(STATUS "*")
 message(STATUS "* You can change the following directories using cmake options like:")
-message(STATUS "*   cmake -DCUPS_PPD_DIR=your_path")
+message(STATUS "*   -DCUPS_PPD_DIR=your_path")
 message(STATUS "*")
-message(STATUS "* CUPS_PPD_DIR       = ${CUPS_PPD_DIR}")
-message(STATUS "* DBUS_MACINE_ID_DIR = ${DBUS_MACINE_ID_DIR}")
-message(STATUS "* DBUS_SERVICE_DIR   = ${DBUS_SERVICE_DIR}")
+message(STATUS "*  CUPS_PPD_DIR         =  ${CUPS_PPD_DIR}")
+message(STATUS "*  DBUS_MACINE_ID_DIR   =  ${DBUS_MACINE_ID_DIR}")
+message(STATUS "*  DBUS_SERVICE_DIR     =  ${DBUS_SERVICE_DIR}")
+message(STATUS "*")
+message(STATUS "* You can change the following options using cmake options:")
+message(STATUS "*  INSTANCE_NAME        =  ${INSTANCE_NAME}")
+message(STATUS "*  CUPS_BACKEND_URI     =  ${CUPS_BACKEND_URI}")
+message(STATUS "*  CUPS_BACKEND_INFO    =  ${CUPS_BACKEND_INFO}")
+message(STATUS "*  CUPS_BACKEND_MODEL   =  ${CUPS_BACKEND_MODEL}")
+message(STATUS "*  CUPS_BACKEND_DESCRIPTION  = ${CUPS_BACKEND_DESCRIPTION}")
+message(STATUS "*  CUPS_BACKEND_MANUFACTURER = ${CUPS_BACKEND_MANUFACTURER}")
+
 message(STATUS "*****************************************************")
 
 ########## Add make dist target ################
