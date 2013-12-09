@@ -74,3 +74,32 @@ Nothing works!
 Our backend-е for CUPS uses a search for user session; it is yet to be completely debugged and may
 not work in some environments. Please, look through the error messages in CUPS logs, and send in
 discovered bugs to [Issue tracker](https://github.com/Boomaga/boomaga/issues), or contact the developers.
+
+
+Instalation
+===========
+
+Prerequisites
+-------------
+
+Should you wish to build the program from the sources, you would need header files for:
+
+ ghostscript
+ cups
+ snappy
+ poppler
+ poppler-qt4
+
+
+Building and installing
+-----------------------
+
+We use so-called out-of-source builds. They support having different builds with different configurations
+simultaneously as well as easily remove the build directory if something goes wrong.
+So, create a directory in ~/boomaga, say build, and cd into it. Type
+
+mkdir ~/boomaga/build
+cd ~/boomaga/build
+cmake ..
+
+For more information, see https://github.com/Boomaga/boomaga/wiki/Instalation page.
