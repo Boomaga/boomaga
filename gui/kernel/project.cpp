@@ -459,8 +459,8 @@ bool Project::error(const QString &message)
  ************************************************/
 QList<Sheet*> Project::selectSheets(Project::PagesType pages, Project::PagesOrder order) const
 {
-    int start;
-    int inc;
+    int start = 0;
+    int inc = 0;
     int end = sheetCount();
 
     switch (pages)

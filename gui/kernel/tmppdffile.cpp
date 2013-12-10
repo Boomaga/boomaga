@@ -84,8 +84,8 @@ TmpPdfFile::TmpPdfFile(const QList<Job> jobs, QObject *parent):
     QObject(parent),
     mMerger(0),
     mPageCount(0),
-    mRender(0),
-    mValid(false)
+    mValid(false),
+    mRender(0)
 {
     mOrigFileSize = 0;
     mOrigXrefPos = 0;
@@ -212,7 +212,6 @@ void TmpPdfFile::writeDocument(const QList<Sheet *> &sheets, QIODevice *out)
     while (bufLen > 0)
     {
         out->write(f.read(bufLen));
-        qint64 pos = f.pos();
         bufLen = qMin(mOrigFileSize - f.pos(), (qint64)(1024 * 1024));
     }
 

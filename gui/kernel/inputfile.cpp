@@ -33,9 +33,9 @@
 
  ************************************************/
 InputFile::InputFile(const QString &fileName, int pageCount):
+    mPages(pageCount),
     mFileName(fileName),
-    mAutoRemove(false),
-    mPages(pageCount)
+    mAutoRemove(false)
 {
     for (int i=0; i<pageCount; ++i)
         mPages[i] = new ProjectPage(this, i);
@@ -46,10 +46,10 @@ InputFile::InputFile(const QString &fileName, int pageCount):
 
  ************************************************/
 InputFile::InputFile(const Job &job, int pageCount):
+    mPages(pageCount),
     mFileName(job.fileName()),
     mTitle(job.title()),
-    mAutoRemove(job.autoRemove()),
-    mPages(pageCount)
+    mAutoRemove(job.autoRemove())
 {
     for (int i=0; i<pageCount; ++i)
         mPages[i] = new ProjectPage(this, i);

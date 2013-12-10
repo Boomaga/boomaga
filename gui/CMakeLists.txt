@@ -112,10 +112,11 @@ add_definitions(-DTRANSLATIONS_DIR=\"${TRANSLATIONS_DIR}\")
 if (NOT CMAKE_BUILD_TYPE)
     set ( CMAKE_BUILD_TYPE Release )
 endif (NOT CMAKE_BUILD_TYPE)
-set(CMAKE_BUILD_TYPE Debug)
-#if(CMAKE_COMPILER_IS_GNUCXX)
-#    add_definitions (-Wall -pedantic)
-#endif()
+#set(CMAKE_BUILD_TYPE Debug)
+
+if(CMAKE_COMPILER_IS_GNUCXX)
+    add_definitions (-Wall -pedantic)
+endif()
 
 #*******************************************
 

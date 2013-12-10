@@ -158,7 +158,6 @@ void LayoutNUp::fillSheets(QList<Sheet *> *sheets) const
 
     int pps = mPageCountVert * mPageCountHoriz;
 
-    int s=0;
     int i=0;
     while (i < project->pageCount())
     {

@@ -57,7 +57,6 @@ void printHelp()
     //out << "  --debug               Keep output results from scripts" << endl;
     out << "  -h, --help              Show help about options" << endl;
     out << "  -t, --title <title>     The job name/title" << endl;
-    out << "  -n, --num <copies>      Sets the number of copies to print" << endl;
     out << "  -V, --version           Print program version" << endl;
     out << "      --autoremove        Automatically delete the input file" << endl;
     out << endl;
@@ -141,8 +140,7 @@ int main(int argc, char *argv[])
 
 
     QFileInfoList files;
-    QString jobTitle;
-    int copiesCount = 0;
+    QStringList jobTitles;
     bool autoRemove = false;
 
     QStringList args = application.arguments();
@@ -169,7 +167,7 @@ int main(int argc, char *argv[])
         {
             if (i+1 < args.count())
             {
-                jobTitle = args.at(i+1);
+                jobTitles << args.at(i+1);
                 i++;
                 continue;
             }
@@ -187,35 +185,14 @@ int main(int argc, char *argv[])
         }
 
         //*************************************************
-        if (arg == "-n" || arg == "--num")
-        {
-            if (i+1 < args.count())
-            {
-                bool ok;
-                copiesCount = args.at(i+1).toInt(&ok);
-                if (ok)
-                {
-                    i++;
-                    continue;
-                }
-                else
-                {
-                    return printError("'number of copies' is invalid.");
-                }
-            }
-            else
-            {
-                return printError(QString("expected copies after \"%1\" option.").arg(arg));
-            }
-        }
-
-        //*************************************************
         files << QFileInfo(args.at(i));
     }
 
     QList<Job> jobs;
-    foreach (const QFileInfo &file, files)
+    for (int i=0; i<files.count(); ++i)
     {
+        QFileInfo file = files.at(i);
+
         if (!file.filePath().isEmpty())
         {
             if (!file.exists())
@@ -226,7 +203,12 @@ int main(int argc, char *argv[])
                 return printError(QString("Cannot open file \"%1\" (Access denied)")
                                   .arg(file.filePath()));
         }
-        jobs << Job(file.absoluteFilePath(), "", autoRemove);
+
+        QString title;
+        if (i < jobTitles.count())
+            title = jobTitles.at(i);
+
+        jobs << Job(file.absoluteFilePath(), title, autoRemove);
     }
 
 #if 0

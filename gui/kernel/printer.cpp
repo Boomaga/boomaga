@@ -78,6 +78,7 @@ qreal toUnit(qreal value, Printer::Unit unit)
     case Printer::Millimeter:
         return value * PT_TO_MM;
     }
+    return 0;
 }
 
 
@@ -94,6 +95,7 @@ qreal fromUnit(qreal value, Printer::Unit unit)
     case Printer::Millimeter:
         return value * MM_TO_PT;
     }
+    return 0;
 }
 
 

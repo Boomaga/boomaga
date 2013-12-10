@@ -37,8 +37,15 @@
 #include <poppler/GlobalParams.h>
 #include <poppler/poppler-config.h>
 
-static GBool printVersion = true;
-static GBool printHelp = true;
+#ifdef __GNUC__
+#define GCC_VARIABLE_IS_USED __attribute__ ((unused))
+#else
+#define GCC_VARIABLE_IS_USED
+#endif
+
+
+static GBool GCC_VARIABLE_IS_USED printVersion = true;
+static GBool GCC_VARIABLE_IS_USED printHelp = true;
 
 
 

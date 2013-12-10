@@ -99,9 +99,9 @@ public:
 private:
     QVector<ProjectPage*> mPages;
     QVector<SheetPageSpec> mSpecs;
-    Hints mHints;
-    int mSheetNum;
     qint64 mId;
+    int mSheetNum;
+    Hints mHints;
     static qint64 genId();
 };
 
