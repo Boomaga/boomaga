@@ -16,16 +16,18 @@ CUPS_BACKEND_FAILED=1
 DBUS_MACINE_ID_DIR='@DBUS_MACINE_ID_DIR@'
 SYSTEM_NAME='@CMAKE_SYSTEM_NAME@'
 
+PREF_ENV_PROGS="kdeinit4 firefox chromium-browser razor-session gnome-session lxsession Xfce4-session"
+
 #*******************************************
 #
 #*******************************************
-function createPsFileDir
+function createJobFileDir
 {
-  if [ ! -d ${psFileDir} ];
+  if [ ! -d ${jobFileDir} ];
   then
-    mkdir ${psFileDir}
-    chmod 700 ${psFileDir}
-    chown ${user} ${psFileDir}
+    mkdir ${jobFileDir}
+    chmod 700 ${jobFileDir}
+    chown ${user} ${jobFileDir}
   fi
 }
 
@@ -35,13 +37,9 @@ function createPsFileDir
 #*******************************************
 function copyInputFile
 {
-  if [ -z ${inputFile} ];
-  then
-    cat - > ${psFile}
-  else
-    cp ${inputFile} ${psFile}
-  fi
-  chown ${user} ${psFile}
+  # Remove PJL commands
+  grep --text -v '^@PJL\|%-12345X' $1 > $2
+  chown ${user} $2
 }
 
 
@@ -143,7 +141,15 @@ function getDbusAddr_SessionFile
 #*******************************************
 function getDbusAddr_Linux_Proc
 {
-  for file in $(find /proc -user "${user}" -type f -regex '/proc/[0-9]+/environ'); do
+
+  prefFiles=""
+  for proc in ${PREF_ENV_PROGS}; do
+    pid=$(pidof ${proc})
+    [ -n "$pid" ] && prefFiles="${prefFiles}/proc/$pid/environ "
+  done
+
+
+  for file in ${prefFiles} $(find /proc -user "${user}" -type f -regex '/proc/[0-9]+/environ' | sort -V -r); do
     disp=$(grep -z DISPLAY "${file}"  | cut -d= -f2)
     addr=$(grep -z DBUS_SESSION_BUS_ADDRESS "${file}"  | cut -d= -f2-)
 
@@ -152,6 +158,21 @@ function getDbusAddr_Linux_Proc
       if [ "${disp}" = "${xDisplay}" ] || [ "${xDisplay}" = "" ];
       then
         dbusSessionAddress=${addr}
+        BOOMAGA_ENV_FILE=${homeDir}/.cache/boomaga.env
+        echo '' > ${BOOMAGA_ENV_FILE}
+        chmod 600 ${BOOMAGA_ENV_FILE}
+        chown ${user} ${BOOMAGA_ENV_FILE}
+
+        echo "BOOMAGA_PROC_FILE=${file}" >> ${BOOMAGA_ENV_FILE}
+
+        grep -z KDE_FULL_SESSION "${file}" >> ${BOOMAGA_ENV_FILE}
+        echo '' >> ${BOOMAGA_ENV_FILE}
+        grep -z QT_PLUGIN_PATH "${file}" >> ${BOOMAGA_ENV_FILE}
+        echo '' >> ${BOOMAGA_ENV_FILE}
+        grep -z GTK_RC_FILES   "${file}" >> ${BOOMAGA_ENV_FILE}
+        echo '' >> ${BOOMAGA_ENV_FILE}
+        grep -z GTK2_RC_FILES  "${file}" >> ${BOOMAGA_ENV_FILE}
+        echo '' >> ${BOOMAGA_ENV_FILE}
         break
       fi
     fi
@@ -176,6 +197,10 @@ count=$4
 options=$5
 inputFile=$6
 
+if [ -z "${inputFile}" ]; then
+  inputFile='-'
+fi
+
 uid=$(getent passwd ${user} | cut -d':' -f 3)
 homeDir=$(getent passwd ${user} | cut -d':' -f 6)
 
@@ -194,13 +219,14 @@ fi
 echo "DEBUG: [Boomaga] User: $user" >&2
 echo "DEBUG: [Boomaga] Uid:  $uid" >&2
 
-psFileDir=${homeDir}/.cache
-psFile=${psFileDir}/boomaga_in_file-${jobID}.ps
+jobFileDir=${homeDir}/.cache
+jobFile=${jobFileDir}/boomaga_in_file-${jobID}.pdf
 
 
-createPsFileDir
-copyInputFile
+createJobFileDir
+copyInputFile "${inputFile}" "${jobFile}"
 getActiveSessionDisplay
+
 
 if [ "${xDisplay}" = "" ];
 then
@@ -225,14 +251,23 @@ fi
 
 echo "DEBUG: [Boomaga] dbusSessionAddress: ${dbusSessionAddress}" >&2
 
+cmd="dbus-send --session --type=method_call --print-reply \
+  --dest=org.boomaga /boomaga \
+  org.boomaga.add \
+  string:'${jobFile}' \
+  string:'${title}' \
+  boolean:true"
 
-cmd="dbus-send --session --type=method_call --print-reply --dest=org.boomaga /Project org.boomaga.addFile string:${psFile} "
 echo "DEBUG: [Boomaga] command: ${cmd}" >&2
 
-
 errorLog="/tmp/boomaga_${jobID}.err"
-su -c "DBUS_SESSION_BUS_ADDRESS=${dbusSessionAddress} ${cmd}" ${user} 2>${errorLog} 1>/dev/null && exit $CUPS_BACKEND_OK
+res=${CUPS_BACKEND_OK}
+su -c "DBUS_SESSION_BUS_ADDRESS=${dbusSessionAddress} ${cmd}" ${user} 2>${errorLog} 1>/dev/null || res=${CUPS_BACKEND_FAILED}
 
+if [ "$res" !=  $CUPS_BACKEND_OK ];
+then
+  cat ${errorLog} | sed -e"s/^/ERROR: /" 1>&2
+fi
 
-cat ${errorLog} | sed -e"s/^/ERROR: /" 1>&2
 rm ${errorLog}
+exit $res
