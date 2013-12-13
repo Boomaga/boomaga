@@ -39,6 +39,9 @@
        <property name="text">
         <string notr="true"/>
        </property>
+       <property name="pixmap">
+        <pixmap resource="../resource.qrc">:/images/print-48x48</pixmap>
+       </property>
       </widget>
      </item>
      <item>
@@ -140,7 +143,9 @@
    </item>
   </layout>
  </widget>
- <resources/>
+ <resources>
+  <include location="../resource.qrc"/>
+ </resources>
  <connections>
   <connection>
    <sender>buttonBox</sender>
