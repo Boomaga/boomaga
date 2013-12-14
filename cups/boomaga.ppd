@@ -41,7 +41,8 @@
 *JCLEnd:              "<1B>%-12345X@PJL EOJ <0A><1B>%-12345X"
 *cupsFilter: "application/pdf 0 -"
 *cupsFilter: "application/vnd.cups-pdf 0 -"
-*cupsFilter: "application/vnd.cups-postscript 100 pstopdf"
+*cupsFilter: "application/postscript 50 boomaga_pstopdf"
+*cupsFilter: "application/vnd.cups-postscript 50 boomaga_pstopdf"
 
 *OpenGroup: General/General
 *JCLOpenUI *PageSize/Page Size: PickOne

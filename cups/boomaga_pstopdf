@@ -1,0 +1,208 @@
+#!/bin/sh
+
+# $Id: pstopdf,v 1.3 2003/02/15 15:21:00 gurubert Exp $
+#
+# This is a Postscript to PDF filter for CUPS
+#
+# (C) 2003 Robert Sander <robert.sander@epigenomics.com>
+# (C) 2008-2012 Till Kamppeter <till.kamppeter@gmail.com>
+#
+# Released under GPL
+#
+# NO WARRANTY AT ALL
+#
+
+set -e
+
+PS2PS=`which ps2ps`
+GS=`which gs`
+
+PS2PS_OPTIONS="-dAutoRotatePages=/None -dAutoFilterColorImages=false \
+               -dNOPLATFONTS -dPARANOIDSAFER -dNOINTERPOLATE -sstdout=%stderr"
+PS2PDF_OPTIONS="-q -dNOPAUSE -dBATCH -sDEVICE=pdfwrite -dCompatibilityLevel=1.3"
+PS2PDF_OPTIONS="$PS2PDF_OPTIONS $PS2PS_OPTIONS"
+PS2PDF_OPTIONS="$PS2PDF_OPTIONS -dColorImageFilter=/FlateEncode \
+                -dPDFSETTINGS=/printer -dUseCIEColor \
+                -dColorConversionStrategy=/LeaveColorUnchanged"
+
+echo "DEBUG: pstopdf $# args: $@" >&2
+echo "DEBUG: PPD: $PPD" >&2
+
+if [ $# -lt 5 -o $# -gt 6 ]; then
+
+  echo "ERROR: $0 job-id user title copies options [file]" >&2
+  exit 1
+
+fi
+
+# Read from given file.
+if [ -n "$6" ]; then
+  exec <"$6"
+fi
+
+tempfiles=
+trap 'rm -f $tempfiles' 0 1 2 13 15
+
+infile=$(mktemp -t pstopdf.XXXXXX)
+tempfiles="$tempfiles $infile"
+
+cat >"$infile"
+
+# Did CUPS already take care of the number of copies? If not, we have to do it
+
+donumcopies=
+numcopies="$4"
+if test -z "$numcopies"; then
+    numcopies=1
+fi
+if test "$numcopies" -le "1"; then
+    donumcopies="-dDoNumCopies"
+fi
+
+# Apply PPD settings.
+
+resolution=
+eval "$(printf "%s" "$5" | sed -nre 's/.*(^|\s)Resolution=([0-9.]+(x[0-9.]+)?).*/resolution="${resolution:-\2}"/p')"
+if test -e "$PPD"; then
+  eval "$(sed -nre 's/^\*DefaultResolution:\s*([0-9.]+(x[0-9.]+)?).*/resolution="${resolution:-\1}"/p' "$PPD")"
+fi
+echo "DEBUG: Resolution: $resolution" >&2
+
+if test -n "$resolution"; then
+  # If the resolution is not symmetric, use the lower of the two,
+  # Ghostscript developers recommend to use square resolutions for the
+  # pdfwrite and ps2write output devices.
+  # See http://bugs.ghostscript.com/show_bug.cgi?id=690504
+  xres=
+  yres=
+  eval "$(printf "%s" "$resolution" | sed -nre 's/.*(^|\s)([0-9]+)x([0-9]+).*/xres="\2"; yres="\3"/p')"
+  if test -n "$xres" && test -n "$yres"; then
+    if [ "$xres" -lt "$yres" ]; then
+      resolution=$xres
+    else
+      resolution=$yres
+    fi
+  fi
+fi
+
+width=
+height=
+bl_x=
+bl_y=
+tr_x=
+tr_y=
+margin_l=
+margin_b=
+margin_r=
+margin_t=
+pagesize=
+unit=
+customw=
+customh=
+eval "$(printf "%s" "$5" | sed -nre 's/.*(^|\s)(PageSize|PageRegion)=(\S+).*/pagesize="${pagesize:-\3}"/p')"
+if test -e "$PPD"; then
+    eval "$(sed -nre 's/^\*DefaultPageSize:\s*(\S+).*/pagesize="${pagesize:-\1}"/p' "$PPD")"
+fi
+echo "DEBUG: Page size: $pagesize" >&2
+
+eval "$(printf "%s" "$pagesize" | sed -nre 's/^Custom\.([0-9\.]+)x([0-9\.]+)(\S*)$/customw="\1"; customh="\2"; unit="\3"/p')"
+
+if test -n "$customw" && test -n "$customh"; then
+    echo "DEBUG: Custom page size: $customw x $customh $unit" >&2
+
+    if test "$unit" = "in"; then
+	width="$(printf "scale=0; (%s)*(72.0)/(1.00)\n" "$customw" | bc)" 
+	height="$(printf "scale=0; (%s)*(72.0)/(1.00)\n" "$customh" | bc)"
+    elif test "$unit" = "cm"; then
+	width="$(printf "scale=0; (%s)*(72.0)/(2.54)\n" "$customw" | bc)" 
+	height="$(printf "scale=0; (%s)*(72.0)/(2.54)\n" "$customh" | bc)"
+    elif test "$unit" = "mm"; then
+	width="$(printf "scale=0; (%s)*(72.0)/(25.4)\n" "$customw" | bc)" 
+	height="$(printf "scale=0; (%s)*(72.0)/(25.4)\n" "$customh" | bc)"
+    else
+	width="$(printf "scale=0; (%s)/(1.00)\n" "$customw" | bc)" 
+	height="$(printf "scale=0; (%s)/(1.00)\n" "$customh" | bc)"
+    fi
+
+    if test -e "$PPD"; then
+	eval "$(sed -nre 's|^\*HWMargins:\s*(\S+)\s+(\S+)\s+(\S+)\s+(\S+)\s*|bl_x="\1"; bl_y="\2"; tr_x="\3"; tr_y="\4"|p' "$PPD")"
+
+	if test -n "$tr_x"; then
+	    tr_x="$(printf "scale=8; (%s)-(%s)\n" "$width" "$tr_x" | bc)"
+	fi
+	if test -n "$tr_y"; then
+	    tr_y="$(printf "scale=8; (%s)-(%s)\n" "$height" "$tr_y" | bc)"
+	fi
+    fi
+elif test -n "$pagesize" && test -e "$PPD"; then
+    eval "$(sed -nre 's|^\*PaperDimension\s+'"$pagesize"'(/[^:]+\|):\s*"(\S+)\s+(\S+)".*|width="\2"; height="\3"|p' "$PPD")"
+
+    eval "$(sed -nre 's|^\*ImageableArea\s+'"$pagesize"'(/[^:]+\|):\s*"(\S+)\s+(\S+)\s+(\S+)\s+(\S+)".*|bl_x="\2"; bl_y="\3"; tr_x="\4"; tr_y="\5"|p' "$PPD")"
+fi
+
+test -n "$bl_x" || bl_x=0
+test -n "$bl_y" || bl_y=0
+test -n "$tr_x" || tr_x=$width
+test -n "$tr_y" || tr_y=$height
+
+echo "DEBUG: Width: $width, height: $height, absolute margins: $bl_x, $bl_y, $tr_x, $tr_y" >&2
+
+if test -n "$width" && test -n "$height" && \
+    test -n "$bl_x" && test -n "$bl_y" && \
+    test -n "$tr_x" && test -n "$tr_y"; then
+    margin_l="$bl_x"
+    margin_b="$bl_y"
+    margin_r="$(printf "scale=8; (%s)-(%s)\n" "$width" "$tr_x" | bc)"
+    margin_t="$(printf "scale=8; (%s)-(%s)\n" "$height" "$tr_y" | bc)"
+fi
+echo "DEBUG: Relative margins: $margin_l, $margin_b, $margin_r, $margin_t" >&2
+
+if test -n "$margin_l" && test -n "$margin_b" && \
+    test -n "$margin_r" && test -n "$margin_t"; then
+    inject_ps="<</.HWMargins[$margin_l $margin_b $margin_r $margin_t] /Margins[0 0]>>setpagedevice"
+fi
+
+ppd_opts=
+if test -n "$resolution"; then
+  ppd_opts="${ppd_opts:+$ppd_opts }-r$resolution"
+fi
+if test -n "$width"; then
+  ppd_opts="${ppd_opts:+$ppd_opts }-dDEVICEWIDTHPOINTS=$width"
+fi
+if test -n "$height"; then
+  ppd_opts="${ppd_opts:+$ppd_opts }-dDEVICEHEIGHTPOINTS=$height"
+fi
+echo "DEBUG: PPD options: $ppd_opts" >&2
+
+# We do not supply the margins to the ps2pdf process, as this breaks
+# full-bleed printing and also disturbs the printing if PPDs have too
+# conservative margin definitions.
+inject_ps=
+
+# Injection
+echo "DEBUG: PostScript to be injected: $inject_ps" >&2
+if test -n "$inject_ps"; then
+  echo "DEBUG: Injecting PostScript: $inject_ps" >&2
+
+  orig_infile="$infile"
+
+  infile=$(mktemp -t pstopdf.XXXXXX)
+  tempfiles="$tempfiles $infile"
+
+  perl -p -e 'if (! $did) { s:(^%!.*)$:\1\n'"$inject_ps"': && $did++; }' "$orig_infile" > "$infile"
+fi
+
+# DRM
+
+DRM_MATCH='^%.*Removing the following.*lines is illegal.*Digital Copyright Act'
+if egrep -q "$DRM_MATCH" "$infile"; then
+  # This PS is DRM-infested. Normalize it with ps2ps first.
+  echo "DEBUG: Normalizing Adobe Reader PostScript with ps2ps" >&2
+
+  DRMFILTER="$PS2PS $PS2PS_OPTIONS $ppd_opts - -"
+else
+  DRMFILTER=cat
+fi
+
+echo "DEBUG: Running $DRMFILTER | $GS $PS2PDF_OPTIONS $donumcopies $ppd_opts -sOutputFile=- $OPTIONS -c .setpdfwrite -f -" >&2
+cat "$infile" | $DRMFILTER | $GS $PS2PDF_OPTIONS $donumcopies $ppd_opts -sOutputFile=- $OPTIONS -c .setpdfwrite -f -
