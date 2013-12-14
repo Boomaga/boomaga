@@ -39,7 +39,7 @@ add_definitions(-DPATCH_VERSION=\"${PATCH_VERSION}\")
 add_definitions(-DFULL_VERSION=\"${FULL_VERSION}\")
 
 find_program(CUPS_CONFIG_EXECUTABLE NAMES cups-config)
-if (CUPS_CONFIG_EXECUTABLE)
+if(CUPS_CONFIG_EXECUTABLE)
     exec_program(${CUPS_CONFIG_EXECUTABLE} ARGS --serverbin OUTPUT_VARIABLE CUPS_SERVERBIN)
     set(DEF_CUPS_BACKEND_DIR "${CUPS_SERVERBIN}/backend")
     set(DEF_CUPS_FILTER_DIR  "${CUPS_SERVERBIN}/filter")
@@ -48,7 +48,7 @@ else(CUPS_CONFIG_EXECUTABLE)
 endif(CUPS_CONFIG_EXECUTABLE)
 
 # Linux ***************************************
-if (${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
+if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
 
   set(DEF_CUPS_PPD_DIR /usr/share/ppd/boomaga)
   set(DEF_DBUS_MACINE_ID_DIR /var/lib/dbus)
