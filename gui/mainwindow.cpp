@@ -220,7 +220,8 @@ void MainWindow::saveSettings()
     settings->setValue(Settings::MainWindow_State, saveState());
 
     Printer *printer = ui->printersCbx->currentPrinter();
-    settings->setValue(Settings::Printer, printer->printerName());
+    if (printer)
+        settings->setValue(Settings::Printer, printer->printerName());
 
     settings->setValue(Settings::Layout, project->layout()->id());
     settings->setValue(Settings::DoubleSided, project->doubleSided());
@@ -329,6 +330,8 @@ void MainWindow::updateWidgets()
         mStatusBarSheetsLabel.clear();
         mStatusBarCurrentSheetLabel.clear();
     }
+
+    ui->printerConfigBtn->setEnabled(ui->printersCbx->currentPrinter() != 0);
 }
 
 
@@ -337,9 +340,13 @@ void MainWindow::updateWidgets()
  ************************************************/
 void MainWindow::showPrinterSettingsDialog()
 {
-    PrinterSettings *dialog = PrinterSettings::create(ui->printersCbx->currentPrinter());
-    connect(dialog, SIGNAL(accepted()), this, SLOT(applyPrinterSettings()));
-    dialog->show();
+    Printer *printer = ui->printersCbx->currentPrinter();
+    if (printer)
+    {
+        PrinterSettings *dialog = PrinterSettings::create(printer);
+        connect(dialog, SIGNAL(accepted()), this, SLOT(applyPrinterSettings()));
+        dialog->show();
+    }
 }
 
 
