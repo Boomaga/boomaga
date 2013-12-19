@@ -25,10 +25,11 @@
 
 
 #include <QCoreApplication>
-
+#include <poppler/cpp/poppler-document.h>
+#include <poppler/cpp/poppler-page-renderer.h>
+#include <poppler/cpp/poppler-page.h>
 #include "render.h"
 #include "kernel/project.h"
-#include <poppler/qt4/poppler-qt4.h>
 #include "kernel/sheet.h"
 #include <snappy.h>
 #include <QDebug>
@@ -137,21 +138,39 @@ void RenderThread::stop()
 /************************************************
 
  ************************************************/
-QImage renderSheet(Poppler::Document *doc, int sheetNum, double res)
+QImage renderSheet(poppler::document *doc, int sheetNum, double resolution)
 {
-    Poppler::Page *page = doc->page(sheetNum);
+    poppler::page *page = doc->create_page(sheetNum);
     if (page)
     {
-        Poppler::Page::Rotation rotate;
-        //if (project->previewSheet(sheetNum)->hints().testFlag(Sheet::HintLandscapePreview))
-        //    rotate = Poppler::Page::Rotate90;
-        //else
-            rotate = Poppler::Page::Rotate0;
+        poppler::page_renderer prender;
+        prender.set_render_hint(poppler::page_renderer::antialiasing, true);
+        prender.set_render_hint(poppler::page_renderer::text_antialiasing, true);
 
-        QImage img = page->renderToImage(res, res, -1, -1, -1, -1, rotate);
+        poppler::image img = prender.render_page(page, resolution, resolution);
+
+        QImage::Format format = QImage::Format_Invalid;
+
+        switch (img.format())
+        {
+        case poppler::image::format_invalid: format = QImage::Format_Invalid; break;
+        case poppler::image::format_mono:    format = QImage::Format_Mono;    break;
+        case poppler::image::format_rgb24:   format = QImage::Format_RGB32;   break;
+        case poppler::image::format_argb32:  format = QImage::Format_ARGB32;  break;
+        }
+
+
+        QImage result;
+        if (format != QImage::Format_Invalid)
+        {
+            result = QImage(reinterpret_cast<const uchar*>(img.const_data()),
+                            img.width(), img.height(),
+                            img.bytes_per_row(),
+                            format).copy();
+        }
 
         delete page;
-        return img;
+        return result;
     }
 
     return QImage();
@@ -166,14 +185,12 @@ void RenderThread::run()
     mStopped = false;
 
     //qDebug() << "CREATE thread doc ************************";
-    Poppler::Document *doc = Poppler::Document::load(mPdfFileName);
+    poppler::document *doc = poppler::document::load_from_file(mPdfFileName.toLocal8Bit().data());
     if (!doc)
         return;
 
-    doc->setRenderHint(Poppler::Document::Antialiasing, true);
-    doc->setRenderHint(Poppler::Document::TextAntialiasing, true);
 
-    int cnt = doc->numPages();
+    int cnt = doc->pages();
     QVector<bool> ready(cnt, false);
 
     int left=cnt;
@@ -227,12 +244,9 @@ Render::Render(const QString &pdfFileName, QObject *parent) :
     mPdfFileName(pdfFileName),
     mThread(pdfFileName)
 {
-    mLoResDoc = Poppler::Document::load(mPdfFileName);
-    mLoResDoc->setRenderHint(Poppler::Document::Antialiasing, true);
-    mLoResDoc->setRenderHint(Poppler::Document::TextAntialiasing, true);
+    mLoResDoc = poppler::document::load_from_file(mPdfFileName.toLocal8Bit().data());
 
-
-    mImages.resize(mLoResDoc->numPages());
+    mImages.resize(mLoResDoc->pages());
 
     connect(&mThread, SIGNAL(sheetReady(CompressedImage*,int)),
             this, SLOT(sheetRenderUpdated(CompressedImage*,int)));

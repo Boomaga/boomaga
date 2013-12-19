@@ -41,5 +41,5 @@ math(EXPR POPPLER_VER_INT "(10000 * ${POPPLER_MAJOR_VERSION}) + (100 * ${POPPLER
 add_definitions(-DPOPPLER_VERSION=${POPPLER_VER_INT})
 
 
-pkg_search_module(POPPLERQT REQUIRED QUIET poppler-qt4)
+pkg_search_module(POPPLERCPP REQUIRED QUIET poppler-cpp)
 

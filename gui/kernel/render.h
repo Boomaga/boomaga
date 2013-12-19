@@ -32,9 +32,9 @@
 #include <QThread>
 #include <QMutex>
 
-namespace Poppler
+namespace poppler
 {
-    class Document;
+    class document;
 }
 
 class CompressedImage;
@@ -88,7 +88,7 @@ private:
     QString mPdfFileName;
     RenderThread mThread;
     QVector<CompressedImage*> mImages;
-    Poppler::Document *mLoResDoc;
+    poppler::document *mLoResDoc;
 };
 
 
