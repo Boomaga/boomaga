@@ -44,12 +44,8 @@ set(MERGER_MOCS
 
 
 #*******************************************
-#message("CMAKE_BINARY_DIR: ${CMAKE_BINARY_DIR}")
-#message("EXECUTABLE_OUTPUT_PATH: ${PROJECT_BINARY_DIR}")
 set(EXECUTABLE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/..")
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-#find_package(Qt4 REQUIRED QUIET)
-#find_package(Poppler REQUIRED QUIET)
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -59,8 +55,12 @@ include_directories(
     ${POPPLER_INCLUDE_DIRS}
 )
 
-include(${QT_USE_FILE})
-qt4_wrap_cpp(MERGER_MOC_SOURCES ${MERGER_MOCS})
+if(USE_QT4)
+    qt4_wrap_cpp(MERGER_MOC_SOURCES ${MERGER_MOCS})
+else()
+    qt5_wrap_cpp(MERGER_MOC_SOURCES ${MERGER_MOCS})
+endif()
+
 
 add_executable(${PROJECT_NAME} ${MERGER_HEADERS} ${MERGER_SOURCES} ${MERGER_MOC_SOURCES})
 target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${POPPLER_LIBRARIES})

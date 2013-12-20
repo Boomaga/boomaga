@@ -120,8 +120,22 @@ endif()
 
 #*******************************************
 
+option(USE_QT5 "Force use the Qt5." $ENV{USE_QT5})
+option(USE_QT4 "Force use the Qt4." $ENV{USE_QT4})
+
+if((USE_QT4 AND USE_QT5) OR
+   (NOT USE_QT4 AND NOT USE_QT5))
+    find_package(Qt4 QUIET)
+    if (QT4_FOUND)
+        set(USE_QT4 ON)
+        set(USE_QT5 OFF)
+    else()
+        set(USE_QT4 OFF)
+        set(USE_QT5 ON)
+    endif()
+endif()
+
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-find_package(Qt4 REQUIRED QUIET)
 find_package(Cups REQUIRED QUIET)
 find_package(snappy REQUIRED QUIET)
 find_package(Poppler REQUIRED QUIET)
@@ -138,15 +152,50 @@ include_directories(
     ${POPPLERCPP_INCLUDE_DIRS}
 )
 
-include(${QT_USE_FILE})
-qt4_wrap_cpp(MOC_SOURCES ${MOCS})
-qt4_add_resources(QRC_SOURCES ${RESOURCES})
-qt4_wrap_ui(UI_HEADERS ${UI_FILES})
-qt4_add_translation(QM_FILES ${TS_FILES})
-
 include(translations/translatorsinfo/CMakeLists.txt)
 get_translatorsinfo_qrc(translatorsinfo_qrc)
-qt4_add_resources(QRC_CXX_SOURCES ${translatorsinfo_qrc})
+
+if(USE_QT4)
+    find_package(Qt4 REQUIRED QUIET)
+    include(${QT_USE_FILE})
+    qt4_wrap_cpp(MOC_SOURCES ${MOCS})
+    qt4_add_resources(QRC_SOURCES ${RESOURCES})
+    qt4_wrap_ui(UI_HEADERS ${UI_FILES})
+    qt4_add_translation(QM_FILES ${TS_FILES})
+    qt4_add_resources(QRC_CXX_SOURCES ${translatorsinfo_qrc})
+else()
+    cmake_minimum_required(VERSION 2.8.3)
+    find_package(Qt5Widgets REQUIRED QUIET)
+    include_directories(${Qt5Widgets_INCLUDE_DIRS})
+    add_definitions(${Qt5Widgets_DEFINITIONS})
+    set(QT_LIBRARIES ${QT_LIBRARIES} ${Qt5Widgets_LIBRARIES})
+
+    find_package(Qt5PrintSupport REQUIRED QUIET)
+    include_directories(${Qt5PrintSupport_INCLUDE_DIRS})
+    add_definitions(${Qt5PrintSupport_DEFINITIONS})
+    set(QT_LIBRARIES ${QT_LIBRARIES} ${Qt5PrintSupport_LIBRARIES})
+
+    find_package(Qt5DBus REQUIRED QUIET)
+    include_directories(${Qt5DBus_INCLUDE_DIRS})
+    add_definitions(${Qt5DBus_DEFINITIONS})
+    set(QT_LIBRARIES ${QT_LIBRARIES} ${Qt5DBus_LIBRARIES})
+
+
+    find_package(Qt5LinguistTools REQUIRED QUIET)
+
+
+    set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
+
+
+    qt5_wrap_cpp(MOC_SOURCES ${MOCS})
+    qt5_add_resources(QRC_SOURCES ${RESOURCES})
+    qt5_wrap_ui(UI_HEADERS ${UI_FILES})
+    qt5_add_translation(QM_FILES ${TS_FILES})
+    qt5_add_resources(QRC_CXX_SOURCES ${translatorsinfo_qrc})
+
+endif()
+
+message("QT_LIBRARIES: ${QT_LIBRARIES}")
 
 add_executable(${INSTANCE_NAME} ${HEADERS} ${SOURCES} ${MOC_SOURCES} ${QM_FILES} ${QRC_SOURCES} ${UI_HEADERS} ${QRC_CXX_SOURCES})
 target_link_libraries(${INSTANCE_NAME} ${LIBRARIES} ${QT_LIBRARIES} ${CUPS_LIBRARIES} ${SNAPPY_LIBRARIES} ${POPPLER_LIBRARIES} ${POPPLERCPP_LIBRARIES})
