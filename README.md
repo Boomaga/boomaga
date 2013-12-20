@@ -84,11 +84,11 @@ Prerequisites
 
 Should you wish to build the program from the sources, you would need header files for:
 
- ghostscript
- cups
- snappy
- poppler
- poppler-qt4
+ * qt4
+ * cups
+ * snappy
+ * poppler
+ * poppler-qt4
 
 
 Building and installing
@@ -101,5 +101,15 @@ So, create a directory in ~/boomaga, say build, and cd into it. Type
 mkdir ~/boomaga/build
 cd ~/boomaga/build
 cmake ..
+
+Installing the printer
+----------------------
+
+Once the program has been installed, it’s time to add the virtual printer. Please note that this has to be
+done only once. You don’t have to install the printer over again when updating the program.
+
+The best solution is to use the _scripts/installPrinter.sh_ from sources tree– just run it.
+
+If you wish to install the printer on your own, select "_Local Printers: Boomaga (Virtual boomaga printer)_" in the "create printer" dialogue and indicate the type, "_Generic Virtual boomaga printer_" or, if you can’t access the previous, select the "_build/cups/boomaga.ppd_" PPD file.
 
 For more information, see https://github.com/Boomaga/boomaga/wiki/Instalation page.
