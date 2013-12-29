@@ -46,8 +46,10 @@ function copyInputFile
 #*******************************************
 #
 #*******************************************
-function getActiveSessionDisplay
+function getActiveSessionDisplay_consolekit
 {
+  which ck-list-sessions 2>/dev/null >/dev/null || return 2
+
   oldIfs=$IFS
   IFS=$(echo -en "\n")
   while read line; do
@@ -59,7 +61,8 @@ function getActiveSessionDisplay
         if [ "$sesUid" = "$uid" -a "$sesActive" = "TRUE" -a "$sesDisplay" != "" ];
         then
           xDisplay=$sesDisplay
-          break;
+          IFS=${oldIfs}
+          return 0
         fi
 
         unset sesUid
@@ -80,7 +83,35 @@ function getActiveSessionDisplay
         ;;
     esac
   done  <<< $(ck-list-sessions; echo "SessionEnd:");
+
   IFS=${oldIfs}
+  return 1
+}
+
+
+#*******************************************
+#
+#*******************************************
+function getActiveSessionDisplay_systemd
+{
+  local user=$1
+  which loginctl 2>/dev/null >/dev/null || return 2
+
+  local sessions=$(loginctl show-user -p Sessions "${user}" | cut -d'=' -f2)
+
+  for s in ${sessions}; do
+    if [ $(loginctl show-session -pActive "${s}") = "Active=yes" ];
+    then
+      xDisplay=$(loginctl show-session -pDisplay "${s}" | cut -d'=' -f2)
+
+      if [ "${xDisplay}" != "" ];
+      then
+        return 0
+      fi
+    fi
+  done
+
+  return 1
 }
 
 
@@ -141,13 +172,11 @@ function getDbusAddr_SessionFile
 #*******************************************
 function getDbusAddr_Linux_Proc
 {
-
   prefFiles=""
   for proc in ${PREF_ENV_PROGS}; do
     pid=$(pidof ${proc})
     [ -n "$pid" ] && prefFiles="${prefFiles}/proc/$pid/environ "
   done
-
 
   for file in ${prefFiles} $(find /proc -user "${user}" -type f -regex '/proc/[0-9]+/environ' | sort -V -r); do
     disp=$(grep -z DISPLAY "${file}"  | cut -d= -f2)
@@ -225,7 +254,9 @@ jobFile=${jobFileDir}/boomaga_in_file-${jobID}.pdf
 
 createJobFileDir
 copyInputFile "${inputFile}" "${jobFile}"
-getActiveSessionDisplay
+
+getActiveSessionDisplay_systemd "${user}" || \
+getActiveSessionDisplay_consolekit
 
 
 if [ "${xDisplay}" = "" ];
