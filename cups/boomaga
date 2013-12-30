@@ -202,14 +202,17 @@ function getDbusAddr_Linux_Proc
     [ -n "$pid" ] && prefFiles="${prefFiles}/proc/$pid/environ "
   done
 
+  debug "Scan proc files:"
   for file in ${prefFiles} $(find /proc -user "${user}" -type f -regex '/proc/[0-9]+/environ' | sort -V -r); do
     disp=$(grep -z DISPLAY "${file}"  | cut -d= -f2)
     addr=$(grep -z DBUS_SESSION_BUS_ADDRESS "${file}"  | cut -d= -f2-)
 
+    debug "  * ${file}     disp='${disp}' addr='${addr}'"
     if [ -n "${addr}" ];
     then
       if [ "${disp}" = "${xDisplay}" ] || [ "${xDisplay}" = "" ];
       then
+        debug "*** USE ${file} disp='${disp}' addr='${addr}'"
         dbusSessionAddress=${addr}
         BOOMAGA_ENV_FILE=${homeDir}/.cache/boomaga.env
         echo '' > ${BOOMAGA_ENV_FILE}
