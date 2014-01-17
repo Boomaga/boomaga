@@ -28,54 +28,31 @@
 #define PROJECT_H
 
 
-
+#include "job.h"
 #include "printer.h"
+#include "inputfile.h"
 
 #include <QObject>
 #include <QList>
 #include <QStringList>
 #include <QImage>
 
-class InputFile;
+class Job;
 class TmpPdfFile;
 class Sheet;
 class Layout;
 class QTextStream;
 
-class Job
-{
-public:
-    Job(const QString &fileName, const QString &title="", bool autoRemove=false);
-    Job(const Job &other);
-    explicit Job(const InputFile *inputFile);
-
-    QString fileName() const { return mFileName; }
-    QString title() const { return mTitle; }
-    bool autoRemove() const { return mAutoRemove; }
-
-private:
-    QString mFileName;
-    QString mTitle;
-    bool    mAutoRemove;
-};
-
-class Jobs: public QList<Job>
-{
-public:
-    Jobs() {}
-
-    int indexOf(const QString &fileName);
-
-};
 
 class ProjectPage: public QObject
 {
     Q_OBJECT
 public:
-    explicit ProjectPage(InputFile *inputFile, int pageNum);
+    explicit ProjectPage(const ProjectPage *other);
+    explicit ProjectPage(const InputFile &inputFile, int pageNum);
     ~ProjectPage();
 
-    InputFile *inputFile() const { return mInputFile; }
+    InputFile inputFile() const { return mInputFile; }
     int pageNum() const { return mPageNum; }
 
     int pdfObjectNum() const { return mPdfObjectNum; }
@@ -89,24 +66,14 @@ public:
     void setVisible(bool value);
 
 private:
-    InputFile *mInputFile;
+    InputFile mInputFile;
     int mPageNum;
     int mPdfObjectNum;
     QRectF mRect;
-    int num(int inc=0);
     bool mVisible;
 };
 
-class ProjectPageList: public QList<ProjectPage*>
-{
-public:
-    ProjectPageList(): QList<ProjectPage*>() {}
 
-    void removeFile(const InputFile *file);
-    void moveFile(const InputFile *file, const InputFile *before);
-    void addFile(const InputFile *file);
-    int indexOfFirstPage(const InputFile *file);
-};
 
 class Project : public QObject
 {
@@ -127,10 +94,7 @@ public:
 
     static Project* instance();
 
-    const QList<InputFile*> *inputFiles() const { return &mFiles; }
-
-    int filesCount() const { return mFiles.count(); }
-    InputFile *file(int index) const { return mFiles[index]; }
+    const QList<Job*> *jobs() const { return &mJobs; }
 
     int pageCount() const { return mPages.count(); }
     ProjectPage *page(int index) const { return mPages.at(index); }
@@ -161,10 +125,10 @@ public:
     void free();
 
 public slots:
-    void addFile(Job job);
-    void addFiles(QList<Job> jobs);
-    void removeFile(int index);
-    void moveFile(int from, int to);
+    void addFile(InputFile file);
+    void addFiles(QList<InputFile> files);
+    void removeJob(int index);
+    void moveJob(int from, int to);
     void setLayout(const Layout *layout);
     void setDoubleSided(bool value);
 
@@ -182,9 +146,10 @@ private:
     ~Project();
 
     const Layout *mLayout;
-    ProjectPageList mPages;
-    QList<InputFile*> mFiles;
-    Jobs mJobs;
+    QList<ProjectPage*> mPages;
+    QList<InputFile> mInputFiles;
+    JobList mJobs;
+
     QList<Sheet*> mSheets;
     QList<Sheet*> mPreviewSheets;
     TmpPdfFile *mTmpFile;
@@ -195,13 +160,12 @@ private:
     bool mDoubleSided;
 
     void updateSheets();
-    TmpPdfFile *createTmpPdfFile(QList<Job> jobs);
+    TmpPdfFile *createTmpPdfFile(QList<InputFile> files);
     void stopMerging();
 };
 
 
 #define project Project::instance()
 
-QDebug operator<<(QDebug dbg, const Job &job);
 
 #endif // PROJECT_H

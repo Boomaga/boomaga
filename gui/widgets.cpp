@@ -28,6 +28,7 @@
 #include "settings.h"
 #include "kernel/printer.h"
 #include "kernel/inputfile.h"
+#include "kernel/job.h"
 #include "kernel/sheet.h"
 
 #include <QMenu>
@@ -119,7 +120,7 @@ Printer *PrintersComboBox::itemPrinter(int index)
 /************************************************
 
  ************************************************/
-InputFilesListView::InputFilesListView(QWidget *parent):
+JobsListView::JobsListView(QWidget *parent):
     QListWidget(parent)
 {
     setContextMenuPolicy(Qt::CustomContextMenu);
@@ -131,27 +132,28 @@ InputFilesListView::InputFilesListView(QWidget *parent):
 
 
 /************************************************
-
- ************************************************/
-InputFile *InputFilesListView::currentFile() const
+ *
+ * ***********************************************/
+Job *JobsListView::currentJob() const
 {
     if (currentItem())
     {
         int n = currentItem()->data(Qt::UserRole).toInt();
-        if (n<project->filesCount())
-            return project->file(n);
+        if (n < project->jobs()->count())
+            return project->jobs()->at(n);
     }
 
     return 0;
+
 }
 
 
 /************************************************
 
  ************************************************/
-void InputFilesListView::setSheetNum(int sheetNum)
+void JobsListView::setSheetNum(int sheetNum)
 {
-    if (count()<1)
+    if (count() < 1)
         return;
 
     if (sheetNum >= project->previewSheetCount())
@@ -161,30 +163,37 @@ void InputFilesListView::setSheetNum(int sheetNum)
     }
 
     Sheet *sheet = project->previewSheet(sheetNum);
-    InputFile *cur = currentFile();
+    Job *job = currentJob();
 
-    for (int i=0; i<sheet->count(); ++i)
+    if (job)
     {
-        ProjectPage *page = sheet->page(i);
-        if (!page)
-            continue;
+        for (int i=0; i<sheet->count(); ++i)
+        {
+            ProjectPage *page = sheet->page(i);
+            if (!page)
+                continue;
 
-        if (page->inputFile() == cur)
-            return;
+            if (job->indexOfPage(page) > -1)
+                return;
+        }
     }
 
+
     for (int i=0; i<sheet->count(); ++i)
     {
         ProjectPage *page = sheet->page(i);
         if (!page)
             continue;
 
-        int n = project->inputFiles()->indexOf(page->inputFile());
-
-        if (n>-1)
+        for(int j=0; j<project->jobs()->count(); ++j)
         {
-            setCurrentItem(item(n));
-            return;
+            Job *job = project->jobs()->at(j);
+
+            if (job->indexOfPage(page) > -1)
+            {
+                setCurrentItem(item(j));
+                return;
+            }
         }
     }
 
@@ -195,17 +204,17 @@ void InputFilesListView::setSheetNum(int sheetNum)
 /************************************************
 
  ************************************************/
-void InputFilesListView::updateItems()
+void JobsListView::updateItems()
 {
     clear();
-    for (int i=0; i<project->filesCount(); ++i)
+    for (int i=0; i<project->jobs()->count(); ++i)
     {
         QListWidgetItem *item = new QListWidgetItem(this);
         item->setData(Qt::UserRole, i);
-        InputFile *file = project->file(i);
+        Job *job = project->jobs()->at(i);
 
-        item->setText(tr("( %1 pages ) ").arg(file->pageCount()) +
-                    (file->title().isEmpty() ? tr("Untitled") : file->title()));
+        item->setText(tr("( %1 pages ) ").arg(job->pageCount()) +
+                    (job->title().isEmpty() ? tr("Untitled") : job->title()));
 
         addItem(item);
     }
@@ -215,7 +224,7 @@ void InputFilesListView::updateItems()
 /************************************************
 
  ************************************************/
-void InputFilesListView::showContextMenu(const QPoint &pos)
+void JobsListView::showContextMenu(const QPoint &pos)
 {
     QListWidgetItem *item = itemAt(pos);
     if (!item)
@@ -224,7 +233,7 @@ void InputFilesListView::showContextMenu(const QPoint &pos)
     QMenu menu(this);
     QAction *act = menu.addAction(tr("Delete job"));
     act->setData(item->data(Qt::UserRole));
-    connect(act, SIGNAL(triggered()), this, SLOT(deleteFile()));
+    connect(act, SIGNAL(triggered()), this, SLOT(deleteJob()));
     menu.exec(mapToGlobal(pos));
 }
 
@@ -232,13 +241,13 @@ void InputFilesListView::showContextMenu(const QPoint &pos)
 /************************************************
 
  ************************************************/
-void InputFilesListView::deleteFile()
+void JobsListView::deleteJob()
 {
     QAction *act = qobject_cast<QAction*>(sender());
     if (act)
     {
         int index = act->data().toInt();
-        project->removeFile(index);
+        project->removeJob(index);
     }
     updateItems();
 }
@@ -247,7 +256,7 @@ void InputFilesListView::deleteFile()
 /************************************************
 
  ************************************************/
-void InputFilesListView::mouseReleaseEvent(QMouseEvent *event)
+void JobsListView::mouseReleaseEvent(QMouseEvent *event)
 {
     if (event->button() == Qt::LeftButton)
     {
@@ -256,12 +265,13 @@ void InputFilesListView::mouseReleaseEvent(QMouseEvent *event)
         {
             setCurrentItem(item);
             int n = item->data(Qt::UserRole).toInt();
-            if (n<project->filesCount())
+            if (n < project->jobs()->count())
             {
-                emit fileSelected(project->file(n));
+                emit jobSelected(project->jobs()->at(n));
             }
         }
     }
+
     QListWidget::mouseReleaseEvent(event);
 }
 
@@ -269,13 +279,13 @@ void InputFilesListView::mouseReleaseEvent(QMouseEvent *event)
 /************************************************
 
  ************************************************/
-void InputFilesListView::layoutChanged()
+void JobsListView::layoutChanged()
 {
     for (int i=0; i<count()-1; ++i)
     {
         int from = item(i)->data(Qt::UserRole).toInt();
         if (from != i)
-            project->moveFile(from, i);
+            project->moveJob(from, i);
     }
 }
 

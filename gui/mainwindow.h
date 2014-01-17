@@ -34,7 +34,7 @@
 class Layout;
 class Project;
 class Printer;
-class InputFile;
+class Job;
 class QMessageBox;
 
 namespace Ui {
@@ -55,7 +55,7 @@ private slots:
     void switchLayout();
     void switchPrinter();
 
-    void switchToFile(InputFile *file);
+    void switchToJob(Job *job);
 
     void print();
     void printAndClose();

@@ -35,6 +35,7 @@
 #include <QProcess>
 
 #include "project.h"
+#include "job.h"
 #include "inputfile.h"
 #include "sheet.h"
 #include "layout.h"
@@ -80,8 +81,9 @@ QString TmpPdfFile::genFileName()
 /************************************************
 
  ************************************************/
-TmpPdfFile::TmpPdfFile(const QList<Job> jobs, QObject *parent):
+TmpPdfFile::TmpPdfFile(const QList<InputFile> files, QObject *parent):
     QObject(parent),
+    mJobs(new JobList()),
     mMerger(0),
     mPageCount(0),
     mValid(false),
@@ -93,7 +95,7 @@ TmpPdfFile::TmpPdfFile(const QList<Job> jobs, QObject *parent):
 
     mFileName = genFileName();
 
-    mJobs << jobs;
+    mInputFiles << files;
 }
 
 
@@ -102,6 +104,7 @@ TmpPdfFile::TmpPdfFile(const QList<Job> jobs, QObject *parent):
  ************************************************/
 TmpPdfFile::~TmpPdfFile()
 {
+    delete mJobs;
     delete mRender;
     delete mMerger;
     QFile::remove(mFileName);
@@ -121,23 +124,35 @@ void TmpPdfFile::merge()
     connect(mMerger, SIGNAL(readyReadStandardOutput()),
             this, SLOT(mergerOutputReady()));
 
+    mJobs->reserve(mInputFiles.count());
+
     QStringList args;
-    foreach (const Job job, mJobs)
-        args << job.fileName();
+    foreach (const InputFile file, mInputFiles)
+    {
+        args << file.fileName();
+
+        Job *job = new Job(file, this);
+        job->setTitle(file.title());
+        *mJobs << job;
+    }
 
     args << mFileName;
 
-    QStringList dirs;
-    dirs << QApplication::applicationDirPath() + "/";
-    dirs << QApplication::applicationDirPath() + "/../lib/boomaga/";
+    static QString boomagamerger;
 
-    QString boomagamerger;
-    foreach (QString dir, dirs)
+    if (boomagamerger.isNull())
     {
-        if (QFileInfo(dir + "boomagamerger").exists())
+        QStringList dirs;
+        dirs << QApplication::applicationDirPath() + "/";
+        dirs << QApplication::applicationDirPath() + "/../lib/boomaga/";
+
+        foreach (QString dir, dirs)
         {
-            boomagamerger = dir + "boomagamerger";
-            break;
+            if (QFileInfo(dir + "boomagamerger").exists())
+            {
+                boomagamerger = dir + "boomagamerger";
+                break;
+            }
         }
     }
 
@@ -443,12 +458,12 @@ void TmpPdfFile::getPageStream(QString *out, const Sheet *sheet) const
  ************************************************/
 void TmpPdfFile::mergerOutputReady()
 {
-    mBuf += mMerger->readAllStandardOutput();
+    mBuf += QString::fromLocal8Bit(mMerger->readAllStandardOutput());
     QString line;
     int i;
     for (i=0; i<mBuf.length(); ++i)
     {
-        char c = mBuf.at(i);
+        QChar c = mBuf.at(i);
         if (c != '\n')
         {
             line += c;
@@ -458,18 +473,21 @@ void TmpPdfFile::mergerOutputReady()
 
         /* Protocol ********************************
             Line format     Description
-            F:n:cnt         File page counts:
+            F:n:cnt:title   File page counts:
                                 n - file index.
-                                cnt page count in this PDF file
+                                cnt - page count in this PDF file
+                                title - document title
 
             N:num           Next XRef free num
             X:pos           XRef position
 
-            P:n:num:rect    PDF page info:
-                                n - page number
-                                num -  XForm object number for page
-                                rect- page Rectangle format is
-                                    left,top,width,height
+            P:f:n:num:rect  PDF page info:
+                            f - file number
+                            n - page number
+                            num -  XForm object number for page
+                            rect- page Rectangle format is
+                                left,top,width,height
+
             E:msg           Error message
 
             D:msg           Debug message
@@ -482,60 +500,79 @@ void TmpPdfFile::mergerOutputReady()
 
         QStringList data = line.split(':', QString::KeepEmptyParts);
 
+        //***************************************
         if (data.at(0) == "S")
         {
             emit progress(data.at(1).toInt(), mPageCount);
         }
 
+
+        //***************************************
         else if (data.at(0) == "P")
         {
-            TmpPdfFilePage page;
+            int jobNum = data.at(1).toInt();
+            int pageNum = data.at(2).toInt();
+            int pdfObj  = data.at(3).toInt();
+            QStringList r = data.at(4).split(",");
 
-            page.index = data.at(1).toInt();
-            page.pdfObjNum = data.at(2).toInt();
-            QStringList r = data.at(3).split(",");
-            page.rect = QRectF(r.at(0).toDouble(),
+            ProjectPage *page = mJobs->at(jobNum)->page(pageNum);
+
+            page->setPdfObjectNum(pdfObj);
+            page->setRect(QRectF(r.at(0).toDouble(),
                                r.at(1).toDouble(),
                                r.at(2).toDouble(),
-                               r.at(3).toDouble());
-
-            mPages[page.index] = page;
+                               r.at(3).toDouble()));
         }
 
 
+        //***************************************
         else if (data.at(0) == "A")
         {
             mPageCount = data.at(1).toInt();
-            mPages.resize(mPageCount);
         }
 
 
-        else if (data.at(0) == "S")
-        {
-            emit progress(data.at(1).toInt(), mPageCount);
-        }
-
+        //***************************************
         else if (data.at(0) == "X")
         {
             mOrigXrefPos = data.at(1).toDouble();
         }
 
+
+        //***************************************
         else if (data.at(0) == "N")
         {
             mFirstFreeNum = data.at(1).toDouble();
         }
 
+
+        //***************************************
         else if (data.at(0) == "F")
         {
-            mJobsPageCounts.insert(mJobs.at(data.at(1).toInt()).fileName(), data.at(2).toInt());
+            int fileNum = data.at(1).toInt();
+            int pageCnt = data.at(2).toInt();
+            QString title = data.at(3);
+
+            Job *job = mJobs->at(fileNum);
+            job->setTitle(title);
+
+            for (int j=0; j<pageCnt; ++j)
+            {
+                ProjectPage *page = new ProjectPage(mInputFiles.at(fileNum), j);
+                job->addPage(page);
+            }
         }
 
+
+        //***************************************
         else if (data.at(0) == "E")
         {
             project->error(data.at(1));
             return;
         }
 
+
+        //***************************************
         else if (data.at(0) == "D")
         {
             qDebug() << data.at(1);

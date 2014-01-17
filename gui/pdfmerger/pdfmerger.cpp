@@ -270,6 +270,43 @@ PdfMerger::~PdfMerger()
 
 
 /************************************************
+ *
+ ************************************************/
+QString PdfMerger::getDocumentMetaInfo(PDFDoc *doc, const char *tag)
+{
+    QString result;
+    Object docInfo;
+    doc->getDocInfo(&docInfo);
+    if (docInfo.isDict())
+    {
+        Dict *dict = docInfo.getDict();
+        Object obj;
+        dict->lookup((char*)tag, &obj);
+        if (obj.isString())
+        {
+            GooString *s = obj.getString();
+            if (s->getLength() > 1 &&
+                s->getChar(0) == '\xFE' &&
+                s->getChar(1) == '\xFF')
+            {
+                result = QString::fromUtf16((ushort*)s->getCString());
+            }
+            else
+            {
+                result = QString::fromLatin1(s->getCString());
+            }
+        }
+
+        obj.free();
+
+    }
+    docInfo.free();
+
+    return result;
+}
+
+
+/************************************************
 
  ************************************************/
 PDFDoc *PdfMerger::addFile(const QString &fileName)
@@ -303,7 +340,9 @@ PDFDoc *PdfMerger::addFile(const QString &fileName)
         }
     }
 
-    print(QString("F:%1:%2").arg(mDocs.count()).arg(doc->getNumPages()));
+
+    QString title = getDocumentMetaInfo(doc, "Title");
+    print(QString("F:%1:%2:%3").arg(mDocs.count()).arg(doc->getNumPages()).arg(title));
 
     mDocs << doc;
     return doc;
@@ -443,17 +482,25 @@ bool PdfMerger::run(const QString &outFileName)
     mStream = 0;
     fclose(f);
 
-
-    for (int i=0; i<mOrigPages.count(); ++i)
+    int i = 0;
+    for (int d=0; d<mDocs.count(); ++d)
     {
+        PDFDoc *doc = mDocs.at(d);
+
+        int pc = doc->getNumPages();
+        for (int p=0; p<pc; ++p)
+        {
         PdfPageInfo *pageInfo = mOrigPages.at(i);
-        print(QString("P:%1:%2:%3,%4,%5,%6")
-              .arg(i)
+        print(QString("P:%1:%2:%3:%4,%5,%6,%7")
+              .arg(d)
+              .arg(p)
               .arg(pageInfo->objNum)
               .arg(pageInfo->cropBox.left())
               .arg(pageInfo->cropBox.top())
               .arg(pageInfo->cropBox.width())
               .arg(pageInfo->cropBox.height()));
+            i++;
+        }
     }
 
     print(QString("N:%1").arg(mXRef.getNumObjects()));

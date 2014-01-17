@@ -29,37 +29,28 @@
 
 #include <QString>
 #include <QVector>
+#include <QSharedDataPointer>
 
-class ProjectPage;
-class Job;
+class InputFileData;
 
 class InputFile
 {
 public:
-    explicit InputFile(const QString &fileName, int pageCount);
-    explicit InputFile(const Job &job, int pageCount);
-    virtual ~InputFile();
+    InputFile();
+    InputFile(const QString &fileName, const QString &title = "", bool autoRemove=false);
+    InputFile(const InputFile &other);
+    InputFile &operator=(const InputFile &other);
+    ~InputFile();
 
-    QString fileName() const { return mFileName; }
+    bool operator==(const InputFile &other) const;
+    inline bool operator!=(const InputFile &other) const { return !operator==(other); }
 
-    QString title() const { return mTitle; }
-    void setTile(const QString &value) { mTitle = value; }
-
-    int pageCount() const { return mPages.count(); }
-    QVector<ProjectPage*> pages() { return mPages; }
-    QVector<ProjectPage*> pages() const { return mPages; }
-
-    bool autoRemove() const {return mAutoRemove;}
-    void setAutoRemove(bool value) { mAutoRemove = value; }
-
-protected:
-    QVector<ProjectPage*> mPages;
-
+    QString fileName() const;
+    QString title() const;
+    bool autoRemove() const;
+    bool isNull() const;
 private:
-    QString mFileName;
-    QString mTitle;
-    bool mAutoRemove;
+    QSharedDataPointer<InputFileData> mData;
 };
-
 
 #endif // INPUTFILE_H

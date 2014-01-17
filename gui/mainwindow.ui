@@ -144,13 +144,13 @@
       </widget>
      </item>
      <item>
-      <widget class="QGroupBox" name="filesBox">
+      <widget class="QGroupBox" name="jobsBox">
        <property name="title">
         <string>Jobs</string>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_5">
         <item>
-         <widget class="InputFilesListView" name="filesView">
+         <widget class="JobsListView" name="jobsView">
           <property name="sizePolicy">
            <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
             <horstretch>0</horstretch>
@@ -280,7 +280,7 @@
    <header location="global">widgets.h</header>
   </customwidget>
   <customwidget>
-   <class>InputFilesListView</class>
+   <class>JobsListView</class>
    <extends>QListWidget</extends>
    <header location="global">widgets.h</header>
   </customwidget>

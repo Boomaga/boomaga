@@ -27,6 +27,7 @@
 #include "kernel/project.h"
 #include "mainwindow.h"
 #include "dbus.h"
+#include "kernel/inputfile.h"
 
 #include <QApplication>
 #include <QTextStream>
@@ -188,7 +189,7 @@ int main(int argc, char *argv[])
         files << QFileInfo(args.at(i));
     }
 
-    QList<Job> jobs;
+    QList<InputFile> inputFiles;
     for (int i=0; i<files.count(); ++i)
     {
         QFileInfo file = files.at(i);
@@ -208,7 +209,7 @@ int main(int argc, char *argv[])
         if (i < jobTitles.count())
             title = jobTitles.at(i);
 
-        jobs << Job(file.absoluteFilePath(), title, autoRemove);
+        inputFiles << InputFile(file.absoluteFilePath(), title, autoRemove);
     }
 
 #if 0
@@ -229,9 +230,8 @@ int main(int argc, char *argv[])
     application.processEvents();
 
 
-    if (!jobs.isEmpty())
-        project->addFiles(jobs);
-
+    if (!inputFiles.isEmpty())
+        project->addFiles(inputFiles);
 
     return application.exec();
 }

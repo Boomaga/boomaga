@@ -55,6 +55,5 @@ BoomagaDbus::~BoomagaDbus()
  ************************************************/
 void BoomagaDbus::add(const QString &file, const QString &title, bool autoRemove)
 {
-    Job job(file, title, autoRemove);
-    project->addFile(job);
+    project->addFile(InputFile(file, title, autoRemove));
 }

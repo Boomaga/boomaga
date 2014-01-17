@@ -25,6 +25,7 @@
 
 #include "kernel/project.h"
 #include "settings.h"
+#include "job.h"
 
 #include "inputfile.h"
 #include "tmppdffile.h"
@@ -41,115 +42,27 @@
 
 #include <math.h>
 
-/************************************************
 
- ************************************************/
-Job::Job(const QString &fileName, const QString &title, bool autoRemove):
-    mFileName(fileName),
-    mTitle(title),
-    mAutoRemove(autoRemove)
-{
-}
 
 
 /************************************************
 
  ************************************************/
-Job::Job(const Job &other)
+ProjectPage::ProjectPage(const ProjectPage *other):
+    QObject(),
+    mInputFile(other->mInputFile),
+    mPageNum(other->mPageNum),
+    mPdfObjectNum(other->mPdfObjectNum),
+    mRect(other->mRect),
+    mVisible(other->mVisible)
 {
-    mFileName = other.mFileName;
-    mTitle = other.mTitle;
-    mAutoRemove = other.mAutoRemove;
-}
-
-
-/************************************************
-
- ************************************************/
-Job::Job(const InputFile *inputFile)
-{
-    mFileName = inputFile->fileName();
-    mTitle = inputFile->title();
-    mAutoRemove = inputFile->autoRemove();
-}
-
-
-/************************************************
-
- ************************************************/
-int Jobs::indexOf(const QString &fileName)
-{
-    for (int i=0; i<count(); ++i)
-    {
-        if (this->at(i).fileName() == fileName)
-            return i;
-    }
-    return -1;
-}
-
-
-/************************************************
-
- ************************************************/
-void ProjectPageList::removeFile(const InputFile *file)
-{
-    for(int i=count()-1; i>-1; --i)
-    {
-        if (at(i)->inputFile() == file)
-            takeAt(i);
-    }
-}
-
-
-/************************************************
-
- ************************************************/
-void ProjectPageList::moveFile(const InputFile *file, const InputFile *before)
-{
-    if (file == before)
-        return;
-
-    removeFile(file);
-
-    int n = indexOfFirstPage(before);
-    for(int i=file->pageCount()-1; i>-1; --i)
-    {
-        insert(n, file->pages().at(i));
-    }
 
 }
 
-
 /************************************************
-
+ *
  ************************************************/
-void ProjectPageList::addFile(const InputFile *file)
-{
-    foreach (ProjectPage *page, file->pages())
-        *this << page;
-}
-
-/************************************************
-
- ************************************************/
-int ProjectPageList::indexOfFirstPage(const InputFile *file)
-{
-    for(int i=0; i<count(); ++i)
-    {
-        if (at(i)->inputFile() == file)
-            return i;
-    }
-
-    return -1;
-}
-
-
-
-
-/************************************************
-
- ************************************************/
-ProjectPage::ProjectPage(InputFile *inputFile, int pageNum):
+ProjectPage::ProjectPage(const InputFile &inputFile, int pageNum):
     QObject(),
     mInputFile(inputFile),
     mPageNum(pageNum),
@@ -173,13 +86,6 @@ ProjectPage::~ProjectPage()
 void ProjectPage::setVisible(bool value)
 {
     mVisible = value;
-}
-
-int ProjectPage::num(int inc)
-{
-    static int n=0;
-    n +=inc;
-    return n;
 }
 
 
@@ -212,46 +118,16 @@ Project::~Project()
 void Project::free()
 {
     delete mTmpFile;
-    qDeleteAll(mFiles);
+    qDeleteAll(mJobs);
 }
 
 
 /************************************************
 
  ************************************************/
-//bool searchInJobs(const QList<Job> jobs, const QString &fileName)
-//{
-//    foreach (Job job, jobs)
-//    {
-//        if (job.fileName() == fileName)
-//            return true;
-//    }
-
-//    return false;
-//}
-
-
-/************************************************
-
- ************************************************/
-InputFile *searchInInputFiles(QList<InputFile*> files, const QString &fileName)
+TmpPdfFile *Project::createTmpPdfFile(QList<InputFile> files)
 {
-    foreach(InputFile *file, files)
-    {
-        if (file->fileName() == fileName)
-            return file;
-    }
-
-    return 0;
-}
-
-
-/************************************************
-
- ************************************************/
-TmpPdfFile *Project::createTmpPdfFile(QList<Job> jobs)
-{
-    TmpPdfFile *res = new TmpPdfFile(jobs, this);
+    TmpPdfFile *res = new TmpPdfFile(files, this);
 
     connect(res, SIGNAL(progress(int,int)),
             this, SLOT(tmpFileProgress(int,int)));
@@ -266,22 +142,23 @@ TmpPdfFile *Project::createTmpPdfFile(QList<Job> jobs)
 /************************************************
 
  ************************************************/
-void Project::addFile(Job job)
+void Project::addFile(InputFile file)
 {
-    addFiles(QList<Job>() << job);
+    addFiles(QList<InputFile>() << file);
 }
 
 
 /************************************************
 
  ************************************************/
-void Project::addFiles(QList<Job> jobs)
+void Project::addFiles(QList<InputFile> files)
 {
-
-    mJobs << jobs;
+    QList<InputFile> request;
+    request << mInputFiles;
+    request << files;
     stopMerging();
 
-    mLastTmpFile = createTmpPdfFile(mJobs);
+    mLastTmpFile = createTmpPdfFile(request);
     mLastTmpFile->merge();
 }
 
@@ -289,35 +166,25 @@ void Project::addFiles(QList<Job> jobs)
 /************************************************
 
  ************************************************/
-void Project::removeFile(int index)
+void Project::removeJob(int index)
 {
     stopMerging();
-    int n = mJobs.indexOf(mFiles.at(index)->fileName());
-    mJobs.removeAt(n);
-
-    InputFile *file = mFiles.takeAt(index);
-    mPages.removeFile(file);
-    delete file;
+    Job * job = mJobs.takeAt(index);
+    mInputFiles.removeAll(job->inputFile());
+    delete job;
 
     updateSheets();
 
-    mLastTmpFile = createTmpPdfFile(mJobs);
+    mLastTmpFile = createTmpPdfFile(mInputFiles);
     mLastTmpFile->merge();
 }
 
 /************************************************
 
  ************************************************/
-void Project::moveFile(int from, int to)
+void Project::moveJob(int from, int to)
 {
-    mPages.moveFile(mFiles.at(from), mFiles.at(to));
-
-    int f = mJobs.indexOf(mFiles.at(from)->fileName());
-    int t = mJobs.indexOf(mFiles.at(to)->fileName());
-    mJobs.move(f, t);
-
-    mFiles.move(from, to);
-
+    mJobs.move(from, to);
     updateSheets();
 }
 
@@ -340,51 +207,59 @@ void Project::tmpFileMerged()
 
     if (!tmpPdf->isValid())
     {
-        if (mTmpFile)
-            mJobs = mTmpFile->jobs();
+//TODO:        if (mTmpFile)
+//TODO:            mInputFiles = mTmpFile->inputFiles();
 
         tmpPdf->deleteLater();
         mLastTmpFile = 0;
         return;
     }
 
+    // Update jobs and remove old one ................
+    QMutableListIterator<Job*> j(mJobs);
 
-    // Remove old InputFiles and its pages ...........
-    for (int i=mFiles.count()-1; i>-1; --i)
+    while(j.hasNext())
     {
-        if (mJobs.indexOf(mFiles.at(i)->fileName()) < 0)
+        Job *job = j.next();
+        int n = tmpPdf->jobs().indexOfInputFile(job->inputFile());
+
+        if (n<0)
         {
-            InputFile *file = mFiles.takeAt(i);
-            mPages.removeFile(file);
-            delete file;
+            j.remove();
+            delete job;
+        }
+        else
+        {
+            for(int p=0; p<job->pageCount(); ++p)
+            {
+                ProjectPage *projPage = job->page(p);
+
+                if (!projPage->inputFile().isNull())
+                {
+                    ProjectPage *tmpPage = tmpPdf->jobs().at(n)->page(projPage->pageNum());
+                    projPage->setPdfObjectNum(tmpPage->pdfObjectNum());
+                    projPage->setRect(tmpPage->rect());
+                }
+            }
         }
     }
-    // ...............................................
+    //................................................
 
-    // Add new InputFiles and its pages ..............
-    int p = 0;
-    foreach(Job job, tmpPdf->jobs())
+    // Add new jobs and its pages ....................
+    foreach(Job *tmpJob, tmpPdf->jobs())
+    //for (int i=0; i<tmpPdf->jobsinputFiles().count(); ++i)
     {
-        InputFile *file = searchInInputFiles(mFiles, job.fileName());
-        if (!file)
-        {
-            file = new InputFile(job, tmpPdf->inputFilePageCount(job.fileName()));
-            mFiles << file;
-            mPages.addFile(file);
-        }
+        int n = mJobs.indexOfInputFile(tmpJob->inputFile());
 
-        int cnt = file->pageCount();
-        for (int i=0; i<cnt; ++i)
+        if (n<0)
         {
-            ProjectPage *page = file->pages()[i];
-            TmpPdfFilePage pdfPage = tmpPdf->page(p);
-
-            page->setPdfObjectNum(pdfPage.pdfObjNum);
-            page->setRect(pdfPage.rect);
-            p++;
+            Job *job = new Job(tmpJob);
+            mJobs << job;
+            mInputFiles << job->inputFile();
         }
     }
-    // ...............................................
+    //................................................
+
     delete mTmpFile;
     mTmpFile = mLastTmpFile;
     connect(mTmpFile, SIGNAL(imageChanged(int)),
@@ -401,6 +276,15 @@ void Project::tmpFileMerged()
  ************************************************/
 void Project::updateSheets()
 {
+    mPages.clear();
+    foreach(Job *job, mJobs)
+    {
+        for (int p=0; p<job->pageCount(); ++p)
+        {
+            mPages << job->page(p);
+        }
+    }
+
     qDeleteAll(mSheets);
     mSheets.clear();
 
@@ -590,12 +474,3 @@ QImage Project::sheetImage(int sheetNum) const
         return QImage();
 }
 
-
-/************************************************
-
- ************************************************/
-QDebug operator<<(QDebug dbg, const Job &job)
-{
-    dbg << QString("%1 (%2) [%3]").arg(job.fileName(), job.title()).arg(job.autoRemove());
-    return dbg.space();
-}

@@ -35,14 +35,8 @@
 class QProcess;
 class Sheet;
 class Job;
+class JobList;
 class Render;
-
-struct TmpPdfFilePage
-{
-    int     index;
-    int     pdfObjNum;
-    QRectF  rect;
-};
 
 
 class TmpPdfFile: public QObject
@@ -50,19 +44,17 @@ class TmpPdfFile: public QObject
     Q_OBJECT
     friend class PdfMerger;
 public:
-    explicit TmpPdfFile(const QList<Job> jobs, QObject *parent = 0);
+    explicit TmpPdfFile(const QList<InputFile> files, QObject *parent = 0);
     virtual ~TmpPdfFile();
 
     void merge();
     void updateSheets(QList<Sheet *> &sheets);
     void stop();
 
-    Jobs jobs() const  { return  mJobs; }
+    QList<InputFile> inputFiles() const  { return  mInputFiles; }
+    JobList jobs() const { return *mJobs; }
 
     QString fileName() const { return mFileName; }
-
-    int inputFilePageCount(const QString &fileName) const { return mJobsPageCounts.value(fileName); }
-    const TmpPdfFilePage page(int i) const { return  mPages.at(i); }
 
     void writeDocument(const QList<Sheet *> &sheets, QIODevice *out);
 
@@ -85,19 +77,19 @@ private:
 
     static QString genFileName();
 
-    Jobs mJobs;
+    QList<InputFile> mInputFiles;
+    JobList *mJobs;
 
-    QHash<QString,int> mJobsPageCounts;
-    QVector<TmpPdfFilePage> mPages;
     QString mFileName;
     qint32 mFirstFreeNum;
     qint64 mOrigFileSize;
     qint64 mOrigXrefPos;
     QProcess *mMerger;
-    QByteArray mBuf;
+    QString mBuf;
     int mPageCount;
     bool mValid;
     Render *mRender;
 };
+
 
 #endif // TMPPDFFILE_H

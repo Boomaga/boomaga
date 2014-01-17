@@ -36,14 +36,16 @@
 
 /* Protocol ********************************
     Line format     Description
-    F:n:cnt         File page counts:
+    F:n:cnt:title   File page counts:
                         n - file index.
-                        cnt page count in this PDF file
+                        cnt - page count in this PDF file
+                        title - document title
 
     N:num           Next XRef free num
     X:pos           XRef position
 
-    P:n:num:rect    PDF page info:
+    P:f:n:num:rect  PDF page info:
+                        f - file number
                         n - page number
                         num -  XForm object number for page
                         rect- page Rectangle format is
@@ -111,6 +113,7 @@ private:
     qint64 mXrefPos;
     bool writePageAsXObject(PdfPageInfo *pageInfo);
     bool writeDictValue(Dict *dict, const char *key, Guint numOffset);
+    QString getDocumentMetaInfo(PDFDoc *doc, const char *tag);
 };
 
 #endif // PDFMERGER_H

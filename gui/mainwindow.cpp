@@ -28,6 +28,7 @@
 #include "ui_mainwindow.h"
 #include "kernel/project.h"
 #include "settings.h"
+#include "kernel/job.h"
 #include "kernel/printer.h"
 #include "kernel/layout.h"
 #include "kernel/inputfile.h"
@@ -124,8 +125,8 @@ MainWindow::MainWindow(QWidget *parent):
     connect(ui->doubleSidedCbx, SIGNAL(clicked(bool)),
             project, SLOT(setDoubleSided(bool)));
 
-    connect(ui->filesView, SIGNAL(fileSelected(InputFile*)),
-            this, SLOT(switchToFile(InputFile*)));
+    connect(ui->jobsView, SIGNAL(jobSelected(Job*)),
+            this, SLOT(switchToJob(Job*)));
 
     connect(ui->printersCbx, SIGNAL(activated(int)),
             this, SLOT(switchPrinter()));
@@ -143,7 +144,7 @@ MainWindow::MainWindow(QWidget *parent):
             this, SLOT(updateWidgets()));
 
     connect(ui->preview, SIGNAL(changed(int)),
-            ui->filesView, SLOT(setSheetNum(int)));
+            ui->jobsView, SLOT(setSheetNum(int)));
 
     ui->preview->setFocusPolicy(Qt::StrongFocus);
     ui->preview->setFocus();
@@ -385,9 +386,9 @@ void MainWindow::switchPrinter()
 /************************************************
 
  ************************************************/
-void MainWindow::switchToFile(InputFile *file)
+void MainWindow::switchToJob(Job *job)
 {
-    ProjectPage *page = file->pages().first();
+    ProjectPage *page = job->page(0);
     for (int i=0; i<project->previewSheetCount(); ++i)
     {
         const Sheet *sheet = project->previewSheet(i);

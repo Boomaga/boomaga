@@ -27,14 +27,13 @@
 #ifndef WIDGETS_H
 #define WIDGETS_H
 
-#include "kernel/project.h"
-
 #include <QRadioButton>
 #include <QComboBox>
 #include <QListWidget>
 
 class Printer;
 class Layout;
+class Job;
 
 class LayoutRadioButton : public QRadioButton
 {
@@ -74,23 +73,23 @@ private:
 };
 
 
-class InputFilesListView: public QListWidget
+class JobsListView: public QListWidget
 {
     Q_OBJECT
 public:
-    explicit InputFilesListView(QWidget *parent = 0);
-    InputFile *currentFile() const;
+    explicit JobsListView(QWidget *parent = 0);
+    Job *currentJob() const;
 
 public slots:
     void setSheetNum(int sheetNum);
 
 signals:
-    void fileSelected(InputFile *file);
+    void jobSelected(Job *job);
 
 private slots:
     void updateItems();
     void showContextMenu(const QPoint &pos);
-    void deleteFile();
+    void deleteJob();
     void layoutChanged();
 
 protected:

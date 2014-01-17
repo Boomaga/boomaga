@@ -28,31 +28,63 @@
 #include <QDebug>
 #include "project.h"
 
+class InputFileData : public QSharedData {
+public:
+    InputFileData()
+    {
+        mAutoRemove = false;
+        mIsNull = true;
+    }
+
+    QString mFileName;
+    QString mTitle;
+    bool mAutoRemove;
+    bool mIsNull;
+};
+
 
 /************************************************
 
  ************************************************/
-InputFile::InputFile(const QString &fileName, int pageCount):
-    mPages(pageCount),
-    mFileName(fileName),
-    mAutoRemove(false)
+InputFile::InputFile():
+    mData(new InputFileData)
 {
-    for (int i=0; i<pageCount; ++i)
-        mPages[i] = new ProjectPage(this, i);
+}
+
+
+
+/************************************************
+
+ ************************************************/
+InputFile::InputFile(const QString &fileName, const QString &title, bool autoRemove):
+    mData(new InputFileData)
+{
+    mData->mFileName = fileName;
+    mData->mTitle = title;
+    mData->mAutoRemove = autoRemove;
+    mData->mIsNull = false;
 }
 
 
 /************************************************
 
  ************************************************/
-InputFile::InputFile(const Job &job, int pageCount):
-    mPages(pageCount),
-    mFileName(job.fileName()),
-    mTitle(job.title()),
-    mAutoRemove(job.autoRemove())
+InputFile::InputFile(const InputFile &other):
+    mData(other.mData)
 {
-    for (int i=0; i<pageCount; ++i)
-        mPages[i] = new ProjectPage(this, i);
+
+}
+
+
+/************************************************
+
+ ************************************************/
+InputFile &InputFile::operator =(const InputFile &other)
+{
+    if (this != &other)
+        mData = other.mData;
+
+    return *this;
 }
 
 
@@ -61,10 +93,49 @@ InputFile::InputFile(const Job &job, int pageCount):
  ************************************************/
 InputFile::~InputFile()
 {
-    qDeleteAll(mPages);
-
-    if (mAutoRemove)
-        QFile::remove(mFileName);
 }
 
 
+/************************************************
+
+ ************************************************/
+bool InputFile::operator ==(const InputFile &other) const
+{
+    return mData == other.mData;
+}
+
+
+/************************************************
+
+ ************************************************/
+QString InputFile::fileName() const
+{
+    return mData->mFileName;
+}
+
+
+/************************************************
+
+ ************************************************/
+QString InputFile::title() const
+{
+    return mData->mTitle;
+}
+
+
+/************************************************
+
+ ************************************************/
+bool InputFile::autoRemove() const
+{
+    return mData->mAutoRemove;
+}
+
+
+/************************************************
+
+ ************************************************/
+bool InputFile::isNull() const
+{
+    return mData->mIsNull;
+}

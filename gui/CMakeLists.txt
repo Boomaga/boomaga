@@ -31,6 +31,7 @@ project(boomagaGui)
 set(HEADERS
     kernel/sheet.h
     kernel/inputfile.h
+    kernel/job.h
     kernel/tmppdffile.h
     kernel/layout.h
     kernel/render.h
@@ -51,6 +52,7 @@ set(SOURCES
     main.cpp
     kernel/sheet.cpp
     kernel/inputfile.cpp
+    kernel/job.cpp
     kernel/tmppdffile.cpp
     kernel/layout.cpp
     kernel/render.cpp
@@ -71,6 +73,7 @@ set (MOCS
     kernel/project.h
     kernel/tmppdffile.h
     kernel/render.h
+    kernel/job.h
 
     settings.h
     mainwindow.h
