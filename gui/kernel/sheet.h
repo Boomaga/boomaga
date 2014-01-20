@@ -33,35 +33,6 @@
 
 class ProjectPage;
 
-class SheetPageSpec
-{
-public:
-    enum Rotation
-    {
-        NoRotate  = 0,
-        Rotate90  = 90,
-        Rotate180 = 180,
-        Rotate270 = 270
-    };
-
-    SheetPageSpec();
-    SheetPageSpec(const QRectF &rect, double scale, Rotation rotete);
-
-    QRectF rect() const { return mRect; }
-    void setRect(const QRectF &value) { mRect = value; }
-
-    double scale() const { return mScale; }
-    void setScale(double value) { mScale = value; }
-
-    Rotation rotate() const { return mRotate; }
-    void setRotate(Rotation value) { mRotate = value ;}
-
-private:
-    QRectF mRect;
-    double mScale;
-    Rotation mRotate;
-};
-
 
 class Sheet
 {
@@ -88,18 +59,8 @@ public:
 
     int count() const { return mPages.count(); }
 
-    int sheetNum() const { return mSheetNum; }
-    //void setSheetNum(int value) { mSheetNum = value; }
-
-    SheetPageSpec pageSpec(int index) const { return mSpecs[index]; }
-    void setPageSpec(int index, SheetPageSpec spec);
-
-    qint64 id() const { return mId; }
-
 private:
     QVector<ProjectPage*> mPages;
-    QVector<SheetPageSpec> mSpecs;
-    qint64 mId;
     int mSheetNum;
     Hints mHints;
     static qint64 genId();
