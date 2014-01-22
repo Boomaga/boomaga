@@ -76,15 +76,20 @@ void Layout::fillPreviewSheets(QList<Sheet *> *sheets) const
 TransformSpec Layout::calcTransformSpec(const Sheet *sheet, int pageNumOnSheet, int pageCountHoriz, int pageCountVert) const
 {
     bool rotate = pageCountVert != pageCountHoriz;
-    const ProjectPage *page = sheet->page(pageNumOnSheet);
-
     Printer *printer = project->printer();
+
+    QRectF pageRect;
+    if (sheet && sheet->page(pageNumOnSheet))
+        pageRect = sheet->page(pageNumOnSheet)->rect();
+    else
+        pageRect = printer->paperRect();
+
     const qreal m = printer->internalMarhin();
     const QRectF printerRect = printer->pageRect();
 
-    QRectF pageRect;
-    pageRect.setWidth((printerRect.width()   - m * (pageCountHoriz - 1)) / pageCountHoriz);
-    pageRect.setHeight((printerRect.height() - m * (pageCountVert  - 1)) / pageCountVert);
+    QRectF placeRect;
+    placeRect.setWidth((printerRect.width()   - m * (pageCountHoriz - 1)) / pageCountHoriz);
+    placeRect.setHeight((printerRect.height() - m * (pageCountVert  - 1)) / pageCountVert);
 
     qreal scale;
     TransformSpec::Rotation rotation;
@@ -99,11 +104,11 @@ TransformSpec Layout::calcTransformSpec(const Sheet *sheet, int pageNumOnSheet, 
 
 
         scale = qMin(
-                pageRect.width()  / page->rect().height(),
-                pageRect.height() / page->rect().width());
+                placeRect.width()  / pageRect.height(),
+                placeRect.height() / pageRect.width());
 
-        pageRect.setHeight(page->rect().width() * scale);
-        pageRect.setWidth(page->rect().height() * scale);
+        placeRect.setHeight(pageRect.width() * scale);
+        placeRect.setWidth(pageRect.height() * scale);
         rotation = TransformSpec::Rotate90;
     }
     else
@@ -113,11 +118,11 @@ TransformSpec Layout::calcTransformSpec(const Sheet *sheet, int pageNumOnSheet, 
 
 
         scale = qMin(
-                pageRect.width()  / page->rect().width(),
-                pageRect.height() / page->rect().height());
+                placeRect.width()  / pageRect.width(),
+                placeRect.height() / pageRect.height());
 
-        pageRect.setWidth(page->rect().width()   * scale);
-        pageRect.setHeight(page->rect().height() * scale);
+        placeRect.setWidth(pageRect.width()   * scale);
+        placeRect.setHeight(pageRect.height() * scale);
         rotation = TransformSpec::NoRotate;
     }
 
@@ -125,10 +130,10 @@ TransformSpec Layout::calcTransformSpec(const Sheet *sheet, int pageNumOnSheet, 
     qreal x = r.left() + (r.width()  / (pageCountHoriz * 2.0 ) * (col * 2.0 + 1));
     qreal y = r.top()  + (r.height() / (pageCountVert  * 2.0 ) * (row * 2.0 + 1));
 
-    pageRect.moveCenter(QPointF(x, y));
+    placeRect.moveCenter(QPointF(x, y));
 
     TransformSpec res;
-    res.rect = pageRect;
+    res.rect = placeRect;
     res.rotation = rotation;
     res.scale = scale;
     return res;
