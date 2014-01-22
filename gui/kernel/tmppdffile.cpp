@@ -33,13 +33,13 @@
 #include <QApplication>
 #include <QDir>
 #include <QProcess>
+#include <math.h>
 
 #include "project.h"
 #include "job.h"
 #include "inputfile.h"
 #include "sheet.h"
 #include "layout.h"
-#include "math.h"
 #include "render.h"
 
 
@@ -391,36 +391,44 @@ void TmpPdfFile::getPageStream(QString *out, const Sheet *sheet) const
 
             TransformSpec spec = project->layout()->transformSpec(sheet, i);
 
-            QPointF basePoint;
+            double dx;
+            double dy;
+
             switch (spec.rotation)
             {
             case TransformSpec::NoRotate:
-                basePoint = spec.rect.topLeft();
+                dx = spec.rect.left();
+                dy = printer->paperRect().height() - spec.rect.bottom();
                 break;
 
             case TransformSpec::Rotate90:
-                basePoint = spec.rect.topRight();
+                dx = printer->paperRect().width() - spec.rect.left();
+                dy = spec.rect.top();
                 break;
 
             case TransformSpec::Rotate180:
-                basePoint = spec.rect.bottomRight();
+                dx = spec.rect.right();
+                dy = printer->paperRect().height() - spec.rect.top();
                 break;
 
             case TransformSpec::Rotate270:
-                basePoint = spec.rect.bottomLeft();
+                dx = printer->paperRect().width() - spec.rect.right();
+                dy = spec.rect.bottom();
                 break;
             }
 
 
             // Translate ........................
             *out += QString("q\n1 0 0 1 %1 %2 cm\n")
-                    .arg(basePoint.x(), 0, 'f', 3)
-                    .arg(basePoint.y(), 0, 'f', 3);
+                    .arg(dx, 0, 'f', 3)
+                    .arg(dy, 0, 'f', 3);
 
             // Rotate ...........................
-            *out += QString("q\n%1 %2 -%2 %1 0 0 cm\n")
-                    .arg(cos(spec.rotation * M_PI / 180), 0, 'f', 3)
-                    .arg(sin(spec.rotation * M_PI / 180), 0, 'f', 3);
+            *out += QString("q\n%1 %2 %3 %4 0 0 cm\n")
+                    .arg( cos(spec.rotation * M_PI / 180), 0, 'f', 3)
+                    .arg( sin(spec.rotation * M_PI / 180), 0, 'f', 3)
+                    .arg(-sin(spec.rotation * M_PI / 180), 0, 'f', 3)
+                    .arg( cos(spec.rotation * M_PI / 180), 0, 'f', 3);
 
             // Scale ...........................
             *out += QString("q\n%1 0 0 %1 0 0 cm\n")
@@ -435,9 +443,9 @@ void TmpPdfFile::getPageStream(QString *out, const Sheet *sheet) const
             if (printer->drawBorder())
             {
                 *out += QString("%1 %2 %3 %4 re\nS\n")
-                        .arg(page->rect().left(), 0, 'f', 3)
-                        .arg(page->rect().top(), 0, 'f', 3)
-                        .arg(page->rect().width(), 0, 'f', 3)
+                        .arg(page->rect().left(),   0, 'f', 3)
+                        .arg(page->rect().top(),    0, 'f', 3)
+                        .arg(page->rect().width(),  0, 'f', 3)
                         .arg(page->rect().height(), 0, 'f', 3);
             }
 
