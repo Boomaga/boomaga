@@ -158,7 +158,7 @@ void TmpPdfFile::merge()
 
     if (boomagamerger.isEmpty())
     {
-        project->error(tr("Something wrong. I can't find boomagamerger program.\nPlease reinstall me."));
+        project->error(tr("Something is wrong. I can't find boomagamerger program.\nPlease reinstall me."));
         return;
     }
 
