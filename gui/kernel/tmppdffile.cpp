@@ -391,8 +391,8 @@ void TmpPdfFile::getPageStream(QString *out, const Sheet *sheet) const
 
             TransformSpec spec = project->layout()->transformSpec(sheet, i);
 
-            double dx;
-            double dy;
+            double dx = 0;
+            double dy = 0;
 
             switch (spec.rotation)
             {

@@ -86,6 +86,7 @@ ProjectPage::~ProjectPage()
 void ProjectPage::setVisible(bool value)
 {
     mVisible = value;
+    emit visibleChanged();
 }
 
 
@@ -179,6 +180,7 @@ void Project::removeJob(int index)
     mLastTmpFile->merge();
 }
 
+
 /************************************************
 
  ************************************************/
@@ -254,6 +256,9 @@ void Project::tmpFileMerged()
         if (n<0)
         {
             Job *job = new Job(tmpJob);
+            connect(job, SIGNAL(pageVisibleChanged(ProjectPage*)),
+                    this, SLOT(updateSheets()));
+
             mJobs << job;
             mInputFiles << job->inputFile();
         }
@@ -281,7 +286,8 @@ void Project::updateSheets()
     {
         for (int p=0; p<job->pageCount(); ++p)
         {
-            mPages << job->page(p);
+            if (job->page(p)->visible())
+                mPages << job->page(p);
         }
     }
 

@@ -26,6 +26,7 @@
 
 #include "previewwidget.h"
 #include "kernel/project.h"
+#include "kernel/layout.h"
 
 #include <QPaintEvent>
 #include <QPainter>
@@ -62,6 +63,63 @@ PreviewWidget::PreviewWidget(QWidget *parent) :
  ************************************************/
 PreviewWidget::~PreviewWidget()
 {
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+QRectF PreviewWidget::pageRect(int pageNum) const
+{
+    Sheet * sheet = project->previewSheet(mSheetNum);
+    TransformSpec spec = project->layout()->transformSpec(sheet, pageNum);
+
+    if (mHints.testFlag(Sheet::HintLandscapePreview))
+    {
+        double factor = qMin((this->geometry().height() - MARGIN_H) * 1.0 / project->printer()->paperRect().width(),
+                             (this->geometry().width()  - MARGIN_V) * 1.0 / project->printer()->paperRect().height());
+
+        QRectF pageRect;
+        pageRect.setHeight(factor * project->printer()->paperRect().width());
+        pageRect.setWidth(factor  * project->printer()->paperRect().height());
+        pageRect.moveCenter(geometry().center());
+
+        return QRectF(pageRect.left()   + spec.rect.top()   * factor,
+                      pageRect.bottom() - spec.rect.right() * factor,
+                      factor * spec.rect.height(),
+                      factor * spec.rect.width());
+    }
+    else
+    {
+        double factor = qMin((this->geometry().width()  - MARGIN_H) * 1.0 / project->printer()->paperRect().width(),
+                             (this->geometry().height() - MARGIN_V) * 1.0 / project->printer()->paperRect().height());
+
+        QRectF pageRect;
+        pageRect.setHeight(factor * project->printer()->paperRect().height());
+        pageRect.setWidth(factor  * project->printer()->paperRect().width());
+        pageRect.moveCenter(geometry().center());
+
+        return QRectF(pageRect.left() + spec.rect.left() * factor,
+                      pageRect.top()  + spec.rect.top()  * factor,
+                      factor * spec.rect.width(),
+                      factor * spec.rect.height());
+    }
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+int PreviewWidget::pageAt(const QPoint &point) const
+{
+    Sheet * sheet = project->previewSheet(mSheetNum);
+    for (int i=0; i<sheet->count(); ++i)
+    {
+        if (pageRect(i).contains(point))
+            return i;
+    }
+
+    return -1;
 }
 
 
@@ -115,7 +173,7 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
 
     // Draw .....................................
     QPainter painter(this);
-
+    painter.save();
     painter.translate(geometry().center());
 
     if (mHints.testFlag(Sheet::HintLandscapePreview))
@@ -134,6 +192,27 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
         painter.setPen(pen);
         painter.drawLine(rect.left(), 0, rect.right(), 0);
     }
+    painter.restore();
+
+#if 0
+    painter.save();
+    painter.fillRect(project->printer()->paperRect(), Qt::white);
+    painter.drawRect(project->printer()->paperRect());
+
+    Sheet *sheet = project->previewSheet(mSheetNum);
+    for (int i=0; i< sheet->count(); ++i)
+    {
+        if (sheet->page(i))
+        {
+            QRectF r = project->layout()->transformSpec(sheet, i).rect;
+            painter.drawRect(r);
+            painter.drawText(r, QString("%1").arg(i + 1), QTextOption(Qt::AlignCenter));
+        }
+    }
+
+    painter.restore();
+#endif
+
 }
 
 
@@ -235,3 +314,10 @@ void PreviewWidget::keyPressEvent(QKeyEvent *event)
 }
 
 
+/************************************************
+ *
+ * ***********************************************/
+void PreviewWidget::contextMenuEvent(QContextMenuEvent *event)
+{
+    emit contextMenuRequested(pageAt(event->pos()));
+}

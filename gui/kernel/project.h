@@ -65,6 +65,13 @@ public:
     bool visible() const { return mVisible;}
     void setVisible(bool value);
 
+public slots:
+    void hide() { setVisible(false); }
+    void show() { setVisible(true); }
+
+signals:
+    void visibleChanged();
+
 private:
     InputFile mInputFile;
     int mPageNum;
@@ -140,6 +147,7 @@ signals:
 private slots:
     void tmpFileMerged();
     void tmpFileProgress(int progr, int all) const;
+    void updateSheets();
 
 private:
     explicit Project(QObject *parent = 0);
@@ -159,7 +167,6 @@ private:
     Printer mNullPrinter;
     bool mDoubleSided;
 
-    void updateSheets();
     TmpPdfFile *createTmpPdfFile(QList<InputFile> files);
     void stopMerging();
 };

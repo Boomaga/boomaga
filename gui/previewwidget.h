@@ -39,6 +39,8 @@ public:
     ~PreviewWidget();
     
     int currentSheet() const { return mSheetNum; }
+    QRectF pageRect(int pageNum) const;
+    int pageAt(const QPoint &point) const;
 
 public slots:
     void setCurrentSheet(int sheetNum);
@@ -48,11 +50,13 @@ public slots:
 
 signals:
     void changed(int sheetNum);
+    void contextMenuRequested(int pageNum);
 
 protected:
     void paintEvent(QPaintEvent *event);
     void wheelEvent(QWheelEvent *event);
     void keyPressEvent(QKeyEvent *event);
+    void contextMenuEvent(QContextMenuEvent *event);
 
 private slots:
     void sheetImageChanged(int sheetNum);

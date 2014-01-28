@@ -21,13 +21,20 @@ public:
 
     int indexOfPage(ProjectPage *page, int from = 0) const { return mPages.indexOf(page, from); }
     void addPage(ProjectPage *page);
-    void removePage(ProjectPage *page) { takePage(page); }
+    void removePage(ProjectPage *page);
     ProjectPage *takePage(ProjectPage *page);
 
-    QString title() const { return mTitle; }
+    QString title(bool human = true) const;
     void setTitle(const QString &title);
 
     InputFile inputFile() const { return mInputFile; }
+
+signals:
+    void pageVisibleChanged(ProjectPage *page);
+
+private slots:
+    void emitPageVisibleChanged();
+
 private:
     QList<ProjectPage*> mPages;
     QString mTitle;

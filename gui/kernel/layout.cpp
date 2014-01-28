@@ -174,7 +174,6 @@ void LayoutNUp::fillSheets(QList<Sheet *> *sheets) const
     while (i < project->pageCount())
     {
         sheet = new Sheet(pps, sheets->count());
-//        sheet->setSheetNum(sheets->count());
         sheet->setHint(Sheet::HintLandscapePreview, mRotate);
 
         for (int j=0; j<pps; ++j)
@@ -183,7 +182,6 @@ void LayoutNUp::fillSheets(QList<Sheet *> *sheets) const
             {
                 ProjectPage *page = project->page(i);
                 sheet->setPage(j, page);
-//                sheet->setPageSpec(j, pageSpecForPage(page, j));
             }
             ++i;
         }

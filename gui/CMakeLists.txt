@@ -39,6 +39,7 @@ set(HEADERS
     kernel/printer.h
     boomagatypes.h
     mainwindow.h
+    actions.h
     settings.h
     widgets.h
     dbus.h
@@ -60,6 +61,7 @@ set(SOURCES
     kernel/printer.cpp
     boomagatypes.cpp
     mainwindow.cpp
+    actions.cpp
     settings.cpp
     widgets.cpp
     dbus.cpp
@@ -77,6 +79,7 @@ set (MOCS
 
     settings.h
     mainwindow.h
+    actions.h
     widgets.h
     dbus.h
     printersettings/printersettings.h

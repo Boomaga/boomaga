@@ -34,6 +34,7 @@
 #include "kernel/inputfile.h"
 #include "printersettings/printersettings.h"
 #include "aboutdialog/aboutdialog.h"
+#include "actions.h"
 
 #include <math.h>
 #include <QRadioButton>
@@ -146,6 +147,9 @@ MainWindow::MainWindow(QWidget *parent):
     connect(ui->preview, SIGNAL(changed(int)),
             ui->jobsView, SLOT(setSheetNum(int)));
 
+    connect(ui->preview, SIGNAL(contextMenuRequested(int)),
+            this, SLOT(showPreviewContextMenu(int)));
+
     ui->preview->setFocusPolicy(Qt::StrongFocus);
     ui->preview->setFocus();
 
@@ -159,6 +163,15 @@ MainWindow::~MainWindow()
 {
     saveSettings();
     delete ui;
+}
+
+
+/************************************************
+
+ ************************************************/
+void MainWindow::closeEvent(QCloseEvent *event)
+{
+    project->free();
 }
 
 
@@ -627,12 +640,43 @@ void MainWindow::updateProgressBar(int value, int all)
 
 
 /************************************************
-
- ************************************************/
-void MainWindow::closeEvent(QCloseEvent *event)
+ *
+ * ***********************************************/
+void MainWindow::showPreviewContextMenu(int pageNum)
 {
-    project->free();
+    Sheet *sheet = project->previewSheet(ui->preview->currentSheet());
+    ProjectPage *page = (pageNum < 0) ? 0 : sheet->page(pageNum);
+
+    QMenu *menu = new QMenu(this);
+
+    // Delete page ...................................
+    if (page)
+    {
+        menu->addAction(tr("Delete this page"), page, SLOT(hide()));
+    }
+    // ...............................................
+
+    // Undo delete ...................................
+    QMenu *undelMenu = menu->addMenu(tr("Undo delete"));
+    undelMenu->setEnabled(false);
+
+    for(int j=0; j<project->jobs()->count(); ++j)
+    {
+        Job *job = project->jobs()->at(j);
+        QMenu *jm = undelMenu->addMenu(QString("%1 %2").arg(j+1).arg(job->title()));
+
+        for(int p=0; p<job->pageCount(); ++p)
+        {
+            ProjectPage *page = job->page(p);
+            if (!page->visible())
+            {
+                jm->addAction(QString("Page %1").arg(p+1), page, SLOT(show()));
+            }
+        }
+        jm->setEnabled(!jm->isEmpty());
+        undelMenu->setEnabled(undelMenu->isEnabled() || jm->isEnabled());
+    }
+    // ...............................................
+
+    menu->popup(QCursor::pos());
 }
-
-
-

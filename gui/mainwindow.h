@@ -69,6 +69,8 @@ private slots:
 
     void updateProgressBar(int value, int all);
 
+    void showPreviewContextMenu(int pageNum);
+
 protected:
     void closeEvent(QCloseEvent *event);
 

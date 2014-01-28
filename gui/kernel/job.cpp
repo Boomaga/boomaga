@@ -20,7 +20,7 @@ Job::Job(const Job *other, QObject *parent):
     QObject(parent)
 {
     mInputFile = other->mInputFile;
-    mTitle = other->title();
+    mTitle = other->mTitle;
     for (int i=0; i< other->pageCount(); ++i)
     {
         addPage(new ProjectPage(other->page(i)));
@@ -42,6 +42,18 @@ Job::~Job()
 void Job::addPage(ProjectPage *page)
 {
     mPages.append(page);
+    connect(page, SIGNAL(visibleChanged()),
+            this, SLOT(emitPageVisibleChanged()));
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void Job::removePage(ProjectPage *page)
+{
+    ProjectPage *p = takePage(page);
+    p->deleteLater();
 }
 
 
@@ -52,9 +64,26 @@ ProjectPage *Job::takePage(ProjectPage *page)
 {
     int n = mPages.indexOf(page);
     if (n>-1)
-        return mPages.takeAt(n);
+    {
+        ProjectPage *page = mPages.takeAt(n);
+        disconnect(page, 0, this, 0);
+
+        return page;
+    }
     else
         return 0;
+}
+
+
+/************************************************
+
+ ************************************************/
+QString Job::title(bool human) const
+{
+    if (mTitle.isEmpty() && human)
+        return tr("Untitled");
+
+    return mTitle;
 }
 
 
@@ -64,6 +93,19 @@ ProjectPage *Job::takePage(ProjectPage *page)
 void Job::setTitle(const QString &title)
 {
     mTitle = title;
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void Job::emitPageVisibleChanged()
+{
+    ProjectPage *page = qobject_cast<ProjectPage*>(sender());
+    if (!page)
+        return;
+
+    emit pageVisibleChanged(page);
 }
 
 
