@@ -90,12 +90,12 @@ private slots:
     void updateItems();
     void showContextMenu(const QPoint &pos);
     void deleteJob();
+    void renameJob();
     void layoutChanged();
 
 protected:
     void mouseReleaseEvent(QMouseEvent *event);
 
-private:
 };
 
 

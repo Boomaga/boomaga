@@ -34,6 +34,7 @@
 #include <QMenu>
 #include <QMouseEvent>
 #include <QDebug>
+#include <QInputDialog>
 
 /************************************************
 
@@ -229,11 +230,23 @@ void JobsListView::showContextMenu(const QPoint &pos)
     if (!item)
         return;
 
-    QMenu menu(this);
-    QAction *act = menu.addAction(tr("Delete job"));
+    QMenu *menu = new QMenu(this);
+
+    QAction *act;
+
+    act = menu->addAction(tr("Rename job"));
     act->setData(item->data(Qt::UserRole));
-    connect(act, SIGNAL(triggered()), this, SLOT(deleteJob()));
-    menu.exec(mapToGlobal(pos));
+    connect(act, SIGNAL(triggered()),
+            this, SLOT(renameJob()));
+
+    menu->addSeparator();
+
+    act = menu->addAction(tr("Delete job"));
+    act->setData(item->data(Qt::UserRole));
+    connect(act, SIGNAL(triggered()),
+            this, SLOT(deleteJob()));
+
+    menu->popup(mapToGlobal(pos));
 }
 
 
@@ -249,6 +262,29 @@ void JobsListView::deleteJob()
         project->removeJob(index);
     }
     updateItems();
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void JobsListView::renameJob()
+{
+    QAction *act = qobject_cast<QAction*>(sender());
+    if (!act)
+        return;
+
+    int index = act->data().toInt();
+    Job *job = project->jobs()->at(index);
+
+    bool ok;
+    QString s = QInputDialog::getText(this, tr("Rename job"), tr("Job title:"), QLineEdit::Normal, job->title(false), &ok);
+
+    if (ok)
+    {
+        job->setTitle(s);
+        updateItems();
+    }
 }
 
 
