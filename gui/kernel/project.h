@@ -48,6 +48,7 @@ class ProjectPage: public QObject
 {
     Q_OBJECT
 public:
+    explicit ProjectPage();
     explicit ProjectPage(const ProjectPage *other);
     explicit ProjectPage(const InputFile &inputFile, int pageNum);
     ~ProjectPage();
@@ -58,7 +59,7 @@ public:
     int pdfObjectNum() const { return mPdfObjectNum; }
     void setPdfObjectNum(int id) { mPdfObjectNum = id; }
 
-    QRectF rect() const { return mRect; }
+    virtual QRectF rect() const;
     void setRect(const QRectF rect) { mRect = rect; }
 
 
@@ -101,7 +102,7 @@ public:
 
     static Project* instance();
 
-    const QList<Job*> *jobs() const { return &mJobs; }
+    const JobList *jobs() const { return &mJobs; }
 
     int pageCount() const { return mPages.count(); }
     ProjectPage *page(int index) const { return mPages.at(index); }

@@ -644,15 +644,42 @@ void MainWindow::updateProgressBar(int value, int all)
  * ***********************************************/
 void MainWindow::showPreviewContextMenu(int pageNum)
 {
-    Sheet *sheet = project->previewSheet(ui->preview->currentSheet());
+    int sheetNum = ui->preview->currentSheet();
+    if (sheetNum < 0)
+        return;
+
+    Sheet *sheet = project->previewSheet(sheetNum);
     ProjectPage *page = (pageNum < 0) ? 0 : sheet->page(pageNum);
 
     QMenu *menu = new QMenu(this);
 
+    // Blank page ....................................
+    if (page)
+    {
+        PageAction *act;
+        act = new PageAction(tr("Insert blank page befor this page"), sheet, page, menu);
+        menu->addAction(act);
+        connect(act, SIGNAL(triggered()),
+                this, SLOT(insertBlankPageBefore()));
+
+        act = new PageAction(tr("Insert blank page after this page"), sheet, page, menu);
+        menu->addAction(act);
+        connect(act, SIGNAL(triggered()),
+                this, SLOT(insertBlankPageAfter()));
+
+    }
+    // ...............................................
+
+    menu->addSeparator();
+
     // Delete page ...................................
     if (page)
     {
-        menu->addAction(tr("Delete this page"), page, SLOT(hide()));
+        PageAction *act = new PageAction(tr("Delete this page"), sheet, page, menu);
+        connect(act, SIGNAL(triggered()),
+                this, SLOT(deletePage()));
+        menu->addAction(act);
+        //menu->addAction(tr("Delete this page"), page, SLOT(hide()));
     }
     // ...............................................
 
@@ -679,4 +706,66 @@ void MainWindow::showPreviewContextMenu(int pageNum)
     // ...............................................
 
     menu->popup(QCursor::pos());
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void MainWindow::deletePage()
+{
+    PageAction *act = qobject_cast<PageAction*>(sender());
+    if (!act || !act->page())
+        return;
+
+    if (act->page()->inputFile().isNull())
+    {
+        Job *job = project->jobs()->findJob(act->page());
+        if (!job)
+            return;
+
+        job->removePage(act->page());
+    }
+    else
+    {
+        act->page()->hide();
+    }
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void MainWindow::insertBlankPageBefore()
+{
+    PageAction *act = qobject_cast<PageAction*>(sender());
+    if (!act || !act->page())
+        return;
+
+    Job *job = project->jobs()->findJob(act->page());
+    if (!job)
+        return;
+
+    int n = job->indexOfPage(act->page());
+    job->insertPage(n, new ProjectPage());
+
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void MainWindow::insertBlankPageAfter()
+{
+    PageAction *act = qobject_cast<PageAction*>(sender());
+    if (!act || !act->page())
+        return;
+
+    Job *job = project->jobs()->findJob(act->page());
+    if (!job)
+        return;
+
+    int n = job->indexOfPage(act->page());
+    job->insertPage(n+1, new ProjectPage());
+
 }

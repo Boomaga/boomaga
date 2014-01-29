@@ -44,8 +44,10 @@ public:
 
     int pageCount() const { return mPages.count(); }
     ProjectPage *page(int index) const { return mPages[index]; }
+    int visiblePageCount() const;
 
     int indexOfPage(ProjectPage *page, int from = 0) const { return mPages.indexOf(page, from); }
+    void insertPage(int before, ProjectPage *page);
     void addPage(ProjectPage *page);
     void removePage(ProjectPage *page);
     ProjectPage *takePage(ProjectPage *page);
@@ -56,10 +58,10 @@ public:
     InputFile inputFile() const { return mInputFile; }
 
 signals:
-    void pageVisibleChanged(ProjectPage *page);
+    void changed(ProjectPage *page);
 
 private slots:
-    void emitPageVisibleChanged();
+    void emitChanged();
 
 private:
     QList<ProjectPage*> mPages;
@@ -76,5 +78,7 @@ public:
 
     QList<InputFile> inputFiles() const;
     int indexOfInputFile(const InputFile &inputFile, int from = 0) const;
+
+    Job *findJob(ProjectPage *page) const;
 };
 #endif // JOB_H

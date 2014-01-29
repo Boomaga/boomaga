@@ -48,6 +48,19 @@
 /************************************************
 
  ************************************************/
+ProjectPage::ProjectPage():
+    QObject(),
+    mPageNum(-1),
+    mPdfObjectNum(0),
+    mVisible(true)
+{
+
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
 ProjectPage::ProjectPage(const ProjectPage *other):
     QObject(),
     mInputFile(other->mInputFile),
@@ -77,6 +90,18 @@ ProjectPage::ProjectPage(const InputFile &inputFile, int pageNum):
  ************************************************/
 ProjectPage::~ProjectPage()
 {
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+QRectF ProjectPage::rect() const
+{
+    if (mRect.isValid())
+        return mRect;
+    else
+        return project->printer()->paperRect();
 }
 
 
@@ -256,7 +281,7 @@ void Project::tmpFileMerged()
         if (n<0)
         {
             Job *job = new Job(tmpJob);
-            connect(job, SIGNAL(pageVisibleChanged(ProjectPage*)),
+            connect(job, SIGNAL(changed(ProjectPage*)),
                     this, SLOT(updateSheets()));
 
             mJobs << job;

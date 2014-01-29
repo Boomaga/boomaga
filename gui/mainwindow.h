@@ -70,6 +70,10 @@ private slots:
     void updateProgressBar(int value, int all);
 
     void showPreviewContextMenu(int pageNum);
+    void deletePage();
+    void insertBlankPageBefore();
+    void insertBlankPageAfter();
+
 
 protected:
     void closeEvent(QCloseEvent *event);

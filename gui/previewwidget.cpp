@@ -43,7 +43,7 @@
  ************************************************/
 PreviewWidget::PreviewWidget(QWidget *parent) :
     QFrame(parent),
-    mSheetNum(0)
+    mSheetNum(-1)
 {
     QPalette pal(palette());
     pal.setColor(QPalette::Background, QColor(105, 101, 98));
@@ -71,6 +71,9 @@ PreviewWidget::~PreviewWidget()
  * ***********************************************/
 QRectF PreviewWidget::pageRect(int pageNum) const
 {
+    if (mSheetNum < 0)
+        return QRectF();
+
     Sheet * sheet = project->previewSheet(mSheetNum);
     TransformSpec spec = project->layout()->transformSpec(sheet, pageNum);
 
@@ -112,6 +115,9 @@ QRectF PreviewWidget::pageRect(int pageNum) const
  * ***********************************************/
 int PreviewWidget::pageAt(const QPoint &point) const
 {
+    if (mSheetNum < 0)
+        return -1;
+
     Sheet * sheet = project->previewSheet(mSheetNum);
     for (int i=0; i<sheet->count(); ++i)
     {
@@ -221,15 +227,15 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
  ************************************************/
 void PreviewWidget::setCurrentSheet(int sheetNum)
 {
-    mSheetNum = qBound(0, sheetNum, project->previewSheetCount()-1);
-
-    if (mSheetNum < project->previewSheetCount())
+    if (project->previewSheetCount())
     {
+        mSheetNum = qBound(0, sheetNum, project->previewSheetCount()-1);
         mHints = project->previewSheet(mSheetNum)->hints();
         mImage = project->sheetImage(mSheetNum);
     }
     else
     {
+        mSheetNum = -1;
         mImage = QImage();
     }
 

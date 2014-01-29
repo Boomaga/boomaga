@@ -156,7 +156,7 @@ void JobsListView::setSheetNum(int sheetNum)
     if (count() < 1)
         return;
 
-    if (sheetNum >= project->previewSheetCount())
+    if (sheetNum < 0)
     {
         item(0)->setSelected(true);
         return;
@@ -213,7 +213,7 @@ void JobsListView::updateItems()
         item->setData(Qt::UserRole, i);
         Job *job = project->jobs()->at(i);
 
-        item->setText(tr("( %1 pages ) ").arg(job->pageCount()) + job->title());
+        item->setText(tr("( %1 pages ) ").arg(job->visiblePageCount()) + job->title());
 
         addItem(item);
     }

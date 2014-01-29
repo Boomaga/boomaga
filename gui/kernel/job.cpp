@@ -63,13 +63,44 @@ Job::~Job()
 
 
 /************************************************
+ *
+ * ***********************************************/
+int Job::visiblePageCount() const
+{
+    int res =0;
+    foreach (ProjectPage *p, mPages)
+    {
+        if (p->visible())
+            res++;
+    }
+
+    return res;
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void Job::insertPage(int before, ProjectPage *page)
+{
+    mPages.insert(before, page);
+    connect(page, SIGNAL(visibleChanged()),
+            this, SLOT(emitChanged()));
+
+    emit changed(page);
+}
+
+
+/************************************************
 
  ************************************************/
 void Job::addPage(ProjectPage *page)
 {
     mPages.append(page);
     connect(page, SIGNAL(visibleChanged()),
-            this, SLOT(emitPageVisibleChanged()));
+            this, SLOT(emitChanged()));
+
+    emit changed(page);
 }
 
 
@@ -94,6 +125,7 @@ ProjectPage *Job::takePage(ProjectPage *page)
         ProjectPage *page = mPages.takeAt(n);
         disconnect(page, 0, this, 0);
 
+        emit changed(0);
         return page;
     }
     else
@@ -125,13 +157,13 @@ void Job::setTitle(const QString &title)
 /************************************************
  *
  * ***********************************************/
-void Job::emitPageVisibleChanged()
+void Job::emitChanged()
 {
     ProjectPage *page = qobject_cast<ProjectPage*>(sender());
     if (!page)
         return;
 
-    emit pageVisibleChanged(page);
+    emit changed(page);
 }
 
 
@@ -195,3 +227,20 @@ int JobList::indexOfInputFile(const InputFile &inputFile, int from) const
 
     return -1;
 }
+
+
+/************************************************
+ *
+ * ***********************************************/
+Job *JobList::findJob(ProjectPage *page) const
+{
+    for(int j=0; j<this->count(); ++j)
+    {
+        Job *job = this->value(j);
+        if (job->indexOfPage(page) > -1)
+            return job;
+    }
+
+    return 0;
+}
+
