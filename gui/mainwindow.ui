@@ -144,6 +144,28 @@
       </widget>
      </item>
      <item>
+      <widget class="QGroupBox" name="printerBox">
+       <property name="title">
+        <string>Printer</string>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_4">
+        <item>
+         <widget class="PrintersComboBox" name="printersCbx"/>
+        </item>
+        <item>
+         <widget class="QToolButton" name="printerConfigBtn">
+          <property name="enabled">
+           <bool>true</bool>
+          </property>
+          <property name="text">
+           <string>Configure ...</string>
+          </property>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+     </item>
+     <item>
       <widget class="QGroupBox" name="jobsBox">
        <property name="title">
         <string>Jobs</string>
@@ -176,41 +198,6 @@
         </item>
        </layout>
       </widget>
-     </item>
-     <item>
-      <widget class="QGroupBox" name="printerBox">
-       <property name="title">
-        <string>Printer</string>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_4">
-        <item>
-         <widget class="PrintersComboBox" name="printersCbx"/>
-        </item>
-        <item>
-         <widget class="QToolButton" name="printerConfigBtn">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="text">
-           <string>Configure ...</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item>
-      <spacer name="verticalSpacer">
-       <property name="orientation">
-        <enum>Qt::Vertical</enum>
-       </property>
-       <property name="sizeHint" stdset="0">
-        <size>
-         <width>20</width>
-         <height>40</height>
-        </size>
-       </property>
-      </spacer>
      </item>
     </layout>
    </widget>
