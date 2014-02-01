@@ -59,18 +59,29 @@
     </message>
 </context>
 <context>
-    <name>InputFilesListView</name>
-    <message>
-        <source>( %1 pages ) </source>
-        <translation>( %1 стр.) </translation>
-    </message>
+    <name>Job</name>
     <message>
         <source>Untitled</source>
         <translation>Без имени</translation>
     </message>
+</context>
+<context>
+    <name>JobsListView</name>
+    <message>
+        <source>( %1 pages ) </source>
+        <translation>(%1 стр.)</translation>
+    </message>
+    <message>
+        <source>Rename job</source>
+        <translation>Переименовать задание</translation>
+    </message>
     <message>
         <source>Delete job</source>
-        <translation>Удалить</translation>
+        <translation>Удалить задание</translation>
+    </message>
+    <message>
+        <source>Job title:</source>
+        <translation>Имя задания:</translation>
     </message>
 </context>
 <context>
@@ -219,6 +230,22 @@
         <comment>Status bar</comment>
         <translation>Стр. %1 из %2</translation>
     </message>
+    <message>
+        <source>Insert blank page befor this page</source>
+        <translation>Вставить пустую страницу перед этой</translation>
+    </message>
+    <message>
+        <source>Insert blank page after this page</source>
+        <translation>Вставить пустую страницу после этой</translation>
+    </message>
+    <message>
+        <source>Delete this page</source>
+        <translation>Удалить эту страницу</translation>
+    </message>
+    <message>
+        <source>Undo delete</source>
+        <translation>Отмена удаления</translation>
+    </message>
 </context>
 <context>
     <name>PrinterSettings</name>
@@ -301,17 +328,17 @@
 <context>
     <name>TmpPdfFile</name>
     <message>
-        <source>Something wrong. I can't find boomagamerger program.
-Please reinstall me.</source>
-        <translation>Шеф, все пропало! Я не могу найти программу с именем boomagamerger. Попробуй переставить меня.</translation>
-    </message>
-    <message>
         <source>I can read file &apos;%1&apos;</source>
         <translation>Не получилось прочитать файл: &quot;%1&quot;</translation>
     </message>
     <message>
         <source>I can&apos;t create temporary file &quot;%1&quot;</source>
         <translation>Не получилось создать временный файл: &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>Something is wrong. I can't find boomagamerger program.
+Please reinstall me.</source>
+        <translation>Шеф, все пропало! Я не могу найти программу с именем boomagamerger. Попробуй переставить меня.</translation>
     </message>
 </context>
 </TS>

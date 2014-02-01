@@ -1,29 +1,29 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="pl_PL" version="2.0">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="uz@Latn" version="2.0">
 <context>
     <name>AboutDialog</name>
     <message>
         <source> About Boomaga</source>
-        <translation>O programie Boomaga</translation>
+        <translation>Boomaga haqida</translation>
     </message>
     <message>
         <source>About</source>
-        <translation>O programie</translation>
+        <translation>Dastur haqida</translation>
     </message>
     <message>
         <source>Authors</source>
-        <translation>Autorzy</translation>
+        <translation>Mualliflar</translation>
     </message>
     <message>
         <source>Thanks</source>
-        <translation>Podziękowania</translation>
+        <translation>Tashakkur</translation>
     </message>
     <message>
         <source>Translations</source>
-        <translation>Tłumaczenia</translation>
+        <translation>Tarjimalar</translation>
     </message>
     <message>
         <source>Version: %1</source>
-        <translation>Wersja: %1</translation>
+        <translation>Versiya: %1</translation>
     </message>
     <message>
         <source>Boomaga provides a virtual printer for CUPS. This can be used for print preview or for print booklets.</source>
@@ -31,15 +31,15 @@
     </message>
     <message>
         <source>Copyright: %1-%2 %3</source>
-        <translation type="unfinished"/>
+        <translation>Mualliflik huquqi: %1-%2 %3</translation>
     </message>
     <message>
         <source>Homepage: %1</source>
-        <translation type="unfinished"/>
+        <translation>Uy sahifasi: %1</translation>
     </message>
     <message>
         <source>License: %1</source>
-        <translation type="unfinished"/>
+        <translation>Litsenziya: %1</translation>
     </message>
     <message>
         <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on Github.</source>
@@ -51,7 +51,7 @@
     </message>
     <message>
         <source>Special thanks to:</source>
-        <translation type="unfinished"/>
+        <translation>Alohida tashakkur:</translation>
     </message>
     <message>
         <source>If you want to help translate, we will be glad to see you in our translation team on &lt;a %1&gt;Transifex server&lt;/a&gt;.</source>
@@ -88,23 +88,23 @@
     <name>MainWindow</name>
     <message>
         <source>&amp;File</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Fayl</translation>
     </message>
     <message>
         <source>&amp;Preferences</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Sozlashlar</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished"/>
+        <translation>Yordam</translation>
     </message>
     <message>
         <source>Options</source>
-        <translation type="unfinished"/>
+        <translation>Parametrlar</translation>
     </message>
     <message>
         <source>Layout</source>
-        <translation type="unfinished"/>
+        <translation>joylashuv</translation>
     </message>
     <message>
         <source>1 up</source>
@@ -124,7 +124,7 @@
     </message>
     <message>
         <source>Booklet</source>
-        <translation type="unfinished"/>
+        <translation>Buklet</translation>
     </message>
     <message>
         <source>Print on both sides of a sheet.</source>
@@ -134,64 +134,64 @@
     <message>
         <source>Double-sided</source>
         <comment>MainForm::Double-sided checkbox</comment>
-        <translation type="unfinished"/>
+        <translation>Ikki yoqlama</translation>
     </message>
     <message>
         <source>Jobs</source>
-        <translation type="unfinished"/>
+        <translation>Vazifalar</translation>
     </message>
     <message>
         <source>Printer</source>
-        <translation type="unfinished"/>
+        <translation>Printer</translation>
     </message>
     <message>
         <source>Configure ...</source>
-        <translation type="unfinished"/>
+        <translation>Sozlash...</translation>
     </message>
     <message>
         <source>Toolbar</source>
-        <translation type="unfinished"/>
+        <translation>Asboblar paneli</translation>
     </message>
     <message>
         <source>&amp;Print</source>
-        <translation type="unfinished"/>
+        <translation>Cho&amp;p etish</translation>
     </message>
     <message>
         <source>E&amp;xit</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Chiqish</translation>
     </message>
     <message>
         <source>Print and Close</source>
-        <translation type="unfinished"/>
+        <translation>Chop etish va yopish</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <source>Next sheet</source>
-        <translation type="unfinished"/>
+        <translation>Keyingi varaq</translation>
     </message>
     <message>
         <source>Previous sheet</source>
-        <translation type="unfinished"/>
+        <translation>Oldingi varaq</translation>
     </message>
     <message>
         <source>About Boomaga</source>
-        <translation type="unfinished"/>
+        <translation>Boomaga haqida</translation>
     </message>
     <message>
         <source>Boomaga</source>
-        <translation type="unfinished"/>
+        <translation>Boomaga</translation>
     </message>
     <message>
         <source>%v of %m</source>
         <comment>Format for QProgressBar (http://qt-project.org/doc/qt-4.8/qprogressbar.html#format-prop)</comment>
-        <translation type="unfinished"/>
+        <translation>%v %m&apos;dan</translation>
     </message>
     <message>
         <source>Print the all pages on %1.</source>
-        <translation type="unfinished"/>
+        <translation>Hamma sahifalarni %1&apos;da chop etish.</translation>
     </message>
     <message>
         <source>Print the odd pages on %1.&lt;p&gt;When finished, turn the pages, insert them into the printer&lt;br&gt;and click the Continue button.</source>
@@ -203,32 +203,32 @@
     </message>
     <message>
         <source>Continue</source>
-        <translation type="unfinished"/>
+        <translation>Davom ettirish</translation>
     </message>
     <message>
         <source>%1 pages</source>
         <comment>Status bar</comment>
-        <translation type="unfinished"/>
+        <translation>%1 sahifa</translation>
     </message>
     <message>
         <source>%1 page</source>
         <comment>Status bar</comment>
-        <translation type="unfinished"/>
+        <translation>%1 sahifa</translation>
     </message>
     <message>
         <source>%1 sheets</source>
         <comment>Status bar</comment>
-        <translation type="unfinished"/>
+        <translation>%1 varaq</translation>
     </message>
     <message>
         <source>%1 sheet</source>
         <comment>Status bar</comment>
-        <translation type="unfinished"/>
+        <translation>%1 varaq</translation>
     </message>
     <message>
         <source>Sheet %1 of %2</source>
         <comment>Status bar</comment>
-        <translation type="unfinished"/>
+        <translation>Varaq %1 %2&apos;dan</translation>
     </message>
     <message>
         <source>Insert blank page befor this page</source>
@@ -251,39 +251,39 @@
     <name>PrinterSettings</name>
     <message>
         <source>Margins (mm)</source>
-        <translation type="unfinished"/>
+        <translation>Chegaralar (mm)</translation>
     </message>
     <message>
         <source>Right:</source>
-        <translation type="unfinished"/>
+        <translation>O&apos;ng:</translation>
     </message>
     <message>
         <source>Bottom:</source>
-        <translation type="unfinished"/>
+        <translation>Ost:</translation>
     </message>
     <message>
         <source>Internal:</source>
-        <translation type="unfinished"/>
+        <translation>Ichki:</translation>
     </message>
     <message>
         <source>Left:</source>
-        <translation type="unfinished"/>
+        <translation>Chap:</translation>
     </message>
     <message>
         <source>Top:</source>
-        <translation type="unfinished"/>
+        <translation>Tepa:</translation>
     </message>
     <message>
         <source>Duplex:</source>
-        <translation type="unfinished"/>
+        <translation>Dupleks:</translation>
     </message>
     <message>
         <source>Draw border</source>
-        <translation type="unfinished"/>
+        <translation>Chegara chizish</translation>
     </message>
     <message>
         <source>Print in reverse order</source>
-        <translation type="unfinished"/>
+        <translation>Teskari tartibda chop etish</translation>
     </message>
     <message>
         <source>Printer has duplexer</source>
@@ -299,7 +299,7 @@
     </message>
     <message>
         <source>Preferences of &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>&quot;%1&quot; sozlashlari</translation>
     </message>
 </context>
 <context>
@@ -307,33 +307,33 @@
     <message>
         <source>Boomaga</source>
         <comment>Error message title</comment>
-        <translation type="unfinished"/>
+        <translation>Boomaga</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <source>PDF file &quot;%1&quot; is damaged.</source>
-        <translation type="unfinished"/>
+        <translation>&quot;%1&quot; PDF fayli buzilgan.</translation>
     </message>
     <message>
         <source>PDF file &quot;%1&quot; is encripted.</source>
-        <translation type="unfinished"/>
+        <translation>&quot;%1&quot; PDF fayli shifrlangan.</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;%1&apos; faylini ochib bo&apos;lmadi</translation>
     </message>
 </context>
 <context>
     <name>TmpPdfFile</name>
     <message>
         <source>I can read file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&apos;%1&apos; faylini o&apos;qib bo&apos;lmadi</translation>
     </message>
     <message>
         <source>I can&apos;t create temporary file &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>&quot;%1&quot; vaqtinchalik faylini yaratib bo&apos;lmadi</translation>
     </message>
     <message>
         <source>Something is wrong. I can't find boomagamerger program.

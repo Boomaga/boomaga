@@ -61,17 +61,28 @@
     </message>
 </context>
 <context>
-    <name>InputFilesListView</name>
+    <name>Job</name>
+    <message>
+        <source>Untitled</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>JobsListView</name>
     <message>
         <source>( %1 pages ) </source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Untitled</source>
+        <source>Rename job</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Delete job</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Job title:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -221,6 +232,22 @@
         <comment>Status bar</comment>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Insert blank page befor this page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert blank page after this page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete this page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Undo delete</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PrinterSettings</name>
@@ -303,16 +330,16 @@
 <context>
     <name>TmpPdfFile</name>
     <message>
-        <source>Something wrong. I can&apos;t find boomagamerger program.
-Please reinstall me.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>I can read file &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
         <source>I can&apos;t create temporary file &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Something is wrong. I can&apos;t find boomagamerger program.
+Please reinstall me.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

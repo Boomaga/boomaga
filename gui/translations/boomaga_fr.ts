@@ -7,7 +7,7 @@
     </message>
     <message>
         <source>About</source>
-        <translation>À propos</translation>
+        <translation>À propos de</translation>
     </message>
     <message>
         <source>Authors</source>
@@ -47,7 +47,7 @@
     </message>
     <message>
         <source>If you are interested in working with our development team, &lt;a %1&gt;join us&lt;/a&gt;.</source>
-        <translation>Si tu es intéressé à travailler avec notre équipe de développement, &lt;a %1&gt;joins-toi à nous&lt;/a&gt;.</translation>
+        <translation>Si vous êtes intéressé à travailler avec notre équipe de développement, &lt;a %1&gt;rejoigniez-nous&lt;/a&gt;.</translation>
     </message>
     <message>
         <source>Special thanks to:</source>
@@ -55,21 +55,32 @@
     </message>
     <message>
         <source>If you want to help translate, we will be glad to see you in our translation team on &lt;a %1&gt;Transifex server&lt;/a&gt;.</source>
-        <translation>Si tu désires aider à traduire, nous serons heureux de t&apos;accueillir dans notre équipe de traduction sur le &lt;a %1&gt;serveur Transifex&lt;/a&gt;.</translation>
+        <translation>Si vous désirez aider à traduire, nous serons heureux de vous accueillir dans notre équipe de traduction sur le &lt;a %1&gt;serveur Transifex&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
-    <name>InputFilesListView</name>
+    <name>Job</name>
+    <message>
+        <source>Untitled</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>JobsListView</name>
     <message>
         <source>( %1 pages ) </source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <source>Untitled</source>
+        <source>Rename job</source>
         <translation type="unfinished"/>
     </message>
     <message>
         <source>Delete job</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Job title:</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -118,12 +129,12 @@
     <message>
         <source>Print on both sides of a sheet.</source>
         <comment>MainForm::Double-sided checkbox tooltip</comment>
-        <translation type="unfinished"/>
+        <translation>Imprimer sur les deux côtés d&apos;une feuille.</translation>
     </message>
     <message>
         <source>Double-sided</source>
         <comment>MainForm::Double-sided checkbox</comment>
-        <translation type="unfinished"/>
+        <translation>Des deux côtés</translation>
     </message>
     <message>
         <source>Jobs</source>
@@ -135,7 +146,7 @@
     </message>
     <message>
         <source>Configure ...</source>
-        <translation>Configure...</translation>
+        <translation>Configurer...</translation>
     </message>
     <message>
         <source>Toolbar</source>
@@ -143,15 +154,15 @@
     </message>
     <message>
         <source>&amp;Print</source>
-        <translation>&amp;Imprime</translation>
+        <translation>&amp;Imprimer</translation>
     </message>
     <message>
         <source>E&amp;xit</source>
-        <translation>&amp;Sortie</translation>
+        <translation>&amp;Quitter</translation>
     </message>
     <message>
         <source>Print and Close</source>
-        <translation>Imprime et ferme</translation>
+        <translation>Imprimer et fermer</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
@@ -180,43 +191,59 @@
     </message>
     <message>
         <source>Print the all pages on %1.</source>
-        <translation>Imprime toutes les pages sur %1.</translation>
+        <translation>Imprimer toutes les pages sur %1.</translation>
     </message>
     <message>
         <source>Print the odd pages on %1.&lt;p&gt;When finished, turn the pages, insert them into the printer&lt;br&gt;and click the Continue button.</source>
-        <translation>Imprime toutes les pages impaires sur %1.&lt;p&gt;Une fois terminé, tourne les pages, insère-les dans l&apos;imprimante&lt;br&gt;et clique sur le bouton Continue.</translation>
+        <translation>Imprimer les pages impaires sur %1.&lt;p&gt;Une fois terminé, tourner les pages, les insérer dans l&apos;imprimante&lt;br&gt;et cliquer sur le bouton Continue.</translation>
     </message>
     <message>
         <source>Print the even pages on %1.</source>
-        <translation>Imprime les pages paires sur %1.</translation>
+        <translation>Imprimer les pages paires sur %1.</translation>
     </message>
     <message>
         <source>Continue</source>
-        <translation>Continue</translation>
+        <translation>Continuer</translation>
     </message>
     <message>
         <source>%1 pages</source>
         <comment>Status bar</comment>
-        <translation type="unfinished"/>
+        <translation>%1 pages</translation>
     </message>
     <message>
         <source>%1 page</source>
         <comment>Status bar</comment>
-        <translation type="unfinished"/>
+        <translation>%1 page</translation>
     </message>
     <message>
         <source>%1 sheets</source>
         <comment>Status bar</comment>
-        <translation type="unfinished"/>
+        <translation>%1 feuilles</translation>
     </message>
     <message>
         <source>%1 sheet</source>
         <comment>Status bar</comment>
-        <translation type="unfinished"/>
+        <translation>%1 feuille</translation>
     </message>
     <message>
         <source>Sheet %1 of %2</source>
         <comment>Status bar</comment>
+        <translation>Feuille %1 de %2</translation>
+    </message>
+    <message>
+        <source>Insert blank page befor this page</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Insert blank page after this page</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Delete this page</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Undo delete</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -248,19 +275,19 @@
     </message>
     <message>
         <source>Duplex:</source>
-        <translation type="unfinished"/>
+        <translation>Recto-verso :</translation>
     </message>
     <message>
         <source>Draw border</source>
-        <translation>Encadre</translation>
+        <translation>Encadrer</translation>
     </message>
     <message>
         <source>Print in reverse order</source>
-        <translation>Imprime en ordre inversé</translation>
+        <translation>Imprimer en ordre inversé</translation>
     </message>
     <message>
         <source>Printer has duplexer</source>
-        <translation type="unfinished"/>
+        <translation>Imprimante recto-verso</translation>
     </message>
     <message>
         <source>Manual with reverse (suitable for most printers)</source>
@@ -280,37 +307,37 @@
     <message>
         <source>Boomaga</source>
         <comment>Error message title</comment>
-        <translation type="unfinished"/>
+        <translation>Boomaga</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <source>PDF file &quot;%1&quot; is damaged.</source>
-        <translation type="unfinished"/>
+        <translation>Le fichier PDF « %1 » est endommagé.</translation>
     </message>
     <message>
         <source>PDF file &quot;%1&quot; is encripted.</source>
-        <translation type="unfinished"/>
+        <translation>Le fichier PDF « %1 » est chiffré.</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Je ne peux pas ouvrir le fichier « %1 »</translation>
     </message>
 </context>
 <context>
     <name>TmpPdfFile</name>
     <message>
-        <source>Something wrong. I can't find boomagamerger program.
-Please reinstall me.</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>I can read file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Je ne peux pas lire le fichier « %1 »</translation>
     </message>
     <message>
         <source>I can&apos;t create temporary file &quot;%1&quot;</source>
+        <translation>Je ne peux pas créer le fichier temporaire « %1 »</translation>
+    </message>
+    <message>
+        <source>Something is wrong. I can't find boomagamerger program.
+Please reinstall me.</source>
         <translation type="unfinished"/>
     </message>
 </context>
