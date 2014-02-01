@@ -645,11 +645,14 @@ void MainWindow::updateProgressBar(int value, int all)
 void MainWindow::showPreviewContextMenu(int pageNum)
 {
     int sheetNum = ui->preview->currentSheet();
-    if (sheetNum < 0)
-        return;
+    Sheet *sheet = 0;
+    ProjectPage *page = 0;
 
-    Sheet *sheet = project->previewSheet(sheetNum);
-    ProjectPage *page = (pageNum < 0) ? 0 : sheet->page(pageNum);
+    if (sheetNum > -1)
+    {
+        sheet = project->previewSheet(sheetNum);
+        page = (pageNum < 0) ? 0 : sheet->page(pageNum);
+    }
 
     QMenu *menu = new QMenu(this);
 
