@@ -660,7 +660,7 @@ void MainWindow::showPreviewContextMenu(int pageNum)
     if (page)
     {
         PageAction *act;
-        act = new PageAction(tr("Insert blank page befor this page"), sheet, page, menu);
+        act = new PageAction(tr("Insert blank page before this page"), sheet, page, menu);
         menu->addAction(act);
         connect(act, SIGNAL(triggered()),
                 this, SLOT(insertBlankPageBefore()));
