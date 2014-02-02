@@ -246,6 +246,10 @@
         <source>Insert blank page before this page</source>
         <translation type="unfinished"/>
     </message>
+    <message>
+        <source>Remove pages until the end of the job.</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>PrinterSettings</name>

@@ -246,6 +246,10 @@
         <source>Insert blank page before this page</source>
         <translation>Вставить пустую страницу перед этой</translation>
     </message>
+    <message>
+        <source>Remove pages until the end of the job.</source>
+        <translation>Удалить страницы до конца задания. </translation>
+    </message>
 </context>
 <context>
     <name>PrinterSettings</name>
