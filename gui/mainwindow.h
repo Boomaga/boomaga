@@ -71,6 +71,7 @@ private slots:
 
     void showPreviewContextMenu(int pageNum);
     void deletePage();
+    void deletePagesEnd();
     void insertBlankPageBefore();
     void insertBlankPageAfter();
 

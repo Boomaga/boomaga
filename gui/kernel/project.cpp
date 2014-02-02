@@ -199,7 +199,7 @@ void Project::removeJob(int index)
     mInputFiles.removeAll(job->inputFile());
     delete job;
 
-    updateSheets();
+    update();
 
     mLastTmpFile = createTmpPdfFile(mInputFiles);
     mLastTmpFile->merge();
@@ -212,7 +212,7 @@ void Project::removeJob(int index)
 void Project::moveJob(int from, int to)
 {
     mJobs.move(from, to);
-    updateSheets();
+    update();
 }
 
 
@@ -282,7 +282,7 @@ void Project::tmpFileMerged()
         {
             Job *job = new Job(tmpJob);
             connect(job, SIGNAL(changed(ProjectPage*)),
-                    this, SLOT(updateSheets()));
+                    this, SLOT(update()));
 
             mJobs << job;
             mInputFiles << job->inputFile();
@@ -297,14 +297,14 @@ void Project::tmpFileMerged()
 
     mLastTmpFile = 0;
 
-    updateSheets();
+    update();
 }
 
 
 /************************************************
 
  ************************************************/
-void Project::updateSheets()
+void Project::update()
 {
     mPages.clear();
     foreach(Job *job, mJobs)
@@ -452,7 +452,7 @@ bool Project::doubleSided() const
 void Project::setLayout(const Layout *layout)
 {
     mLayout = layout;
-    updateSheets();
+    update();
 }
 
 
@@ -476,7 +476,7 @@ void Project::setPrinter(Printer *value)
     else
         mPrinter = &mNullPrinter;
 
-    updateSheets();
+    update();
     emit changed();
 }
 

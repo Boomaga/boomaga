@@ -647,11 +647,17 @@ void MainWindow::showPreviewContextMenu(int pageNum)
     int sheetNum = ui->preview->currentSheet();
     Sheet *sheet = 0;
     ProjectPage *page = 0;
+    Job *job = 0;
 
     if (sheetNum > -1)
     {
         sheet = project->previewSheet(sheetNum);
         page = (pageNum < 0) ? 0 : sheet->page(pageNum);
+    }
+
+    if (page)
+    {
+        job = project->jobs()->findJob(page);
     }
 
     QMenu *menu = new QMenu(this);
@@ -678,11 +684,29 @@ void MainWindow::showPreviewContextMenu(int pageNum)
     // Delete page ...................................
     if (page)
     {
-        PageAction *act = new PageAction(tr("Delete this page"), sheet, page, menu);
+        PageAction *act;
+        act = new PageAction(tr("Delete this page"), sheet, page, menu);
         connect(act, SIGNAL(triggered()),
                 this, SLOT(deletePage()));
         menu->addAction(act);
-        //menu->addAction(tr("Delete this page"), page, SLOT(hide()));
+
+        int n = job->indexOfPage(page);
+        bool hasVisible = false;
+        for (int p=n+1; p<job->pageCount(); ++p)
+        {
+            if (job->page(p)->visible())
+            {
+                hasVisible = true;
+                break;
+            }
+        }
+        if (hasVisible)
+        {
+            act = new PageAction(tr("Remove pages until the end of the job."), sheet, page, menu);
+            connect(act, SIGNAL(triggered()),
+                    this, SLOT(deletePagesEnd()));
+            menu->addAction(act);
+        }
     }
     // ...............................................
 
@@ -733,6 +757,32 @@ void MainWindow::deletePage()
     {
         act->page()->hide();
     }
+}
+
+
+/************************************************
+
+ ************************************************/
+void MainWindow::deletePagesEnd()
+{
+    PageAction *act = qobject_cast<PageAction*>(sender());
+    if (!act || !act->page())
+        return;
+
+    Job *job = project->jobs()->findJob(act->page());
+
+    job->blockSignals(true);
+    for (int p=job->pageCount()-1; p>=job->indexOfPage(act->page()); --p)
+    {
+        ProjectPage *page = job->page(p);
+
+        if (page->inputFile().isNull())
+            job->removePage(page);
+        else
+            page->hide();
+    }
+    job->blockSignals(false);
+    project->update();
 }
 
 

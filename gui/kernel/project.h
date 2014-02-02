@@ -139,6 +139,7 @@ public slots:
     void moveJob(int from, int to);
     void setLayout(const Layout *layout);
     void setDoubleSided(bool value);
+    void update();
 
 signals:
     void changed();
@@ -148,7 +149,6 @@ signals:
 private slots:
     void tmpFileMerged();
     void tmpFileProgress(int progr, int all) const;
-    void updateSheets();
 
 private:
     explicit Project(QObject *parent = 0);
