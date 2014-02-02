@@ -228,11 +228,7 @@
     <message>
         <source>Sheet %1 of %2</source>
         <comment>Status bar</comment>
-        <translation>Стр. %1 из %2</translation>
-    </message>
-    <message>
-        <source>Insert blank page befor this page</source>
-        <translation>Вставить пустую страницу перед этой</translation>
+        <translation>Лист %1 из %2</translation>
     </message>
     <message>
         <source>Insert blank page after this page</source>
@@ -245,6 +241,10 @@
     <message>
         <source>Undo delete</source>
         <translation>Отмена удаления</translation>
+    </message>
+    <message>
+        <source>Insert blank page before this page</source>
+        <translation>Вставить пустую страницу перед этой</translation>
     </message>
 </context>
 <context>

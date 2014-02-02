@@ -62,26 +62,26 @@
     <name>Job</name>
     <message>
         <source>Untitled</source>
-        <translation type="unfinished"/>
+        <translation>Sans titre</translation>
     </message>
 </context>
 <context>
     <name>JobsListView</name>
     <message>
         <source>( %1 pages ) </source>
-        <translation type="unfinished"/>
+        <translation>( %1 pages ) </translation>
     </message>
     <message>
         <source>Rename job</source>
-        <translation type="unfinished"/>
+        <translation>Renommer le travail</translation>
     </message>
     <message>
         <source>Delete job</source>
-        <translation type="unfinished"/>
+        <translation>Effacer le travail</translation>
     </message>
     <message>
         <source>Job title:</source>
-        <translation type="unfinished"/>
+        <translation>Titre du travail :</translation>
     </message>
 </context>
 <context>
@@ -231,20 +231,20 @@
         <translation>Feuille %1 de %2</translation>
     </message>
     <message>
-        <source>Insert blank page befor this page</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>Insert blank page after this page</source>
-        <translation type="unfinished"/>
+        <translation>Insérer une page après avant cette page</translation>
     </message>
     <message>
         <source>Delete this page</source>
-        <translation type="unfinished"/>
+        <translation>Effacer cette page</translation>
     </message>
     <message>
         <source>Undo delete</source>
-        <translation type="unfinished"/>
+        <translation>Rétablir la suppression</translation>
+    </message>
+    <message>
+        <source>Insert blank page before this page</source>
+        <translation>Insérer une page blanche avant cette page</translation>
     </message>
 </context>
 <context>
@@ -291,11 +291,11 @@
     </message>
     <message>
         <source>Manual with reverse (suitable for most printers)</source>
-        <translation type="unfinished"/>
+        <translation>Manuel avec inversion (convient à la plupart des imprimantes)</translation>
     </message>
     <message>
         <source>Manual without reverse</source>
-        <translation type="unfinished"/>
+        <translation>Manuel sans inversion</translation>
     </message>
     <message>
         <source>Preferences of &quot;%1&quot;</source>
@@ -338,7 +338,8 @@
     <message>
         <source>Something is wrong. I can't find boomagamerger program.
 Please reinstall me.</source>
-        <translation type="unfinished"/>
+        <translation>Quelque chose ne va pas. Je ne peux pas trouver le programme boomagamerger.
+Veuillez me réinstaller.</translation>
     </message>
 </context>
 </TS>

@@ -62,26 +62,26 @@
     <name>Job</name>
     <message>
         <source>Untitled</source>
-        <translation type="unfinished"/>
+        <translation>Senza titolo</translation>
     </message>
 </context>
 <context>
     <name>JobsListView</name>
     <message>
         <source>( %1 pages ) </source>
-        <translation type="unfinished"/>
+        <translation>( %1 pagine ) </translation>
     </message>
     <message>
         <source>Rename job</source>
-        <translation type="unfinished"/>
+        <translation>Rinominare lavoro di stampa</translation>
     </message>
     <message>
         <source>Delete job</source>
-        <translation type="unfinished"/>
+        <translation>Cancellare lavoro di stampa</translation>
     </message>
     <message>
         <source>Job title:</source>
-        <translation type="unfinished"/>
+        <translation>Titolo del lavoro di stampa:</translation>
     </message>
 </context>
 <context>
@@ -231,19 +231,19 @@
         <translation>Foglio %1 di %2</translation>
     </message>
     <message>
-        <source>Insert blank page befor this page</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>Insert blank page after this page</source>
-        <translation type="unfinished"/>
+        <translation>Inserisci una pagina vuota dopo questa pagina</translation>
     </message>
     <message>
         <source>Delete this page</source>
-        <translation type="unfinished"/>
+        <translation>Eliminare questa pagina</translation>
     </message>
     <message>
         <source>Undo delete</source>
+        <translation>Annulla eliminazione</translation>
+    </message>
+    <message>
+        <source>Insert blank page before this page</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -338,7 +338,8 @@
     <message>
         <source>Something is wrong. I can't find boomagamerger program.
 Please reinstall me.</source>
-        <translation type="unfinished"/>
+        <translation>Qualcosa non va. Non riesco a trovare il programma boomagamerger. 
+Prego installami di nuovo.</translation>
     </message>
 </context>
 </TS>

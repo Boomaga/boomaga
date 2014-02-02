@@ -231,10 +231,6 @@
         <translation type="unfinished"/>
     </message>
     <message>
-        <source>Insert blank page befor this page</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>Insert blank page after this page</source>
         <translation type="unfinished"/>
     </message>
@@ -244,6 +240,10 @@
     </message>
     <message>
         <source>Undo delete</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Insert blank page before this page</source>
         <translation type="unfinished"/>
     </message>
 </context>
