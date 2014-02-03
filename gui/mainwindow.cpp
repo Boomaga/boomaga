@@ -708,7 +708,7 @@ void MainWindow::showPreviewContextMenu(int pageNum)
         }
         if (hasVisible)
         {
-            act = new PageAction(tr("Remove pages until the end of the job."), sheet, page, menu);
+            act = new PageAction(tr("Delete pages until the end of the job."), sheet, page, menu);
             connect(act, SIGNAL(triggered()),
                     this, SLOT(deletePagesEnd()));
             menu->addAction(act);
