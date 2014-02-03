@@ -8,6 +8,6 @@
         <file alias="icon-16x16">images/boomaga_16.png</file>
         <file alias="icon-32x32">images/boomaga_32.png</file>
         <file alias="icon-64x64">images/boomaga_64.png</file>
-        <file alias="icon-64x64">images/boomaga_128.png</file>
+        <file alias="icon-128x128">images/boomaga_128.png</file>
     </qresource>
 </RCC>
