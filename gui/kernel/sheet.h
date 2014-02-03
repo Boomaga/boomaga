@@ -63,7 +63,6 @@ private:
     QVector<ProjectPage*> mPages;
     int mSheetNum;
     Hints mHints;
-    static qint64 genId();
 };
 
 typedef QList<Sheet*> SheetList;

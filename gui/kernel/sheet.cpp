@@ -60,16 +60,6 @@ void Sheet::setPage(int index, ProjectPage *page)
 /************************************************
 
  ************************************************/
-qint64 Sheet::genId()
-{
-    static qint64 id = 0;
-    return ++id;
-}
-
-
-/************************************************
-
- ************************************************/
 void Sheet::setHints(Sheet::Hints value)
 {
     mHints = value;

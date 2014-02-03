@@ -166,14 +166,12 @@ QString LayoutNUp::id() const
  ************************************************/
 void LayoutNUp::fillSheets(QList<Sheet *> *sheets) const
 {
-    Sheet *sheet;
-
     int pps = mPageCountVert * mPageCountHoriz;
 
     int i=0;
     while (i < project->pageCount())
     {
-        sheet = new Sheet(pps, sheets->count());
+        Sheet *sheet = new Sheet(pps, sheets->count());
         sheet->setHint(Sheet::HintLandscapePreview, mRotate);
 
         for (int j=0; j<pps; ++j)
@@ -249,17 +247,15 @@ void LayoutBooklet::fillSheets(QList<Sheet *> *sheets) const
 void LayoutBooklet::fillSheetsForBook(int bookStart, int bookLength, QList<Sheet *> *sheets) const
 {
     int cnt = ceil(bookLength / 4.0 ) * 4;
-    int n;
-    Sheet *sheet;
 
     for (int i = 0; i < cnt / 2; i+=2)
     {
         // Sheet 0 **************************
-        sheet = new Sheet(2, sheets->count());
+        Sheet *sheet = new Sheet(2, sheets->count());
         sheet->setHints(Sheet::HintDrawFold | Sheet::HintLandscapePreview);
         sheets->append(sheet);
 
-        n = (cnt - 1) - i;
+        int n = (cnt - 1) - i;
         if (n < bookLength)
         {
             ProjectPage *page = project->page(n + bookStart);
@@ -331,10 +327,9 @@ void LayoutBooklet::fillPreviewSheetsForBook(int bookStart, int bookLength, QLis
 {
     int cnt = ceil(bookLength / 4.0 ) * 4;
 
-    Sheet *sheet;
     for (int i = -1; i < cnt; i+=2)
     {
-        sheet = new Sheet(2, sheets->count());
+        Sheet *sheet = new Sheet(2, sheets->count());
         sheet->setHints(Sheet::HintDrawFold | Sheet::HintLandscapePreview);
 
         sheets->append(sheet);

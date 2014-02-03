@@ -43,14 +43,12 @@ Job::Job(const InputFile &inputfile, QObject *parent):
  *
  ************************************************/
 Job::Job(const Job *other, QObject *parent):
-    QObject(parent)
+    QObject(parent),
+    mTitle(other->mTitle),
+    mInputFile(other->mInputFile)
 {
-    mInputFile = other->mInputFile;
-    mTitle = other->mTitle;
     for (int i=0; i< other->pageCount(); ++i)
-    {
         addPage(new ProjectPage(other->page(i)));
-    }
 }
 
 

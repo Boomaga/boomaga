@@ -139,7 +139,6 @@ QString AboutDialog::translationsText() const
                     .arg(" href='https://www.transifex.com/projects/p/boomaga/'"),
                 translatorsInfo.asHtml()
                 );
-    return "";
 }
 
 
