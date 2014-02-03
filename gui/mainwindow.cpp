@@ -70,7 +70,13 @@ MainWindow::MainWindow(QWidget *parent):
 
     delete ui->menuPreferences;
 
-    setWindowIcon(findIcon("document-print", ":/images/print-48x48"));
+    QIcon appIcon;
+    appIcon.addFile(":/images/icon-16x16", QSize(16, 16));
+    appIcon.addFile(":/images/icon-32x32", QSize(32, 32));
+    appIcon.addFile(":/images/icon-64x64", QSize(64, 64));
+    appIcon.addFile(":/images/icon-128x128", QSize(128, 128));
+
+    setWindowIcon(appIcon);
     setWindowTitle(tr("Boomaga"));
 
     setStyleSheet("QListView::item { padding: 2px;}");

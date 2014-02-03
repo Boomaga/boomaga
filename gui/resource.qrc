@@ -5,5 +5,9 @@
         <file alias="frist">images/go-first-view.png</file>
         <file alias="last">images/go-last-view.png</file>
         <file alias="previous">images/go-previous-view.png</file>
+        <file alias="icon-16x16">images/boomaga_16.png</file>
+        <file alias="icon-32x32">images/boomaga_32.png</file>
+        <file alias="icon-64x64">images/boomaga_64.png</file>
+        <file alias="icon-64x64">images/boomaga_128.png</file>
     </qresource>
 </RCC>
