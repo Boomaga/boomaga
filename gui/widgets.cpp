@@ -214,7 +214,7 @@ void JobsListView::updateItems()
         item->setData(Qt::UserRole, i);
         Job *job = project->jobs()->at(i);
 
-        item->setText(tr("( %1 pages ) ").arg(job->visiblePageCount()) + job->title());
+        item->setText(tr("( %1 pages )").arg(job->visiblePageCount()) + " " + job->title());
 
         addItem(item);
     }
