@@ -62,26 +62,26 @@
     <name>Job</name>
     <message>
         <source>Untitled</source>
-        <translation type="unfinished"/>
+        <translation>Bez názvu</translation>
     </message>
 </context>
 <context>
     <name>JobsListView</name>
     <message>
-        <source>( %1 pages ) </source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>Rename job</source>
-        <translation type="unfinished"/>
+        <translation>Přejmenovat úlohu</translation>
     </message>
     <message>
         <source>Delete job</source>
-        <translation type="unfinished"/>
+        <translation>Smazat úlohu</translation>
     </message>
     <message>
         <source>Job title:</source>
-        <translation type="unfinished"/>
+        <translation>Název úlohy:</translation>
+    </message>
+    <message>
+        <source>( %1 pages )</source>
+        <translation>( %1 stran(y) ) </translation>
     </message>
 </context>
 <context>
@@ -232,23 +232,23 @@
     </message>
     <message>
         <source>Insert blank page after this page</source>
-        <translation type="unfinished"/>
+        <translation>Vložit prázdnou stranu po této straně</translation>
     </message>
     <message>
         <source>Delete this page</source>
-        <translation type="unfinished"/>
+        <translation>Smazat tuto stranu</translation>
     </message>
     <message>
         <source>Undo delete</source>
-        <translation type="unfinished"/>
+        <translation>Zpět krok smazání</translation>
     </message>
     <message>
         <source>Insert blank page before this page</source>
-        <translation type="unfinished"/>
+        <translation>Vložit prázdnou stranu před tuto stranu</translation>
     </message>
     <message>
-        <source>Remove pages until the end of the job.</source>
-        <translation type="unfinished"/>
+        <source>Delete pages until the end of the job.</source>
+        <translation>Odstranit strany až po konec úlohy</translation>
     </message>
 </context>
 <context>
@@ -342,7 +342,8 @@
     <message>
         <source>Something is wrong. I can't find boomagamerger program.
 Please reinstall me.</source>
-        <translation type="unfinished"/>
+        <translation>Něco je špatně. Nelze najít program boomagamerger.
+Proveďte, prosím, přeinstalaci.</translation>
     </message>
 </context>
 </TS>

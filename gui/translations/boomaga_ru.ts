@@ -68,10 +68,6 @@
 <context>
     <name>JobsListView</name>
     <message>
-        <source>( %1 pages ) </source>
-        <translation>(%1 стр.)</translation>
-    </message>
-    <message>
         <source>Rename job</source>
         <translation>Переименовать задание</translation>
     </message>
@@ -82,6 +78,10 @@
     <message>
         <source>Job title:</source>
         <translation>Имя задания:</translation>
+    </message>
+    <message>
+        <source>( %1 pages )</source>
+        <translation>( %1 стр.) </translation>
     </message>
 </context>
 <context>
@@ -247,7 +247,7 @@
         <translation>Вставить пустую страницу перед этой</translation>
     </message>
     <message>
-        <source>Remove pages until the end of the job.</source>
+        <source>Delete pages until the end of the job.</source>
         <translation>Удалить страницы до конца задания. </translation>
     </message>
 </context>
