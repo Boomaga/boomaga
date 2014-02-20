@@ -70,10 +70,6 @@
 <context>
     <name>JobsListView</name>
     <message>
-        <source>( %1 pages ) </source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Rename job</source>
         <translation type="unfinished"></translation>
     </message>
@@ -83,6 +79,10 @@
     </message>
     <message>
         <source>Job title:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>( %1 pages )</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -249,7 +249,7 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Remove pages until the end of the job.</source>
+        <source>Delete pages until the end of the job.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -68,10 +68,6 @@
 <context>
     <name>JobsListView</name>
     <message>
-        <source>( %1 pages ) </source>
-        <translation>( %1 pagine ) </translation>
-    </message>
-    <message>
         <source>Rename job</source>
         <translation>Rinominare lavoro di stampa</translation>
     </message>
@@ -82,6 +78,10 @@
     <message>
         <source>Job title:</source>
         <translation>Titolo del lavoro di stampa:</translation>
+    </message>
+    <message>
+        <source>( %1 pages )</source>
+        <translation>( %1 pagine )</translation>
     </message>
 </context>
 <context>
@@ -244,11 +244,11 @@
     </message>
     <message>
         <source>Insert blank page before this page</source>
-        <translation type="unfinished"/>
+        <translation>Inserisci una pagina vuota prima di questa pagina</translation>
     </message>
     <message>
-        <source>Remove pages until the end of the job.</source>
-        <translation type="unfinished"/>
+        <source>Delete pages until the end of the job.</source>
+        <translation>Rimuovere le pagine fino alla fine del lavoro di stampa.</translation>
     </message>
 </context>
 <context>
