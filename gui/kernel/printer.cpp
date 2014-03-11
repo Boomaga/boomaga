@@ -36,6 +36,7 @@
 #include <QTemporaryFile>
 #include <QDir>
 #include <QCoreApplication>
+#include <QFileDialog>
 
 #define CUPS_DEVICE_URI                  "device-uri"
 
@@ -121,6 +122,15 @@ Printer::Printer(QPrinterInfo printerInfo):
 
 
 /************************************************
+ *
+ * ***********************************************/
+Printer::~Printer()
+{
+
+}
+
+
+/************************************************
 
  ************************************************/
 void Printer::init()
@@ -136,6 +146,7 @@ void Printer::init()
     mBottomMargin = 0;
     mInternalMargin = 14;
     mDrawBorder = false;
+    mCanChangeDuplexType = true;
 }
 
 
@@ -261,6 +272,32 @@ void Printer::saveSettings()
     settings->setPrinterValue(id, Settings::Printer_TopMargin,      mTopMargin);
     settings->setPrinterValue(id, Settings::Printer_BottomMargin,   mBottomMargin);
     settings->setPrinterValue(id, Settings::Printer_InternalMargin, mInternalMargin);
+}
+
+
+/************************************************
+
+ ************************************************/
+QList<Printer*> Printer::availablePrinters()
+{
+    static QList<Printer*>* printers = 0;
+
+    if (!printers)
+    {
+        printers = new QList<Printer*>;
+
+        QList<QPrinterInfo> piList = QPrinterInfo::availablePrinters();
+        foreach (const QPrinterInfo &pi, piList)
+        {
+            Printer *printer = new Printer(pi);
+            if (printer->deviceUri() != CUPS_BACKEND_URI)
+                *printers << printer;
+            else
+                delete printer;
+        }
+    }
+
+    return QList<Printer *>(*printers);
 }
 
 
@@ -472,4 +509,3 @@ void Printer::print(const QList<Sheet *> &sheets, const QString &jobName, bool d
     proc.startDetached("lpr", args);
 #endif
 }
-

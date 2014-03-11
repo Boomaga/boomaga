@@ -88,14 +88,24 @@ Printer *PrintersComboBox::currentPrinter()
  ************************************************/
 void PrintersComboBox::setCurrentPrinter(const QString &printerName)
 {
+    int curIndex = -1;
     for (int i=0; i<count(); ++i)
     {
-        if (itemPrinter(i)->printerName() == printerName)
+        if (itemPrinter(i))
         {
-            setCurrentIndex(i);
-            return;
+            if (itemPrinter(i)->printerName() == printerName)
+            {
+
+                setCurrentIndex(i);
+                return;
+            }
+
+            if (curIndex < 0)
+                curIndex = i;
         }
     }
+
+    setCurrentIndex(curIndex);
 }
 
 
@@ -114,7 +124,11 @@ int PrintersComboBox::addPrinter(Printer *printer)
  ************************************************/
 Printer *PrintersComboBox::itemPrinter(int index)
 {
-    return (Printer*) itemData(index).value<void *>();
+    QVariant v = itemData(index);
+    if (v.isNull())
+        return 0;
+    else
+        return (Printer*) itemData(index).value<void *>();
 }
 
 

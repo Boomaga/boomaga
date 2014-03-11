@@ -35,6 +35,7 @@
 #include "printersettings/printersettings.h"
 #include "aboutdialog/aboutdialog.h"
 #include "actions.h"
+#include "export/exporttopdfprinter.h"
 
 #include <math.h>
 #include <QRadioButton>
@@ -81,10 +82,13 @@ MainWindow::MainWindow(QWidget *parent):
 
     setStyleSheet("QListView::item { padding: 2px;}");
 
-    foreach(Printer *printer, availablePrinters())
+    foreach(Printer *printer, Printer::availablePrinters())
     {
         ui->printersCbx->addPrinter(printer);
     }
+    ui->printersCbx->insertSeparator(99999);
+    ui->printersCbx->addPrinter(new ExportToPDFPrinter());
+
     initStatusBar();
     initActions();
 
@@ -178,28 +182,6 @@ MainWindow::~MainWindow()
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     project->free();
-}
-
-
-/************************************************
-
- ************************************************/
-QList<Printer *> MainWindow::availablePrinters()
-{
-    if (mAvailablePrinters.isEmpty())
-    {
-        QList<QPrinterInfo> printers = QPrinterInfo::availablePrinters();
-        foreach (const QPrinterInfo &pi, printers)
-        {
-            Printer *printer = new Printer(pi);
-            if (printer->deviceUri() != CUPS_BACKEND_URI)
-                mAvailablePrinters << printer;
-            else
-                delete printer;
-        }
-    }
-
-    return mAvailablePrinters;
 }
 
 

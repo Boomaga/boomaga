@@ -48,8 +48,6 @@ class MainWindow : public QMainWindow
 public:
     explicit MainWindow(QWidget *parent = 0);
     ~MainWindow();
-    
-    QList<Printer*> availablePrinters();
 
 private slots:
     void switchLayout();
@@ -82,7 +80,6 @@ protected:
 private:
     Ui::MainWindow *ui;
 
-    QList<Printer*> mAvailablePrinters;
     QList<Layout*> mAvailableLayouts;
 
     QLabel mStatusBarSheetsLabel;

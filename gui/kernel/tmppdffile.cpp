@@ -240,7 +240,8 @@ void TmpPdfFile::writeDocument(const QList<Sheet *> &sheets, QIODevice *out)
 void TmpPdfFile::writeSheets(QIODevice *out, const QList<Sheet *> &sheets) const
 {
     qint32 rootNum = mFirstFreeNum;
-    qint32 pagesNum = rootNum + 1;
+    qint32 metaDataNum = rootNum + 1;
+    qint32 pagesNum = metaDataNum + 1;
 
     QMap<int, qint64> xref;
     QStringList pagesKids;
@@ -250,6 +251,7 @@ void TmpPdfFile::writeSheets(QIODevice *out, const QList<Sheet *> &sheets) const
     *out << rootNum << " 0 obj\n";
     *out << "<<\n";
     *out << "/Type /Catalog\n";
+    //*out << "/Metadata " << metaDataNum << " 0 R\n";
     *out << "/Pages " << pagesNum << " 0 R\n";
     *out << ">>\n";
     *out << "endobj\n";
@@ -338,6 +340,30 @@ void TmpPdfFile::writeSheets(QIODevice *out, const QList<Sheet *> &sheets) const
     *out << "endobj\n";
     // ..........................................
 
+    // MetaData dictionary ......................
+    xref.insert(metaDataNum, out->pos());
+    *out << metaDataNum << " 0 obj\n";
+    *out << "<<\n";
+    out->write(project->metaData().asPDFDict());
+    *out << ">>\n";
+    *out << "endobj\n";
+
+    /*
+    QByteArray metaData = project->metaData().asXMP();
+    xref.insert(metaDataNum, out->pos());
+    *out << metaDataNum << " 0 obj\n";
+    *out << "<<\n";
+    *out << "/Length " << metaData.length() << "\n";
+    *out << "/Subtype /XML\n";
+    *out << "/Type /Metadata\n";
+    *out << ">>\n";
+    *out << "stream\n";
+    out->write(metaData);
+    *out << "endstream\n";
+    *out << "endobj\n";
+    */
+    // ..........................................
+
     // XRef for old objects .....................
     qint64 xrefPos = out->pos();
     *out << "xref\n";
@@ -365,6 +391,7 @@ void TmpPdfFile::writeSheets(QIODevice *out, const QList<Sheet *> &sheets) const
     *out << "/Size " << (rootNum + xref.count()) << "\n";
     *out << "/Prev " << mOrigXrefPos << "\n";
     *out << "/Root " << rootNum << " 0 R\n";
+    *out << "/Info " << metaDataNum << " 0 R\n";
     *out << QString("/ID [<%1> <%1>]\n").arg(hash);
     *out << ">>\n";
 

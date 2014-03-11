@@ -39,11 +39,12 @@
 #include <QDebug>
 #include <QFile>
 #include <QMessageBox>
+#include <QDateTime>
 
 #include <math.h>
 
 
-
+#define META_SIZE 4 * 1024
 
 /************************************************
 
@@ -503,5 +504,183 @@ QImage Project::sheetImage(int sheetNum) const
         return mTmpFile->image(sheetNum);
     else
         return QImage();
+}
+
+
+/************************************************
+
+ ************************************************/
+/*
+QByteArray MetaData::asXMP() const
+{
+    QString date = QDateTime::currentDateTime().toString(Qt::ISODate);
+    QByteArray res;
+    res.reserve(META_SIZE);
+
+    res.append("<?xpacket begin=\"").append("\xEF\xBB\xBF", 3).append("\" id=\"W5M0MpCehiHzreSzNTczkc9d\"?>\n");
+    xmp(res, "<x:xmpmeta xmlns:x=\"adobe:ns:meta/\" x:xmptk=\"Boomaga\">");
+    xmp(res, "  <rdf:RDF xmlns:rdf=\"http://www.w3.org/1999/02/22-rdf-syntax-ns#\">");
+
+    xmp(res, "    <rdf:Description rdf:about=\"\" xmlns:xmp=\"http://ns.adobe.com/xap/1.0/\">");
+    xmp(res, "      <xmp:ModifyDate>%1</xmp:ModifyDate>", date);
+    xmp(res, "      <xmp:CreateDate>%1</xmp:CreateDate>", date);
+    xmp(res, "      <xmp:MetadataDate>%1</xmp:MetadataDate>", date);
+    xmp(res, "      <xmp:CreatorTool>Boomaga Version %1</xmp:CreatorTool>", FULL_VERSION);
+    xmp(res, "    </rdf:Description>");
+
+    xmp(res, "    <rdf:Description rdf:about=\"\" xmlns:dc=\"http://purl.org/dc/elements/1.1/\">");
+    xmp(res, "      <dc:format>application/pdf</dc:format>");
+
+    if (!mTitle.isEmpty())
+    {
+        xmp(res, "      <dc:title>");
+        xmp(res, "        <rdf:Alt>");
+        xmp(res, "          <rdf:li xml:lang=\"x-default\">%1</rdf:li>", mTitle);
+        xmp(res, "        </rdf:Alt>");
+        xmp(res, "      </dc:title>");
+    }
+
+    if (!mCreator.isEmpty())
+    {
+        xmp(res, "      <dc:creator>");
+        xmp(res, "        <rdf:Seq>");
+        xmp(res, "          <rdf:li>%1</rdf:li>", mCreator);
+        xmp(res, "        </rdf:Seq>");
+        xmp(res, "      </dc:creator>");
+    }
+
+    if (!mSubject.isEmpty())
+    {
+        xmp(res, "      <dc:subject>");
+        xmp(res, "        <rdf:Bag>");
+        xmp(res, "          <rdf:li>%1</rdf:li>", mSubject);
+        xmp(res, "        </rdf:Bag>");
+        xmp(res, "      </dc:subject>");
+    }
+
+    if (!mDescription.isEmpty())
+    {
+        xmp(res, "      <dc:description>");
+        xmp(res, "        <rdf:Alt>");
+        xmp(res, "          <rdf:li xml:lang=\"x-default\">%1</rdf:li>", mDescription);
+        xmp(res, "        </rdf:Alt>");
+        xmp(res, "      </dc:description>");
+    }
+
+    xmp(res, "    </rdf:Description>");
+
+    xmp(res, "  </rdf:RDF>");
+    xmp(res, "</x:xmpmeta>");
+
+    int n = res.length();
+    res = res.leftJustified(META_SIZE - 21, ' ');
+    for (int i=n+100; i<res.length(); i+=100)
+        res[i]='\n';
+
+    xmp(res, "\n<?xpacket end=\"w\"?>");
+    return res;
+}
+*/
+
+
+/************************************************
+
+ ************************************************/
+QByteArray MetaData::asPDFDict() const
+{
+    QByteArray res;
+    res.reserve(META_SIZE);
+    QDateTime now = QDateTime::currentDateTime();
+
+    if (!mTitle.isEmpty())
+        addDictItem(res, "Title",    mTitle);
+
+    if (!mAuthor.isEmpty())
+        addDictItem(res, "Author",   mAuthor);
+
+    if (!mSubject.isEmpty())
+        addDictItem(res, "Subject",  mSubject);
+
+    if (!mKeywords.isEmpty())
+        addDictItem(res, "Keywords", mKeywords);
+
+    addDictItem(res, "CreationDate", now);  // The date and time the document was created
+    addDictItem(res, "ModDate",      now);  // The date and time the document was most recently modified
+
+    return res;
+}
+
+
+/************************************************
+
+ ************************************************/
+void MetaData::xmp(QByteArray &out, const QString &format) const
+{
+    out.append(format.toUtf8().data());
+    out.append('\n');
+}
+
+
+/************************************************
+
+ ************************************************/
+void MetaData::xmp(QByteArray &out, const QString &format, const QString &value) const
+{
+    QString v = value;
+    v.replace("'",  "&apos;");
+    v.replace("\"", "&quot;");
+    v.replace("&",  "&amp;");
+    v.replace("<",  "&lt;");
+    v.replace(">",  "&gt;");
+
+    out.append(QString(format).arg(v).toUtf8());
+    out.append('\n');
+}
+
+
+/************************************************
+
+ ************************************************/
+void MetaData::addDictItem(QByteArray &out, const QString &key, const QString &value) const
+{
+    out.append("/" + key + " <FEFF");
+    const ushort* utf16 = value.utf16();
+    for (int i=0; utf16[i]>0; ++i)
+    {
+#if Q_BYTE_ORDER == Q_BIG_ENDIAN
+        qint8 b2 = (utf16[i] & 0xFF00) >> 8;
+        qint8 b1 = (utf16[i] & 0x00FF);
+#else
+        qint8 b1 = (utf16[i] & 0xFF00) >> 8;
+        qint8 b2 = (utf16[i] & 0x00FF);
+#endif
+        out.append(QString("%1%2").arg(b1, 2, 16, QChar('0')).arg(b2, 2, 16, QChar('0')));
+    }
+    out.append(">\n");
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void MetaData::addDictItem(QByteArray &out, const QString &key, const QDateTime &value) const
+{
+    QDateTime utc = value.toUTC();
+    utc.setTimeSpec(Qt::LocalTime);
+    int offset = utc.secsTo(value) / 60;
+
+    out.append("/" + key + " (");
+    out.append(value.toString("yyyyMMddhhmmss"));
+
+    if (offset > 0)
+        out.append(QString("+%1'%2'")
+                   .arg(offset / 60, 2, 10, QChar('0'))
+                   .arg(offset % 60, 2, 10, QChar('0')));
+    else if (offset < 0)
+        out.append(QString("-%1'%2'")
+                    .arg(-offset / 60, 2, 10, QChar('0'))
+                    .arg(-offset % 60, 2, 10, QChar('0')));
+
+    out.append(")\n");
 }
 

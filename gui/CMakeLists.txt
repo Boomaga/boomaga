@@ -47,6 +47,8 @@ set(HEADERS
     previewwidget.h
     aboutdialog/aboutdialog.h
     translations/translatorsinfo/translatorsinfo.h
+    export/exporttopdf.h
+    export/exporttopdfprinter.h
 )
 
 set(SOURCES
@@ -69,6 +71,8 @@ set(SOURCES
     previewwidget.cpp
     aboutdialog/aboutdialog.cpp
     translations/translatorsinfo/translatorsinfo.cpp
+    export/exporttopdf.cpp
+    export/exporttopdfprinter.cpp
 )
 
 set (MOCS
@@ -85,6 +89,7 @@ set (MOCS
     printersettings/printersettings.h
     previewwidget.h
     aboutdialog/aboutdialog.h
+    export/exporttopdf.h
 )
 
 set(LIBRARIES
@@ -96,6 +101,7 @@ set(UI_FILES
     mainwindow.ui
     printersettings/printersettings.ui
     aboutdialog/aboutdialog.ui
+    export/exporttopdf.ui
 )
 
 # QRC files .................

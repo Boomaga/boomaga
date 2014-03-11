@@ -54,15 +54,12 @@ public:
 
     Printer();
     explicit Printer(QPrinterInfo printerInfo);
+    virtual ~Printer();
 
-    QString printerName() const;
-    QPrinterInfo printerInfo() const { return mPrinterInfo; }
+    virtual QString printerName() const;
 
-
-    //PaperSize paperSize() const;
     QSizeF paperSize(Unit unit) const;
 
-    //void setPaperSize(PaperSize newPaperSize);
     void setPaperSize(const QSizeF & paperSize, Unit unit);
 
     QRectF paperRect(Unit unit=Point) const;
@@ -90,15 +87,22 @@ public:
     DuplexType duplexType() const { return mDuplexType; }
     void setDuplexType(DuplexType duplexType);
 
+    bool canChangeDuplexType() const { return mCanChangeDuplexType; }
+
     bool reverseOrder() const { return mReverseOrder; }
     void setReverseOrder(bool value);
 
-    void print(const QList<Sheet*> &sheets, const QString &jobName, bool duplex, int numCopies = 1) const;
+    virtual void print(const QList<Sheet*> &sheets, const QString &jobName, bool duplex, int numCopies = 1) const;
 
     QString deviceUri() const { return mDeviceUri; }
 
     void readSettings();
     void saveSettings();
+
+    static QList<Printer*> availablePrinters();
+
+protected:
+    bool mCanChangeDuplexType;
 
 private:
     QPrinterInfo mPrinterInfo;

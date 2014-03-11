@@ -96,7 +96,6 @@ PrinterSettings::~PrinterSettings()
 }
 
 
-
 /************************************************
 
  ************************************************/
@@ -105,6 +104,7 @@ void PrinterSettings::setCurrentPrinter(Printer *printer)
     mPrinter = printer;
     setWindowTitle(tr("Preferences of \"%1\"").arg(mPrinter->printerName()));
     updateWidgets();
+    ui->duplexTypeComboBox->setEnabled(printer->canChangeDuplexType());
 }
 
 

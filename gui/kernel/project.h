@@ -43,6 +43,37 @@ class Sheet;
 class Layout;
 class QTextStream;
 
+class MetaData
+{
+public:
+    MetaData() {}
+
+    QString author() const { return mAuthor; }
+    void setAuthor(const QString &value) { mAuthor = value;}
+
+    QString title() const { return mTitle; }
+    void setTitle(const QString &value) { mTitle = value; }
+
+    QString subject() const { return mSubject; }
+    void setSubject(const QString &value) { mSubject = value; }
+
+    QString keywords() const { return mKeywords; }
+    void setKeywords(const QString &value) { mKeywords = value; }
+
+    //QByteArray asXMP() const;
+    QByteArray asPDFDict() const;
+private:
+    QString mTitle;         // The document’s title.
+    QString mAuthor;        // The name of the person who created the document.
+    QString mSubject;       // The subject of the document.
+    QString mKeywords;      // Keywords associated with the document.
+
+    void xmp(QByteArray &out, const QString &format) const;
+    void xmp(QByteArray &out, const QString &format, const QString &value) const;
+
+    void addDictItem(QByteArray &out, const QString &key, const QString &value) const;
+    void addDictItem(QByteArray &out, const QString &key, const QDateTime &value) const;
+};
 
 class ProjectPage: public QObject
 {
@@ -130,6 +161,9 @@ public:
 
     QImage sheetImage(int sheetNum) const;
 
+    MetaData metaData() const { return mMetaData; }
+    void setMetadata(const MetaData &value) { mMetaData = value; }
+
     void free();
 
 public slots:
@@ -167,6 +201,8 @@ private:
     Printer *mPrinter;
     Printer mNullPrinter;
     bool mDoubleSided;
+
+    MetaData mMetaData;
 
     TmpPdfFile *createTmpPdfFile(QList<InputFile> files);
     void stopMerging();
