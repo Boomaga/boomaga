@@ -59,6 +59,74 @@
     </message>
 </context>
 <context>
+    <name>ExportToPdf</name>
+    <message>
+        <source>Print to PDF</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>File name</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Output file:</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Meta info</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Author:</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source> The name of the person who created the document.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Title:</source>
+        <translation type="unfinished"/>
+    </message>
+    <message utf8="true">
+        <source> The document’s title.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Subject:</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source> The subject of the document.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source> Keywords associated with the document.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Keywords:</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>PDF files (*.pdf);;All files (*.*)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Overwrite file?</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>A file named &quot;%1&quot; already exists.
+Are you sure you want to overwrite it?</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
     <name>Job</name>
     <message>
         <source>Untitled</source>
@@ -313,6 +381,10 @@
         <comment>Error message title</comment>
         <translation type="unfinished"/>
     </message>
+    <message>
+        <source>I can&apos;t write to file &apos;%1&apos;</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -328,13 +400,20 @@
         <source>I can&apos;t open file &quot;%1&quot;</source>
         <translation type="unfinished"/>
     </message>
+    <message>
+        <source>Print to file (PDF)</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>Settings</name>
+    <message>
+        <source>~/Untitled.pdf</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>TmpPdfFile</name>
-    <message>
-        <source>I can read file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
-    </message>
     <message>
         <source>I can&apos;t create temporary file &quot;%1&quot;</source>
         <translation type="unfinished"/>
@@ -342,6 +421,14 @@
     <message>
         <source>Something is wrong. I can't find boomagamerger program.
 Please reinstall me.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>I can&apos;t read file &apos;%1&apos;</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation type="unfinished"/>
     </message>
 </context>

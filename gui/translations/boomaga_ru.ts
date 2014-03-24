@@ -59,6 +59,75 @@
     </message>
 </context>
 <context>
+    <name>ExportToPdf</name>
+    <message>
+        <source>Print to PDF</source>
+        <translation>Сохранить как PDF файл</translation>
+    </message>
+    <message>
+        <source>File name</source>
+        <translation>Имя файла</translation>
+    </message>
+    <message>
+        <source>Output file:</source>
+        <translation>Имя файла:</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation>...</translation>
+    </message>
+    <message>
+        <source>Meta info</source>
+        <translation>Мета информация</translation>
+    </message>
+    <message>
+        <source>Author:</source>
+        <translation>Автор:</translation>
+    </message>
+    <message>
+        <source> The name of the person who created the document.</source>
+        <translation>Имя человека, создавшего документ.</translation>
+    </message>
+    <message>
+        <source>Title:</source>
+        <translation>Заголовок:</translation>
+    </message>
+    <message utf8="true">
+        <source> The document’s title.</source>
+        <translation>Заголовок документа.</translation>
+    </message>
+    <message>
+        <source>Subject:</source>
+        <translation>Тема:</translation>
+    </message>
+    <message>
+        <source> The subject of the document.</source>
+        <translation>Тема документа.</translation>
+    </message>
+    <message>
+        <source> Keywords associated with the document.</source>
+        <translation>Ключевые слова, связанные с документом.</translation>
+    </message>
+    <message>
+        <source>Keywords:</source>
+        <translation>Ключевые слова:</translation>
+    </message>
+    <message>
+        <source>PDF files (*.pdf);;All files (*.*)</source>
+        <translation>Файл PDF (*.pdf);;Все файлы (*.*)</translation>
+    </message>
+    <message>
+        <source>Overwrite file?</source>
+        <translation>Переписать файл?</translation>
+    </message>
+    <message>
+        <source>A file named &quot;%1&quot; already exists.
+Are you sure you want to overwrite it?</source>
+        <translation>Файл с именем &quot;%1&quot; уже существует.
+Заменить его?</translation>
+    </message>
+</context>
+<context>
     <name>Job</name>
     <message>
         <source>Untitled</source>
@@ -313,6 +382,10 @@
         <comment>Error message title</comment>
         <translation>Boomaga</translation>
     </message>
+    <message>
+        <source>I can&apos;t write to file &apos;%1&apos;</source>
+        <translation>Не получилось записать файл: &quot;%1&quot;</translation>
+    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -328,13 +401,20 @@
         <source>I can&apos;t open file &quot;%1&quot;</source>
         <translation>Не получилось открыть файл: &quot;%1&quot;</translation>
     </message>
+    <message>
+        <source>Print to file (PDF)</source>
+        <translation>Сохранить как PDF файл</translation>
+    </message>
+</context>
+<context>
+    <name>Settings</name>
+    <message>
+        <source>~/Untitled.pdf</source>
+        <translation>~/Безимянный.pdf</translation>
+    </message>
 </context>
 <context>
     <name>TmpPdfFile</name>
-    <message>
-        <source>I can read file &apos;%1&apos;</source>
-        <translation>Не получилось прочитать файл: &quot;%1&quot;</translation>
-    </message>
     <message>
         <source>I can&apos;t create temporary file &quot;%1&quot;</source>
         <translation>Не получилось создать временный файл: &quot;%1&quot;</translation>
@@ -343,6 +423,14 @@
         <source>Something is wrong. I can't find boomagamerger program.
 Please reinstall me.</source>
         <translation>Шеф, все пропало! Я не могу найти программу с именем boomagamerger. Попробуй переставить меня.</translation>
+    </message>
+    <message>
+        <source>I can&apos;t read file &apos;%1&apos;</source>
+        <translation>Не получилось прочитать файл: &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>I can&apos;t write to file &apos;%1&apos;</source>
+        <translation>Не получилось записать файл: &quot;%1&quot;</translation>
     </message>
 </context>
 </TS>
