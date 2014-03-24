@@ -298,6 +298,11 @@ void Project::tmpFileMerged()
 
     mLastTmpFile = 0;
 
+    if (mMetaData.title().isEmpty() && !mJobs.isEmpty())
+    {
+        mMetaData.setTitle(mJobs.first()->title());
+    }
+
     update();
 }
 
