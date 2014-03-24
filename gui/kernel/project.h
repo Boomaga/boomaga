@@ -148,8 +148,8 @@ public:
     int previewSheetCount() const { return mPreviewSheets.count(); }
     Sheet *previewSheet(int index) const { return mPreviewSheets[index]; }
 
-    void writeDocument(const QList<Sheet *> &sheets, QIODevice *out);
-    void writeDocument(const QList<Sheet*> &sheets, const QString &fileName);
+    bool writeDocument(const QList<Sheet *> &sheets, QIODevice *out);
+    bool writeDocument(const QList<Sheet*> &sheets, const QString &fileName);
 
     const Layout *layout() const { return mLayout; }
     bool doubleSided() const;

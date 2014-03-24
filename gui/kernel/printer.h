@@ -88,11 +88,12 @@ public:
     void setDuplexType(DuplexType duplexType);
 
     bool canChangeDuplexType() const { return mCanChangeDuplexType; }
+    bool isShowProgressDialog() const { return mShowProgressDialog; }
 
     bool reverseOrder() const { return mReverseOrder; }
     void setReverseOrder(bool value);
 
-    virtual void print(const QList<Sheet*> &sheets, const QString &jobName, bool duplex, int numCopies = 1) const;
+    virtual bool print(const QList<Sheet*> &sheets, const QString &jobName, bool duplex, int numCopies = 1) const;
 
     QString deviceUri() const { return mDeviceUri; }
 
@@ -103,6 +104,7 @@ public:
 
 protected:
     bool mCanChangeDuplexType;
+    bool mShowProgressDialog;
 
 private:
     QPrinterInfo mPrinterInfo;

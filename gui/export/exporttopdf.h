@@ -49,6 +49,9 @@ public:
     MetaData metaInfo() const;
     void setMetaInfo(const MetaData &value);
 
+public slots:
+    void accept();
+
 private slots:
     void selectFile();
     void outFileNameChanged();

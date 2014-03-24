@@ -56,7 +56,7 @@ public:
 
     QString fileName() const { return mFileName; }
 
-    void writeDocument(const QList<Sheet *> &sheets, QIODevice *out);
+    bool writeDocument(const QList<Sheet *> &sheets, QIODevice *out);
 
     bool isValid() const { return mValid; }
 

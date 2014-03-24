@@ -147,6 +147,7 @@ void Printer::init()
     mInternalMargin = 14;
     mDrawBorder = false;
     mCanChangeDuplexType = true;
+    mShowProgressDialog = true;
 }
 
 
@@ -472,7 +473,7 @@ void Printer::setReverseOrder(bool value)
 /************************************************
 
  ************************************************/
-void Printer::print(const QList<Sheet *> &sheets, const QString &jobName, bool duplex, int numCopies) const
+bool Printer::print(const QList<Sheet *> &sheets, const QString &jobName, bool duplex, int numCopies) const
 {
 //#define DEBUG_PRINT
 #ifdef DEBUG_PRINT
@@ -507,5 +508,6 @@ void Printer::print(const QList<Sheet *> &sheets, const QString &jobName, bool d
 
     QProcess proc;
     proc.startDetached("lpr", args);
+    return true;
 #endif
 }

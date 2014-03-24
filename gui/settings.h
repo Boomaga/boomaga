@@ -54,7 +54,10 @@ public:
 
         // MainWindow ***************************
         MainWindow_Geometry,
-        MainWindow_State
+        MainWindow_State,
+
+        // ExportPDF ****************************
+        ExportPDF_FileName
     };
 
     static Settings *instance();

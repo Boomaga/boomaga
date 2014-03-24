@@ -417,21 +417,25 @@ QList<Sheet*> Project::selectSheets(Project::PagesType pages, Project::PagesOrde
 /************************************************
 
  ************************************************/
-void Project::writeDocument(const QList<Sheet *> &sheets, QIODevice *out)
+bool Project::writeDocument(const QList<Sheet *> &sheets, QIODevice *out)
 {
-    mTmpFile->writeDocument(sheets, out);
+    return mTmpFile->writeDocument(sheets, out);
 }
 
 
 /************************************************
 
  ************************************************/
-void Project::writeDocument(const QList<Sheet *> &sheets, const QString &fileName)
+bool Project::writeDocument(const QList<Sheet *> &sheets, const QString &fileName)
 {
     QFile f(fileName);
-    f.open(QIODevice::WriteOnly);
-    writeDocument(sheets, &f);
+    if (!f.open(QIODevice::WriteOnly))
+        return project->error(tr("I can't write to file '%1'").arg(fileName) + "\n" + f.errorString());
+
+    bool res = writeDocument(sheets, &f);
     f.close();
+
+    return res;
 }
 
 

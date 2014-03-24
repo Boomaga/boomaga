@@ -427,11 +427,13 @@ QMessageBox *MainWindow::showPrintDialog(const QString &text)
 /************************************************
 
  ************************************************/
-void MainWindow::print()
+bool MainWindow::print()
 {
     if (!project->sheetCount())
-        return;
+        return false;
 
+    bool res = true;
+    bool showDialog = project->printer()->isShowProgressDialog();
     QMessageBox *infoDialog = 0;
     Sheet emptySheet(1, 0);
 
@@ -499,13 +501,19 @@ void MainWindow::print()
              }
 
 
-             if (! sheets_2.count())
+             if (showDialog && !sheets_2.count())
              {
                  infoDialog = showPrintDialog(tr("Print the all pages on %1.").arg(project->printer()->printerName()));
              }
 
 
-             project->printer()->print(sheets_1, "", false, 1);
+             res = project->printer()->print(sheets_1, "", false, 1);
+             if (!res)
+             {
+                 delete(infoDialog);
+                 return false;
+             }
+
          }
 
 
@@ -525,7 +533,10 @@ void MainWindow::print()
              btn->setText(tr("Continue"));
 
              if (dialog.exec() != QMessageBox::Ok)
-                 return;
+             {
+                 delete(infoDialog);
+                 return false;
+             }
          }
          // ................................................
 
@@ -543,15 +554,22 @@ void MainWindow::print()
                      sheets_2.append(&emptySheet);
              }
 
-             infoDialog = showPrintDialog(tr("Print the even pages on %1.").arg(project->printer()->printerName()));
+             if (showDialog)
+                infoDialog = showPrintDialog(tr("Print the even pages on %1.").arg(project->printer()->printerName()));
 
-             project->printer()->print(sheets_2, "", false, 1);
+             res = project->printer()->print(sheets_2, "", false, 1);
+             if (!res)
+             {
+                 delete(infoDialog);
+                 return false;
+             }
          }
 
     }
-    else
+    else //if (split)
     {
-        infoDialog = showPrintDialog(tr("Print the all pages on %1.").arg(project->printer()->printerName()));
+        if (showDialog)
+            infoDialog = showPrintDialog(tr("Print the all pages on %1.").arg(project->printer()->printerName()));
 
         Project::PagesOrder order;
         if (project->printer()->reverseOrder())
@@ -575,13 +593,20 @@ void MainWindow::print()
             }
         }
 
-        project->printer()->print(sheets, "", project->doubleSided(), 1);
+        res = project->printer()->print(sheets, "", project->doubleSided(), 1);
+        if (!res)
+        {
+            delete(infoDialog);
+            return false;
+        }
     }
 
 
 
     if (infoDialog)
         QTimer::singleShot(200, infoDialog, SLOT(deleteLater()));
+
+    return true;
 }
 
 
@@ -590,8 +615,8 @@ void MainWindow::print()
  ************************************************/
 void MainWindow::printAndClose()
 {
-    print();
-    QTimer::singleShot(200, this, SLOT(close()));
+    if (print())
+        QTimer::singleShot(200, this, SLOT(close()));
 }
 
 

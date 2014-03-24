@@ -116,6 +116,10 @@ QString Settings::keyToString(Settings::Key key) const
     case MainWindow_Geometry:       return "MainWindow/Geometry";
     case MainWindow_State:          return "MainWindow/State";
 
+
+    // ExportPDF ****************************
+    case ExportPDF_FileName:        return "ExportPDF/FileName";
+
     }
 
     return "";
@@ -129,6 +133,7 @@ void Settings::init()
 {
     setDefaultValue(Layout,   "1up");
     setDefaultValue(DoubleSided, true);
+    setDefaultValue(ExportPDF_FileName, tr("~/Untitled.pdf"));
 }
 
 

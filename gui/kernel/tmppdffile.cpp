@@ -214,23 +214,25 @@ void TmpPdfFile::stop()
 /************************************************
 
  ************************************************/
-void TmpPdfFile::writeDocument(const QList<Sheet *> &sheets, QIODevice *out)
+bool TmpPdfFile::writeDocument(const QList<Sheet *> &sheets, QIODevice *out)
 {
     QFile f(mFileName);
     if (!f.open(QFile::ReadOnly))
-    {
-        project->error(tr("I can read file '%1'").arg(mFileName));
-        return;
-    }
+        return project->error(tr("I can't read file '%1'").arg(mFileName) + "\n" + out->errorString());
+
 
     qint64 bufLen = qMin(mOrigFileSize - f.pos(), (qint64)(1024 * 1024));
     while (bufLen > 0)
     {
-        out->write(f.read(bufLen));
+        int wrote = out->write(f.read(bufLen));
+        if (wrote<0)
+            return project->error(tr("I can't write to file '%1'").arg(mFileName) + "\n" + out->errorString());
+
         bufLen = qMin(mOrigFileSize - f.pos(), (qint64)(1024 * 1024));
     }
 
     writeSheets(out, sheets);
+    return true;
 }
 
 

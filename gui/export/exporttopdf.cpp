@@ -29,6 +29,9 @@
 
 #include <QFileDialog>
 #include <QPushButton>
+#include <QMessageBox>
+#include <QCloseEvent>
+#include <QDebug>
 
 /************************************************
 
@@ -62,9 +65,13 @@ ExportToPdf::~ExportToPdf()
  ************************************************/
 void ExportToPdf::selectFile()
 {
-    QString file = QFileDialog::getSaveFileName(this, this->windowTitle(),
-                                 (this->outFileName().isEmpty() ? QDir::homePath() : this->outFileName()),
-                                 tr("PDF files (*.pdf);;All files (*.*)"));
+    QString file = QFileDialog::getSaveFileName(
+                this, this->windowTitle(),
+                (this->outFileName().isEmpty() ? QDir::homePath() : this->outFileName()),
+                tr("PDF files (*.pdf);;All files (*.*)"),
+                0,
+                QFileDialog::DontConfirmOverwrite);
+
     if (!file.isEmpty())
         setOutFileName(file);
 
@@ -127,3 +134,29 @@ void ExportToPdf::setMetaInfo(const MetaData &value)
 }
 
 
+/************************************************
+ *
+ * ***********************************************/
+void ExportToPdf::accept()
+{
+    QString fileName = outFileName();
+
+    if (fileName.startsWith("~"))
+        fileName.replace("~", QDir::homePath());
+
+    if(QFileInfo(fileName).exists())
+    {
+        QMessageBox::StandardButton res = QMessageBox::warning(
+                    this,
+                    tr("Overwrite file?"),
+                    tr("A file named \"%1\" already exists.\nAre you sure you want to overwrite it?").arg(outFileName()),
+                    QMessageBox::Ok | QMessageBox::Cancel);
+
+        if (res != QMessageBox::Ok)
+        {
+            return;
+        }
+    }
+
+    QDialog::accept();
+}

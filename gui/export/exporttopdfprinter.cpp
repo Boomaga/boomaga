@@ -27,6 +27,11 @@
 #include "exporttopdfprinter.h"
 #include "exporttopdf.h"
 #include "kernel/project.h"
+#include "settings.h"
+
+#include <QDir>
+#include <QDebug>
+
 
 /************************************************
 
@@ -35,6 +40,8 @@ ExportToPDFPrinter::ExportToPDFPrinter()
 {
     setDuplexType(DuplexAuto);
     mCanChangeDuplexType = false;
+    mShowProgressDialog = false;
+    mOutFileName = settings->value(Settings::ExportPDF_FileName).toString();
 }
 
 
@@ -50,7 +57,7 @@ QString ExportToPDFPrinter::printerName() const
 /************************************************
 
  ************************************************/
-void ExportToPDFPrinter::print(const QList<Sheet *> &sheets, const QString &jobName, bool duplex, int numCopies) const
+bool ExportToPDFPrinter::print(const QList<Sheet *> &sheets, const QString &jobName, bool duplex, int numCopies) const
 {
     ExportToPdf dialog;
     dialog.setOutFileName(mOutFileName);
@@ -60,8 +67,15 @@ void ExportToPDFPrinter::print(const QList<Sheet *> &sheets, const QString &jobN
     if (dialog.exec())
     {
         mOutFileName = dialog.outFileName();
-        project->setMetadata(dialog.metaInfo());
-        project->writeDocument(sheets, mOutFileName);
-    }
+        QString fileName = mOutFileName;
+        settings->setValue(Settings::ExportPDF_FileName, mOutFileName);
 
+        if (fileName.startsWith("~"))
+            fileName.replace("~", QDir::homePath());
+
+        project->setMetadata(dialog.metaInfo());
+        project->writeDocument(sheets, fileName);
+        return true;
+    }
+    return false;
 }
