@@ -1,76 +1,76 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="de" version="2.0">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="el" version="2.0">
 <context>
     <name>AboutDialog</name>
     <message>
         <source> About Boomaga</source>
-        <translation> Über Boomaga</translation>
+        <translation> Σχετικά με το Boomaga</translation>
     </message>
     <message>
         <source>About</source>
-        <translation>Über</translation>
+        <translation>Σχετικά</translation>
     </message>
     <message>
         <source>Authors</source>
-        <translation>Autoren</translation>
+        <translation>Συγγραφείς</translation>
     </message>
     <message>
         <source>Thanks</source>
-        <translation>Vielen Dank</translation>
+        <translation>Ευχαριστίες</translation>
     </message>
     <message>
         <source>Translations</source>
-        <translation>Übersetzungen</translation>
+        <translation>Μεταφράσεις</translation>
     </message>
     <message>
         <source>Version: %1</source>
-        <translation>Version: %1</translation>
+        <translation>Έκδοση: %1</translation>
     </message>
     <message>
         <source>Boomaga provides a virtual printer for CUPS. This can be used for print preview or for print booklets.</source>
-        <translation>Boomaga stellt einen virtuellen Drucker für CUPS zur Verfügung. Dieser kann als Druckvorschau oder zum Drucken von Booklets verwendet werden.</translation>
+        <translation>Το Boomaga παρέχει έναν εικονικό εκτυπωτή για το CUPS. Μπορεί να χρησιμοποιηθεί για την προεπισκόπηση εκτυπώσεων ή για την εκτύπωση βιβλιάριων.</translation>
     </message>
     <message>
         <source>Copyright: %1-%2 %3</source>
-        <translation>Copyright: %1-%2 %3</translation>
+        <translation>Πνευματικά δικαιώματα: %1-%2 %3</translation>
     </message>
     <message>
         <source>Homepage: %1</source>
-        <translation>Homepage: %1</translation>
+        <translation>Ιστοσελίδα: %1</translation>
     </message>
     <message>
         <source>License: %1</source>
-        <translation>Lizenz: %1</translation>
+        <translation>Άδεια χρήσης: %1</translation>
     </message>
     <message>
         <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on Github.</source>
-        <translation>Boomaga wird vom &lt;a %1&gt;Boomaga Team und Freiwilligen&lt;/a&gt; auf Github entwickelt.</translation>
+        <translation>Το Boomaga αναπτύσσεται από την &lt;a %1&gt;ομάδα του Boomaga και τους συνεισφέροντες&lt;/a&gt; στο Github.</translation>
     </message>
     <message>
         <source>If you are interested in working with our development team, &lt;a %1&gt;join us&lt;/a&gt;.</source>
-        <translation>Wer mit dem Entwickler-Team zusammenarbeiten möchte, bitte &lt;a %1&gt;hier melden&lt;/a&gt;.</translation>
+        <translation>Αν επιθυμείτε να λάβετε μέρος στην ομάδα μας, &lt;a %1&gt;ελάτε μαζί μας&lt;/a&gt;.</translation>
     </message>
     <message>
         <source>Special thanks to:</source>
-        <translation>Besonderen Dank an:</translation>
+        <translation>Ιδιαίτερες ευχαριστίες:</translation>
     </message>
     <message>
         <source>If you want to help translate, we will be glad to see you in our translation team on &lt;a %1&gt;Transifex server&lt;/a&gt;.</source>
-        <translation>Wenn Du zur Übersetzung beitragen möchtest, würden wir uns freuen, dich im Übersetzungsteam auf &lt;a %1&gt;Transifex&lt;/a&gt; begrüßen zu dürfen.</translation>
+        <translation>Αν επιθυμείτε να βοηθήσετε στη μετάφραση, με χαρά σας καλωσορίζουμε στην ομάδα μετάφρασης στην &lt;a %1&gt;πλατφόρμα Transifex&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
     <name>ExportToPdf</name>
     <message>
         <source>Print to PDF</source>
-        <translation>In PDF drucken</translation>
+        <translation>Εκτύπωση σε PDF</translation>
     </message>
     <message>
         <source>File name</source>
-        <translation>Dateiname</translation>
+        <translation>Όνομα αρχείου</translation>
     </message>
     <message>
         <source>Output file:</source>
-        <translation>Ausgabedatei:</translation>
+        <translation>Αρχείο εξόδου:</translation>
     </message>
     <message>
         <source>...</source>
@@ -78,175 +78,176 @@
     </message>
     <message>
         <source>Meta info</source>
-        <translation type="unfinished"/>
+        <translation>Μεταπληροφορίες</translation>
     </message>
     <message>
         <source>Author:</source>
-        <translation>Autor:</translation>
+        <translation>Συγγραφέας:</translation>
     </message>
     <message>
         <source> The name of the person who created the document.</source>
-        <translation type="unfinished"/>
+        <translation> Το όνομα του δημιουργού του εγγράφου.</translation>
     </message>
     <message>
         <source>Title:</source>
-        <translation>Titel:</translation>
+        <translation>Τίτλος:</translation>
     </message>
     <message utf8="true">
         <source> The document’s title.</source>
-        <translation type="unfinished"/>
+        <translation> Ο τίτλος του εγγράφου.</translation>
     </message>
     <message>
         <source>Subject:</source>
-        <translation>Betreff:</translation>
+        <translation>Θέμα:</translation>
     </message>
     <message>
         <source> The subject of the document.</source>
-        <translation type="unfinished"/>
+        <translation> Το θέμα του εγγράφου.</translation>
     </message>
     <message>
         <source> Keywords associated with the document.</source>
-        <translation type="unfinished"/>
+        <translation> Λέξεις κλειδιά συσχετισμένες με το έγγραφο.</translation>
     </message>
     <message>
         <source>Keywords:</source>
-        <translation>Schlüsselwörter:</translation>
+        <translation>Λέξεις κλειδιά:</translation>
     </message>
     <message>
         <source>PDF files (*.pdf);;All files (*.*)</source>
-        <translation type="unfinished"/>
+        <translation>Αρχεία PDF (*.pdf);;Όλα τα αρχεία (*.*)</translation>
     </message>
     <message>
         <source>Overwrite file?</source>
-        <translation>Datei überschreiben?</translation>
+        <translation>Αντικατάσταση του αρχείου;</translation>
     </message>
     <message>
         <source>A file named &quot;%1&quot; already exists.
 Are you sure you want to overwrite it?</source>
-        <translation type="unfinished"/>
+        <translation>Ένα αρχείο με όνομα %1 υπάρχει ήδη.
+Επιθυμείτε σίγουρα την αντικατάστασή του;</translation>
     </message>
 </context>
 <context>
     <name>Job</name>
     <message>
         <source>Untitled</source>
-        <translation>Unbenannt</translation>
+        <translation>Χωρίς τίτλο</translation>
     </message>
 </context>
 <context>
     <name>JobsListView</name>
     <message>
         <source>Rename job</source>
-        <translation>Druckauftrag umbenennen</translation>
+        <translation>Μετονομασία της εργασίας</translation>
     </message>
     <message>
         <source>Delete job</source>
-        <translation>Druckauftrag löschen</translation>
+        <translation>Διαγραφή της εργασίας</translation>
     </message>
     <message>
         <source>Job title:</source>
-        <translation>Titel des Druckauftrags:</translation>
+        <translation>Τίτλος εργασίας:</translation>
     </message>
     <message>
         <source>( %1 pages )</source>
-        <translation>( %1 Seiten )</translation>
+        <translation>( %1 σελίδες )</translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
         <source>&amp;File</source>
-        <translation>&amp;Datei</translation>
+        <translation>&amp;Αρχεία</translation>
     </message>
     <message>
         <source>&amp;Preferences</source>
-        <translation>&amp;Einstellungen</translation>
+        <translation>&amp;Προτιμήσεις</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation>Hilfe</translation>
+        <translation>Βοήθεια</translation>
     </message>
     <message>
         <source>Options</source>
-        <translation>Optionen</translation>
+        <translation>Επιλογές</translation>
     </message>
     <message>
         <source>Layout</source>
-        <translation>Gestaltung</translation>
+        <translation>Διάταξη</translation>
     </message>
     <message>
         <source>1 up</source>
-        <translation>1 Seite</translation>
+        <translation>1 σε 1</translation>
     </message>
     <message>
         <source>2 up</source>
-        <translation>2 Seiten</translation>
+        <translation>2 σε 1</translation>
     </message>
     <message>
         <source>4 up</source>
-        <translation>4 Seiten</translation>
+        <translation>4 σε 1</translation>
     </message>
     <message>
         <source>8 up</source>
-        <translation>8 Seiten</translation>
+        <translation>8 σε 1</translation>
     </message>
     <message>
         <source>Booklet</source>
-        <translation>Broschüre</translation>
+        <translation>Βιβλιάριο</translation>
     </message>
     <message>
         <source>Print on both sides of a sheet.</source>
         <comment>MainForm::Double-sided checkbox tooltip</comment>
-        <translation>Doppelseitiger Druck.</translation>
+        <translation>Εκτύπωση στις δυο πλευρές του φύλλου.</translation>
     </message>
     <message>
         <source>Double-sided</source>
         <comment>MainForm::Double-sided checkbox</comment>
-        <translation>Doppelseitig</translation>
+        <translation>Και στις δύο πλευρές</translation>
     </message>
     <message>
         <source>Jobs</source>
-        <translation>Druckaufträge</translation>
+        <translation>Εργασίες</translation>
     </message>
     <message>
         <source>Printer</source>
-        <translation>Drucker</translation>
+        <translation>Εκτυπωτής</translation>
     </message>
     <message>
         <source>Configure ...</source>
-        <translation>Konfigurieren ...</translation>
+        <translation>Διαμόρφωση ...</translation>
     </message>
     <message>
         <source>Toolbar</source>
-        <translation>Werkzeugleiste</translation>
+        <translation>Γραμμή εργαλείων</translation>
     </message>
     <message>
         <source>&amp;Print</source>
-        <translation>&amp;Drucken</translation>
+        <translation>Εκτύ&amp;πωση</translation>
     </message>
     <message>
         <source>E&amp;xit</source>
-        <translation>&amp;Beenden</translation>
+        <translation>Έ&amp;ξοδος</translation>
     </message>
     <message>
         <source>Print and Close</source>
-        <translation>Drucken und Beenden</translation>
+        <translation>Εκτύπωση και κλείσιμο</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
-        <translation>Strg+P</translation>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <source>Next sheet</source>
-        <translation>Nächstes Blatt</translation>
+        <translation>Επόμενο φύλλο</translation>
     </message>
     <message>
         <source>Previous sheet</source>
-        <translation>Vorheriges Blatt</translation>
+        <translation>Προηγούμενο φύλλο</translation>
     </message>
     <message>
         <source>About Boomaga</source>
-        <translation>Über Boomaga</translation>
+        <translation>Σχετικά με το Boomaga</translation>
     </message>
     <message>
         <source>Boomaga</source>
@@ -255,123 +256,123 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>%v of %m</source>
         <comment>Format for QProgressBar (http://qt-project.org/doc/qt-4.8/qprogressbar.html#format-prop)</comment>
-        <translation>%v von %m</translation>
+        <translation>%v από %m</translation>
     </message>
     <message>
         <source>Print the all pages on %1.</source>
-        <translation>Alle Seiten auf %1 drucken.</translation>
+        <translation>Εκτύπωση όλων των σελίδων στον %1.</translation>
     </message>
     <message>
         <source>Print the odd pages on %1.&lt;p&gt;When finished, turn the pages, insert them into the printer&lt;br&gt;and click the Continue button.</source>
-        <translation>Ungerade Seitenzahlen auf %1 drucken.&lt;p&gt;Wenn der Ausdruck beendet ist, Seiten umdrehen, wieder in den Drucker einlegen&lt;br&gt;und die Schaltfläche Weiter betätigen.</translation>
+        <translation>Εκτύπωση των μονών σελίδων στον %1.&lt;p&gt;Μετά το πέρας, γυρίστε τις σελίδες, εισχωρήστε τες στον εκτυπωτή&lt;br&gt;και κάντε κλικ στο κουμπί Συνέχεια.</translation>
     </message>
     <message>
         <source>Print the even pages on %1.</source>
-        <translation>Gerade Seitenzahlen auf %1 drucken.</translation>
+        <translation>Εκτύπωση των ζυγών σελίδων στον %1.</translation>
     </message>
     <message>
         <source>Continue</source>
-        <translation>Weiter</translation>
+        <translation>Συνέχεια</translation>
     </message>
     <message>
         <source>%1 pages</source>
         <comment>Status bar</comment>
-        <translation>%1 Seiten</translation>
+        <translation>%1 σελίδες</translation>
     </message>
     <message>
         <source>%1 page</source>
         <comment>Status bar</comment>
-        <translation>%1 Seite</translation>
+        <translation>%1 σελίδα</translation>
     </message>
     <message>
         <source>%1 sheets</source>
         <comment>Status bar</comment>
-        <translation>%1 Blätter</translation>
+        <translation>%1 φύλλα</translation>
     </message>
     <message>
         <source>%1 sheet</source>
         <comment>Status bar</comment>
-        <translation>%1 Blatt</translation>
+        <translation>%1 φύλλο</translation>
     </message>
     <message>
         <source>Sheet %1 of %2</source>
         <comment>Status bar</comment>
-        <translation>Blatt %1 von %2</translation>
+        <translation>Φύλλο %1 από %2</translation>
     </message>
     <message>
         <source>Insert blank page after this page</source>
-        <translation>Leere Seite nach dieser Seite einfügen</translation>
+        <translation>Εισαγάγετε μια λευκή σελίδα μετά από αυτή</translation>
     </message>
     <message>
         <source>Delete this page</source>
-        <translation>Diese Seite löschen</translation>
+        <translation>Διαγράψτε αυτήν τη σελίδα</translation>
     </message>
     <message>
         <source>Undo delete</source>
-        <translation>Rückgängig löschen</translation>
+        <translation>Επαναφορά της διαγραφής</translation>
     </message>
     <message>
         <source>Insert blank page before this page</source>
-        <translation>Leere Seite vor dieser Seite einfügen</translation>
+        <translation>Εισαγάγετε μια λευκή σελίδα πριν από αυτή</translation>
     </message>
     <message>
         <source>Delete pages until the end of the job.</source>
-        <translation>Seiten ab hier bis zum Ende löschen.</translation>
+        <translation>Διαγράψτε τις υπολειπόμενες σελίδες της εργασίας εκτύπωσης.</translation>
     </message>
 </context>
 <context>
     <name>PrinterSettings</name>
     <message>
         <source>Margins (mm)</source>
-        <translation>Ränder (mm)</translation>
+        <translation>Περιθώρια (mm)</translation>
     </message>
     <message>
         <source>Right:</source>
-        <translation>Rechts:</translation>
+        <translation>Δεξιά:</translation>
     </message>
     <message>
         <source>Bottom:</source>
-        <translation>Unten:</translation>
+        <translation>Κάτω:</translation>
     </message>
     <message>
         <source>Internal:</source>
-        <translation>Intern:</translation>
+        <translation>Εσωτερικό:</translation>
     </message>
     <message>
         <source>Left:</source>
-        <translation>Links:</translation>
+        <translation>Αριστερά:</translation>
     </message>
     <message>
         <source>Top:</source>
-        <translation>Oben:</translation>
+        <translation>Πάνω:</translation>
     </message>
     <message>
         <source>Duplex:</source>
-        <translation>Duplex:</translation>
+        <translation>Διπλής όψης:</translation>
     </message>
     <message>
         <source>Draw border</source>
-        <translation>Rahmen anzeigen</translation>
+        <translation>Σχεδίαση περιγράμματος</translation>
     </message>
     <message>
         <source>Print in reverse order</source>
-        <translation>In umgekehrter Reihenfolge drucken</translation>
+        <translation>Εκτύπωση σε αντίστροφη σειρά</translation>
     </message>
     <message>
         <source>Printer has duplexer</source>
-        <translation>Duplex-Drucker vorhanden</translation>
+        <translation>Εκτυπωτής διπλής όψης</translation>
     </message>
     <message>
         <source>Manual with reverse (suitable for most printers)</source>
-        <translation>Manuell mit umgekehrter Reihenfolge (für die meisten Drucker geeignet)</translation>
+        <translation>Χειροκίνητος με αναστροφή (κατάλληλος στην πλειοψηφία των εκτυπωτών)</translation>
     </message>
     <message>
         <source>Manual without reverse</source>
-        <translation>Manuell ohne umgekehrte Reihenfolge</translation>
+        <translation>Χειροκίνητος χωρίς αναστροφή</translation>
     </message>
     <message>
         <source>Preferences of &quot;%1&quot;</source>
-        <translation>Einstellungen von &quot;%1&quot;</translation>
+        <translation>Προτιμήσεις του «%1»</translation>
     </message>
 </context>
 <context>
@@ -383,54 +384,54 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Αδύνατη η εγγραφή στο αρχείο «%1»</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <source>PDF file &quot;%1&quot; is damaged.</source>
-        <translation>PDF-Datei &quot;%1&quot; ist beschädigt.</translation>
+        <translation>Το αρχείο PDF «%1» είναι κατεστραμμένο.</translation>
     </message>
     <message>
         <source>PDF file &quot;%1&quot; is encripted.</source>
-        <translation>PDF-Datei &quot;%1&quot; ist verschlüsselt.</translation>
+        <translation>Το αρχείο PDF «%1» είναι κρυπτογραφημένο.</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Datei &quot;%1&quot; konnte nicht geöffnet werden</translation>
+        <translation>Αδύνατο το άνοιγμα του αρχείου «%1»</translation>
     </message>
     <message>
         <source>Print to file (PDF)</source>
-        <translation type="unfinished"/>
+        <translation>Εκτύπωση σε αρχείο (PDF)</translation>
     </message>
 </context>
 <context>
     <name>Settings</name>
     <message>
         <source>~/Untitled.pdf</source>
-        <translation type="unfinished"/>
+        <translation>~/Untitled.pdf</translation>
     </message>
 </context>
 <context>
     <name>TmpPdfFile</name>
     <message>
         <source>I can&apos;t create temporary file &quot;%1&quot;</source>
-        <translation>Temporäre Datei &quot;%1&quot; konnte nicht erstellt werden</translation>
+        <translation>Αδύνατη η δημιουργία του προσωρινού αρχείου «%1»</translation>
     </message>
     <message>
         <source>Something is wrong. I can't find boomagamerger program.
 Please reinstall me.</source>
-        <translation>Irgendetwas stimmt hier nicht. Das Programm boomagamerger konnte nicht gefunden werden.
-Bitte neu installieren.</translation>
+        <translation>Κάτι έχει πάει στραβά. Δεν μπορώ να βρω το πρόγραμμα boomagamerger.
+Παρακαλώ επανεγκαταστήστε με.</translation>
     </message>
     <message>
         <source>I can&apos;t read file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Αδύνατη η ανάγνωση του αρχείου «%1»</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Αδύνατη η εγγραφή στο αρχείο «%1»</translation>
     </message>
 </context>
 </TS>

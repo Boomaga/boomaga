@@ -62,68 +62,69 @@
     <name>ExportToPdf</name>
     <message>
         <source>Print to PDF</source>
-        <translation type="unfinished"/>
+        <translation>Stampare su PDF</translation>
     </message>
     <message>
         <source>File name</source>
-        <translation type="unfinished"/>
+        <translation>Nome file</translation>
     </message>
     <message>
         <source>Output file:</source>
-        <translation type="unfinished"/>
+        <translation>File di output:</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"/>
+        <translation>...</translation>
     </message>
     <message>
         <source>Meta info</source>
-        <translation type="unfinished"/>
+        <translation>Meta info</translation>
     </message>
     <message>
         <source>Author:</source>
-        <translation type="unfinished"/>
+        <translation>Autore:</translation>
     </message>
     <message>
         <source> The name of the person who created the document.</source>
-        <translation type="unfinished"/>
+        <translation>Il nome della persona che ha creato il documento.</translation>
     </message>
     <message>
         <source>Title:</source>
-        <translation type="unfinished"/>
+        <translation>Titolo:</translation>
     </message>
     <message utf8="true">
         <source> The document’s title.</source>
-        <translation type="unfinished"/>
+        <translation>Il titolo del documento.</translation>
     </message>
     <message>
         <source>Subject:</source>
-        <translation type="unfinished"/>
+        <translation>Oggetto:</translation>
     </message>
     <message>
         <source> The subject of the document.</source>
-        <translation type="unfinished"/>
+        <translation>L&apos;oggetto del documento.</translation>
     </message>
     <message>
         <source> Keywords associated with the document.</source>
-        <translation type="unfinished"/>
+        <translation>Parole chiave associate al documento.</translation>
     </message>
     <message>
         <source>Keywords:</source>
-        <translation type="unfinished"/>
+        <translation>Parole chiave:</translation>
     </message>
     <message>
         <source>PDF files (*.pdf);;All files (*.*)</source>
-        <translation type="unfinished"/>
+        <translation>File PDF (*.pdf);;Tutti i file (*.*)</translation>
     </message>
     <message>
         <source>Overwrite file?</source>
-        <translation type="unfinished"/>
+        <translation>Sovrascrivere il file?</translation>
     </message>
     <message>
         <source>A file named &quot;%1&quot; already exists.
 Are you sure you want to overwrite it?</source>
-        <translation type="unfinished"/>
+        <translation>Un file con nome &quot;%1&quot; esiste già.
+Sei sicuro di volerlo sovracrivere?</translation>
     </message>
 </context>
 <context>
@@ -206,7 +207,7 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Jobs</source>
-        <translation>Job</translation>
+        <translation>Lavori di stampa</translation>
     </message>
     <message>
         <source>Printer</source>
@@ -383,7 +384,7 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Non riesco a scrivere sul file &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
@@ -402,14 +403,14 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Print to file (PDF)</source>
-        <translation type="unfinished"/>
+        <translation>Stampare su file (PDF)</translation>
     </message>
 </context>
 <context>
     <name>Settings</name>
     <message>
         <source>~/Untitled.pdf</source>
-        <translation type="unfinished"/>
+        <translation>~/Senza titolo.pdf</translation>
     </message>
 </context>
 <context>
@@ -426,11 +427,11 @@ Prego installami di nuovo.</translation>
     </message>
     <message>
         <source>I can&apos;t read file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Non riesco a leggere il file &apos;%1&apos;</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Non riesco a scrivere sul file &apos;%1&apos;</translation>
     </message>
 </context>
 </TS>
