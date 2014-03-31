@@ -1,65 +1,29 @@
 Installation
 ============
 
-One simple solution is to install the program from the packets for your distribution kit. Access the list of packets at our site.
-
 Prerequisites
-=============
+-------------
 
 Should you wish to build the program from the sources, you would need header files for:
-* ghostscript
-* cups
 
-The names of packets depend on your distributive. Here are instructions for some of the popular
-distributives:
-
-Ubuntu
-------
-
-    sudo apt-get libcups2-dev libgs-dev
-
-
-Getting sources
-===============
-
-You can download sources of the latest stable version here. The home codes of the version
-being developed are always accessible at our page in github (https://github.com/Boomaga/boomaga). You can get them as follows:
-
-    git clone git://github.com/Boomaga/boomaga.git
+ * qt4
+ * cups
+ * snappy
+ * poppler
+ * poppler-cpp
 
 
 Building and installing
-=======================
+-----------------------
 
-We use so-called out-of-source builds. They support having different builds with different configurations simultaneously as well as easily remove the build directory if something goes wrong.
-So, create a directory in ~/boomaga, say _build_, and cd into it. Type
+We use so-called out-of-source builds. They support having different builds with different configurations
+simultaneously as well as easily remove the build directory if something goes wrong.
+So, create a directory in ~/boomaga, say build, and cd into it. Type
 
-    mkdir ~/boomaga/build
-    cd ~/boomaga/build
-    cmake ..
+mkdir ~/boomaga/build
+cd ~/boomaga/build
+cmake ..
 
-You may use alternative paths to some of the directories. Use the following options in cmake.
-
-Option			Default for Linux			Description
--DCUPS_BACKEND_DIR	/usr/lib/cups/backend			Path to CUPS backends.
--DCUPS_PPD_DIR		/usr/share/ppd/boomaga			Path to CUPS PPD files.
--DDBUS_MACINE_ID_DIR	/var/lib/dbus				Path where D-Bus machine-id file is placed.
--DDBUS_SERVICE_DIR	/usr/<local>/share/dbus-1/services	Path to D-Bus service description files (http://dbus.freedesktop.org/doc/dbus-specification.html#message-bus-starting-services).
-
-Example:
-    cmake -DCUPS_BACKEND_DIR=/usr/local/libexec/cups/backend -DDBUS_MACINE_ID_DIR=/var/db/dbus ..
-
-For building and installing please perform the following commands:
-
-    make && sudo make install
+For more information, see https://github.com/Boomaga/boomaga/wiki/Instalation page.
 
 
-Installing the printer
-======================
-
-Once the program has been installed, it’s time to add the virtual printer. Please note that this has to be
-done only once. You don’t have to install the printer over again when updating the program.
-
-The best solution is to use the scripts/installPrinter.sh – just run it.
-
-If you wish to install the printer on your own, select "Local Printers: Boomaga (Virtual boomaga printer)" in the "create printer" dialogue and indicate the type, "Generic Virtual boomaga printer" or, if you can’t access the previous, select "Generic PostScript printer".

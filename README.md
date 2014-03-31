@@ -79,31 +79,13 @@ discovered bugs to [Issue tracker](https://github.com/Boomaga/boomaga/issues), o
 Instalation
 ===========
 
-Prerequisites
--------------
+One simple solution is to install the program from the packets for your distribution kit. Access the list of packets at our site.
 
-Should you wish to build the program from the sources, you would need header files for:
+Should you wish to build the program from the sources, please refer to INSTALL.txt for more information.
 
- * qt4
- * cups
- * snappy
- * poppler
- * poppler-qt4
-
-
-Building and installing
------------------------
-
-We use so-called out-of-source builds. They support having different builds with different configurations
-simultaneously as well as easily remove the build directory if something goes wrong.
-So, create a directory in ~/boomaga, say build, and cd into it. Type
-
-mkdir ~/boomaga/build
-cd ~/boomaga/build
-cmake ..
 
 Installing the printer
-----------------------
+======================
 
 Once the program has been installed, it’s time to add the virtual printer. Please note that this has to be
 done only once. You don’t have to install the printer over again when updating the program.
