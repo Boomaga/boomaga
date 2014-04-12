@@ -25,6 +25,7 @@
 
 
 #include "settings.h"
+#include <QDir>
 #include <QDebug>
 
 #define MAINWINDOW_GROUP "MainWindow"
@@ -100,6 +101,8 @@ QString Settings::keyToString(Settings::Key key) const
     case Printer:                   return "Project/Printer";
     case DoubleSided:               return "Project/DoubleSided";
 
+    case SaveDir:                   return "Project/SaveDir";
+
         // Printer ******************************
     case Printer_DuplexType:        return "DuplexType";
     case Printer_DrawBorder:        return "Border";
@@ -134,6 +137,7 @@ void Settings::init()
     setDefaultValue(Layout,   "1up");
     setDefaultValue(DoubleSided, true);
     setDefaultValue(ExportPDF_FileName, tr("~/Untitled.pdf"));
+    setDefaultValue(SaveDir, QDir::homePath());
 }
 
 

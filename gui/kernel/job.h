@@ -33,11 +33,21 @@
 #include "inputfile.h"
 
 class ProjectPage;
+class QIODevice;
+class PDFDoc;
 
 class Job : public QObject
 {
     Q_OBJECT
 public:
+    enum State
+    {
+        JobEmpty,
+        JobNotReady,
+        JobReady,
+        JobError
+    };
+
     explicit Job(const InputFile &inputfile, QObject *parent=0);
     explicit Job(const Job *other, QObject *parent=0);
     virtual ~Job();
@@ -57,6 +67,12 @@ public:
 
     InputFile inputFile() const { return mInputFile; }
 
+    State state() const { return mState; }
+    QString errorString() const { return mErrorString; }
+
+public slots:
+    void insertBlankPage(int before);
+
 signals:
     void changed(ProjectPage *page);
 
@@ -67,6 +83,8 @@ private:
     QList<ProjectPage*> mPages;
     QString mTitle;
     InputFile mInputFile;
+    State mState;
+    QString mErrorString;
 };
 
 
@@ -76,7 +94,6 @@ public:
     JobList();
     JobList(const QList<Job*> & other);
 
-    QList<InputFile> inputFiles() const;
     int indexOfInputFile(const InputFile &inputFile, int from = 0) const;
 
     Job *findJob(ProjectPage *page) const;

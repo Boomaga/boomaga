@@ -2,7 +2,7 @@
  * (c)LGPL2+
  *
  *
- * Copyright: 2012-2013 Boomaga team https://github.com/Boomaga
+ * Copyright: 2012-2014 Boomaga team https://github.com/Boomaga
  * Authors:
  *   Alexander Sokoloff <sokoloff.a@gmail.com>
  *
@@ -24,33 +24,33 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#include "../kernel/project.h"
-#include "pdfmerger.h"
-#include <QTextStream>
-#include <QDebug>
-#include <QCoreApplication>
-#include <iostream>
+#ifndef BOOMAGAPOPPLER_H
+#define BOOMAGAPOPPLER_H
 
-/************************************************
+#include <QString>
+#include <poppler/PDFDoc.h>
+class QString;
 
- ************************************************/
-int main(int argc, char *argv[])
+class BoomagaPDFDoc: public PDFDoc
 {
-    if (argc < 5)
-        return 1;
+public:
+    BoomagaPDFDoc(const QString &fileName, qint64 startPos, qint64 endPos);
 
-    PdfMerger merger;
-    QCoreApplication app(argc, argv);
+    bool isValid() const { return mValid; }
+    QString errorString() const { return mErrorString; }
 
-    QStringList args = app.arguments();
-    for (int i=1; i<args.count() - 3; i+=3)
-    {
-        merger.addFile(args.at(i),
-                       QString(args.at(i+1)).toInt(),
-                       QString(args.at(i+2)).toInt());
-    }
+    QString getMetaInfo(const char *tag);
 
-    merger.run(argv[argc-1]);
+private:
+    FILE *f;
+    bool mValid;
+    QString mErrorString;
+};
 
-    return 0;
-}
+QString getPDFDocMetaInfo(PDFDoc *doc, const char *tag);
+
+
+
+
+
+#endif // BOOMAGAPOPPLER_H

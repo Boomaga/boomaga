@@ -83,7 +83,6 @@ QString TmpPdfFile::genFileName()
  ************************************************/
 TmpPdfFile::TmpPdfFile(const QList<InputFile> files, QObject *parent):
     QObject(parent),
-    mJobs(new JobList()),
     mMerger(0),
     mPageCount(0),
     mValid(false),
@@ -104,7 +103,6 @@ TmpPdfFile::TmpPdfFile(const QList<InputFile> files, QObject *parent):
  ************************************************/
 TmpPdfFile::~TmpPdfFile()
 {
-    delete mJobs;
     delete mRender;
     delete mMerger;
     QFile::remove(mFileName);
@@ -124,16 +122,12 @@ void TmpPdfFile::merge()
     connect(mMerger, SIGNAL(readyReadStandardOutput()),
             this, SLOT(mergerOutputReady()));
 
-    mJobs->reserve(mInputFiles.count());
-
     QStringList args;
     foreach (const InputFile file, mInputFiles)
     {
         args << file.fileName();
-
-        Job *job = new Job(file, this);
-        job->setTitle(file.title());
-        *mJobs << job;
+        args << QString("%1").arg(file.startPos());
+        args << QString("%1").arg(file.endPos());
     }
 
     args << mFileName;
@@ -552,13 +546,16 @@ void TmpPdfFile::mergerOutputReady()
             int pdfObj  = data.at(3).toInt();
             QStringList r = data.at(4).split(",");
 
-            ProjectPage *page = mJobs->at(jobNum)->page(pageNum);
 
-            page->setPdfObjectNum(pdfObj);
-            page->setRect(QRectF(r.at(0).toDouble(),
+            PDFPageInfo info;
+            info.PdfObjectNum = pdfObj;
+            info.Rect = QRectF(r.at(0).toDouble(),
                                r.at(1).toDouble(),
                                r.at(2).toDouble(),
-                               r.at(3).toDouble()));
+                               r.at(3).toDouble());
+
+            mPagesInfo.insert(QString("%1:%2").arg(jobNum).arg(pageNum),
+                              info);
         }
 
 
@@ -584,6 +581,7 @@ void TmpPdfFile::mergerOutputReady()
 
 
         //***************************************
+        /*
         else if (data.at(0) == "F")
         {
             int fileNum = data.at(1).toInt();
@@ -599,7 +597,7 @@ void TmpPdfFile::mergerOutputReady()
                 job->addPage(page);
             }
         }
-
+        */
 
         //***************************************
         else if (data.at(0) == "E")
@@ -654,6 +652,15 @@ QImage TmpPdfFile::image(int sheetNum) const
         return mRender->image(sheetNum);
     else
         return QImage();
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+TmpPdfFile::PDFPageInfo TmpPdfFile::pageInfo(InputFile file, int pageNum)
+{
+    return mPagesInfo.value(QString("%1:%2").arg(mInputFiles.indexOf(file)).arg(pageNum));
 }
 
 

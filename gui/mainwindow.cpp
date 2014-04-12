@@ -46,6 +46,7 @@
 #include <QDebug>
 #include <QTimer>
 #include <QKeyEvent>
+#include <QFileDialog>
 
 /************************************************
 
@@ -256,6 +257,19 @@ void MainWindow::initActions()
     act = ui->actionNextSheet;
     act->setIcon(findIcon("go-next-view", ":/images/next"));
     connect(act, SIGNAL(triggered()), ui->preview, SLOT(nextSheet()));
+
+    act = ui->actionOpen;
+    act->setIcon(findIcon("document-open", ":/images/open"));
+    connect(act, SIGNAL(triggered()), this, SLOT(load()));
+
+    act = ui->actionSave;
+    act->setIcon(findIcon("document-save", ":/images/save"));
+    connect(act, SIGNAL(triggered()), this, SLOT(save()));
+
+    act = ui->actionSaveAs;
+    act->setIcon(findIcon("document-save-as", ":/images/save-as"));
+    connect(act, SIGNAL(triggered()), this, SLOT(saveAs()));
+
 
     act = ui->actionAbout;
     connect(act, SIGNAL(triggered()), this, SLOT(showAboutDialog()));
@@ -813,8 +827,7 @@ void MainWindow::insertBlankPageBefore()
         return;
 
     int n = job->indexOfPage(act->page());
-    job->insertPage(n, new ProjectPage());
-
+    job->insertBlankPage(n);
 }
 
 
@@ -832,6 +845,72 @@ void MainWindow::insertBlankPageAfter()
         return;
 
     int n = job->indexOfPage(act->page());
-    job->insertPage(n+1, new ProjectPage());
+    job->insertBlankPage(n+1);
+}
 
+
+/************************************************
+
+ ************************************************/
+void MainWindow::save()
+{
+    saveAs(mSaveFile);
+}
+
+
+/************************************************
+
+ ************************************************/
+void MainWindow::saveAs(const QString &fileName)
+{
+    QString file = fileName;
+    if (file.isEmpty())
+    {
+        file = QFileDialog::getSaveFileName(
+                    this, this->windowTitle(),
+                    settings->value(Settings::SaveDir).toString(),
+                    tr("Boomaga files (*.boo);;All files (*.*)"));
+
+        if (file.isEmpty())
+            return;
+    }
+
+    mSaveFile = file;
+    settings->setValue(Settings::SaveDir, QFileInfo(file).path());
+
+
+    try
+    {
+        project->save(file);
+        ui->statusbar->showMessage(tr("Project saved successfully."), 2000);
+    }
+    catch (QString &err)
+    {
+        project->error(err);
+    }
+}
+
+
+/************************************************
+
+ ************************************************/
+void MainWindow::load()
+{
+    QString fileName = QFileDialog::getOpenFileName(
+                this, this->windowTitle(),
+                settings->value(Settings::SaveDir).toString(),
+                tr("Boomaga files (*.boo);;All files (*.*)"));
+
+    if (fileName.isEmpty())
+        return;
+    settings->setValue(Settings::SaveDir, QFileInfo(fileName).path());
+
+    try
+    {
+        project->load(fileName);
+    }
+    catch (QString &err)
+    {
+        project->error(err);
+    }
 }

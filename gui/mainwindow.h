@@ -73,6 +73,9 @@ private slots:
     void insertBlankPageBefore();
     void insertBlankPageAfter();
 
+    void save();
+    void saveAs(const QString &fileName = "");
+    void load();
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -86,6 +89,7 @@ private:
     QLabel mStatusBarCurrentSheetLabel;
 
     QProgressBar mProgressBar;
+    QString      mSaveFile;
 
     void initActions();
     void initStatusBar();

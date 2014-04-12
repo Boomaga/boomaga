@@ -36,6 +36,7 @@
 #include <poppler/PDFDoc.h>
 #include <poppler/GlobalParams.h>
 #include <poppler/poppler-config.h>
+#include <kernel/boomagapoppler.h>
 
 #ifdef __GNUC__
 #define GCC_VARIABLE_IS_USED __attribute__ ((unused))
@@ -46,7 +47,6 @@
 
 static GBool GCC_VARIABLE_IS_USED printVersion = true;
 static GBool GCC_VARIABLE_IS_USED printHelp = true;
-
 
 
 void POPPLER_WriteObject(Object *obj, Ref *ref, OutStream* outStr, XRef *xref, Guint numOffset)
@@ -250,11 +250,11 @@ PdfMerger::PdfMerger():
     mXrefPos(0)
 {
     static bool popplerGlobalParamsInited(false);
-     if (!popplerGlobalParamsInited)
-     {
-         globalParams = new GlobalParams();
+    if (!popplerGlobalParamsInited)
+    {
+        globalParams = new GlobalParams();
         popplerGlobalParamsInited = true;
-     }
+    }
 }
 
 
@@ -270,61 +270,14 @@ PdfMerger::~PdfMerger()
 
 
 /************************************************
- *
- ************************************************/
-QString PdfMerger::getDocumentMetaInfo(PDFDoc *doc, const char *tag)
-{
-    QString result;
-    Object docInfo;
-    doc->getDocInfo(&docInfo);
-    if (docInfo.isDict())
-    {
-        Dict *dict = docInfo.getDict();
-        Object obj;
-        dict->lookup((char*)tag, &obj);
-        if (obj.isString())
-        {
-            GooString *s = obj.getString();
-            if (s->getLength() > 1 &&
-                s->getChar(0) == '\xFE' &&
-                s->getChar(1) == '\xFF')
-            {
-                result = QString::fromUtf16((ushort*)s->getCString());
-            }
-            else
-            {
-                result = QString::fromLatin1(s->getCString());
-            }
-        }
-
-        obj.free();
-
-    }
-    docInfo.free();
-
-    return result;
-}
-
-
-/************************************************
 
  ************************************************/
-PDFDoc *PdfMerger::addFile(const QString &fileName)
+PDFDoc *PdfMerger::addFile(const QString &fileName, qint64 startPos, qint64 endPos)
 {
-    // PDFDoc take ownership of the GooString object.
-    PDFDoc *doc = new PDFDoc(new GooString(fileName.toLocal8Bit()), 0, 0, 0);
-
-
-    if (!doc->isOk())
+    BoomagaPDFDoc *doc = new BoomagaPDFDoc(fileName, startPos, endPos);
+    if (!doc->isValid())
     {
-        error(QObject::tr("PDF file \"%1\" is damaged.").arg(fileName));
-        return 0;
-    }
-
-    if (doc->isEncrypted())
-    {
-        error(QObject::tr("PDF file \"%1\" is encripted.").arg(fileName));
-        return 0;
+        error(doc->errorString());
     }
 
     if (doc->getPDFMajorVersion() > mMajorVer)
@@ -341,7 +294,7 @@ PDFDoc *PdfMerger::addFile(const QString &fileName)
     }
 
 
-    QString title = getDocumentMetaInfo(doc, "Title");
+    QString title = doc->getMetaInfo("Title");
     print(QString("F:%1:%2:%3").arg(mDocs.count()).arg(doc->getNumPages()).arg(title));
 
     mDocs << doc;

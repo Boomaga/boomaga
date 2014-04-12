@@ -44,6 +44,12 @@ class TmpPdfFile: public QObject
     Q_OBJECT
     friend class PdfMerger;
 public:
+    struct PDFPageInfo
+    {
+        int PdfObjectNum;
+        QRectF Rect;
+    };
+
     explicit TmpPdfFile(const QList<InputFile> files, QObject *parent = 0);
     virtual ~TmpPdfFile();
 
@@ -52,7 +58,6 @@ public:
     void stop();
 
     QList<InputFile> inputFiles() const  { return  mInputFiles; }
-    JobList jobs() const { return *mJobs; }
 
     QString fileName() const { return mFileName; }
 
@@ -61,6 +66,8 @@ public:
     bool isValid() const { return mValid; }
 
     QImage image(int sheetNum) const;
+
+    PDFPageInfo pageInfo(InputFile file, int pageNum);
 
 signals:
     void merged();
@@ -78,7 +85,7 @@ private:
     static QString genFileName();
 
     QList<InputFile> mInputFiles;
-    JobList *mJobs;
+    QHash<QString, PDFPageInfo> mPagesInfo;
 
     QString mFileName;
     qint32 mFirstFreeNum;

@@ -30,11 +30,13 @@ project(boomagamerger)
 
 set(MERGER_HEADERS
     pdfmerger.h
+    ../kernel/boomagapoppler.h
 )
 
 set(MERGER_SOURCES
     main.cpp
     pdfmerger.cpp
+    ../kernel/boomagapoppler.cpp
 )
 
 set(MERGER_MOCS

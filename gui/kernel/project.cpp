@@ -42,7 +42,9 @@
 #include <QDateTime>
 
 #include <math.h>
-
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0)) // for Qt::escape
+    #include <QTextDocument>
+#endif
 
 #define META_SIZE 4 * 1024
 
@@ -152,9 +154,9 @@ void Project::free()
 /************************************************
 
  ************************************************/
-TmpPdfFile *Project::createTmpPdfFile(QList<InputFile> files)
+TmpPdfFile *Project::createTmpPdfFile()
 {
-    TmpPdfFile *res = new TmpPdfFile(files, this);
+    TmpPdfFile *res = new TmpPdfFile(InputFileList(mJobs), this);
 
     connect(res, SIGNAL(progress(int,int)),
             this, SLOT(tmpFileProgress(int,int)));
@@ -180,12 +182,42 @@ void Project::addFile(InputFile file)
  ************************************************/
 void Project::addFiles(QList<InputFile> files)
 {
-    QList<InputFile> request;
-    request << mInputFiles;
-    request << files;
-    stopMerging();
+    JobList jobs;
+    foreach (InputFile file, files)
+    {
+        Job *job = new Job(file, this);
+        jobs << job;
+    }
 
-    mLastTmpFile = createTmpPdfFile(request);
+    addJobs(jobs);
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void Project::addJob(Job *job)
+{
+    addJobs(QList<Job*>() << job);
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void Project::addJobs(QList<Job*> jobs)
+{
+    foreach (Job *job, jobs)
+    {
+        mJobs<<job;
+        connect(job, SIGNAL(changed(ProjectPage*)),
+                this, SLOT(update()));
+    }
+
+    stopMerging();
+    update();
+
+    mLastTmpFile = createTmpPdfFile();
     mLastTmpFile->merge();
 }
 
@@ -197,12 +229,11 @@ void Project::removeJob(int index)
 {
     stopMerging();
     Job * job = mJobs.takeAt(index);
-    mInputFiles.removeAll(job->inputFile());
     delete job;
 
     update();
 
-    mLastTmpFile = createTmpPdfFile(mInputFiles);
+    mLastTmpFile = createTmpPdfFile();
     mLastTmpFile->merge();
 }
 
@@ -223,7 +254,6 @@ void Project::moveJob(int from, int to)
 void Project::tmpFileMerged()
 {
     TmpPdfFile *tmpPdf = qobject_cast<TmpPdfFile*>(sender());
-
     if (!tmpPdf)
         return;
 
@@ -233,63 +263,18 @@ void Project::tmpFileMerged()
         return;
     }
 
-    if (!tmpPdf->isValid())
+    foreach (Job *job, mJobs)
     {
-//TODO:        if (mTmpFile)
-//TODO:            mInputFiles = mTmpFile->inputFiles();
-
-        tmpPdf->deleteLater();
-        mLastTmpFile = 0;
-        return;
-    }
-
-    // Update jobs and remove old one ................
-    QMutableListIterator<Job*> j(mJobs);
-
-    while(j.hasNext())
-    {
-        Job *job = j.next();
-        int n = tmpPdf->jobs().indexOfInputFile(job->inputFile());
-
-        if (n<0)
+        for (int p=0; p<job->pageCount(); ++p)
         {
-            j.remove();
-            delete job;
-        }
-        else
-        {
-            for(int p=0; p<job->pageCount(); ++p)
-            {
-                ProjectPage *projPage = job->page(p);
+            ProjectPage *page = job->page(p);
+            TmpPdfFile::PDFPageInfo info = tmpPdf->pageInfo(job->inputFile(), page->pageNum());
 
-                if (!projPage->inputFile().isNull())
-                {
-                    ProjectPage *tmpPage = tmpPdf->jobs().at(n)->page(projPage->pageNum());
-                    projPage->setPdfObjectNum(tmpPage->pdfObjectNum());
-                    projPage->setRect(tmpPage->rect());
-                }
-            }
+            page->setPdfObjectNum(info.PdfObjectNum);
+            page->setRect(info.Rect);
         }
+
     }
-    //................................................
-
-    // Add new jobs and its pages ....................
-    foreach(Job *tmpJob, tmpPdf->jobs())
-    //for (int i=0; i<tmpPdf->jobsinputFiles().count(); ++i)
-    {
-        int n = mJobs.indexOfInputFile(tmpJob->inputFile());
-
-        if (n<0)
-        {
-            Job *job = new Job(tmpJob);
-            connect(job, SIGNAL(changed(ProjectPage*)),
-                    this, SLOT(update()));
-
-            mJobs << job;
-            mInputFiles << job->inputFile();
-        }
-    }
-    //................................................
 
     delete mTmpFile;
     mTmpFile = mLastTmpFile;
@@ -333,7 +318,8 @@ void Project::update()
         mLayout->fillSheets(&mSheets);
         mLayout->fillPreviewSheets(&mPreviewSheets);
 
-        mTmpFile->updateSheets(mPreviewSheets);
+        if (mTmpFile)
+            mTmpFile->updateSheets(mPreviewSheets);
     }
 
     emit changed();
@@ -512,14 +498,18 @@ QImage Project::sheetImage(int sheetNum) const
     if (mTmpFile)
         return mTmpFile->image(sheetNum);
     else
-        return QImage();
+    {
+        QImage img(1, 1, QImage::Format_ARGB32);
+        img.fill(Qt::white);
+        return img;
+    }
 }
 
 
+#if 0
 /************************************************
 
  ************************************************/
-/*
 QByteArray MetaData::asXMP() const
 {
     QString date = QDateTime::currentDateTime().toString(Qt::ISODate);
@@ -589,8 +579,35 @@ QByteArray MetaData::asXMP() const
     xmp(res, "\n<?xpacket end=\"w\"?>");
     return res;
 }
-*/
 
+
+/************************************************
+
+ ************************************************/
+void MetaData::xmp(QByteArray &out, const QString &format) const
+{
+    out.append(format.toUtf8().data());
+    out.append('\n');
+}
+
+
+/************************************************
+
+ ************************************************/
+void MetaData::xmp(QByteArray &out, const QString &format, const QString &value) const
+{
+    QString v = value;
+    v.replace("'",  "&apos;");
+    v.replace("\"", "&quot;");
+    v.replace("&",  "&amp;");
+    v.replace("<",  "&lt;");
+    v.replace(">",  "&gt;");
+
+    out.append(QString(format).arg(v).toUtf8());
+    out.append('\n');
+}
+
+#endif
 
 /************************************************
 
@@ -620,31 +637,6 @@ QByteArray MetaData::asPDFDict() const
 }
 
 
-/************************************************
-
- ************************************************/
-void MetaData::xmp(QByteArray &out, const QString &format) const
-{
-    out.append(format.toUtf8().data());
-    out.append('\n');
-}
-
-
-/************************************************
-
- ************************************************/
-void MetaData::xmp(QByteArray &out, const QString &format, const QString &value) const
-{
-    QString v = value;
-    v.replace("'",  "&apos;");
-    v.replace("\"", "&quot;");
-    v.replace("&",  "&amp;");
-    v.replace("<",  "&lt;");
-    v.replace(">",  "&gt;");
-
-    out.append(QString(format).arg(v).toUtf8());
-    out.append('\n');
-}
 
 
 /************************************************
@@ -693,3 +685,340 @@ void MetaData::addDictItem(QByteArray &out, const QString &key, const QDateTime 
     out.append(")\n");
 }
 
+
+/************************************************
+ *
+ * ***********************************************/
+QList<int> readPageList(const QString &str)
+{
+    QList<int> res;
+
+    foreach(QString s, str.split(',', QString::SkipEmptyParts))
+    {
+        bool ok;
+        // In the file pages are numbered starting with 1 not 0.
+        int num = s.toInt(&ok) - 1;
+        if (ok)
+            res << num;
+    }
+    return res;
+}
+
+
+/************************************************
+
+ ************************************************/
+void Project::load(const QString &fileName)
+{
+    QFileInfo fi(fileName);
+
+    if (!fi.filePath().isEmpty())
+    {
+        if (!fi.exists())
+            throw tr("I can't open file \"%1\" (No such file or directory)")
+                              .arg(fi.filePath());
+
+        if (!fi.isReadable())
+            throw tr("I can't open file \"%1\" (Access denied)")
+                              .arg(fi.filePath());
+    }
+
+
+    QFile file(fileName);
+    if(!file.open(QFile::ReadOnly))
+    {
+        throw tr("I can't open file \"%1\"").arg(fileName) + "\n" + file.errorString();
+    }
+
+    file.seek(0);
+    QByteArray mark = file.readLine();
+
+
+    if (!mark.startsWith("\x1B%-12345X@PJL BOOMAGA_PROGECT"))
+    {
+        throw tr("I can't open file\"%1\" because is either not a supported file type or because the file has been damaged.").arg(file.fileName());
+    }
+
+
+    stopMerging();
+
+    QString metaAuthor;
+    QString metaTitle;
+    QString metaSubject;
+    QString metaKeywords;
+
+    QString title;
+    QList<int> deletedPages;
+    QList<int> insertedPages;
+    QList<Job*> jobs;
+    while (!file.atEnd())
+    {
+        QString line = QString::fromUtf8(file.readLine()).trimmed();
+
+        if (line.startsWith("@PJL"))
+        {
+            QString command = line.section(' ', 1, 1, QString::SectionSkipEmpty).toUpper();
+
+
+            // Boomaga commands ................................
+            if (command == "BOOMAGA")
+            {
+                QString subCommand = line.section(' ', 2, -1, QString::SectionSkipEmpty)
+                                         .section('=', 0, 0, QString::SectionSkipEmpty)
+                                         .trimmed()
+                                         .toUpper();
+
+                QString value = line.section('=', 1,-1, QString::SectionSkipEmpty).trimmed();
+                if (value.startsWith('"') || value.startsWith('\''))
+                    value = value.mid(1, value.length()-2);
+
+
+                if (subCommand == "META_AUTHOR")
+                    metaAuthor = value;
+
+                else if (subCommand == "META_TITLE")
+                    metaTitle = value;
+
+                else if (subCommand == "META_SUBJECT")
+                    metaSubject = value;
+
+                else if (subCommand == "META_KEYWORDS")
+                    metaKeywords = value;
+
+
+
+                else if (subCommand == "JOB_TITLE")
+                    title = value;
+
+                else if (subCommand == "JOB_HIDDEN_PAGES")
+                    deletedPages = readPageList(value);
+
+                else if (subCommand == "JOB_INSERTED_PAGES")
+                    insertedPages = readPageList(value);
+
+                else
+                    qWarning() << QString("Unknown command '%1' in the line '%2'").arg(subCommand).arg(line);
+
+            }
+            // Boomaga commands ................................
+
+
+            // PDF stream ......................................
+            else if (command == "ENTER")
+            {
+                QString subCommand = line.section(' ', 2, -1, QString::SectionSkipEmpty).remove(' ').toUpper();
+
+                if (subCommand == "LANGUAGE=PDF")
+                {
+                    qint64 startPos = file.pos();
+                    qint64 endPos;
+                    while (!file.atEnd())
+                    {
+                        QByteArray buf = file.readLine();
+                        if (buf.startsWith("\x1B%-12345X@PJL"))
+                            break;
+
+                        endPos = file.pos() - 1;
+
+                    }
+
+                    InputFile inputFile(file.fileName(), title, false, startPos, endPos);
+                    Job *job = new Job(inputFile, this);
+                    job->setTitle(title);
+
+                    qSort(insertedPages);
+
+                    foreach (int num, insertedPages)
+                    {
+                        if (num>-1)
+                            job->insertBlankPage(num);
+                    }
+
+
+                    foreach (int num, deletedPages)
+                    {
+                        if (num > -1 && num < job->pageCount())
+                            job->page(num)->setVisible(false);
+                    }
+
+
+                    jobs << job;
+
+                    title = "";
+                    deletedPages.clear();
+                    insertedPages.clear();
+                }
+            }
+            // PDF stream ......................................
+
+        }
+    }
+    file.close();
+
+    MetaData meta = project->metaData();
+    meta.setAuthor(metaAuthor);
+    meta.setTitle(metaTitle);
+    meta.setSubject(metaSubject);
+    meta.setKeywords(metaKeywords);
+    project->setMetadata(meta);
+
+    addJobs(jobs);
+}
+
+
+
+
+/************************************************
+
+ ************************************************/
+void writePJL(QFile *out, const QByteArray &data)
+{
+    if (out->write(data) < 0)
+        throw QObject::tr("I can't write to file '%1'").arg(out->fileName()) + "\n" + out->errorString();
+}
+
+
+/************************************************
+
+ ************************************************/
+inline void writePJLValue(QFile *out, const QString &command, const QString &data)
+{
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
+    QString v = Qt::escape(data);
+#else
+    QString v = data.toHtmlEscaped();
+#endif
+    writePJL(out, QString("@PJL BOOMAGA %1=\"%2\"\n").arg(command).arg(v).toLocal8Bit());
+}
+
+
+/************************************************
+
+ ************************************************/
+inline void writePJLValue(QFile *out, const QString &command, const QList<int> &data)
+{
+    QStringList sl;
+    for(int i=0; i<data.count(); ++i)
+    {
+        // In the file pages are numbered starting with 1 not 0.
+        sl << QString("%1").arg(data.at(i) + 1);
+    }
+
+    writePJLValue(out, command, sl.join(","));
+}
+
+
+/************************************************
+
+ ************************************************/
+QByteArray readJobPDF(const Job *job)
+{
+    QFile file(job->inputFile().fileName());
+    if(!file.open(QFile::ReadOnly))
+    {
+        throw QObject::tr("I can't read from file '%1'")
+                .arg(job->inputFile().fileName()) +
+                "\n" +
+                file.errorString();
+    }
+
+    file.seek(job->inputFile().startPos());
+    QByteArray res = file.read(job->inputFile().length());
+    file.close();
+    return res;
+}
+
+
+/************************************************
+
+ ************************************************/
+void Project::save(const QString &fileName)
+{
+    QString filePath = QFileInfo(fileName).absoluteFilePath();
+
+    // If we write the same file, the program may rewrite data before
+    // it will readed, so we store the data in the memory.
+    QVector<QByteArray> documents(mJobs.count());
+    for (int i=0; i<mJobs.count(); ++i)
+    {
+        Job *job = mJobs.at(i);
+        if (job->inputFile().fileName() == filePath)
+        {
+            documents[i] = readJobPDF(job);
+        }
+    }
+
+
+    QFile file(filePath);
+    if(!file.open(QFile::WriteOnly))
+    {
+        throw tr("I can't write to file '%1'").arg(fileName) + "\n" + file.errorString();
+    }
+
+
+    writePJL(&file, "\x1B%-12345X@PJL BOOMAGA_PROGECT\n");
+
+    MetaData meta = project->metaData();
+
+    if (!meta.author().isEmpty())
+        writePJLValue(&file, "META_AUTHOR", meta.author());
+
+    if (!meta.title().isEmpty())
+        writePJLValue(&file, "META_TITLE", meta.title());
+
+    if (!meta.subject().isEmpty())
+        writePJLValue(&file, "META_SUBJECT", meta.subject());
+
+    if (!meta.keywords().isEmpty())
+        writePJLValue(&file, "META_KEYWORDS", meta.keywords());
+
+
+    for (int i=0; i<mJobs.count(); ++i)
+    {
+        Job *job = mJobs.at(i);
+
+        QList<int> insertedPages;
+        QList<int> deletedPages;
+        for(int p=0; p<job->pageCount(); ++p)
+        {
+            if (job->page(p)->pageNum() < 0)
+                insertedPages << p;
+
+            if (!job->page(p)->visible())
+                deletedPages << p;
+        }
+
+        if (insertedPages.count())
+            writePJLValue(&file, "JOB_INSERTED_PAGES", insertedPages);
+
+        if (deletedPages.count())
+            writePJLValue(&file, "JOB_HIDDEN_PAGES", deletedPages);
+
+        if (!job->title(false).isEmpty())
+            writePJLValue(&file, "JOB_TITLE", job->title(false));
+
+        writePJL(&file, "@PJL ENTER LANGUAGE=PDF\n");
+
+        if (documents.at(i).count())
+        {
+            const QByteArray &data = documents.at(i);
+            writePJL(&file, data);
+            if (!data.endsWith('\n'))
+                writePJL(&file, "\n");
+        }
+        else
+        {
+            const QByteArray data = readJobPDF(job);
+            writePJL(&file, data);
+            if (!data.endsWith('\n'))
+                writePJL(&file, "\n");
+        }
+
+        writePJL(&file, "\x1B%-12345X@PJL\n");
+    }
+
+    writePJL(&file, "@PJL EOJ\n");
+    writePJL(&file, "\x1B%-12345X");
+
+    file.close();
+}

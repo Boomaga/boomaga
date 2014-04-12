@@ -49,6 +49,7 @@ set(HEADERS
     translations/translatorsinfo/translatorsinfo.h
     export/exporttopdf.h
     export/exporttopdfprinter.h
+    kernel/boomagapoppler.h
 )
 
 set(SOURCES
@@ -73,6 +74,7 @@ set(SOURCES
     translations/translatorsinfo/translatorsinfo.cpp
     export/exporttopdf.cpp
     export/exporttopdfprinter.cpp
+    kernel/boomagapoppler.cpp
 )
 
 set (MOCS
@@ -127,7 +129,7 @@ endif (NOT CMAKE_BUILD_TYPE)
 #set(CMAKE_BUILD_TYPE Debug)
 
 if(CMAKE_COMPILER_IS_GNUCXX)
-    add_definitions (-Wall -pedantic)
+    #add_definitions (-Wall -pedantic)
 endif()
 
 #*******************************************

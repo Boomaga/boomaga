@@ -41,7 +41,7 @@ class Job;
 class TmpPdfFile;
 class Sheet;
 class Layout;
-class QTextStream;
+
 
 class MetaData
 {
@@ -60,16 +60,22 @@ public:
     QString keywords() const { return mKeywords; }
     void setKeywords(const QString &value) { mKeywords = value; }
 
-    //QByteArray asXMP() const;
     QByteArray asPDFDict() const;
+
+#if 0
+    //QByteArray asXMP() const;
+#endif
+
 private:
     QString mTitle;         // The document’s title.
     QString mAuthor;        // The name of the person who created the document.
     QString mSubject;       // The subject of the document.
     QString mKeywords;      // Keywords associated with the document.
 
+#if 0
     void xmp(QByteArray &out, const QString &format) const;
     void xmp(QByteArray &out, const QString &format, const QString &value) const;
+#endif
 
     void addDictItem(QByteArray &out, const QString &key, const QString &value) const;
     void addDictItem(QByteArray &out, const QString &key, const QDateTime &value) const;
@@ -166,9 +172,14 @@ public:
 
     void free();
 
+    void save(const QString &fileName);
+    void load(const QString &fileName);
+
 public slots:
     void addFile(InputFile file);
     void addFiles(QList<InputFile> files);
+    void addJob(Job *job);
+    void addJobs(QList<Job*> jobs);
     void removeJob(int index);
     void moveJob(int from, int to);
     void setLayout(const Layout *layout);
@@ -190,7 +201,6 @@ private:
 
     const Layout *mLayout;
     QList<ProjectPage*> mPages;
-    QList<InputFile> mInputFiles;
     JobList mJobs;
 
     QList<Sheet*> mSheets;
@@ -204,12 +214,11 @@ private:
 
     MetaData mMetaData;
 
-    TmpPdfFile *createTmpPdfFile(QList<InputFile> files);
+    TmpPdfFile *createTmpPdfFile();
     void stopMerging();
 };
 
 
 #define project Project::instance()
-
 
 #endif // PROJECT_H

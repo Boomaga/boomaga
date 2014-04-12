@@ -25,8 +25,12 @@
 
 #include "inputfile.h"
 #include <QFile>
+#include <QIODevice>
+#include <QFileInfo>
 #include <QDebug>
 #include "project.h"
+
+
 
 class InputFileData : public QSharedData {
 public:
@@ -34,12 +38,16 @@ public:
     {
         mAutoRemove = false;
         mIsNull = true;
+        mStartPos = 0;
+        mEndPos = 0;
     }
 
     QString mFileName;
     QString mTitle;
     bool mAutoRemove;
     bool mIsNull;
+    qint64 mStartPos;
+    qint64 mEndPos;
 };
 
 
@@ -56,13 +64,19 @@ InputFile::InputFile():
 /************************************************
 
  ************************************************/
-InputFile::InputFile(const QString &fileName, const QString &title, bool autoRemove):
+InputFile::InputFile(const QString &fileName, const QString &title, bool autoRemove, qint64 startPos, qint64 endPos):
     mData(new InputFileData)
 {
     mData->mFileName = fileName;
     mData->mTitle = title;
     mData->mAutoRemove = autoRemove;
     mData->mIsNull = false;
+    mData->mStartPos = startPos;
+    if (endPos)
+        mData->mEndPos = endPos;
+    else
+        mData->mEndPos = QFileInfo(fileName).size();
+
 }
 
 
@@ -138,4 +152,42 @@ bool InputFile::autoRemove() const
 bool InputFile::isNull() const
 {
     return mData->mIsNull;
+}
+
+
+/************************************************
+
+ ************************************************/
+qint64 InputFile::startPos() const
+{
+    return mData->mStartPos;
+}
+
+
+/************************************************
+
+ ************************************************/
+qint64 InputFile::endPos() const
+{
+    return mData->mEndPos;
+}
+
+
+/************************************************
+
+ ************************************************/
+qint64 InputFile::length() const
+{
+    return mData->mEndPos - mData->mStartPos;
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+InputFileList::InputFileList(const QList<Job *> &other):
+    QList<InputFile>()
+{
+    foreach (Job *job, other)
+        append(job->inputFile());
 }

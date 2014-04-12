@@ -32,12 +32,14 @@
 #include <QSharedDataPointer>
 
 class InputFileData;
+class QIODevice;
+class Job;
 
 class InputFile
 {
 public:
     InputFile();
-    InputFile(const QString &fileName, const QString &title = "", bool autoRemove=false);
+    InputFile(const QString &fileName, const QString &title = "", bool autoRemove=false, qint64 startPos=0, qint64 endPos=0);
     InputFile(const InputFile &other);
     InputFile &operator=(const InputFile &other);
     ~InputFile();
@@ -49,8 +51,20 @@ public:
     QString title() const;
     bool autoRemove() const;
     bool isNull() const;
+    qint64 startPos() const;
+    qint64 endPos() const;
+    qint64 length() const;
+
 private:
     QSharedDataPointer<InputFileData> mData;
+};
+
+class InputFileList: public QList<InputFile>
+{
+public:
+    InputFileList() : QList<InputFile>() {}
+    InputFileList(const QList<InputFile> &other) : QList<InputFile>(other) {}
+    InputFileList(const QList<Job*> & other);
 };
 
 #endif // INPUTFILE_H

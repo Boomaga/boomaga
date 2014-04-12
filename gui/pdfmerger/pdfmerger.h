@@ -96,7 +96,7 @@ public:
     int majorVer() const { return mMajorVer; }
     int minorVer() const { return mMinorVer; }
 
-    PDFDoc *addFile(const QString &fileName);
+    PDFDoc *addFile(const QString &fileName, qint64 startPos, qint64 endPos);
     bool run(const QString &outFileName);
 
     qint64 xrefPos() const { return mXrefPos; }

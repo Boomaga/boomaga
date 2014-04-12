@@ -26,16 +26,40 @@
 
 #include "job.h"
 #include "project.h"
+#include "boomagapoppler.h"
 
 #include <QDebug>
+#include <QIODevice>
+#include "kernel/inputfile.h"
+#include "kernel/boomagapoppler.h"
 
 /************************************************
 
  ************************************************/
 Job::Job(const InputFile &inputfile, QObject *parent):
     QObject(parent),
-    mInputFile(inputfile)
+    mInputFile(inputfile),
+    mState(JobEmpty)
 {
+    BoomagaPDFDoc *doc = new BoomagaPDFDoc(mInputFile.fileName(), mInputFile.startPos(), mInputFile.endPos());
+
+    if (doc->isValid())
+    {
+        mTitle = doc->getMetaInfo("Title");
+        int pageCount = doc->getNumPages();
+
+        for (int i=0; i< pageCount; ++i)
+            addPage(new ProjectPage(mInputFile, i));
+
+        mState = JobNotReady;
+    }
+    else
+    {
+        mState = JobError;
+        mErrorString = doc->errorString();
+    }
+
+    delete doc;
 }
 
 
@@ -45,7 +69,8 @@ Job::Job(const InputFile &inputfile, QObject *parent):
 Job::Job(const Job *other, QObject *parent):
     QObject(parent),
     mTitle(other->mTitle),
-    mInputFile(other->mInputFile)
+    mInputFile(other->mInputFile),
+    mState(other->mState)
 {
     for (int i=0; i< other->pageCount(); ++i)
         addPage(new ProjectPage(other->page(i)));
@@ -57,6 +82,7 @@ Job::Job(const Job *other, QObject *parent):
  ************************************************/
 Job::~Job()
 {
+    qDeleteAll(mPages);
 }
 
 
@@ -165,6 +191,15 @@ void Job::emitChanged()
 }
 
 
+/************************************************
+ *
+ * ***********************************************/
+void Job::insertBlankPage(int before)
+{
+    insertPage(before, new ProjectPage());
+}
+
+
 
 /************************************************
  *
@@ -182,33 +217,6 @@ JobList::JobList():
 JobList::JobList(const QList<Job *> &other):
     QList<Job*>(other)
 {
-}
-
-
-/************************************************
- *
- * ***********************************************/
-QList<InputFile> JobList::inputFiles() const
-{
-    QList<InputFile> result;
-
-    InputFile last;
-    for(int j=0; j<this->count(); ++j)
-    {
-        Job * job = this->at(j);
-        for(int i=0; i<job->pageCount(); ++i)
-        {
-            ProjectPage *page = job->page(i);
-            if (page->inputFile() != last &&
-                result.indexOf(page->inputFile()) < 0)
-            {
-                result << page->inputFile();
-                last = page->inputFile();
-            }
-        }
-    }
-
-    return result;
 }
 
 
@@ -241,4 +249,3 @@ Job *JobList::findJob(ProjectPage *page) const
 
     return 0;
 }
-

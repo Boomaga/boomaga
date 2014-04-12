@@ -128,7 +128,7 @@ Printer *PrintersComboBox::itemPrinter(int index)
     if (v.isNull())
         return 0;
     else
-        return (Printer*) itemData(index).value<void *>();
+        return static_cast<Printer*>(itemData(index).value<void *>());
 }
 
 

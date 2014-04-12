@@ -41,6 +41,8 @@ public:
         Printer,
         DoubleSided,
 
+        SaveDir,
+
         // Printer ******************************
         Printer_DuplexType,
         Printer_DrawBorder,
@@ -58,6 +60,7 @@ public:
 
         // ExportPDF ****************************
         ExportPDF_FileName
+
     };
 
     static Settings *instance();
