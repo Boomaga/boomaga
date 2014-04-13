@@ -76,7 +76,7 @@ CompressedImage::CompressedImage(const QImage &image):
  ************************************************/
 CompressedImage::~CompressedImage()
 {
-    delete [] mData;
+    delete[] mData;
 }
 
 
@@ -93,7 +93,7 @@ QImage CompressedImage::image()
 
     // I use convert for deep copy of the QImage data.
     QImage img = QImage(buf, mWidth, mHeight, mBytesPerLine, mFormat).copy();
-    delete buf;
+    delete[] buf;
     return img;
 }
 
@@ -264,6 +264,7 @@ Render::~Render()
     mThread.stop();
     mThread.wait();
     delete mLoResDoc;
+    qDeleteAll(mImages);
 }
 
 
