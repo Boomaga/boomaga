@@ -30,10 +30,11 @@
 #include <QRadioButton>
 #include <QComboBox>
 #include <QListWidget>
+#include <kernel/job.h>
 
 class Printer;
 class Layout;
-class Job;
+
 
 class LayoutRadioButton : public QRadioButton
 {
@@ -78,13 +79,13 @@ class JobsListView: public QListWidget
     Q_OBJECT
 public:
     explicit JobsListView(QWidget *parent = 0);
-    Job *currentJob() const;
+    Job currentJob() const;
 
 public slots:
     void setSheetNum(int sheetNum);
 
 signals:
-    void jobSelected(Job *job);
+    void jobSelected(Job job);
 
 private slots:
     void updateItems();

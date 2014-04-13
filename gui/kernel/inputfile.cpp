@@ -31,51 +31,28 @@
 #include "project.h"
 
 
-
-class InputFileData : public QSharedData {
-public:
-    InputFileData()
-    {
-        mAutoRemove = false;
-        mIsNull = true;
-        mStartPos = 0;
-        mEndPos = 0;
-    }
-
-    QString mFileName;
-    QString mTitle;
-    bool mAutoRemove;
-    bool mIsNull;
-    qint64 mStartPos;
-    qint64 mEndPos;
-};
-
-
 /************************************************
 
  ************************************************/
 InputFile::InputFile():
-    mData(new InputFileData)
+    mStartPos(0),
+    mEndPos(0)
 {
 }
-
 
 
 /************************************************
 
  ************************************************/
-InputFile::InputFile(const QString &fileName, const QString &title, bool autoRemove, qint64 startPos, qint64 endPos):
-    mData(new InputFileData)
+InputFile::InputFile(const QString &fileName, qint64 startPos, qint64 endPos):
+    mFileName(fileName),
+    mStartPos(startPos),
+    mEndPos(endPos)
 {
-    mData->mFileName = fileName;
-    mData->mTitle = title;
-    mData->mAutoRemove = autoRemove;
-    mData->mIsNull = false;
-    mData->mStartPos = startPos;
     if (endPos)
-        mData->mEndPos = endPos;
+        mEndPos = endPos;
     else
-        mData->mEndPos = QFileInfo(fileName).size();
+        mEndPos = QFileInfo(fileName).size();
 
 }
 
@@ -84,21 +61,10 @@ InputFile::InputFile(const QString &fileName, const QString &title, bool autoRem
 
  ************************************************/
 InputFile::InputFile(const InputFile &other):
-    mData(other.mData)
+    mFileName(other.mFileName),
+    mStartPos(other.mStartPos),
+    mEndPos(other.mEndPos)
 {
-
-}
-
-
-/************************************************
-
- ************************************************/
-InputFile &InputFile::operator =(const InputFile &other)
-{
-    if (this != &other)
-        mData = other.mData;
-
-    return *this;
 }
 
 
@@ -113,81 +79,26 @@ InputFile::~InputFile()
 /************************************************
 
  ************************************************/
+InputFile &InputFile::operator =(const InputFile &other)
+{
+    if (this != &other)
+    {
+        mFileName = other.mFileName;
+        mStartPos = other.mStartPos;
+        mEndPos = other.mEndPos;
+    }
+
+    return *this;
+}
+
+
+/************************************************
+
+ ************************************************/
 bool InputFile::operator ==(const InputFile &other) const
 {
-    return mData == other.mData;
+    return mStartPos == other.startPos() &&
+           mEndPos   == other.mEndPos &&
+           mFileName == other.mFileName;
 }
 
-
-/************************************************
-
- ************************************************/
-QString InputFile::fileName() const
-{
-    return mData->mFileName;
-}
-
-
-/************************************************
-
- ************************************************/
-QString InputFile::title() const
-{
-    return mData->mTitle;
-}
-
-
-/************************************************
-
- ************************************************/
-bool InputFile::autoRemove() const
-{
-    return mData->mAutoRemove;
-}
-
-
-/************************************************
-
- ************************************************/
-bool InputFile::isNull() const
-{
-    return mData->mIsNull;
-}
-
-
-/************************************************
-
- ************************************************/
-qint64 InputFile::startPos() const
-{
-    return mData->mStartPos;
-}
-
-
-/************************************************
-
- ************************************************/
-qint64 InputFile::endPos() const
-{
-    return mData->mEndPos;
-}
-
-
-/************************************************
-
- ************************************************/
-qint64 InputFile::length() const
-{
-    return mData->mEndPos - mData->mStartPos;
-}
-
-
-/************************************************
- *
- * ***********************************************/
-InputFileList::InputFileList(const QList<Job *> &other):
-    QList<InputFile>()
-{
-    foreach (Job *job, other)
-        append(job->inputFile());
-}

@@ -137,8 +137,8 @@ MainWindow::MainWindow(QWidget *parent):
     connect(ui->doubleSidedCbx, SIGNAL(clicked(bool)),
             project, SLOT(setDoubleSided(bool)));
 
-    connect(ui->jobsView, SIGNAL(jobSelected(Job*)),
-            this, SLOT(switchToJob(Job*)));
+    connect(ui->jobsView, SIGNAL(jobSelected(Job)),
+            this, SLOT(switchToJob(Job)));
 
     connect(ui->printersCbx, SIGNAL(activated(int)),
             this, SLOT(switchPrinter()));
@@ -401,9 +401,9 @@ void MainWindow::switchPrinter()
 /************************************************
 
  ************************************************/
-void MainWindow::switchToJob(Job *job)
+void MainWindow::switchToJob(const Job &job)
 {
-    ProjectPage *page = job->page(0);
+    ProjectPage *page = job.page(0);
     for (int i=0; i<project->previewSheetCount(); ++i)
     {
         const Sheet *sheet = project->previewSheet(i);
@@ -674,7 +674,7 @@ void MainWindow::showPreviewContextMenu(int pageNum)
     int sheetNum = ui->preview->currentSheet();
     Sheet *sheet = 0;
     ProjectPage *page = 0;
-    Job *job = 0;
+    Job job;
 
     if (sheetNum > -1)
     {
@@ -684,7 +684,11 @@ void MainWindow::showPreviewContextMenu(int pageNum)
 
     if (page)
     {
-        job = project->jobs()->findJob(page);
+        int n = project->jobs()->indexOfProjectPage(page);
+        if (n<0)
+            return;
+
+        job = project->jobs()->at(n);
     }
 
     QMenu *menu = new QMenu(this);
@@ -717,11 +721,11 @@ void MainWindow::showPreviewContextMenu(int pageNum)
                 this, SLOT(deletePage()));
         menu->addAction(act);
 
-        int n = job->indexOfPage(page);
+        int n = job.indexOfPage(page);
         bool hasVisible = false;
-        for (int p=n+1; p<job->pageCount(); ++p)
+        for (int p=n+1; p<job.pageCount(); ++p)
         {
-            if (job->page(p)->visible())
+            if (job.page(p)->visible())
             {
                 hasVisible = true;
                 break;
@@ -743,15 +747,20 @@ void MainWindow::showPreviewContextMenu(int pageNum)
 
     for(int j=0; j<project->jobs()->count(); ++j)
     {
-        Job *job = project->jobs()->at(j);
-        QMenu *jm = undelMenu->addMenu(QString("%1 %2").arg(j+1).arg(job->title()));
+        Job job = project->jobs()->at(j);
+        QMenu *jm = undelMenu->addMenu(QString("%1 %2").arg(j+1).arg(job.title()));
 
-        for(int p=0; p<job->pageCount(); ++p)
+        for(int p=0; p<job.pageCount(); ++p)
         {
-            ProjectPage *page = job->page(p);
+            ProjectPage *page = job.page(p);
             if (!page->visible())
             {
-                jm->addAction(QString("Page %1").arg(p+1), page, SLOT(show()));
+                PageAction *act;
+                act = new PageAction(tr("Page %1", "'Undo deletion' menu item").arg(p+1), 0, page, menu);
+                connect(act, SIGNAL(triggered()),
+                        this, SLOT(undoDeletePage()));
+
+                jm->addAction(act);
             }
         }
         jm->setEnabled(!jm->isEmpty());
@@ -772,17 +781,35 @@ void MainWindow::deletePage()
     if (!act || !act->page())
         return;
 
-    if (act->page()->inputFile().isNull())
+    if (act->page()->isBlankPage())
     {
-        Job *job = project->jobs()->findJob(act->page());
-        if (!job)
+        int n = project->jobs()->indexOfProjectPage(act->page());
+        if (n<0)
             return;
 
-        job->removePage(act->page());
+        project->jobs()->value(n).removePage(act->page());
     }
     else
     {
         act->page()->hide();
+    }
+    project->update();
+}
+
+
+/************************************************
+
+ ************************************************/
+void MainWindow::undoDeletePage()
+{
+    PageAction *act = qobject_cast<PageAction*>(sender());
+    if (!act || !act->page())
+        return;
+
+    if (!act->page()->visible())
+    {
+        act->page()->show();
+        project->update();
     }
 }
 
@@ -796,19 +823,23 @@ void MainWindow::deletePagesEnd()
     if (!act || !act->page())
         return;
 
-    Job *job = project->jobs()->findJob(act->page());
+    int n = project->jobs()->indexOfProjectPage(act->page());
+    if (n<0)
+        return;
 
-    job->blockSignals(true);
-    for (int p=job->pageCount()-1; p>=job->indexOfPage(act->page()); --p)
+    Job job = project->jobs()->value(n);
+
+    job.blockSignals(true);
+    for (int p=job.pageCount()-1; p>=job.indexOfPage(act->page()); --p)
     {
-        ProjectPage *page = job->page(p);
+        ProjectPage *page = job.page(p);
 
-        if (page->inputFile().isNull())
-            job->removePage(page);
+        if (page->isBlankPage())
+            job.removePage(page);
         else
             page->hide();
     }
-    job->blockSignals(false);
+    job.blockSignals(false);
     project->update();
 }
 
@@ -822,12 +853,13 @@ void MainWindow::insertBlankPageBefore()
     if (!act || !act->page())
         return;
 
-    Job *job = project->jobs()->findJob(act->page());
-    if (!job)
+    int j = project->jobs()->indexOfProjectPage(act->page());
+    if (j<0)
         return;
 
-    int n = job->indexOfPage(act->page());
-    job->insertBlankPage(n);
+    Job job = project->jobs()->value(j);
+    int n = job.indexOfPage(act->page());
+    job.insertBlankPage(n);
 }
 
 
@@ -840,12 +872,13 @@ void MainWindow::insertBlankPageAfter()
     if (!act || !act->page())
         return;
 
-    Job *job = project->jobs()->findJob(act->page());
-    if (!job)
+    int j = project->jobs()->indexOfProjectPage(act->page());
+    if (j<0)
         return;
 
-    int n = job->indexOfPage(act->page());
-    job->insertBlankPage(n+1);
+    Job job = project->jobs()->value(j);
+    int n = job.indexOfPage(act->page());
+    job.insertBlankPage(n+1);
 }
 
 
@@ -899,7 +932,7 @@ void MainWindow::load()
     QString fileName = QFileDialog::getOpenFileName(
                 this, this->windowTitle(),
                 settings->value(Settings::SaveDir).toString(),
-                tr("Boomaga files (*.boo);;All files (*.*)"));
+                tr("All supported files (*.pdf *.boo);;Boomaga files (*.boo);;PDF files (*.pdf);;All files (*.*)"));
 
     if (fileName.isEmpty())
         return;

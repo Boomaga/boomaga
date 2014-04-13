@@ -81,9 +81,8 @@ private:
     void addDictItem(QByteArray &out, const QString &key, const QDateTime &value) const;
 };
 
-class ProjectPage: public QObject
+class ProjectPage
 {
-    Q_OBJECT
 public:
     explicit ProjectPage();
     explicit ProjectPage(const ProjectPage *other);
@@ -102,14 +101,10 @@ public:
 
     bool visible() const { return mVisible;}
     void setVisible(bool value);
-
-public slots:
     void hide() { setVisible(false); }
     void show() { setVisible(true); }
 
-signals:
-    void visibleChanged();
-
+    bool isBlankPage();
 private:
     InputFile mInputFile;
     int mPageNum;
@@ -176,10 +171,8 @@ public:
     void load(const QString &fileName);
 
 public slots:
-    void addFile(InputFile file);
-    void addFiles(QList<InputFile> files);
-    void addJob(Job *job);
-    void addJobs(QList<Job*> jobs);
+    void addJob(Job job);
+    void addJobs(JobList jobs);
     void removeJob(int index);
     void moveJob(int from, int to);
     void setLayout(const Layout *layout);

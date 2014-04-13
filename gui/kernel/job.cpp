@@ -30,50 +30,140 @@
 
 #include <QDebug>
 #include <QIODevice>
+#include <QFileInfo>
 #include "kernel/inputfile.h"
 #include "kernel/boomagapoppler.h"
+#include <QSharedDataPointer>
+
+#define LOCK_CHECK          0
+#define LOCK_CREATE         100
+#define LOCK_DESTROY       -1
+#define LOCK_TO_REMOVE     -99
+#define LOCK_TO_NOTREMOVE   99
+
+class JobData: public QSharedData
+{
+public:
+    JobData(const QString &fileName, qint64 startPos, qint64 endPos);
+    ~JobData();
+
+    QString mFileName;
+    qint64 mStartPos;
+    qint64 mEndPos;
+    QList<ProjectPage*> mPages;
+    QString mTitle;
+    Job::State mState;
+    QString mErrorString;
+    bool mAutoRemove;
+
+    static int lockUnlockFile(const QString &file, int lock);
+};
+
 
 /************************************************
 
  ************************************************/
-Job::Job(const InputFile &inputfile, QObject *parent):
-    QObject(parent),
-    mInputFile(inputfile),
-    mState(JobEmpty)
+JobData::JobData(const QString &fileName, qint64 startPos, qint64 endPos):
+    mFileName(fileName),
+    mStartPos(startPos),
+    mEndPos(endPos),
+    mState(Job::JobEmpty),
+    mAutoRemove(false)
 {
-    BoomagaPDFDoc *doc = new BoomagaPDFDoc(mInputFile.fileName(), mInputFile.startPos(), mInputFile.endPos());
-
-    if (doc->isValid())
+    if (!fileName.isEmpty())
     {
-        mTitle = doc->getMetaInfo("Title");
-        int pageCount = doc->getNumPages();
+        QFileInfo fi(fileName);
+        if (!mEndPos)
+            mEndPos = fi.size();
 
-        for (int i=0; i< pageCount; ++i)
-            addPage(new ProjectPage(mInputFile, i));
+        BoomagaPDFDoc *doc = new BoomagaPDFDoc(fi.absoluteFilePath(), startPos, endPos);
 
-        mState = JobNotReady;
+        if (doc->isValid())
+        {
+            mTitle = doc->getMetaInfo("Title");
+            int pageCount = doc->getNumPages();
+
+            InputFile inputFile(mFileName, mStartPos, mEndPos);
+            for (int i=0; i< pageCount; ++i)
+                mPages << new ProjectPage(inputFile, i);
+
+            mState = Job::JobNotReady;
+        }
+        else
+        {
+            mState = Job::JobError;
+            mErrorString = doc->errorString();
+        }
+
+        delete doc;
+        lockUnlockFile(mFileName, LOCK_CREATE);
     }
-    else
+}
+
+
+/************************************************
+
+ ************************************************/
+JobData::~JobData()
+{
+    if (!mFileName.isEmpty())
     {
-        mState = JobError;
-        mErrorString = doc->errorString();
-    }
+        lockUnlockFile(mFileName, LOCK_DESTROY);
 
-    delete doc;
+        if (!lockUnlockFile(mFileName, LOCK_CHECK))
+            QFile::remove(mFileName);
+    }
+    qDeleteAll(mPages);
+}
+
+
+/************************************************
+
+ ************************************************/
+int JobData::lockUnlockFile(const QString &file, int lock)
+{
+    if (file.isEmpty())
+        return 0;
+
+    int res = 0;
+    static QHash<QString, int> items;
+    if (items.contains(file))
+        res = items[file];
+
+    res += lock;
+    items[file] = res;
+
+    return res;
+}
+
+
+/************************************************
+
+ ************************************************/
+Job::Job():
+    QObject(0),
+    mData(new JobData("", 0, 0))
+{
+}
+
+
+/************************************************
+
+ ************************************************/
+Job::Job(const QString &fileName, qint64 startPos, qint64 endPos):
+    QObject(0),
+    mData(new JobData(fileName, startPos, endPos))
+{
 }
 
 
 /************************************************
  *
  ************************************************/
-Job::Job(const Job *other, QObject *parent):
-    QObject(parent),
-    mTitle(other->mTitle),
-    mInputFile(other->mInputFile),
-    mState(other->mState)
+Job::Job(const Job &other):
+    QObject(0),
+    mData(other.mData)
 {
-    for (int i=0; i< other->pageCount(); ++i)
-        addPage(new ProjectPage(other->page(i)));
 }
 
 
@@ -82,7 +172,35 @@ Job::Job(const Job *other, QObject *parent):
  ************************************************/
 Job::~Job()
 {
-    qDeleteAll(mPages);
+
+}
+
+
+/************************************************
+
+ ************************************************/
+Job &Job::operator =(const Job &other)
+{
+    mData = other.mData;
+    return *this;
+}
+
+
+/************************************************
+
+ ************************************************/
+int Job::pageCount() const
+{
+    return mData->mPages.count();
+}
+
+
+/************************************************
+
+ ************************************************/
+ProjectPage *Job::page(int index) const
+{
+    return mData->mPages[index];
 }
 
 
@@ -92,7 +210,7 @@ Job::~Job()
 int Job::visiblePageCount() const
 {
     int res =0;
-    foreach (ProjectPage *p, mPages)
+    foreach (ProjectPage *p, mData->mPages)
     {
         if (p->visible())
             res++;
@@ -103,14 +221,20 @@ int Job::visiblePageCount() const
 
 
 /************************************************
+
+ ************************************************/
+int Job::indexOfPage(const ProjectPage *page, int from) const
+{
+    return mData->mPages.indexOf(const_cast<ProjectPage*>(page), from);
+}
+
+
+/************************************************
  *
  * ***********************************************/
 void Job::insertPage(int before, ProjectPage *page)
 {
-    mPages.insert(before, page);
-    connect(page, SIGNAL(visibleChanged()),
-            this, SLOT(emitChanged()));
-
+    mData->mPages.insert(before, page);
     emit changed(page);
 }
 
@@ -120,10 +244,7 @@ void Job::insertPage(int before, ProjectPage *page)
  ************************************************/
 void Job::addPage(ProjectPage *page)
 {
-    mPages.append(page);
-    connect(page, SIGNAL(visibleChanged()),
-            this, SLOT(emitChanged()));
-
+    mData->mPages.append(page);
     emit changed(page);
 }
 
@@ -134,7 +255,7 @@ void Job::addPage(ProjectPage *page)
 void Job::removePage(ProjectPage *page)
 {
     ProjectPage *p = takePage(page);
-    p->deleteLater();
+    delete p;
 }
 
 
@@ -143,11 +264,10 @@ void Job::removePage(ProjectPage *page)
  ************************************************/
 ProjectPage *Job::takePage(ProjectPage *page)
 {
-    int n = mPages.indexOf(page);
+    int n = mData->mPages.indexOf(page);
     if (n>-1)
     {
-        ProjectPage *page = mPages.takeAt(n);
-        disconnect(page, 0, this, 0);
+        ProjectPage *page = mData->mPages.takeAt(n);
 
         emit changed(0);
         return page;
@@ -162,10 +282,10 @@ ProjectPage *Job::takePage(ProjectPage *page)
  ************************************************/
 QString Job::title(bool human) const
 {
-    if (mTitle.isEmpty() && human)
+    if (mData->mTitle.isEmpty() && human)
         return tr("Untitled");
 
-    return mTitle;
+    return mData->mTitle;
 }
 
 
@@ -174,20 +294,61 @@ QString Job::title(bool human) const
  ************************************************/
 void Job::setTitle(const QString &title)
 {
-    mTitle = title;
+    mData->mTitle = title;
 }
 
 
 /************************************************
- *
- * ***********************************************/
-void Job::emitChanged()
-{
-    ProjectPage *page = qobject_cast<ProjectPage*>(sender());
-    if (!page)
-        return;
 
-    emit changed(page);
+ ************************************************/
+InputFile Job::inputFile() const
+{
+    return InputFile(mData->mFileName, mData->mStartPos, mData->mEndPos);
+}
+
+
+/************************************************
+
+ ************************************************/
+Job::State Job::state() const
+{
+    return mData->mState;
+}
+
+
+/************************************************
+
+ ************************************************/
+QString Job::errorString() const
+{
+    return mData->mErrorString;
+}
+
+
+/************************************************
+
+ ************************************************/
+bool Job::autoRemove() const
+{
+    return mData->mAutoRemove;
+}
+
+
+/************************************************
+
+ ************************************************/
+void Job::setAutoRemove(bool value)
+{
+    if (!mData->mFileName.isEmpty())
+    {
+        if (!mData->mAutoRemove && value)
+            mData->lockUnlockFile(mData->mFileName, LOCK_TO_REMOVE);
+
+        else if (mData->mAutoRemove && !value)
+            mData->lockUnlockFile(mData->mFileName, LOCK_TO_NOTREMOVE);
+    }
+    mData->mAutoRemove = value;
+
 }
 
 
@@ -205,7 +366,7 @@ void Job::insertBlankPage(int before)
  *
  * ***********************************************/
 JobList::JobList():
-    QList<Job*>()
+    QList<Job>()
 {
 
 }
@@ -214,20 +375,20 @@ JobList::JobList():
 /************************************************
  *
  * ***********************************************/
-JobList::JobList(const QList<Job *> &other):
-    QList<Job*>(other)
+JobList::JobList(const QList<Job> &other):
+    QList<Job>(other)
 {
 }
 
 
 /************************************************
- *
- * ***********************************************/
-int JobList::indexOfInputFile(const InputFile &inputFile, int from) const
+
+ ************************************************/
+int JobList::indexOfProjectPage(const ProjectPage * page, int from) const
 {
     for(int i=from; i<this->count(); ++i)
     {
-        if (at(i)->inputFile() == inputFile)
+        if (at(i).indexOfPage(page) > -1)
             return i;
     }
 
@@ -235,17 +396,3 @@ int JobList::indexOfInputFile(const InputFile &inputFile, int from) const
 }
 
 
-/************************************************
- *
- * ***********************************************/
-Job *JobList::findJob(ProjectPage *page) const
-{
-    for(int j=0; j<this->count(); ++j)
-    {
-        Job *job = this->value(j);
-        if (job->indexOfPage(page) > -1)
-            return job;
-    }
-
-    return 0;
-}

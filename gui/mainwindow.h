@@ -53,7 +53,7 @@ private slots:
     void switchLayout();
     void switchPrinter();
 
-    void switchToJob(Job *job);
+    void switchToJob(const Job &job);
 
     bool print();
     void printAndClose();
@@ -69,6 +69,7 @@ private slots:
 
     void showPreviewContextMenu(int pageNum);
     void deletePage();
+    void undoDeletePage();
     void deletePagesEnd();
     void insertBlankPageBefore();
     void insertBlankPageAfter();

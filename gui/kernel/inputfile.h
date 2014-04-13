@@ -29,17 +29,12 @@
 
 #include <QString>
 #include <QVector>
-#include <QSharedDataPointer>
-
-class InputFileData;
-class QIODevice;
-class Job;
 
 class InputFile
 {
 public:
     InputFile();
-    InputFile(const QString &fileName, const QString &title = "", bool autoRemove=false, qint64 startPos=0, qint64 endPos=0);
+    InputFile(const QString &fileName, qint64 startPos=0, qint64 endPos=0);
     InputFile(const InputFile &other);
     InputFile &operator=(const InputFile &other);
     ~InputFile();
@@ -47,16 +42,16 @@ public:
     bool operator==(const InputFile &other) const;
     inline bool operator!=(const InputFile &other) const { return !operator==(other); }
 
-    QString fileName() const;
-    QString title() const;
-    bool autoRemove() const;
-    bool isNull() const;
-    qint64 startPos() const;
-    qint64 endPos() const;
-    qint64 length() const;
+    QString fileName() const { return mFileName; }
+
+    qint64 startPos() const { return mStartPos; }
+    qint64 endPos() const { return  mEndPos; }
+    qint64 length() const { return mEndPos - mStartPos; }
 
 private:
-    QSharedDataPointer<InputFileData> mData;
+    QString mFileName;
+    qint64 mStartPos;
+    qint64 mEndPos;
 };
 
 class InputFileList: public QList<InputFile>
@@ -64,7 +59,6 @@ class InputFileList: public QList<InputFile>
 public:
     InputFileList() : QList<InputFile>() {}
     InputFileList(const QList<InputFile> &other) : QList<InputFile>(other) {}
-    InputFileList(const QList<Job*> & other);
 };
 
 #endif // INPUTFILE_H

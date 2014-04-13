@@ -81,7 +81,7 @@ QString TmpPdfFile::genFileName()
 /************************************************
 
  ************************************************/
-TmpPdfFile::TmpPdfFile(const QList<InputFile> files, QObject *parent):
+TmpPdfFile::TmpPdfFile(const JobList jobs, QObject *parent):
     QObject(parent),
     mMerger(0),
     mPageCount(0),
@@ -94,7 +94,8 @@ TmpPdfFile::TmpPdfFile(const QList<InputFile> files, QObject *parent):
 
     mFileName = genFileName();
 
-    mInputFiles << files;
+    foreach (Job job, jobs)
+        mInputFiles << job.inputFile();
 }
 
 

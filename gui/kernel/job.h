@@ -32,9 +32,12 @@
 #include <QString>
 #include "inputfile.h"
 
+#include <QExplicitlySharedDataPointer>
+
 class ProjectPage;
 class QIODevice;
 class PDFDoc;
+class JobData;
 
 class Job : public QObject
 {
@@ -48,15 +51,18 @@ public:
         JobError
     };
 
-    explicit Job(const InputFile &inputfile, QObject *parent=0);
-    explicit Job(const Job *other, QObject *parent=0);
+    explicit Job();
+    explicit Job(const QString &fileName, qint64 startPos=0, qint64 endPos=0);
+    Job(const Job &other);
     virtual ~Job();
 
-    int pageCount() const { return mPages.count(); }
-    ProjectPage *page(int index) const { return mPages[index]; }
+    Job& operator=(const Job& other);
+
+    int pageCount() const;
+    ProjectPage *page(int index) const;
     int visiblePageCount() const;
 
-    int indexOfPage(ProjectPage *page, int from = 0) const { return mPages.indexOf(page, from); }
+    int indexOfPage(const ProjectPage *page, int from = 0) const;
     void insertPage(int before, ProjectPage *page);
     void addPage(ProjectPage *page);
     void removePage(ProjectPage *page);
@@ -65,10 +71,13 @@ public:
     QString title(bool human = true) const;
     void setTitle(const QString &title);
 
-    InputFile inputFile() const { return mInputFile; }
+    InputFile inputFile() const;
 
-    State state() const { return mState; }
-    QString errorString() const { return mErrorString; }
+    State state() const;
+    QString errorString() const;
+
+    bool autoRemove() const;
+    void setAutoRemove(bool value);
 
 public slots:
     void insertBlankPage(int before);
@@ -76,26 +85,18 @@ public slots:
 signals:
     void changed(ProjectPage *page);
 
-private slots:
-    void emitChanged();
-
 private:
-    QList<ProjectPage*> mPages;
-    QString mTitle;
-    InputFile mInputFile;
-    State mState;
-    QString mErrorString;
+    QExplicitlySharedDataPointer<JobData> mData;
 };
 
 
-class JobList: public QList<Job*>
+class JobList: public QList<Job>
 {
 public:
     JobList();
-    JobList(const QList<Job*> & other);
+    JobList(const QList<Job> & other);
 
-    int indexOfInputFile(const InputFile &inputFile, int from = 0) const;
-
-    Job *findJob(ProjectPage *page) const;
+    int indexOfProjectPage(const ProjectPage *page, int from = 0) const;
 };
+
 #endif // JOB_H

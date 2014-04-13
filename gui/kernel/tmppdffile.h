@@ -38,6 +38,7 @@ class Job;
 class JobList;
 class Render;
 
+#include "job.h"
 
 class TmpPdfFile: public QObject
 {
@@ -50,7 +51,7 @@ public:
         QRectF Rect;
     };
 
-    explicit TmpPdfFile(const QList<InputFile> files, QObject *parent = 0);
+    explicit TmpPdfFile(const JobList jobs, QObject *parent = 0);
     virtual ~TmpPdfFile();
 
     void merge();

@@ -149,7 +149,7 @@ JobsListView::JobsListView(QWidget *parent):
 /************************************************
  *
  * ***********************************************/
-Job *JobsListView::currentJob() const
+Job JobsListView::currentJob() const
 {
     if (currentItem())
     {
@@ -158,8 +158,7 @@ Job *JobsListView::currentJob() const
             return project->jobs()->at(n);
     }
 
-    return 0;
-
+    return Job();
 }
 
 
@@ -178,9 +177,9 @@ void JobsListView::setSheetNum(int sheetNum)
     }
 
     Sheet *sheet = project->previewSheet(sheetNum);
-    Job *job = currentJob();
+    Job job = currentJob();
 
-    if (job)
+    if (job.state() != Job::JobEmpty)
     {
         for (int i=0; i<sheet->count(); ++i)
         {
@@ -188,7 +187,7 @@ void JobsListView::setSheetNum(int sheetNum)
             if (!page)
                 continue;
 
-            if (job->indexOfPage(page) > -1)
+            if (job.indexOfPage(page) > -1)
                 return;
         }
     }
@@ -202,9 +201,9 @@ void JobsListView::setSheetNum(int sheetNum)
 
         for(int j=0; j<project->jobs()->count(); ++j)
         {
-            Job *job = project->jobs()->at(j);
+            Job job = project->jobs()->at(j);
 
-            if (job->indexOfPage(page) > -1)
+            if (job.indexOfPage(page) > -1)
             {
                 setCurrentItem(item(j));
                 return;
@@ -226,9 +225,9 @@ void JobsListView::updateItems()
     {
         QListWidgetItem *item = new QListWidgetItem(this);
         item->setData(Qt::UserRole, i);
-        Job *job = project->jobs()->at(i);
+        Job job = project->jobs()->at(i);
 
-        item->setText(tr("( %1 pages )").arg(job->visiblePageCount()) + " " + job->title());
+        item->setText(tr("( %1 pages )").arg(job.visiblePageCount()) + " " + job.title());
 
         addItem(item);
     }
@@ -289,14 +288,14 @@ void JobsListView::renameJob()
         return;
 
     int index = act->data().toInt();
-    Job *job = project->jobs()->at(index);
+    Job job = project->jobs()->at(index);
 
     bool ok;
-    QString s = QInputDialog::getText(this, tr("Rename job"), tr("Job title:"), QLineEdit::Normal, job->title(false), &ok);
+    QString s = QInputDialog::getText(this, tr("Rename job"), tr("Job title:"), QLineEdit::Normal, job.title(false), &ok);
 
     if (ok)
     {
-        job->setTitle(s);
+        job.setTitle(s);
         updateItems();
     }
 }
