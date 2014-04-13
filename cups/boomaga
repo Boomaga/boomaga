@@ -317,7 +317,7 @@ debug "command: ${cmd}"
 
 errorLog="/tmp/boomaga_${jobID}.err"
 res=${CUPS_BACKEND_OK}
-su -c "DBUS_SESSION_BUS_ADDRESS=${dbusSessionAddress} ${cmd}" ${user} 2>${errorLog} 1>/dev/null || res=${CUPS_BACKEND_FAILED}
+su -c "/bin/bash -c \"export DBUS_SESSION_BUS_ADDRESS=${dbusSessionAddress} && ${cmd}\"" ${user} 2>${errorLog} 1>/dev/null || res=${CUPS_BACKEND_FAILED}
 
 if [ "$res" !=  $CUPS_BACKEND_OK ];
 then
