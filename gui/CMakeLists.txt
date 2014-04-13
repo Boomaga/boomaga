@@ -223,7 +223,16 @@ configure_file(${CMAKE_CURRENT_SOURCE_DIR}/org.boomaga.service
                ${CMAKE_CURRENT_BINARY_DIR}/org.boomaga.service
                @ONLY)
 
+include(cmake/CreateDesktopFile.cmake)
+CREATE_DESKTOP_FILE(misc/boomaga.desktop.in ${CMAKE_CURRENT_BINARY_DIR}/boomaga.desktop translations/*.desktop)
+
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.boomaga.service DESTINATION ${DBUS_SERVICE_DIR})
 
+install(FILES   images/boomaga_16.png   DESTINATION "share/icons/hicolor/16x16/apps"   RENAME "boomaga.png")
+install(FILES   images/boomaga_32.png   DESTINATION "share/icons/hicolor/32x32/apps"   RENAME "boomaga.png")
+install(FILES   images/boomaga_64.png   DESTINATION "share/icons/hicolor/64x64/apps"   RENAME "boomaga.png")
+install(FILES   images/boomaga_128.png  DESTINATION "share/icons/hicolor/128x128/apps" RENAME "boomaga.png")
+install(FILES   ${CMAKE_CURRENT_BINARY_DIR}/boomaga.desktop DESTINATION "share/applications")
+install(FILES   misc/boomaga.xml        DESTINATION "share/mime/packages")
 
 add_subdirectory(pdfmerger)

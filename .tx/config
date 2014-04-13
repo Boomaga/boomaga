@@ -14,3 +14,9 @@ source_file = gui/translations/translatorsinfo/translators.info.src
 source_lang = en
 file_filter = gui/translations/translatorsinfo/translators_<lang>.info
 type = MOZILLAPROPERTIES
+
+[boomaga.boomaga_desktop]
+source_file = gui/misc/boomaga.desktop.in
+source_lang = en
+file_filter = gui/translations/boomaga_<lang>.desktop
+type = DESKTOP

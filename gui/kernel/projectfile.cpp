@@ -223,7 +223,7 @@ void ProjectFile::load(const QString &fileName)
     }
     else
     {
-        throw tr("I can't open file\"%1\" because is either not a supported file type or because the file has been damaged.").arg(file.fileName());
+        throw tr("I can't read file \"%1\" because is either not a supported file type or because the file has been damaged.").arg(file.fileName());
     }
 }
 

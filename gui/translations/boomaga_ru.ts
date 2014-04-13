@@ -319,6 +319,59 @@ Are you sure you want to overwrite it?</source>
         <source>Delete pages until the end of the job.</source>
         <translation>Удалить страницы до конца задания. </translation>
     </message>
+    <message>
+        <source>Save</source>
+        <translation>Сохранить</translation>
+    </message>
+    <message>
+        <source>Save project</source>
+        <translation>Сохранить проект</translation>
+    </message>
+    <message>
+        <source>Ctrl+S</source>
+        <translation>Ctrl+S</translation>
+    </message>
+    <message>
+        <source>Save as ...</source>
+        <translation>Сохранить как...</translation>
+    </message>
+    <message>
+        <source>Save project under a new name</source>
+        <translation>Сохранить проект под другим именем</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+S</source>
+        <translation>Ctrl+Shift+S</translation>
+    </message>
+    <message>
+        <source>Open ...</source>
+        <translation>Открыть ...</translation>
+    </message>
+    <message>
+        <source>Open an existing project</source>
+        <translation>Открыть существующий проект</translation>
+    </message>
+    <message>
+        <source>Ctrl+O</source>
+        <translation>Ctrl+O</translation>
+    </message>
+    <message>
+        <source>Page %1</source>
+        <comment>'Undo deletion' menu item</comment>
+        <translation>Страница %1</translation>
+    </message>
+    <message>
+        <source>Boomaga files (*.boo);;All files (*.*)</source>
+        <translation>Бумажные файлы (*.boo);;Все файлы (*.*)</translation>
+    </message>
+    <message>
+        <source>Project saved successfully.</source>
+        <translation>Проект сохранен.</translation>
+    </message>
+    <message>
+        <source>All supported files (*.pdf *.boo);;Boomaga files (*.boo);;PDF files (*.pdf);;All files (*.*)</source>
+        <translation>Все поддерживаемые файлы (*.pdf *.boo);;Бумажные файлы (*.boo);;PDF документы (*.pdf);;Все файлы (*.*)</translation>
+    </message>
 </context>
 <context>
     <name>PrinterSettings</name>
@@ -388,6 +441,29 @@ Are you sure you want to overwrite it?</source>
     </message>
 </context>
 <context>
+    <name>ProjectFile</name>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
+        <translation>Не получилось открыть файл: &quot;%1&quot; (Нет такого файла или директории)</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
+        <translation>Не получилось открыть файл: &quot;%1&quot; (Доступ запрещен)</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot;</source>
+        <translation>Не получилось открыть файл: &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>I can&apos;t write to file &apos;%1&apos;</source>
+        <translation>Не получилось записать файл: &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>I can&apos;t read file &quot;%1&quot; because is either not a supported file type or because the file has been damaged.</source>
+        <translation>Не получилось прочитать файл: &quot;%1&quot;, файл испорчен или файлы такого типа не поддерживаются.</translation>
+    </message>
+</context>
+<context>
     <name>QObject</name>
     <message>
         <source>PDF file &quot;%1&quot; is damaged.</source>
@@ -404,6 +480,14 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>Print to file (PDF)</source>
         <translation>Сохранить как PDF файл</translation>
+    </message>
+    <message>
+        <source>I can&apos;t read from file &apos;%1&apos;</source>
+        <translation>Не получилось прочитать файл: &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>I can&apos;t write to file &apos;%1&apos;</source>
+        <translation>Не получилось записать файл: &quot;%1&quot;</translation>
     </message>
 </context>
 <context>

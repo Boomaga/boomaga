@@ -78,7 +78,7 @@
     </message>
     <message>
         <source>Meta info</source>
-        <translation type="unfinished"/>
+        <translation>Beschreibung</translation>
     </message>
     <message>
         <source>Author:</source>
@@ -86,7 +86,7 @@
     </message>
     <message>
         <source> The name of the person who created the document.</source>
-        <translation type="unfinished"/>
+        <translation>Name des Autors, der das Dokument erstellt hat.</translation>
     </message>
     <message>
         <source>Title:</source>
@@ -94,7 +94,7 @@
     </message>
     <message utf8="true">
         <source> The document’s title.</source>
-        <translation type="unfinished"/>
+        <translation>Der Titel des Dokuments.</translation>
     </message>
     <message>
         <source>Subject:</source>
@@ -102,11 +102,11 @@
     </message>
     <message>
         <source> The subject of the document.</source>
-        <translation type="unfinished"/>
+        <translation>Der Betreff des Dokuments.</translation>
     </message>
     <message>
         <source> Keywords associated with the document.</source>
-        <translation type="unfinished"/>
+        <translation>Schlüsselwörter des Dokuments.</translation>
     </message>
     <message>
         <source>Keywords:</source>
@@ -114,7 +114,7 @@
     </message>
     <message>
         <source>PDF files (*.pdf);;All files (*.*)</source>
-        <translation type="unfinished"/>
+        <translation>PDF-Dateien (*.pdf);;Alle Dateien (*.*)</translation>
     </message>
     <message>
         <source>Overwrite file?</source>
@@ -123,7 +123,8 @@
     <message>
         <source>A file named &quot;%1&quot; already exists.
 Are you sure you want to overwrite it?</source>
-        <translation type="unfinished"/>
+        <translation>Eine Datei &quot;%1&quot; existiert bereits.
+Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
 </context>
 <context>
@@ -318,6 +319,59 @@ Are you sure you want to overwrite it?</source>
         <source>Delete pages until the end of the job.</source>
         <translation>Seiten ab hier bis zum Ende löschen.</translation>
     </message>
+    <message>
+        <source>Save</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Save project</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Ctrl+S</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Save as ...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Save project under a new name</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Ctrl+Shift+S</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Open ...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Open an existing project</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Ctrl+O</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Page %1</source>
+        <comment>'Undo deletion' menu item</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Boomaga files (*.boo);;All files (*.*)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Project saved successfully.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>All supported files (*.pdf *.boo);;Boomaga files (*.boo);;PDF files (*.pdf);;All files (*.*)</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>PrinterSettings</name>
@@ -383,6 +437,29 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
+        <translation>Datei &apos;%1&apos; konnte nicht geschrieben werden</translation>
+    </message>
+</context>
+<context>
+    <name>ProjectFile</name>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot;</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>I can&apos;t write to file &apos;%1&apos;</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>I can&apos;t read file &quot;%1&quot; because is either not a supported file type or because the file has been damaged.</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -402,6 +479,14 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Print to file (PDF)</source>
+        <translation>In Datei drucken (PDF)</translation>
+    </message>
+    <message>
+        <source>I can&apos;t read from file &apos;%1&apos;</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -409,7 +494,7 @@ Are you sure you want to overwrite it?</source>
     <name>Settings</name>
     <message>
         <source>~/Untitled.pdf</source>
-        <translation type="unfinished"/>
+        <translation>~/Unbenannt.pdf</translation>
     </message>
 </context>
 <context>
@@ -426,11 +511,11 @@ Bitte neu installieren.</translation>
     </message>
     <message>
         <source>I can&apos;t read file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Datei &apos;%1&apos; konnte nicht gelesen werden</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Datei &apos;%1&apos; konnte nicht geschrieben werden</translation>
     </message>
 </context>
 </TS>
