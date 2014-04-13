@@ -140,8 +140,8 @@ int main(int argc, char *argv[])
     application.installTranslator(&translator);
 
 
-    QFileInfoList files;
-    QStringList jobTitles;
+    QStringList files;
+    QStringList titles;
     bool autoRemove = false;
 
     QStringList args = application.arguments();
@@ -168,7 +168,7 @@ int main(int argc, char *argv[])
         {
             if (i+1 < args.count())
             {
-                jobTitles << args.at(i+1);
+                titles << args.at(i+1);
                 i++;
                 continue;
             }
@@ -186,43 +186,8 @@ int main(int argc, char *argv[])
         }
 
         //*************************************************
-        files << QFileInfo(args.at(i));
+        files << args.at(i);
     }
-
-    JobList jobs;
-    for (int i=0; i<files.count(); ++i)
-    {
-        QFileInfo file = files.at(i);
-
-        if (!file.filePath().isEmpty())
-        {
-            if (!file.exists())
-                return printError(QString("Cannot open file \"%1\" (No such file or directory)")
-                                  .arg(file.filePath()));
-
-            if (!file.isReadable())
-                return printError(QString("Cannot open file \"%1\" (Access denied)")
-                                  .arg(file.filePath()));
-        }
-
-        Job job(file.absoluteFilePath());
-        if (i < jobTitles.count())
-            job.setTitle(jobTitles.at(i));
-
-        job.setAutoRemove(autoRemove);
-        jobs << job;
-    }
-
-#if 0
-    QFile f(QString("/tmp/boomaga-%1.env").arg(QDateTime::currentDateTime().toString("yyyy.MM.dd-hh.mm.ss")));
-    f.open(QFile::WriteOnly | QFile::Text);
-    foreach(QString s, QProcessEnvironment::systemEnvironment().toStringList())
-    {
-        f.write(s.toLocal8Bit());
-        f.write("\n");
-    }
-    f.close();
-#endif
 
     BoomagaDbus dbus("org.boomaga", "/boomaga");
 
@@ -230,9 +195,14 @@ int main(int argc, char *argv[])
     mainWindow.show();
     application.processEvents();
 
-
-    if (!jobs.isEmpty())
-        project->addJobs(jobs);
+    try
+    {
+        project->load(files, titles, autoRemove);
+    }
+    catch (const QString &err)
+    {
+        project->error(err);
+    }
 
     return application.exec();
 }

@@ -50,6 +50,7 @@ set(HEADERS
     export/exporttopdf.h
     export/exporttopdfprinter.h
     kernel/boomagapoppler.h
+    kernel/projectfile.h
 )
 
 set(SOURCES
@@ -75,6 +76,7 @@ set(SOURCES
     export/exporttopdf.cpp
     export/exporttopdfprinter.cpp
     kernel/boomagapoppler.cpp
+    kernel/projectfile.cpp
 )
 
 set (MOCS
@@ -92,6 +94,7 @@ set (MOCS
     previewwidget.h
     aboutdialog/aboutdialog.h
     export/exporttopdf.h
+    kernel/projectfile.h
 )
 
 set(LIBRARIES
