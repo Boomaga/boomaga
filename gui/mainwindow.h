@@ -30,6 +30,7 @@
 #include <QMainWindow>
 #include <QLabel>
 #include <QProgressBar>
+#include <QMouseEvent>
 
 class Layout;
 class Project;
@@ -80,6 +81,8 @@ private slots:
 
 protected:
     void closeEvent(QCloseEvent *event);
+    void dragEnterEvent(QDragEnterEvent *event);
+    void dropEvent(QDropEvent *event);
 
 private:
     Ui::MainWindow *ui;

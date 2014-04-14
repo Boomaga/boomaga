@@ -682,25 +682,39 @@ void Project::load(const QStringList &fileNames, bool autoRemove)
 void Project::load(const QStringList &fileNames, const QStringList &titles, bool autoRemove)
 {
     stopMerging();
+    QStringList errors;
+
     JobList jobs;
     foreach(QString fileName, fileNames)
     {
         ProjectFile file;
-        file.load(fileName);
-        for(int i=0; i<file.jobs().count(); ++i)
+        try
         {
-            Job job = file.jobs().at(i);
-            job.setAutoRemove(autoRemove);
-            if (i<titles.count())
-                job.setTitle(titles.at(i));
+            file.load(fileName);
+            for(int i=0; i<file.jobs().count(); ++i)
+            {
+                Job job = file.jobs().at(i);
+                job.setAutoRemove(autoRemove);
+                if (i<titles.count())
+                    job.setTitle(titles.at(i));
 
-            jobs << job;
+                jobs << job;
+            }
+
+            project->setMetadata(file.metaData());
         }
-
-        project->setMetadata(file.metaData());
+        catch (const QString &err)
+        {
+            errors << err;
+        }
     }
 
-    addJobs(jobs);
+    if (!jobs.isEmpty())
+        addJobs(jobs);
+
+    if (!errors.isEmpty())
+        throw errors.join("\n\n");
+
 }
 
 

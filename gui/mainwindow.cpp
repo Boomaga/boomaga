@@ -164,6 +164,8 @@ MainWindow::MainWindow(QWidget *parent):
     ui->preview->setFocusPolicy(Qt::StrongFocus);
     ui->preview->setFocus();
 
+    ui->preview->setAcceptDrops(false);
+    setAcceptDrops(true);
 }
 
 
@@ -183,6 +185,43 @@ MainWindow::~MainWindow()
 void MainWindow::closeEvent(QCloseEvent *event)
 {
     project->free();
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void MainWindow::dragEnterEvent(QDragEnterEvent *event)
+{
+    foreach(QUrl url, event->mimeData()->urls())
+    {
+        QString file = url.toLocalFile().toUpper();
+        if (file.endsWith("PDF") || file.endsWith("BOO"))
+        {
+            event->acceptProposedAction();
+            return;
+        }
+    }
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void MainWindow::dropEvent(QDropEvent *event)
+{
+    QStringList files;
+    foreach(QUrl url, event->mimeData()->urls())
+        files << url.toLocalFile();
+
+    try
+    {
+        project->load(files);
+    }
+    catch (const QString &err)
+    {
+        project->error(err);
+    }
 }
 
 
