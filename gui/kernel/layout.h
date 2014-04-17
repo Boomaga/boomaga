@@ -65,14 +65,15 @@ public:
 
 protected:
     TransformSpec calcTransformSpec(const Sheet *sheet, int pageNumOnSheet,
-                                        int pageCountHoriz, int pageCountVert) const;
+                                    int pageCountHoriz, int pageCountVert,
+                                    Qt::Orientation orientation) const;
 };
 
 
 class LayoutNUp: public Layout
 {
 public:
-    explicit LayoutNUp(int pageCountVert, int pageCountHoriz);
+    explicit LayoutNUp(int pageCountVert, int pageCountHoriz, Qt::Orientation orientation = Qt::Horizontal);
 
     virtual QString id() const;
 
@@ -83,6 +84,7 @@ private:
     int mPageCountVert;
     int mPageCountHoriz;
     bool mRotate;
+    Qt::Orientation mOrientation;
 };
 
 

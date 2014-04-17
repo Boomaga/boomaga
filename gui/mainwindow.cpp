@@ -101,13 +101,21 @@ MainWindow::MainWindow(QWidget *parent):
     mAvailableLayouts << layout;
     ui->layout2UpBtn->setLayout(layout);
 
-    layout = new LayoutNUp(2, 2);
+    layout = new LayoutNUp(2, 2, Qt::Horizontal);
     mAvailableLayouts << layout;
-    ui->layout4UpBtn->setLayout(layout);
+    ui->layout4UpHorizBtn->setLayout(layout);
 
-    layout = new LayoutNUp(4, 2);
+    layout = new LayoutNUp(2, 2, Qt::Vertical);
     mAvailableLayouts << layout;
-    ui->layout8UpBtn->setLayout(layout);
+    ui->layout4UpVertBtn->setLayout(layout);
+
+    layout = new LayoutNUp(4, 2, Qt::Horizontal);
+    mAvailableLayouts << layout;
+    ui->layout8UpHorizBtn->setLayout(layout);
+
+    layout = new LayoutNUp(4, 2, Qt::Vertical);
+    mAvailableLayouts << layout;
+    ui->layout8UpVertBtn->setLayout(layout);
 
     layout = new LayoutBooklet();
     mAvailableLayouts << layout;
@@ -125,10 +133,16 @@ MainWindow::MainWindow(QWidget *parent):
     connect(ui->layout2UpBtn,     SIGNAL(clicked(bool)),
             this, SLOT(switchLayout()));
 
-    connect(ui->layout4UpBtn,     SIGNAL(clicked(bool)),
+    connect(ui->layout4UpHorizBtn, SIGNAL(clicked(bool)),
             this, SLOT(switchLayout()));
 
-    connect(ui->layout8UpBtn,     SIGNAL(clicked(bool)),
+    connect(ui->layout4UpVertBtn, SIGNAL(clicked(bool)),
+            this, SLOT(switchLayout()));
+
+    connect(ui->layout8UpHorizBtn, SIGNAL(clicked(bool)),
+            this, SLOT(switchLayout()));
+
+    connect(ui->layout8UpVertBtn, SIGNAL(clicked(bool)),
             this, SLOT(switchLayout()));
 
     connect(ui->layoutBookletBtn, SIGNAL(clicked(bool)),

@@ -73,9 +73,11 @@ void Layout::fillPreviewSheets(QList<Sheet *> *sheets) const
   | ............. |    | ....... ....... |
   +---------------+    +-----------------+
  ************************************************/
-TransformSpec Layout::calcTransformSpec(const Sheet *sheet, int pageNumOnSheet, int pageCountHoriz, int pageCountVert) const
+TransformSpec Layout::calcTransformSpec(const Sheet *sheet, int pageNumOnSheet,
+                                        int pageCountHoriz, int pageCountVert,
+                                        Qt::Orientation orientation) const
 {
-    bool rotate = pageCountVert != pageCountHoriz;
+    bool rotatePage = pageCountVert != pageCountHoriz;
     Printer *printer = project->printer();
 
     QRectF pageRect;
@@ -97,12 +99,38 @@ TransformSpec Layout::calcTransformSpec(const Sheet *sheet, int pageNumOnSheet, 
     int col;
     int row;
 
-    if (rotate)
+    if (orientation == Qt::Horizontal)
     {
-        col = pageCountHoriz - 1 - pageNumOnSheet / pageCountVert;
-        row = pageNumOnSheet % pageCountVert;
+        if (rotatePage)
+        {
+            col = pageCountHoriz - 1 - pageNumOnSheet / pageCountVert;
+            row = pageNumOnSheet % pageCountVert;
+        }
+        else
+        {
+            col = pageNumOnSheet % pageCountHoriz;
+            row = pageNumOnSheet / pageCountHoriz;
+        }
+
+    }
+    else
+    {
+        if (rotatePage)
+        {
+            col = pageCountHoriz - 1 - pageNumOnSheet % pageCountHoriz;
+            row = pageNumOnSheet / pageCountHoriz;
+        }
+        else
+        {
+            col = pageNumOnSheet / pageCountVert;
+            row = pageNumOnSheet % pageCountVert;
+        }
+    }
 
 
+
+    if (rotatePage)
+    {
         scale = qMin(
                 placeRect.width()  / pageRect.height(),
                 placeRect.height() / pageRect.width());
@@ -113,10 +141,6 @@ TransformSpec Layout::calcTransformSpec(const Sheet *sheet, int pageNumOnSheet, 
     }
     else
     {
-        col = pageNumOnSheet % pageCountHoriz;
-        row = pageNumOnSheet / pageCountHoriz;
-
-
         scale = qMin(
                 placeRect.width()  / pageRect.width(),
                 placeRect.height() / pageRect.height());
@@ -143,10 +167,11 @@ TransformSpec Layout::calcTransformSpec(const Sheet *sheet, int pageNumOnSheet, 
 /************************************************
 
  ************************************************/
-LayoutNUp::LayoutNUp(int pageCountVert, int pageCountHoriz):
+LayoutNUp::LayoutNUp(int pageCountVert, int pageCountHoriz, Qt::Orientation orientation):
     Layout(),
     mPageCountVert(pageCountVert),
-    mPageCountHoriz(pageCountHoriz)
+    mPageCountHoriz(pageCountHoriz),
+    mOrientation(orientation)
 {
     mRotate = mPageCountVert != mPageCountHoriz;
 }
@@ -157,7 +182,9 @@ LayoutNUp::LayoutNUp(int pageCountVert, int pageCountHoriz):
  ************************************************/
 QString LayoutNUp::id() const
 {
-    return QString("%1up").arg(mPageCountVert * mPageCountHoriz);
+    return QString("%1up%2")
+            .arg(mPageCountVert * mPageCountHoriz)
+            .arg((mOrientation == Qt::Horizontal ? "" : "V"));
 }
 
 
@@ -205,7 +232,7 @@ void LayoutNUp::fillSheets(QList<Sheet *> *sheets) const
  ************************************************/
 TransformSpec LayoutNUp::transformSpec(const Sheet *sheet, int pageNumOnSheet) const
 {
-    return calcTransformSpec(sheet, pageNumOnSheet, mPageCountHoriz, mPageCountVert);
+    return calcTransformSpec(sheet, pageNumOnSheet, mPageCountHoriz, mPageCountVert, mOrientation);
 }
 
 
@@ -375,5 +402,5 @@ void LayoutBooklet::fillPreviewSheetsForBook(int bookStart, int bookLength, QLis
  ************************************************/
 TransformSpec LayoutBooklet::transformSpec(const Sheet *sheet, int pageNumOnSheet) const
 {
-    return calcTransformSpec(sheet, pageNumOnSheet, 1, 2);
+    return calcTransformSpec(sheet, pageNumOnSheet, 1, 2, Qt::Horizontal);
 }
