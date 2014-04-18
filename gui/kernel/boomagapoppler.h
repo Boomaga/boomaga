@@ -42,7 +42,6 @@ public:
     QString getMetaInfo(const char *tag);
 
 private:
-    FILE *f;
     bool mValid;
     QString mErrorString;
 };

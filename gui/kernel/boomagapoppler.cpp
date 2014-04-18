@@ -36,6 +36,11 @@
 #include <poppler/GlobalParams.h>
 #include <poppler/poppler-config.h>
 
+#if POPPLER_VERSION >= 2300
+#include <poppler/goo/gfile.h>
+#endif
+
+
 #ifdef __GNUC__
 #define GCC_VARIABLE_IS_USED __attribute__ ((unused))
 #else
@@ -56,15 +61,56 @@ void initPoppler()
 }
 
 
-class PJLFileStream: public FileStream
+
+
+class PJLFileStreamData
 {
 public:
-    PJLFileStream(FILE *fA, Guint startA, GBool limitedA, Guint lengthA, Object *dictA):
-        FileStream(fA, startA, limitedA, lengthA, dictA),
-        mStartPos(startA),
-        mEndPos(startA + lengthA),
-        mLength(lengthA),
-        mFile(fA)
+    PJLFileStreamData(const QString &fileName, qint64 startPos, qint64 endPos):
+        mStartPos(startPos),
+        mEndPos(endPos),
+        mLength(endPos - startPos)
+    {
+        initPoppler();
+#if POPPLER_VERSION < 2300
+        mFile = fopen(fileName.toLocal8Bit(), "rb");
+#else
+        GooString f(fileName.toLocal8Bit());
+        mFile = GooFile::open(&f);
+#endif
+
+        if (!mFile)
+            mErrorString = QString::fromLocal8Bit(strerror(errno));
+
+    }
+
+    ~PJLFileStreamData()
+    {
+#if POPPLER_VERSION < 2300
+        fclose(mFile);
+#else
+         delete mFile;
+#endif
+    }
+
+    qint64 mStartPos;
+    qint64 mEndPos;
+    qint64 mLength;
+#if POPPLER_VERSION < 2300
+    FILE *mFile;
+#else
+    GooFile *mFile;
+#endif
+    QString mErrorString;
+};
+
+
+class PJLFileStream: protected PJLFileStreamData, public FileStream
+{
+public:
+    PJLFileStream(const QString &fileName, qint64 startPos, qint64 endPos):
+        PJLFileStreamData(fileName, startPos, endPos),
+        FileStream(mFile, mStartPos, false, mLength, new Object())
     {
     }
 
@@ -73,12 +119,20 @@ public:
         close();
     }
 
-    virtual int getPos()
+#if POPPLER_VERSION < 2300
+    virtual int     getPos()
+#else
+    virtual Goffset getPos()
+#endif
     {
         return FileStream::getPos() - mStartPos;
     }
 
-    virtual void setPos(Guint pos, int dir = 0)
+#if POPPLER_VERSION < 2300
+    virtual void setPos(Guint   pos, int dir = 0)
+#else
+    virtual void setPos(Goffset pos, int dir = 0)
+#endif
     {
         if (dir<0)
             FileStream::setPos(mEndPos - pos, 0);
@@ -89,50 +143,18 @@ public:
     virtual void close()
     {
         FileStream::close();
-        fclose(mFile);
-    }
 
-    FILE *fileHandler() { return mFile; }
-private:
-    qint64 mStartPos;
-    qint64 mEndPos;
-    qint64 mLength;
-    FILE  *mFile;
+    }
 };
 
 
 /************************************************
  *
  * ***********************************************/
-PJLFileStream * createStream(const QString &fileName, qint64 startPos, qint64 endPos)
-{
-    initPoppler();
-    Object obj;
-    obj.initNull();
-    FILE *file = fopen(fileName.toLocal8Bit(), "rb");
-    if (file == NULL)
-    {
-        qWarning() << strerror(errno);
-        throw QString(strerror(errno));
-        return 0;
-    }
-
-    return new PJLFileStream(file,
-                             startPos,
-                             false,
-                             endPos - startPos,
-                             &obj);
-}
-
-
-/************************************************
- *
- * ***********************************************/
 BoomagaPDFDoc::BoomagaPDFDoc(const QString &fileName, qint64 startPos, qint64 endPos):
-    PDFDoc(createStream(fileName, startPos, endPos)),
-    f(0),
+    PDFDoc(new PJLFileStream(fileName, startPos, endPos)),
     mValid(true)
-{
+{    
     if (!isOk())
     {
         mErrorString = QObject::tr("PDF file \"%1\" is damaged.").arg(fileName);
@@ -182,4 +204,14 @@ QString BoomagaPDFDoc::getMetaInfo(const char *tag)
     docInfo.free();
 
     return result;
+}
+
+
+
+/************************************************
+ *
+ * ***********************************************/
+GooString *createGooString(const QString string)
+{
+    return new GooString(string.toLocal8Bit(), string.length());
 }
