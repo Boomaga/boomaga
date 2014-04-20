@@ -39,9 +39,8 @@ class QIODevice;
 class PDFDoc;
 class JobData;
 
-class Job : public QObject
+class Job
 {
-    Q_OBJECT
 public:
     enum State
     {
@@ -61,11 +60,14 @@ public:
     int pageCount() const;
     ProjectPage *page(int index) const;
     int visiblePageCount() const;
+    ProjectPage *firstVisiblePage() const;
 
     int indexOfPage(const ProjectPage *page, int from = 0) const;
     void insertPage(int before, ProjectPage *page);
     void addPage(ProjectPage *page);
     void removePage(ProjectPage *page);
+    void removePages(const QList<ProjectPage*> pages);
+
     ProjectPage *takePage(ProjectPage *page);
 
     QString title(bool human = true) const;
@@ -78,12 +80,7 @@ public:
 
     bool autoRemove() const;
     void setAutoRemove(bool value);
-
-public slots:
     void insertBlankPage(int before);
-
-signals:
-    void changed(ProjectPage *page);
 
 private:
     QExplicitlySharedDataPointer<JobData> mData;

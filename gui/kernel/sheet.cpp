@@ -60,6 +60,15 @@ void Sheet::setPage(int index, ProjectPage *page)
 /************************************************
 
  ************************************************/
+int Sheet::indexOfPage(const ProjectPage *page, int from) const
+{
+    return mPages.indexOf(const_cast<ProjectPage*>(page), from);
+}
+
+
+/************************************************
+
+ ************************************************/
 void Sheet::setHints(Sheet::Hints value)
 {
     mHints = value;

@@ -58,6 +58,7 @@ public:
     void setPage(int index, ProjectPage *page);
 
     int count() const { return mPages.count(); }
+    int indexOfPage(const ProjectPage *page, int from = 0) const;
 
 private:
     QVector<ProjectPage*> mPages;

@@ -56,15 +56,6 @@ ProjectFile::~ProjectFile()
 /************************************************
 
  ************************************************/
-bool reverseLessThan(int n1, int n2)
-{
-    return n1 > n2;
-}
-
-
-/************************************************
-
- ************************************************/
 void ProjectFile::load(const QString &fileName)
 {
     mJobs.clear();
@@ -186,7 +177,6 @@ void ProjectFile::load(const QString &fileName)
                         Job job(fileName, startPos, endPos);
                         job.setTitle(title);
 
-                        //qSort(insertedPages.begin(), insertedPages.end(), reverseLessThan);
                         qSort(insertedPages);
 
                         foreach (int num, insertedPages)

@@ -186,8 +186,6 @@ void Project::addJobs(JobList jobs)
     foreach (Job job, jobs)
     {
         mJobs << job;
-        connect(&job, SIGNAL(changed(ProjectPage*)),
-                this, SLOT(update()));
     }
 
     stopMerging();

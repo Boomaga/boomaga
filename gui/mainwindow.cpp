@@ -456,21 +456,18 @@ void MainWindow::switchPrinter()
  ************************************************/
 void MainWindow::switchToJob(const Job &job)
 {
-    ProjectPage *page = job.page(0);
+    ProjectPage *page = job.firstVisiblePage();
     for (int i=0; i<project->previewSheetCount(); ++i)
     {
         const Sheet *sheet = project->previewSheet(i);
-        for (int j=0; j<sheet->count(); ++j)
+
+        if (sheet->indexOfPage(page) > -1)
         {
-            if (sheet->page(j) == page)
-            {
-                ui->preview->setCurrentSheet(i);
-                return;
-            }
+            ui->preview->setCurrentSheet(i);
+            return;
         }
     }
 }
-
 
 
 /************************************************
@@ -882,18 +879,18 @@ void MainWindow::deletePagesEnd()
 
     Job job = project->jobs()->value(n);
 
-    job.blockSignals(true);
+    QList<ProjectPage*> deleted;
     for (int p=job.pageCount()-1; p>=job.indexOfPage(act->page()); --p)
     {
         ProjectPage *page = job.page(p);
 
         if (page->isBlankPage())
-            job.removePage(page);
+            deleted << page;
         else
             page->hide();
     }
-    job.blockSignals(false);
-    project->update();
+
+    job.removePages(deleted);
 }
 
 
