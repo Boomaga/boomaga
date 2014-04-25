@@ -69,18 +69,30 @@ public:
     PJLFileStreamData(const QString &fileName, qint64 startPos, qint64 endPos):
         mStartPos(startPos),
         mEndPos(endPos),
-        mLength(endPos - startPos)
+        mLength(endPos - startPos),
+        mValid(true)
     {
         initPoppler();
+
 #if POPPLER_VERSION < 2300
         mFile = fopen(fileName.toLocal8Bit(), "rb");
+        if (!mFile)
+        {
+            mErrorString = QString::fromLocal8Bit(strerror(errno));
+            mValid = false;
+            mFile = stdout; // Fake for preserve segfaults in Poppler::FileStream
+        }
+
 #else
         GooString f(fileName.toLocal8Bit());
         mFile = GooFile::open(&f);
-#endif
 
         if (!mFile)
+        {
+            mValid = false;
             mErrorString = QString::fromLocal8Bit(strerror(errno));
+        }
+#endif
 
     }
 
@@ -102,6 +114,7 @@ public:
     GooFile *mFile;
 #endif
     QString mErrorString;
+    bool mValid;
 };
 
 
@@ -125,6 +138,9 @@ public:
     virtual Goffset getPos()
 #endif
     {
+        if (!mValid)
+            return 0;
+
         return FileStream::getPos() - mStartPos;
     }
 
@@ -134,10 +150,13 @@ public:
     virtual void setPos(Goffset pos, int dir = 0)
 #endif
     {
-        if (dir<0)
-            FileStream::setPos(mEndPos - pos, 0);
-        else
-            FileStream::setPos(pos, dir);
+        if (mValid)
+        {
+            if (dir<0)
+                FileStream::setPos(mEndPos - pos, 0);
+            else
+                FileStream::setPos(pos, dir);
+        }
     }
 
     virtual void close()
@@ -145,6 +164,10 @@ public:
         FileStream::close();
 
     }
+
+    bool isValid() const { return mValid; }
+    QString errorString() const { return mErrorString; }
+
 };
 
 
@@ -155,16 +178,26 @@ BoomagaPDFDoc::BoomagaPDFDoc(const QString &fileName, qint64 startPos, qint64 en
     PDFDoc(new PJLFileStream(fileName, startPos, endPos)),
     mValid(true)
 {    
+    PJLFileStream *stream = static_cast<PJLFileStream*>(getBaseStream());
+    if (!stream->isValid())
+    {
+        mErrorString = stream->errorString();
+        mValid = false;
+        return;
+    }
+
     if (!isOk())
     {
         mErrorString = QObject::tr("PDF file \"%1\" is damaged.").arg(fileName);
         mValid = false;
+        return;
     }
 
     if (isEncrypted())
     {
         mErrorString = QObject::tr("PDF file \"%1\" is encripted.").arg(fileName);
         mValid = false;
+        return;
     }
 }
 

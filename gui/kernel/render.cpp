@@ -292,18 +292,17 @@ void Render::stop()
  ************************************************/
 QImage Render::image(int sheetNum) const
 {
-    CompressedImage *ci = mImages[sheetNum];
-    if (ci)
+    if (sheetNum < mImages.count())
     {
-        return mImages[sheetNum]->image();
+        CompressedImage *ci = mImages[sheetNum];
+        if (ci)
+            return mImages[sheetNum]->image();
     }
 
     emit setSheetNumHint(sheetNum);
 
     if (mLoResDoc)
-    {
         return renderSheet(mLoResDoc, sheetNum, 60);
-    }
 
     return QImage();
 }

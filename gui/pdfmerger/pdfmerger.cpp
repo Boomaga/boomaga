@@ -37,6 +37,7 @@
 #include <poppler/GlobalParams.h>
 #include <poppler/poppler-config.h>
 #include <kernel/boomagapoppler.h>
+#include "pdfmergeripc.h"
 
 #ifdef __GNUC__
 #define GCC_VARIABLE_IS_USED __attribute__ ((unused))
@@ -104,8 +105,7 @@ void writeTrailer(XRef *xRef, int rootNum, OutStream* stream)
  ************************************************/
 void error(const QString &message)
 {
-    QTextStream out(stdout);
-    out << "E:" << message << endl;
+    PdfMergerIPCWriter().writeError(message);
     exit(3);
 }
 
@@ -116,17 +116,7 @@ void error(const QString &message)
 void debug(const QString &message)
 {
     QTextStream out(stdout);
-    out << "D:" << message << endl;
-}
-
-
-/************************************************
-
- ************************************************/
-void print(const QString &message)
-{
-    QTextStream out(stdout);
-    out << message << endl;
+    PdfMergerIPCWriter().writeDebug(message);
 }
 
 
@@ -275,6 +265,7 @@ PdfMerger::~PdfMerger()
 PDFDoc *PdfMerger::addFile(const QString &fileName, qint64 startPos, qint64 endPos)
 {
     BoomagaPDFDoc *doc = new BoomagaPDFDoc(fileName, startPos, endPos);
+
     if (!doc->isValid())
     {
         error(doc->errorString());
@@ -292,10 +283,6 @@ PDFDoc *PdfMerger::addFile(const QString &fileName, qint64 startPos, qint64 endP
             mMinorVer = doc->getPDFMinorVersion();
         }
     }
-
-
-    QString title = doc->getMetaInfo("Title");
-    print(QString("F:%1:%2:%3").arg(mDocs.count()).arg(doc->getNumPages()).arg(title));
 
     mDocs << doc;
     return doc;
@@ -349,7 +336,9 @@ bool PdfMerger::run(const QString &outFileName)
 
     mOrigPages.resize(pagesCnt);
 
-    print(QString("A:%1").arg(pagesCnt));
+    PdfMergerIPCWriter ipc;
+    ipc.writeAllPagesCount(pagesCnt);
+
     Guint numOffset = mXRef.getNumObjects();
     XRef countXref;
 
@@ -403,7 +392,7 @@ bool PdfMerger::run(const QString &outFileName)
             doc->markPageObjects(pageDict, &mXRef, &countXref, numOffset);
 
             if (n % 2)
-                print(QString("S:%1").arg((n +1) / 2));
+                ipc.writeProgressStatus((n + 1) / 2);
 
             n++;
         }
@@ -420,8 +409,7 @@ bool PdfMerger::run(const QString &outFileName)
         pageInfo->objNum = xformStartNum + i;
         writePageAsXObject(pageInfo);
         if (i % 2)
-            print(QString("S:%1").arg(pagesCnt / 2 + i));
-
+            ipc.writeProgressStatus((pagesCnt + i ) / 2);
     }
 
     mXrefPos = mStream->getPos();
@@ -436,29 +424,23 @@ bool PdfMerger::run(const QString &outFileName)
     fclose(f);
 
     int i = 0;
-    for (int d=0; d<mDocs.count(); ++d)
+    for (int docNum=0; docNum<mDocs.count(); ++docNum)
     {
-        PDFDoc *doc = mDocs.at(d);
+        PDFDoc *doc = mDocs.at(docNum);
 
         int pc = doc->getNumPages();
-        for (int p=0; p<pc; ++p)
+        for (int pageNum=0; pageNum<pc; ++pageNum)
         {
-        PdfPageInfo *pageInfo = mOrigPages.at(i);
-        print(QString("P:%1:%2:%3:%4,%5,%6,%7")
-              .arg(d)
-              .arg(p)
-              .arg(pageInfo->objNum)
-              .arg(pageInfo->cropBox.left())
-              .arg(pageInfo->cropBox.top())
-              .arg(pageInfo->cropBox.width())
-              .arg(pageInfo->cropBox.height()));
+            PdfPageInfo *pageInfo = mOrigPages.at(i);
+            ipc.writePageInfo(docNum, pageNum,
+                              pageInfo->objNum,
+                              pageInfo->cropBox);
+
             i++;
         }
     }
 
-    print(QString("N:%1").arg(mXRef.getNumObjects()));
-    print(QString("X:%1").arg(mXrefPos));
-
+    ipc.writeXRefInfo(mXrefPos, mXRef.getNumObjects());
     return true;
 }
 

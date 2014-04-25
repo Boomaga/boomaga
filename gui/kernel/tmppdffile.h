@@ -47,7 +47,7 @@ class TmpPdfFile: public QObject
 public:
     struct PDFPageInfo
     {
-        int PdfObjectNum;
+        uint PdfObjectNum;
         QRectF Rect;
     };
 
@@ -76,8 +76,10 @@ signals:
     void imageChanged(int sheetNum);
 
 private slots:
-    void mergerOutputReady();
     void mergerFinished(int exitCode);
+
+    void pageInfo(int fileNum, int pageNum, uint objNum, const QRectF &cropBox);
+    void xRefInfo(qint64 xrefPos, qint32 freeNum);
 
 private:
     void getPageStream(QString *out, const Sheet *sheet) const;
@@ -93,8 +95,6 @@ private:
     qint64 mOrigFileSize;
     qint64 mOrigXrefPos;
     QProcess *mMerger;
-    QString mBuf;
-    int mPageCount;
     bool mValid;
     Render *mRender;
 };

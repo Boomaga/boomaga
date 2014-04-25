@@ -51,6 +51,7 @@ set(HEADERS
     export/exporttopdfprinter.h
     kernel/boomagapoppler.h
     kernel/projectfile.h
+    pdfmerger/pdfmergeripc.h
 )
 
 set(SOURCES
@@ -77,6 +78,7 @@ set(SOURCES
     export/exporttopdfprinter.cpp
     kernel/boomagapoppler.cpp
     kernel/projectfile.cpp
+    pdfmerger/pdfmergeripc.cpp
 )
 
 set (MOCS
@@ -95,6 +97,7 @@ set (MOCS
     aboutdialog/aboutdialog.h
     export/exporttopdf.h
     kernel/projectfile.h
+    pdfmerger/pdfmergeripc.h
 )
 
 set(LIBRARIES

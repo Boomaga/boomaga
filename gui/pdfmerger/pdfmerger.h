@@ -34,32 +34,7 @@
 #include <poppler/PDFDoc.h>
 
 
-/* Protocol ********************************
-    Line format     Description
-    F:n:cnt:title   File page counts:
-                        n - file index.
-                        cnt - page count in this PDF file
-                        title - document title
 
-    N:num           Next XRef free num
-    X:pos           XRef position
-
-    P:f:n:num:rect  PDF page info:
-                        f - file number
-                        n - page number
-                        num -  XForm object number for page
-                        rect- page Rectangle format is
-                            left,top,width,height
-    E:msg           Error message
-
-    D:msg           Debug message
-
-    A:cnt           All pages count
-
-    S:page          Progress status:
-                        page - page num
-
- ******************************************/
 
 struct PdfPageInfo
 {

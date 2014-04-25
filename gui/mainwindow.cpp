@@ -164,7 +164,7 @@ MainWindow::MainWindow(QWidget *parent):
             this, SLOT(showPrinterSettingsDialog()));
 
     connect(project, SIGNAL(progress(int,int)),
-            this, SLOT(updateProgressBar(int, int)));
+            this, SLOT(updateProgressBar(int, int)), Qt::QueuedConnection);
 
     connect(ui->preview, SIGNAL(changed(int)),
             this, SLOT(updateWidgets()));
@@ -700,7 +700,7 @@ void MainWindow::showAboutDialog()
  ************************************************/
 void MainWindow::updateProgressBar(int value, int all)
 {
-    if (all <1)
+    if (all <1 && mProgressBar.isVisible())
     {
         mProgressBar.hide();
         return;
@@ -711,7 +711,7 @@ void MainWindow::updateProgressBar(int value, int all)
 
     mProgressBar.setValue(value);
 
-    if (all > 0)
+    if (all > 0 && mProgressBar.isHidden())
         mProgressBar.show();
 }
 

@@ -23,7 +23,6 @@
  *
  * END_COMMON_COPYRIGHT_HEADER */
 
-
 #include "tmppdffile.h"
 #include <QtAlgorithms>
 #include <QDebug>
@@ -41,6 +40,7 @@
 #include "sheet.h"
 #include "layout.h"
 #include "render.h"
+#include "../pdfmerger/pdfmergeripc.h"
 
 
 /************************************************
@@ -84,7 +84,6 @@ QString TmpPdfFile::genFileName()
 TmpPdfFile::TmpPdfFile(const JobList jobs, QObject *parent):
     QObject(parent),
     mMerger(0),
-    mPageCount(0),
     mValid(false),
     mRender(0)
 {
@@ -120,8 +119,20 @@ void TmpPdfFile::merge()
     connect(mMerger, SIGNAL(finished(int)),
             this, SLOT(mergerFinished(int)));
 
-    connect(mMerger, SIGNAL(readyReadStandardOutput()),
-            this, SLOT(mergerOutputReady()));
+
+    PdfMergerIPCReader *ipc = new PdfMergerIPCReader(mMerger, mMerger);
+
+    connect(ipc, SIGNAL(pageInfo(int,int,uint,QRectF)),
+            this, SLOT(pageInfo(int,int,uint,QRectF)));
+
+    connect(ipc, SIGNAL(xRefInfo(qint64,qint32)),
+            this, SLOT(xRefInfo(qint64,qint32)));
+
+    connect(ipc, SIGNAL(progress(int,int)),
+            this, SIGNAL(progress(int,int)), Qt::QueuedConnection);
+
+    connect(ipc, SIGNAL(error(QString)),
+            project, SLOT(error(QString)));
 
     QStringList args;
     foreach (const InputFile file, mInputFiles)
@@ -488,142 +499,6 @@ void TmpPdfFile::getPageStream(QString *out, const Sheet *sheet) const
 /************************************************
 
  ************************************************/
-void TmpPdfFile::mergerOutputReady()
-{
-    mBuf += QString::fromLocal8Bit(mMerger->readAllStandardOutput());
-    QString line;
-    int i;
-    for (i=0; i<mBuf.length(); ++i)
-    {
-        QChar c = mBuf.at(i);
-        if (c != '\n')
-        {
-            line += c;
-            continue;
-        }
-
-
-        /* Protocol ********************************
-            Line format     Description
-            F:n:cnt:title   File page counts:
-                                n - file index.
-                                cnt - page count in this PDF file
-                                title - document title
-
-            N:num           Next XRef free num
-            X:pos           XRef position
-
-            P:f:n:num:rect  PDF page info:
-                            f - file number
-                            n - page number
-                            num -  XForm object number for page
-                            rect- page Rectangle format is
-                                left,top,width,height
-
-            E:msg           Error message
-
-            D:msg           Debug message
-
-            A:cnt           All pages count
-
-            S:page          Progress status:
-                                page - page num
-         ******************************************/
-
-        QStringList data = line.split(':', QString::KeepEmptyParts);
-
-        //***************************************
-        if (data.at(0) == "S")
-        {
-            emit progress(data.at(1).toInt(), mPageCount);
-        }
-
-
-        //***************************************
-        else if (data.at(0) == "P")
-        {
-            int jobNum = data.at(1).toInt();
-            int pageNum = data.at(2).toInt();
-            int pdfObj  = data.at(3).toInt();
-            QStringList r = data.at(4).split(",");
-
-
-            PDFPageInfo info;
-            info.PdfObjectNum = pdfObj;
-            info.Rect = QRectF(r.at(0).toDouble(),
-                               r.at(1).toDouble(),
-                               r.at(2).toDouble(),
-                               r.at(3).toDouble());
-
-            mPagesInfo.insert(QString("%1:%2").arg(jobNum).arg(pageNum),
-                              info);
-        }
-
-
-        //***************************************
-        else if (data.at(0) == "A")
-        {
-            mPageCount = data.at(1).toInt();
-        }
-
-
-        //***************************************
-        else if (data.at(0) == "X")
-        {
-            mOrigXrefPos = data.at(1).toDouble();
-        }
-
-
-        //***************************************
-        else if (data.at(0) == "N")
-        {
-            mFirstFreeNum = data.at(1).toDouble();
-        }
-
-
-        //***************************************
-        /*
-        else if (data.at(0) == "F")
-        {
-            int fileNum = data.at(1).toInt();
-            int pageCnt = data.at(2).toInt();
-            QString title = data.at(3);
-
-            Job *job = mJobs->at(fileNum);
-            job->setTitle(title);
-
-            for (int j=0; j<pageCnt; ++j)
-            {
-                ProjectPage *page = new ProjectPage(mInputFiles.at(fileNum), j);
-                job->addPage(page);
-            }
-        }
-        */
-
-        //***************************************
-        else if (data.at(0) == "E")
-        {
-            project->error(data.at(1));
-            return;
-        }
-
-
-        //***************************************
-        else if (data.at(0) == "D")
-        {
-            qDebug() << data.at(1);
-        }
-
-        line = "";
-    }
-
-    mBuf.remove(0, i);
-}
-
-
-/************************************************
-
- ************************************************/
 void TmpPdfFile::mergerFinished(int exitCode)
 {
     mValid = (mMerger->exitCode() == 0 ) &&
@@ -632,7 +507,6 @@ void TmpPdfFile::mergerFinished(int exitCode)
     mMerger->close();
     mMerger->deleteLater();
     mMerger = 0;
-    mBuf.clear();
 
     QFile f(mFileName);
     f.open(QFile::ReadOnly);
@@ -641,6 +515,28 @@ void TmpPdfFile::mergerFinished(int exitCode)
 
     emit progress(0,0);
     emit merged();
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void TmpPdfFile::pageInfo(int fileNum, int pageNum, uint objNum, const QRectF &cropBox)
+{
+    PDFPageInfo info;
+    info.PdfObjectNum = objNum;
+    info.Rect = cropBox;
+    mPagesInfo.insert(QString("%1:%2").arg(fileNum).arg(pageNum), info);
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void TmpPdfFile::xRefInfo(qint64 xrefPos, qint32 freeNum)
+{
+    mOrigXrefPos = xrefPos;
+    mFirstFreeNum = freeNum;
 }
 
 

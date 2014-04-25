@@ -158,8 +158,6 @@ public:
     Printer *printer() const { return mPrinter; }
     void setPrinter(Printer *value);
 
-    bool error(const QString &message);
-
     QImage sheetImage(int sheetNum) const;
 
     MetaData metaData() const { return mMetaData; }
@@ -173,6 +171,8 @@ public:
     void load(const QStringList &fileNames, const QStringList &titles, bool autoRemove = false);
 
 public slots:
+    bool error(const QString &message);
+
     void addJob(Job job);
     void addJobs(JobList jobs);
     void removeJob(int index);
