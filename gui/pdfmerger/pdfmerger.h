@@ -25,43 +25,18 @@
 
  // This code based on poppler pdfunite.cc
 
+
 #ifndef PDFMERGER_H
 #define PDFMERGER_H
+
+#include "pdfmergeripc.h"
 
 #include <QList>
 #include <QVector>
 #include <QRectF>
 #include <poppler/PDFDoc.h>
 
-
-
-
-struct PdfPageInfo
-{
-    PdfPageInfo():
-        doc(0),
-        numOffset(-1),
-        objNum(-1),
-        pageNum(-1)
-    {
-    }
-
-    ~PdfPageInfo()
-    {
-        page.free();
-        stream.free();
-    }
-
-    PDFDoc *doc;
-    Guint   numOffset;
-    Object  page;
-    Object  stream;
-    Guint   objNum;
-    int     pageNum;
-    QRectF  mediaBox;
-    QRectF  cropBox;
-};
-
+class PdfMergerPageInfo;
 
 class PdfMerger
 {
@@ -79,14 +54,14 @@ public:
 private:
     XRef mXRef;
     QList<PDFDoc*> mDocs;
-    QVector<PdfPageInfo*> mOrigPages;
+    QVector<PdfMergerPageInfo*> mOrigPages;
     int mMajorVer;
     int mMinorVer;
     FileOutStream *mStream;
 
     Guint  mNextFreeNum;
     qint64 mXrefPos;
-    bool writePageAsXObject(PdfPageInfo *pageInfo);
+    bool writePageAsXObject(PdfMergerPageInfo *pageInfo);
     bool writeDictValue(Dict *dict, const char *key, Guint numOffset);
     QString getDocumentMetaInfo(PDFDoc *doc, const char *tag);
 };

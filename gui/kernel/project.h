@@ -31,6 +31,7 @@
 #include "job.h"
 #include "printer.h"
 #include "inputfile.h"
+#include "../pdfmerger/pdfmergeripc.h"
 
 #include <QObject>
 #include <QList>
@@ -92,12 +93,10 @@ public:
     InputFile inputFile() const { return mInputFile; }
     int pageNum() const { return mPageNum; }
 
-    int pdfObjectNum() const { return mPdfObjectNum; }
-    void setPdfObjectNum(int id) { mPdfObjectNum = id; }
-
     virtual QRectF rect() const;
-    void setRect(const QRectF rect) { mRect = rect; }
 
+    PdfPageInfo pdfInfo() const { return mPdfInfo; }
+    void setPdfInfo(const PdfPageInfo &value) { mPdfInfo = value; }
 
     bool visible() const { return mVisible;}
     void setVisible(bool value);
@@ -108,9 +107,8 @@ public:
 private:
     InputFile mInputFile;
     int mPageNum;
-    int mPdfObjectNum;
-    QRectF mRect;
     bool mVisible;
+    PdfPageInfo mPdfInfo;
 };
 
 

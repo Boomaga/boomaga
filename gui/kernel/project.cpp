@@ -50,7 +50,6 @@
  ************************************************/
 ProjectPage::ProjectPage():
     mPageNum(-1),
-    mPdfObjectNum(0),
     mVisible(true)
 {
 
@@ -63,9 +62,8 @@ ProjectPage::ProjectPage():
 ProjectPage::ProjectPage(const ProjectPage *other):
     mInputFile(other->mInputFile),
     mPageNum(other->mPageNum),
-    mPdfObjectNum(other->mPdfObjectNum),
-    mRect(other->mRect),
-    mVisible(other->mVisible)
+    mVisible(other->mVisible),
+    mPdfInfo(other->mPdfInfo)
 {
 
 }
@@ -76,7 +74,6 @@ ProjectPage::ProjectPage(const ProjectPage *other):
 ProjectPage::ProjectPage(const InputFile &inputFile, int pageNum):
     mInputFile(inputFile),
     mPageNum(pageNum),
-    mPdfObjectNum(0),
     mVisible(true)
 {
 }
@@ -95,8 +92,8 @@ ProjectPage::~ProjectPage()
  * ***********************************************/
 QRectF ProjectPage::rect() const
 {
-    if (mRect.isValid())
-        return mRect;
+    if (mPdfInfo.cropBox.isValid())
+        return mPdfInfo.cropBox;
     else
         return project->printer()->paperRect();
 }
@@ -241,10 +238,7 @@ void Project::tmpFileMerged()
         for (int p=0; p<job.pageCount(); ++p)
         {
             ProjectPage *page = job.page(p);
-            TmpPdfFile::PDFPageInfo info = tmpPdf->pageInfo(job.inputFile(), page->pageNum());
-
-            page->setPdfObjectNum(info.PdfObjectNum);
-            page->setRect(info.Rect);
+            page->setPdfInfo(tmpPdf->pageInfo(job.inputFile(), page->pageNum()));
         }
 
     }

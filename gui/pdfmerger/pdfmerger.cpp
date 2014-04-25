@@ -37,7 +37,7 @@
 #include <poppler/GlobalParams.h>
 #include <poppler/poppler-config.h>
 #include <kernel/boomagapoppler.h>
-#include "pdfmergeripc.h"
+
 
 #ifdef __GNUC__
 #define GCC_VARIABLE_IS_USED __attribute__ ((unused))
@@ -229,6 +229,33 @@ OutStream &operator<<(OutStream &stream, Stream *value)
 }
 
 
+class PdfMergerPageInfo: public PdfPageInfo
+{
+public:
+
+    PdfMergerPageInfo():
+        PdfPageInfo(),
+        doc(0),
+        numOffset(-1),
+        pageNum(-1)
+    {
+    }
+
+    ~PdfMergerPageInfo()
+    {
+        page.free();
+        stream.free();
+    }
+
+    PDFDoc *doc;
+    Guint   numOffset;
+    Object  page;
+    Object  stream;
+    int     pageNum;
+};
+
+
+
 /************************************************
 
  ************************************************/
@@ -360,7 +387,7 @@ bool PdfMerger::run(const QString &outFileName)
             }
 
             Ref *refPage = doc->getCatalog()->getPageRef(i);
-            PdfPageInfo *pageInfo = new PdfPageInfo();
+            PdfMergerPageInfo *pageInfo = new PdfMergerPageInfo();
 
             pageInfo->doc = doc;
             pageInfo->numOffset = numOffset;
@@ -405,7 +432,7 @@ bool PdfMerger::run(const QString &outFileName)
     //*mStream  << "\n% XObjects **************************************\n\n";
     for (int i=0; i<mOrigPages.count(); ++i)
     {
-        PdfPageInfo *pageInfo = mOrigPages[i];
+        PdfMergerPageInfo *pageInfo = mOrigPages[i];
         pageInfo->objNum = xformStartNum + i;
         writePageAsXObject(pageInfo);
         if (i % 2)
@@ -431,11 +458,8 @@ bool PdfMerger::run(const QString &outFileName)
         int pc = doc->getNumPages();
         for (int pageNum=0; pageNum<pc; ++pageNum)
         {
-            PdfPageInfo *pageInfo = mOrigPages.at(i);
-            ipc.writePageInfo(docNum, pageNum,
-                              pageInfo->objNum,
-                              pageInfo->cropBox);
-
+            PdfMergerPageInfo *pageInfo = mOrigPages.at(i);
+            ipc.writePageInfo(docNum, pageNum, *pageInfo);
             i++;
         }
     }
@@ -465,7 +489,7 @@ bool PdfMerger::run(const QString &outFileName)
     OC                  -
     Name                -
  ************************************************/
-bool PdfMerger::writePageAsXObject(PdfPageInfo *pageInfo)
+bool PdfMerger::writePageAsXObject(PdfMergerPageInfo *pageInfo)
 {
     mXRef.add(pageInfo->objNum, 0, mStream->getPos(), true);
     *mStream << pageInfo->objNum << " 0 obj\n";

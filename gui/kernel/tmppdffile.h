@@ -31,6 +31,7 @@
 #include <QStringList>
 #include <QHash>
 #include "project.h"
+#include "../pdfmerger/pdfmergeripc.h"
 
 class QProcess;
 class Sheet;
@@ -45,12 +46,6 @@ class TmpPdfFile: public QObject
     Q_OBJECT
     friend class PdfMerger;
 public:
-    struct PDFPageInfo
-    {
-        uint PdfObjectNum;
-        QRectF Rect;
-    };
-
     explicit TmpPdfFile(const JobList jobs, QObject *parent = 0);
     virtual ~TmpPdfFile();
 
@@ -68,7 +63,7 @@ public:
 
     QImage image(int sheetNum) const;
 
-    PDFPageInfo pageInfo(InputFile file, int pageNum);
+    PdfPageInfo pageInfo(InputFile file, int pageNum);
 
 signals:
     void merged();
@@ -78,8 +73,8 @@ signals:
 private slots:
     void mergerFinished(int exitCode);
 
-    void pageInfo(int fileNum, int pageNum, uint objNum, const QRectF &cropBox);
-    void xRefInfo(qint64 xrefPos, qint32 freeNum);
+    void ipcPageInfo(int fileNum, int pageNum, const PdfPageInfo &info);
+    void ipcXRefInfo(qint64 xrefPos, qint32 freeNum);
 
 private:
     void getPageStream(QString *out, const Sheet *sheet) const;
@@ -88,7 +83,7 @@ private:
     static QString genFileName();
 
     QList<InputFile> mInputFiles;
-    QHash<QString, PDFPageInfo> mPagesInfo;
+    QHash<QString, PdfPageInfo> mPagesInfo;
 
     QString mFileName;
     qint32 mFirstFreeNum;

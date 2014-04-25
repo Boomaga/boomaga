@@ -40,7 +40,7 @@
 #include "sheet.h"
 #include "layout.h"
 #include "render.h"
-#include "../pdfmerger/pdfmergeripc.h"
+
 
 
 /************************************************
@@ -122,11 +122,11 @@ void TmpPdfFile::merge()
 
     PdfMergerIPCReader *ipc = new PdfMergerIPCReader(mMerger, mMerger);
 
-    connect(ipc, SIGNAL(pageInfo(int,int,uint,QRectF)),
-            this, SLOT(pageInfo(int,int,uint,QRectF)));
+    connect(ipc, SIGNAL(pageInfo(int,int,PdfPageInfo)),
+            this, SLOT(ipcPageInfo(int,int,PdfPageInfo)));
 
     connect(ipc, SIGNAL(xRefInfo(qint64,qint32)),
-            this, SLOT(xRefInfo(qint64,qint32)));
+            this, SLOT(ipcXRefInfo(qint64,qint32)));
 
     connect(ipc, SIGNAL(progress(int,int)),
             this, SIGNAL(progress(int,int)), Qt::QueuedConnection);
@@ -298,9 +298,9 @@ void TmpPdfFile::writeSheets(QIODevice *out, const QList<Sheet *> &sheets) const
         for (int i=0; i< sheet->count(); ++i)
         {
             const ProjectPage *page = sheet->page(i);
-            if (page && page->pdfObjectNum())
+            if (page && page->pdfInfo().objNum)
             {
-                *out << "/Im" << i << " " << sheet->page(i)->pdfObjectNum() <<  " 0 R ";
+                *out << "/Im" << i << " " << page->pdfInfo().objNum <<  " 0 R ";
             }
         }
         *out << ">>\n";
@@ -342,6 +342,7 @@ void TmpPdfFile::writeSheets(QIODevice *out, const QList<Sheet *> &sheets) const
             .arg(mediaBox.width())
             .arg(mediaBox.height());
 
+   // *out << "/Rotate " << 90 << "\n";
     *out << "/Count " << sheets.count() << "\n";
     *out << "/Kids [ " << pagesKids.join("\n") << " ]\n";
     *out << ">>\n";
@@ -484,7 +485,7 @@ void TmpPdfFile::getPageStream(QString *out, const Sheet *sheet) const
                         .arg(page->rect().height(), 0, 'f', 3);
             }
 
-            if (page->pdfObjectNum())
+            if (page->pdfInfo().objNum)
                 *out += QString("/Im%1 Do\n").arg(i);
 
             *out += "Q\n";
@@ -521,11 +522,8 @@ void TmpPdfFile::mergerFinished(int exitCode)
 /************************************************
  *
  * ***********************************************/
-void TmpPdfFile::pageInfo(int fileNum, int pageNum, uint objNum, const QRectF &cropBox)
+void TmpPdfFile::ipcPageInfo(int fileNum, int pageNum, const PdfPageInfo &info)
 {
-    PDFPageInfo info;
-    info.PdfObjectNum = objNum;
-    info.Rect = cropBox;
     mPagesInfo.insert(QString("%1:%2").arg(fileNum).arg(pageNum), info);
 }
 
@@ -533,7 +531,7 @@ void TmpPdfFile::pageInfo(int fileNum, int pageNum, uint objNum, const QRectF &c
 /************************************************
  *
  * ***********************************************/
-void TmpPdfFile::xRefInfo(qint64 xrefPos, qint32 freeNum)
+void TmpPdfFile::ipcXRefInfo(qint64 xrefPos, qint32 freeNum)
 {
     mOrigXrefPos = xrefPos;
     mFirstFreeNum = freeNum;
@@ -555,7 +553,7 @@ QImage TmpPdfFile::image(int sheetNum) const
 /************************************************
  *
  * ***********************************************/
-TmpPdfFile::PDFPageInfo TmpPdfFile::pageInfo(InputFile file, int pageNum)
+PdfPageInfo TmpPdfFile::pageInfo(InputFile file, int pageNum)
 {
     return mPagesInfo.value(QString("%1:%2").arg(mInputFiles.indexOf(file)).arg(pageNum));
 }
