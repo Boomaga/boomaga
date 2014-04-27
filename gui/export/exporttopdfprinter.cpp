@@ -42,6 +42,7 @@ ExportToPDFPrinter::ExportToPDFPrinter()
     mCanChangeDuplexType = false;
     mShowProgressDialog = false;
     mOutFileName = settings->value(Settings::ExportPDF_FileName).toString();
+    readSettings();
 }
 
 
