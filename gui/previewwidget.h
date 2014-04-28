@@ -63,7 +63,9 @@ private slots:
 
 private:
     QImage mImage;
+    QRect mDrawRect;
     int mSheetNum;
+    double mScaleFactor;
     Sheet::Hints mHints;
 };
 

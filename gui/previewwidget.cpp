@@ -43,7 +43,8 @@
  ************************************************/
 PreviewWidget::PreviewWidget(QWidget *parent) :
     QFrame(parent),
-    mSheetNum(-1)
+    mSheetNum(-1),
+    mScaleFactor(0)
 {
     QPalette pal(palette());
     pal.setColor(QPalette::Background, QColor(105, 101, 98));
@@ -71,42 +72,31 @@ PreviewWidget::~PreviewWidget()
  * ***********************************************/
 QRectF PreviewWidget::pageRect(int pageNum) const
 {
-    if (mSheetNum < 0)
+    if (mSheetNum < 0 || !mScaleFactor)
         return QRectF();
 
     Sheet * sheet = project->previewSheet(mSheetNum);
     TransformSpec spec = project->layout()->transformSpec(sheet, pageNum);
 
-    if (mHints.testFlag(Sheet::HintLandscapePreview))
+    QSize size = QSize(spec.rect.width()  * mScaleFactor,
+                       spec.rect.height() * mScaleFactor);
+
+    if (isLandscape(project->layout()->rotate()))
+        size.transpose();
+
+    QRect rect(QPoint(0, 0), size);
+    if (isLandscape(project->layout()->rotate()))
     {
-        double factor = qMin((this->geometry().height() - MARGIN_H) * 1.0 / project->printer()->paperRect().width(),
-                             (this->geometry().width()  - MARGIN_V) * 1.0 / project->printer()->paperRect().height());
-
-        QRectF pageRect;
-        pageRect.setHeight(factor * project->printer()->paperRect().width());
-        pageRect.setWidth(factor  * project->printer()->paperRect().height());
-        pageRect.moveCenter(geometry().center());
-
-        return QRectF(pageRect.left()   + spec.rect.top()   * factor,
-                      pageRect.bottom() - spec.rect.right() * factor,
-                      factor * spec.rect.height(),
-                      factor * spec.rect.width());
+        rect.moveLeft(mDrawRect.left() + spec.rect.top()  * mScaleFactor);
+        rect.moveTop( mDrawRect.top()  + spec.rect.left() * mScaleFactor);
     }
     else
     {
-        double factor = qMin((this->geometry().width()  - MARGIN_H) * 1.0 / project->printer()->paperRect().width(),
-                             (this->geometry().height() - MARGIN_V) * 1.0 / project->printer()->paperRect().height());
-
-        QRectF pageRect;
-        pageRect.setHeight(factor * project->printer()->paperRect().height());
-        pageRect.setWidth(factor  * project->printer()->paperRect().width());
-        pageRect.moveCenter(geometry().center());
-
-        return QRectF(pageRect.left() + spec.rect.left() * factor,
-                      pageRect.top()  + spec.rect.top()  * factor,
-                      factor * spec.rect.width(),
-                      factor * spec.rect.height());
+        rect.moveLeft(mDrawRect.left() + spec.rect.left() * mScaleFactor);
+        rect.moveTop( mDrawRect.top()  + spec.rect.top()  * mScaleFactor);
     }
+
+    return rect;
 }
 
 
@@ -147,47 +137,38 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
     if (mImage.isNull())
         return;
 
-    double factor;
-    if (mHints.testFlag(Sheet::HintLandscapePreview))
-    {
-        factor = qMin((this->geometry().height() - MARGIN_H) * 1.0 / project->printer()->paperRect().width(),
-                      (this->geometry().width()  - MARGIN_V) * 1.0 / project->printer()->paperRect().height());
-    }
-    else
-    {
-        factor = qMin((this->geometry().width()  - MARGIN_H) * 1.0 / project->printer()->paperRect().width(),
-                      (this->geometry().height() - MARGIN_V) * 1.0 / project->printer()->paperRect().height());
-    }
+    QSizeF printerSize =  project->printer()->paperRect().size();
+    if (isLandscape(project->layout()->rotate()))
+        printerSize.transpose();
 
-    QRect rect;
-    rect.setWidth(project->printer()->paperRect().width()   * factor);
-    rect.setHeight(project->printer()->paperRect().height() * factor);
+    double factor = qMin((this->geometry().width()  - 2.0 * MARGIN_H) * 1.0 / printerSize.width(),
+                         (this->geometry().height() - 2.0 * MARGIN_V) * 1.0 / printerSize.height());
 
-    QImage img = mImage.scaled(rect.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    QSize size = QSize(printerSize.width()  * factor,
+                       printerSize.height() * factor);
 
+    mDrawRect = QRect(QPoint(0, 0), size);
+    mDrawRect.moveCenter(QPoint(0, 0));
 
-    rect.moveCenter(QPoint(0, 0));
-
-    QRectF clipRect = rect;
+    QRectF clipRect = mDrawRect;
 
     if (mHints.testFlag(Sheet::HintOnlyLeft))
-        clipRect.setTop(0);
+        clipRect.setRight(0);
 
     if (mHints.testFlag(Sheet::HintOnlyRight))
-        clipRect.setBottom(0);
+        clipRect.setLeft(0);
 
+
+    QImage img = mImage.scaled(mDrawRect.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
 
     // Draw .....................................
     QPainter painter(this);
     painter.save();
     painter.translate(geometry().center());
 
-    if (mHints.testFlag(Sheet::HintLandscapePreview))
-        painter.rotate(90);
-
     painter.save();
     painter.setClipRect(clipRect);
-    painter.drawImage(rect, img);
+    painter.drawImage(mDrawRect, img);
     painter.restore();
 
     if (mHints.testFlag(Sheet::HintDrawFold))
@@ -196,29 +177,27 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
         pen.setStyle(Qt::SolidLine);
         pen.setColor(Qt::lightGray);
         painter.setPen(pen);
-        painter.drawLine(rect.left(), 0, rect.right(), 0);
+        painter.drawLine(0, mDrawRect.top(), 0, mDrawRect.bottom());
     }
     painter.restore();
 
-#if 0
-    painter.save();
-    painter.fillRect(project->printer()->paperRect(), Qt::white);
-    painter.drawRect(project->printer()->paperRect());
+    mDrawRect.moveCenter(geometry().center());
+    mScaleFactor = factor;
 
+//#define DEBUG_CLICK_RECT
+#ifdef DEBUG_CLICK_RECT
+    painter.save();
     Sheet *sheet = project->previewSheet(mSheetNum);
     for (int i=0; i< sheet->count(); ++i)
     {
-        if (sheet->page(i))
-        {
-            QRectF r = project->layout()->transformSpec(sheet, i).rect;
-            painter.drawRect(r);
-            painter.drawText(r, QString("%1").arg(i + 1), QTextOption(Qt::AlignCenter));
-        }
+        QPen pen = painter.pen();
+        pen.setStyle(Qt::DotLine);
+        pen.setColor(Qt::red);
+        painter.setPen(pen);
+        painter.drawRect(this->pageRect(i));
     }
-
     painter.restore();
 #endif
-
 }
 
 

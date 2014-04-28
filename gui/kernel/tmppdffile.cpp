@@ -342,7 +342,7 @@ void TmpPdfFile::writeSheets(QIODevice *out, const QList<Sheet *> &sheets) const
             .arg(mediaBox.width())
             .arg(mediaBox.height());
 
-   // *out << "/Rotate " << 90 << "\n";
+    *out << "/Rotate " << (int)project->layout()->rotate() << "\n";
     *out << "/Count " << sheets.count() << "\n";
     *out << "/Kids [ " << pagesKids.join("\n") << " ]\n";
     *out << ">>\n";
@@ -432,22 +432,22 @@ void TmpPdfFile::getPageStream(QString *out, const Sheet *sheet) const
 
             switch (spec.rotation)
             {
-            case TransformSpec::NoRotate:
+            case NoRotate:
                 dx = spec.rect.left();
                 dy = printer->paperRect().height() - spec.rect.bottom();
                 break;
 
-            case TransformSpec::Rotate90:
+            case Rotate90:
                 dx = printer->paperRect().width() - spec.rect.left();
                 dy = spec.rect.top();
                 break;
 
-            case TransformSpec::Rotate180:
+            case Rotate180:
                 dx = spec.rect.right();
                 dy = printer->paperRect().height() - spec.rect.top();
                 break;
 
-            case TransformSpec::Rotate270:
+            case Rotate270:
                 dx = printer->paperRect().width() - spec.rect.right();
                 dy = spec.rect.bottom();
                 break;

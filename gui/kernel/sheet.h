@@ -40,8 +40,7 @@ public:
     enum Hint{
         HintOnlyLeft         = 1,
         HintOnlyRight        = 2,
-        HintDrawFold         = 4,
-        HintLandscapePreview = 8
+        HintDrawFold         = 4
     };
 
     Q_DECLARE_FLAGS(Hints, Hint)

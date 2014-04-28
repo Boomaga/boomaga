@@ -50,7 +50,8 @@
  ************************************************/
 ProjectPage::ProjectPage():
     mPageNum(-1),
-    mVisible(true)
+    mVisible(true),
+    mManualRotate(NoRotate)
 {
 
 }
@@ -63,7 +64,8 @@ ProjectPage::ProjectPage(const ProjectPage *other):
     mInputFile(other->mInputFile),
     mPageNum(other->mPageNum),
     mVisible(other->mVisible),
-    mPdfInfo(other->mPdfInfo)
+    mPdfInfo(other->mPdfInfo),
+    mManualRotate(NoRotate)
 {
 
 }
@@ -74,7 +76,8 @@ ProjectPage::ProjectPage(const ProjectPage *other):
 ProjectPage::ProjectPage(const InputFile &inputFile, int pageNum):
     mInputFile(inputFile),
     mPageNum(pageNum),
-    mVisible(true)
+    mVisible(true),
+    mManualRotate(NoRotate)
 {
 }
 
@@ -96,6 +99,20 @@ QRectF ProjectPage::rect() const
         return mPdfInfo.cropBox;
     else
         return project->printer()->paperRect();
+}
+
+
+/************************************************
+
+ ************************************************/
+Rotation ProjectPage::rotate() const
+{
+    uint r = (mPdfInfo.rotate + mManualRotate) % 360;
+
+    if (r == 90)    return Rotate90;
+    if (r == 180)   return Rotate180;
+    if (r == 270)   return Rotate270;
+    else            return NoRotate;
 }
 
 

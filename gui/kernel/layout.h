@@ -30,6 +30,7 @@
 #include <QList>
 #include <QRectF>
 #include <QString>
+#include "project.h"
 
 class Sheet;
 class Project;
@@ -37,14 +38,6 @@ class Project;
 struct TransformSpec
 {
 public:
-    enum Rotation
-    {
-        NoRotate  = 0,
-        Rotate90  = 90,
-        Rotate180 = 180,
-        Rotate270 = 270
-    };
-
     QRectF rect;
     Rotation rotation;
     double scale;
@@ -63,7 +56,20 @@ public:
 
     virtual TransformSpec transformSpec(const Sheet *sheet, int pageNumOnSheet) const = 0;
 
+    virtual Rotation rotate() const = 0;
+
 protected:
+    struct PagePosition
+    {
+        uint col;
+        uint row;
+    };
+
+    virtual PagePosition calcPagePosition(const Sheet *sheet, int pageNumOnSheet,
+                                          int pageCountHoriz, int pageCountVert,
+                                          Qt::Orientation orientation) const;
+
+
     TransformSpec calcTransformSpec(const Sheet *sheet, int pageNumOnSheet,
                                     int pageCountHoriz, int pageCountVert,
                                     Qt::Orientation orientation) const;
@@ -79,11 +85,11 @@ public:
 
     void fillSheets(QList<Sheet*> *sheets) const;
     TransformSpec transformSpec(const Sheet *sheet, int pageNumOnSheet) const;
+    virtual Rotation rotate() const;
 
 private:
     int mPageCountVert;
     int mPageCountHoriz;
-    bool mRotate;
     Qt::Orientation mOrientation;
 };
 
@@ -99,6 +105,7 @@ public:
     void fillPreviewSheets(QList<Sheet*> *sheets) const;
 
     TransformSpec transformSpec(const Sheet *sheet, int pageNumOnSheet) const;
+    virtual Rotation rotate() const { return Rotate90; }
 
 private:
     void fillSheetsForBook(int bookStart, int bookLength, QList<Sheet *> *sheets) const;
