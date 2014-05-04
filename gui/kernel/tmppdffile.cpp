@@ -283,6 +283,8 @@ void TmpPdfFile::writeSheets(QIODevice *out, const QList<Sheet *> &sheets) const
         *out << "/Contents "  << contentsNum  << " 0 R\n";
         *out << "/Resources " << resourcesNum << " 0 R\n";
         *out << "/Parent " << pagesNum << " 0 R\n";
+
+        *out << "/Rotate " << (int)sheet->rotation() << "\n";
         *out << ">>\n";
         *out << "endobj\n";
 
@@ -342,7 +344,6 @@ void TmpPdfFile::writeSheets(QIODevice *out, const QList<Sheet *> &sheets) const
             .arg(mediaBox.width())
             .arg(mediaBox.height());
 
-    *out << "/Rotate " << (int)project->layout()->rotate() << "\n";
     *out << "/Count " << sheets.count() << "\n";
     *out << "/Kids [ " << pagesKids.join("\n") << " ]\n";
     *out << ">>\n";
@@ -438,8 +439,8 @@ void TmpPdfFile::getPageStream(QString *out, const Sheet *sheet) const
                 break;
 
             case Rotate90:
-                dx = printer->paperRect().width() - spec.rect.left();
-                dy = spec.rect.top();
+                dx = spec.rect.left();
+                dy = printer->paperRect().height() - spec.rect.top();
                 break;
 
             case Rotate180:
@@ -448,8 +449,8 @@ void TmpPdfFile::getPageStream(QString *out, const Sheet *sheet) const
                 break;
 
             case Rotate270:
-                dx = printer->paperRect().width() - spec.rect.right();
-                dy = spec.rect.bottom();
+                dx = spec.rect.right();
+                dy = printer->paperRect().height() - spec.rect.bottom();
                 break;
             }
 
@@ -461,10 +462,10 @@ void TmpPdfFile::getPageStream(QString *out, const Sheet *sheet) const
 
             // Rotate ...........................
             *out += QString("q\n%1 %2 %3 %4 0 0 cm\n")
-                    .arg( cos(spec.rotation * M_PI / 180), 0, 'f', 3)
-                    .arg( sin(spec.rotation * M_PI / 180), 0, 'f', 3)
-                    .arg(-sin(spec.rotation * M_PI / 180), 0, 'f', 3)
-                    .arg( cos(spec.rotation * M_PI / 180), 0, 'f', 3);
+                    .arg( cos(- spec.rotation * M_PI / 180), 0, 'f', 3)
+                    .arg( sin(- spec.rotation * M_PI / 180), 0, 'f', 3)
+                    .arg(-sin(- spec.rotation * M_PI / 180), 0, 'f', 3)
+                    .arg( cos(- spec.rotation * M_PI / 180), 0, 'f', 3);
 
             // Scale ...........................
             *out += QString("q\n%1 0 0 %1 0 0 cm\n")

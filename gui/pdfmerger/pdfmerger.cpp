@@ -407,6 +407,8 @@ bool PdfMerger::run(const QString &outFileName)
             pageInfo->cropBox.setRight(cropBox->x2);
             pageInfo->cropBox.setBottom(cropBox->y2);
 
+            pageInfo->rotate = page->getRotate();
+
             pageInfo->pageNum = i;
             if (pageDict->hasKey((char *)"Contents"))
             {

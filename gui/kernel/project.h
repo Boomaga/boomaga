@@ -27,7 +27,6 @@
 #ifndef PROJECT_H
 #define PROJECT_H
 
-
 #include "job.h"
 #include "printer.h"
 #include "inputfile.h"
@@ -43,18 +42,6 @@ class TmpPdfFile;
 class Sheet;
 class Layout;
 
-enum Rotation
-{
-    NoRotate  = 0,
-    Rotate90  = 90,
-    Rotate180 = 180,
-    Rotate270 = 270
-};
-
-inline bool isLandscape(Rotation rotation)
-{
-    return (int)rotation % 180;
-}
 
 class MetaData
 {
@@ -106,9 +93,9 @@ public:
     int pageNum() const { return mPageNum; }
 
     virtual QRectF rect() const;
-    Rotation rotate() const;
-    Rotation manualRotate() const { return mManualRotate; }
-    void setManualRotate(Rotation value) { mManualRotate = value; }
+    Rotation rotation() const;
+    Rotation manualRotation() const { return mManualRotation; }
+    void setManualRotation(Rotation value) { mManualRotation = value; }
 
     PdfPageInfo pdfInfo() const { return mPdfInfo; }
     void setPdfInfo(const PdfPageInfo &value) { mPdfInfo = value; }
@@ -124,7 +111,7 @@ private:
     int mPageNum;
     bool mVisible;
     PdfPageInfo mPdfInfo;
-    Rotation mManualRotate;
+    Rotation mManualRotation;
 };
 
 

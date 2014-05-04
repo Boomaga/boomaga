@@ -81,11 +81,11 @@ QRectF PreviewWidget::pageRect(int pageNum) const
     QSize size = QSize(spec.rect.width()  * mScaleFactor,
                        spec.rect.height() * mScaleFactor);
 
-    if (isLandscape(project->layout()->rotate()))
+    if (isLandscape(sheet->rotation()))
         size.transpose();
 
     QRect rect(QPoint(0, 0), size);
-    if (isLandscape(project->layout()->rotate()))
+    if (isLandscape(sheet->rotation()))
     {
         rect.moveLeft(mDrawRect.left() + spec.rect.top()  * mScaleFactor);
         rect.moveTop( mDrawRect.top()  + spec.rect.left() * mScaleFactor);
@@ -134,18 +134,89 @@ void PreviewWidget::sheetImageChanged(int sheetNum)
  ************************************************/
 void PreviewWidget::paintEvent(QPaintEvent *event)
 {
+
+//#define DEBUG_LAYOUT
+#ifdef DEBUG_LAYOUT
+    {
+        if (mImage.isNull())
+            return;
+
+        if (mSheetNum < 0)
+            return;
+
+        Sheet *sheet = project->previewSheet(mSheetNum);
+
+        if (!sheet)
+            return;
+
+        QPainter painter(this);
+        QRectF rect = project->printer()->paperRect();
+        painter.fillRect(rect, Qt::white);
+
+
+        for (int i=0; i< sheet->count(); ++i)
+        {
+            QPen pen = painter.pen();
+            pen.setStyle(Qt::DotLine);
+            pen.setColor(Qt::darkGray);
+            painter.setPen(pen);
+            TransformSpec spec = project->layout()->transformSpec(sheet, i);
+
+            painter.drawRect(spec.rect);
+            QFont font = painter.font();
+            font.setPixelSize(spec.rect.height() / 2 );
+            painter.setFont(font);
+            painter.drawText(spec.rect, Qt::AlignCenter, QString("%1").arg(i+1));
+
+
+            pen.setStyle(Qt::SolidLine);
+            pen.setColor(Qt::red);
+            painter.setPen(pen);
+
+            switch (spec.rotation)
+            {
+            case NoRotate:
+                painter.drawLine(spec.rect.topLeft(), spec.rect.topRight());
+                break;
+
+            case Rotate90:
+                painter.drawLine(spec.rect.topRight(), spec.rect.bottomRight());
+                break;
+
+            case Rotate180:
+                painter.drawLine(spec.rect.bottomLeft(), spec.rect.bottomRight());
+                break;
+
+            case Rotate270:
+                painter.drawLine(spec.rect.topLeft(), spec.rect.bottomLeft());
+                break;
+            }
+        }
+        return;
+    }
+
+#endif
+
     if (mImage.isNull())
         return;
 
+    Sheet *sheet = project->previewSheet(mSheetNum);
+
     QSizeF printerSize =  project->printer()->paperRect().size();
-    if (isLandscape(project->layout()->rotate()))
+    if (isLandscape(sheet->rotation()))
         printerSize.transpose();
 
-    double factor = qMin((this->geometry().width()  - 2.0 * MARGIN_H) * 1.0 / printerSize.width(),
-                         (this->geometry().height() - 2.0 * MARGIN_V) * 1.0 / printerSize.height());
+    mScaleFactor = qMin((this->geometry().width()  - 2.0 * MARGIN_H) * 1.0 / printerSize.width(),
+                        (this->geometry().height() - 2.0 * MARGIN_V) * 1.0 / printerSize.height());
 
-    QSize size = QSize(printerSize.width()  * factor,
-                       printerSize.height() * factor);
+    if (mScaleFactor == 0)
+    {
+        mDrawRect = QRect();
+        return;
+    }
+
+    QSize size = QSize(printerSize.width()  * mScaleFactor,
+                       printerSize.height() * mScaleFactor);
 
     mDrawRect = QRect(QPoint(0, 0), size);
     mDrawRect.moveCenter(QPoint(0, 0));
@@ -153,10 +224,27 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
     QRectF clipRect = mDrawRect;
 
     if (mHints.testFlag(Sheet::HintOnlyLeft))
-        clipRect.setRight(0);
+    {
+        switch (sheet->rotation())
+        {
+        case NoRotate:  clipRect.setBottom(0); break;
+        case Rotate90:  clipRect.setRight(0);  break;
+        case Rotate180: clipRect.setBottom(0); break;
+        case Rotate270: clipRect.setRight(0);  break;
+        }
+    }
+
 
     if (mHints.testFlag(Sheet::HintOnlyRight))
-        clipRect.setLeft(0);
+    {
+        switch (sheet->rotation())
+        {
+        case NoRotate:  clipRect.setTop(0);    break;
+        case Rotate90:  clipRect.setLeft(0);   break;
+        case Rotate180: clipRect.setTop(0);    break;
+        case Rotate270: clipRect.setLeft(0);   break;
+        }
+    }
 
 
     QImage img = mImage.scaled(mDrawRect.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
@@ -177,26 +265,30 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
         pen.setStyle(Qt::SolidLine);
         pen.setColor(Qt::lightGray);
         painter.setPen(pen);
-        painter.drawLine(0, mDrawRect.top(), 0, mDrawRect.bottom());
+        if (isLandscape(sheet->rotation()))
+            painter.drawLine(0, mDrawRect.top(), 0, mDrawRect.bottom());
+        else
+            painter.drawLine(mDrawRect.left(), 0, mDrawRect.right(), 0);
     }
     painter.restore();
 
     mDrawRect.moveCenter(geometry().center());
-    mScaleFactor = factor;
 
 //#define DEBUG_CLICK_RECT
 #ifdef DEBUG_CLICK_RECT
-    painter.save();
-    Sheet *sheet = project->previewSheet(mSheetNum);
-    for (int i=0; i< sheet->count(); ++i)
     {
-        QPen pen = painter.pen();
-        pen.setStyle(Qt::DotLine);
-        pen.setColor(Qt::red);
-        painter.setPen(pen);
-        painter.drawRect(this->pageRect(i));
+        painter.save();
+        Sheet *sheet = project->previewSheet(mSheetNum);
+        for (int i=0; i< sheet->count(); ++i)
+        {
+            QPen pen = painter.pen();
+            pen.setStyle(Qt::DotLine);
+            pen.setColor(Qt::red);
+            painter.setPen(pen);
+            painter.drawRect(this->pageRect(i));
+        }
+        painter.restore();
     }
-    painter.restore();
 #endif
 }
 

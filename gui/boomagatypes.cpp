@@ -24,7 +24,7 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 #include "boomagatypes.h"
-
+#include <QDebug>
 
 /************************************************
 
@@ -50,4 +50,80 @@ DuplexType strToDuplexType(const QString &str)
     if (s == "AUTO")        return DuplexAuto;
     if (s == "MANUAL")      return DuplexManual;
     return DuplexManualReverse;
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+Rotation operator+(Rotation r1, int r2)
+{
+    return (Rotation)(((int)r1 + (int)r2) % 360);
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+Rotation operator+(Rotation r1, Rotation r2)
+{
+    return (Rotation)(((int)r1 + (int)r2) % 360);
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+Rotation &operator+=(Rotation &r1, int r2)
+{
+    r1 = r1 + r2;
+    return r1;
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+Rotation &operator+=(Rotation &r1, Rotation r2)
+{
+    r1 = r1 + r2;
+    return r1;
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+Rotation operator-(Rotation r1, int r2)
+{
+    return (Rotation)((360 - ((int)r1 - (int)r2)) % 360);
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+Rotation operator-(Rotation r1, Rotation r2)
+{
+    return (Rotation)((360 - ((int)r1 - (int)r2)) % 360);
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+Rotation &operator-=(Rotation &r1, int r2)
+{
+    r1 = r1 - r2;
+    return r1;
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+Rotation &operator-=(Rotation &r1, Rotation r2)
+{
+    r1 = r1 - r2;
+    return r1;
 }

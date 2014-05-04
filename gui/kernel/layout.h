@@ -56,7 +56,7 @@ public:
 
     virtual TransformSpec transformSpec(const Sheet *sheet, int pageNumOnSheet) const = 0;
 
-    virtual Rotation rotate() const = 0;
+    virtual Rotation rotation() const = 0;
 
 protected:
     struct PagePosition
@@ -65,14 +65,8 @@ protected:
         uint row;
     };
 
-    virtual PagePosition calcPagePosition(const Sheet *sheet, int pageNumOnSheet,
-                                          int pageCountHoriz, int pageCountVert,
-                                          Qt::Orientation orientation) const;
-
-
-    TransformSpec calcTransformSpec(const Sheet *sheet, int pageNumOnSheet,
-                                    int pageCountHoriz, int pageCountVert,
-                                    Qt::Orientation orientation) const;
+    virtual PagePosition calcPagePosition(const Sheet *sheet, int pageNumOnSheet) const = 0;
+    virtual Rotation calcSheetRotation(const Sheet &sheet) const = 0;
 };
 
 
@@ -85,7 +79,11 @@ public:
 
     void fillSheets(QList<Sheet*> *sheets) const;
     TransformSpec transformSpec(const Sheet *sheet, int pageNumOnSheet) const;
-    virtual Rotation rotate() const;
+    virtual Rotation rotation() const;
+
+protected:
+    virtual Rotation calcSheetRotation(const Sheet &sheet) const;
+    virtual PagePosition calcPagePosition(const Sheet *sheet, int pageNumOnSheet) const;
 
 private:
     int mPageCountVert;
@@ -94,7 +92,7 @@ private:
 };
 
 
-class LayoutBooklet: public Layout
+class LayoutBooklet: public LayoutNUp
 {
 public:
     explicit LayoutBooklet();
@@ -103,9 +101,6 @@ public:
 
     void fillSheets(QList<Sheet*> *sheets) const;
     void fillPreviewSheets(QList<Sheet*> *sheets) const;
-
-    TransformSpec transformSpec(const Sheet *sheet, int pageNumOnSheet) const;
-    virtual Rotation rotate() const { return Rotate90; }
 
 private:
     void fillSheetsForBook(int bookStart, int bookLength, QList<Sheet *> *sheets) const;

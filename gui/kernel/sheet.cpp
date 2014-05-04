@@ -25,6 +25,9 @@
 
 
 #include "sheet.h"
+#include "layout.h"
+
+#include <QDebug>
 
 
 /************************************************
@@ -32,7 +35,8 @@
  ************************************************/
 Sheet::Sheet(int count, int sheetNum):
     mSheetNum(sheetNum),
-    mHints(0)
+    mHints(0),
+    mRotation(NoRotate)
 {
     mPages.resize(count);
     for (int i=0; i<count; ++i)

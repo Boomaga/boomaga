@@ -41,4 +41,31 @@ Q_DECLARE_METATYPE(DuplexType)
 QString duplexTypetoStr(DuplexType value);
 DuplexType strToDuplexType(const QString &str);
 
+
+enum Rotation
+{
+    NoRotate  = 0,
+    Rotate90  = 90,
+    Rotate180 = 180,
+    Rotate270 = 270
+};
+
+
+inline bool isLandscape(Rotation rotation)
+{
+    return (int)rotation % 180;
+}
+
+Rotation operator+(Rotation r1, int r2);
+Rotation operator+(Rotation r1, Rotation r2);
+
+Rotation operator-(Rotation r1, int r2);
+Rotation operator-(Rotation r1, Rotation r2);
+
+Rotation &operator+=(Rotation &r1, int r2);
+Rotation &operator+=(Rotation &r1, Rotation r2);
+
+Rotation &operator-=(Rotation &r1, int r2);
+Rotation &operator-=(Rotation &r1, Rotation r2);
+
 #endif // BOOMAGATYPES_H

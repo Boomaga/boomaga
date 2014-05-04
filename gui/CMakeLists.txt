@@ -85,7 +85,6 @@ set (MOCS
     kernel/project.h
     kernel/tmppdffile.h
     kernel/render.h
-    kernel/job.h
 
     settings.h
     mainwindow.h

@@ -51,7 +51,7 @@
 ProjectPage::ProjectPage():
     mPageNum(-1),
     mVisible(true),
-    mManualRotate(NoRotate)
+    mManualRotation(NoRotate)
 {
 
 }
@@ -65,7 +65,7 @@ ProjectPage::ProjectPage(const ProjectPage *other):
     mPageNum(other->mPageNum),
     mVisible(other->mVisible),
     mPdfInfo(other->mPdfInfo),
-    mManualRotate(NoRotate)
+    mManualRotation(NoRotate)
 {
 
 }
@@ -77,7 +77,7 @@ ProjectPage::ProjectPage(const InputFile &inputFile, int pageNum):
     mInputFile(inputFile),
     mPageNum(pageNum),
     mVisible(true),
-    mManualRotate(NoRotate)
+    mManualRotation(NoRotate)
 {
 }
 
@@ -105,9 +105,9 @@ QRectF ProjectPage::rect() const
 /************************************************
 
  ************************************************/
-Rotation ProjectPage::rotate() const
+Rotation ProjectPage::rotation() const
 {
-    uint r = (mPdfInfo.rotate + mManualRotate) % 360;
+    int r = (mPdfInfo.rotate + mManualRotation) % 360;
 
     if (r == 90)    return Rotate90;
     if (r == 180)   return Rotate180;

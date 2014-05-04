@@ -46,7 +46,7 @@ public:
     uint    objNum;
     QRectF  mediaBox;
     QRectF  cropBox;
-    uint    rotate;
+    int    rotate;
 };
 
 
