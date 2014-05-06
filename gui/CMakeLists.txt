@@ -218,6 +218,16 @@ endif()
 add_executable(${INSTANCE_NAME} ${HEADERS} ${SOURCES} ${MOC_SOURCES} ${QM_FILES} ${QRC_SOURCES} ${UI_HEADERS} ${QRC_CXX_SOURCES})
 target_link_libraries(${INSTANCE_NAME} ${LIBRARIES} ${QT_LIBRARIES} ${CUPS_LIBRARIES} ${SNAPPY_LIBRARIES} ${POPPLER_LIBRARIES} ${POPPLERCPP_LIBRARIES})
 
+
+if(BUILD_TESTS STREQUAL "Yes")
+    add_subdirectory(tests)
+else()
+    message(STATUS "")
+    message(STATUS "For building tests use -DBUILD_TESTS=Yes option.")
+    message(STATUS "")
+endif()
+
+
 install(TARGETS ${INSTANCE_NAME} RUNTIME DESTINATION ${GUI_DIR})
 install(FILES ${QM_FILES} DESTINATION ${TRANSLATIONS_DIR})
 
