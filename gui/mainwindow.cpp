@@ -47,6 +47,7 @@
 #include <QTimer>
 #include <QKeyEvent>
 #include <QFileDialog>
+#include <QMimeData>
 
 /************************************************
 
