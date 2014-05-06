@@ -96,7 +96,7 @@ Rotation &operator+=(Rotation &r1, Rotation r2)
  * ***********************************************/
 Rotation operator-(Rotation r1, int r2)
 {
-    return (Rotation)((360 - ((int)r1 - (int)r2)) % 360);
+    return (Rotation)( (360 + ((int)r1 - (int)r2) % 360) % 360);
 }
 
 
@@ -105,7 +105,7 @@ Rotation operator-(Rotation r1, int r2)
  * ***********************************************/
 Rotation operator-(Rotation r1, Rotation r2)
 {
-    return (Rotation)((360 - ((int)r1 - (int)r2)) % 360);
+    return (Rotation)( (360 + ((int)r1 - (int)r2) % 360) % 360);
 }
 
 
