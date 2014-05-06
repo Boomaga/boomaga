@@ -57,7 +57,7 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-set(QT_USE_QTTEST true)
+
 
 
 option(USE_QT5 "Force use the Qt5." $ENV{USE_QT5})
@@ -76,13 +76,12 @@ if((USE_QT4 AND USE_QT5) OR
 endif()
 
 if(USE_QT4)
+    set(QT_USE_QTTEST true)
     find_package(Qt4 REQUIRED QUIET)
     include(${QT_USE_FILE})
     qt4_wrap_cpp(TEST_MOC_SOURCES ${TEST_MOCS})
     qt4_add_resources(QRC_SOURCES ${RESOURCES})
-    #qt4_wrap_ui(UI_HEADERS ${UI_FILES})
-    #qt4_add_translation(QM_FILES ${TS_FILES})
-    #qt4_add_resources(QRC_CXX_SOURCES ${translatorsinfo_qrc})
+
 else()
     cmake_minimum_required(VERSION 2.8.3)
     find_package(Qt5Widgets REQUIRED QUIET)
@@ -90,28 +89,16 @@ else()
     add_definitions(${Qt5Widgets_DEFINITIONS})
     set(QT_LIBRARIES ${QT_LIBRARIES} ${Qt5Widgets_LIBRARIES})
 
-    #find_package(Qt5PrintSupport REQUIRED QUIET)
-    #include_directories(${Qt5PrintSupport_INCLUDE_DIRS})
-    #add_definitions(${Qt5PrintSupport_DEFINITIONS})
-    #set(QT_LIBRARIES ${QT_LIBRARIES} ${Qt5PrintSupport_LIBRARIES})
-
-    #find_package(Qt5DBus REQUIRED QUIET)
-    #include_directories(${Qt5DBus_INCLUDE_DIRS})
-    #add_definitions(${Qt5DBus_DEFINITIONS})
-    #set(QT_LIBRARIES ${QT_LIBRARIES} ${Qt5DBus_LIBRARIES})
-
-
-    #find_package(Qt5LinguistTools REQUIRED QUIET)
+    find_package(Qt5Test REQUIRED)
+    include_directories(${Qt5Test_INCLUDE_DIRS})
+    add_definitions(${Qt5Test_DEFINITIONS})
+    set(QT_LIBRARIES ${QT_LIBRARIES} ${Qt5Test_LIBRARIES})
 
 
     set(CMAKE_CXX_FLAGS "${CMAKE_CXX_FLAGS} ${Qt5Widgets_EXECUTABLE_COMPILE_FLAGS}")
 
 
     qt5_wrap_cpp(TEST_MOC_SOURCES ${TEST_MOCS})
-    #qt5_add_resources(QRC_SOURCES ${RESOURCES})
-    #qt5_wrap_ui(UI_HEADERS ${UI_FILES})
-    #qt5_add_translation(QM_FILES ${TS_FILES})
-    #qt5_add_resources(QRC_CXX_SOURCES ${translatorsinfo_qrc})
 
 endif()
 
