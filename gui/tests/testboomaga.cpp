@@ -28,14 +28,25 @@
 
 #include <QTest>
 #include <QDebug>
+#include <QRect>
+#include <QString>
 
-#include "../boomagatypes.h"
+#define protected public
+#include "../kernel/layout.h"
+#include "../kernel/project.h"
+#include "../kernel/sheet.h"
 
 #define COMPARE(actual, expected) \
     do {\
         if (!QTest::qCompare(QString("%1").arg(actual), QString("%1").arg(expected), #actual, #expected, __FILE__, __LINE__))\
             return;\
     } while (0)
+
+
+#define FAIL(message) \
+do {\
+    QTest::qFail(message, __FILE__, __LINE__);\
+} while (0)
 
 
 /************************************************
@@ -236,12 +247,527 @@ void TestBoomaga::test_Rotation()
 /************************************************
  *
  * ***********************************************/
-//void TestBoomaga::test_Rotation_data()
-//{
-//    QTest::addColumn<QString>("cueFile");
-//    QTest::addColumn<QString>("pattern");
-//    QTest::addColumn<QString>("expected");
-//}
+Layout *TestBoomaga::createLayout(const QString &name)
+{
+    if (name == "1up")       return new LayoutNUp(1, 1);
+    if (name == "1upV")       return new LayoutNUp(1, 1);
+    if (name == "2up")       return new LayoutNUp(2, 1);
+    if (name == "4up_Horiz") return new LayoutNUp(2, 2, Qt::Horizontal);
+    if (name == "4up_Vert")  return new LayoutNUp(2, 2, Qt::Vertical);
+    if (name == "8up_Horiz") return new LayoutNUp(4, 2, Qt::Horizontal);
+    if (name == "8up_Vert")  return new LayoutNUp(4, 2, Qt::Vertical);
+    if (name == "booklet")   return new LayoutBooklet();
+    FAIL(QString("Unknown layout %1").arg(name).toLocal8Bit());
+    return 0;
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+int TestBoomaga::StrToRotation(const QString &str)
+{
+    if (str.toUpper() == "NOROTATE" )   return NoRotate;
+    if (str.toUpper() == "ROTATE90" )   return Rotate90;
+    if (str.toUpper() == "ROTATE180")   return Rotate180;
+    if (str.toUpper() == "ROTATE270")   return Rotate270;
+
+    if (str.toUpper() == "0" )    return NoRotate;
+    if (str.toUpper() == "90" )   return Rotate90;
+    if (str.toUpper() == "180")   return Rotate180;
+    if (str.toUpper() == "270")   return Rotate270;
+
+    FAIL(QString("Unknown rotation %1").arg(str).toLocal8Bit());
+    return 0;
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+Sheet *TestBoomaga::createSheet(const QString &definition)
+{
+    QString def = definition.trimmed();
+    if (def.startsWith('['))
+        def = def.mid(1, def.length()-2);
+
+    QStringList items = def.split(',');
+
+    Sheet *sheet = new Sheet(items.count(), 0);
+    for (int i=0; i<items.count(); ++i)
+    {
+        PdfPageInfo pdfInfo;
+        QString s = items.at(i).trimmed().toUpper();
+        if      (s.startsWith("0"))   pdfInfo.rotate = 0;
+        else if (s.startsWith("90"))  pdfInfo.rotate = 90;
+        else if (s.startsWith("180")) pdfInfo.rotate = 180;
+        else if (s.startsWith("270")) pdfInfo.rotate = 270;
+        else FAIL(QString("Unknown rotation %1").arg(s).toLocal8Bit());
+
+        if (s.endsWith("P"))
+        {
+            pdfInfo.cropBox  = QRectF(0, 0, 100, 200);
+            pdfInfo.mediaBox = QRectF(0, 0, 100, 200);
+        }
+        else if (s.endsWith("L"))
+        {
+            pdfInfo.cropBox  = QRectF(0, 0, 200, 100);
+            pdfInfo.mediaBox = QRectF(0, 0, 200, 100);
+        }
+        else
+        {
+            FAIL(QString("Unknown orientation '%1'").arg(s).toLocal8Bit());
+        }
+
+        ProjectPage *page = new ProjectPage();
+        page->setPdfInfo(pdfInfo);
+
+        sheet->setPage(i, page);
+    }
+
+    return sheet;
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+Sheet *TestBoomaga::createSheet(int pagePerSheet, int pageRotation, QRectF mediaBox, QRectF cropBox)
+{
+    Sheet *sheet = new Sheet(pagePerSheet, 0);
+    for(int i=0; i<pagePerSheet; ++i)
+    {
+        PdfPageInfo pdfInfo;
+        pdfInfo.rotate = pageRotation;
+        pdfInfo.cropBox = cropBox;
+        pdfInfo.mediaBox = mediaBox;
+
+        ProjectPage *page = new ProjectPage();
+        page->setPdfInfo(pdfInfo);
+
+        sheet->setPage(i, page);
+    }
+
+    return sheet;
+}
+
+
+
+
+/************************************************
+ *
+ * ***********************************************/
+void TestBoomaga::test_SheetRotation()
+{
+    QFETCH(int,      expected);
+
+    QString dataTag = QTest::currentDataTag();
+    QString layoutName = dataTag.section(";", 0, 0);
+    QString sheetDef =  dataTag.section(";", 1);
+
+    Layout *layout = createLayout(layoutName);
+    Sheet *sheet = createSheet(sheetDef);
+
+    int result = layout->calcSheetRotation(*sheet);
+    QCOMPARE(result, expected);
+
+    delete layout;
+    delete sheet;
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void TestBoomaga::test_SheetRotation_data()
+{
+    QTest::addColumn<int>("expected");
+
+    QTest::newRow("1up; [0P]"   ) << 0;
+    QTest::newRow("1up; [0L]"   ) << 90;
+    QTest::newRow("1up; [90P]"  ) << 90;
+    QTest::newRow("1up; [90L]"  ) << 180;
+    QTest::newRow("1up; [180P]" ) << 180;
+    QTest::newRow("1up; [180L]" ) << 270;
+    QTest::newRow("1up; [270P]" ) << 270;
+    QTest::newRow("1up; [270L]" ) << 0;
+
+
+    QTest::newRow("2up; [0P]"   ) << 270;
+    QTest::newRow("2up; [0L]"   ) << 0;
+    QTest::newRow("2up; [90P]"  ) << 0;
+    QTest::newRow("2up; [90L]"  ) << 90;
+    QTest::newRow("2up; [180P]" ) << 90;
+    QTest::newRow("2up; [180L]" ) << 180;
+    QTest::newRow("2up; [270P]" ) << 180;
+    QTest::newRow("2up; [270L]" ) << 270;
+
+
+    QTest::newRow("4up_Horiz; [0P]"   ) << 0;
+    QTest::newRow("4up_Horiz; [0L]"   ) << 90;
+    QTest::newRow("4up_Horiz; [90P]"  ) << 90;
+    QTest::newRow("4up_Horiz; [90L]"  ) << 180;
+    QTest::newRow("4up_Horiz; [180P]" ) << 180;
+    QTest::newRow("4up_Horiz; [180L]" ) << 270;
+    QTest::newRow("4up_Horiz; [270P]" ) << 270;
+    QTest::newRow("4up_Horiz; [270L]" ) << 0;
+
+    QTest::newRow("4up_Vert;  [0P]"   ) << 0;
+    QTest::newRow("4up_Vert;  [0L]"   ) << 90;
+    QTest::newRow("4up_Vert;  [90P]"  ) << 90;
+    QTest::newRow("4up_Vert;  [90L]"  ) << 180;
+    QTest::newRow("4up_Vert;  [180P]" ) << 180;
+    QTest::newRow("4up_Vert;  [180L]" ) << 270;
+    QTest::newRow("4up_Vert;  [270P]" ) << 270;
+    QTest::newRow("4up_Vert;  [270L]" ) << 0;
+
+
+    QTest::newRow("8up_Horiz; [0P]"   ) << 270;
+    QTest::newRow("8up_Horiz; [0L]"   ) << 0;
+    QTest::newRow("8up_Horiz; [90P]"  ) << 0;
+    QTest::newRow("8up_Horiz; [90L]"  ) << 90;
+    QTest::newRow("8up_Horiz; [180P]" ) << 90;
+    QTest::newRow("8up_Horiz; [180L]" ) << 180;
+    QTest::newRow("8up_Horiz; [270P]" ) << 180;
+    QTest::newRow("8up_Horiz; [270L]" ) << 270;
+
+    QTest::newRow("8up_Vert;  [0P]"   ) << 270;
+    QTest::newRow("8up_Vert;  [0L]"   ) << 0;
+    QTest::newRow("8up_Vert;  [90P]"  ) << 0;
+    QTest::newRow("8up_Vert;  [90L]"  ) << 90;
+    QTest::newRow("8up_Vert;  [180P]" ) << 90;
+    QTest::newRow("8up_Vert;  [180L]" ) << 180;
+    QTest::newRow("8up_Vert;  [270P]" ) << 180;
+    QTest::newRow("8up_Vert;  [270L]" ) << 270;
+
+
+    QTest::newRow("booklet; [0P]"   ) << 270;
+    QTest::newRow("booklet; [0L]"   ) << 0;
+    QTest::newRow("booklet; [90P]"  ) << 0;
+    QTest::newRow("booklet; [90L]"  ) << 90;
+    QTest::newRow("booklet; [180P]" ) << 90;
+    QTest::newRow("booklet; [180L]" ) << 180;
+    QTest::newRow("booklet; [270P]" ) << 180;
+    QTest::newRow("booklet; [270L]" ) << 270;
+
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void TestBoomaga::test_PageRotation()
+{
+    QFETCH(int,      expected);
+
+    QString dataTag = QTest::currentDataTag();
+    QString layoutName = dataTag.section(";", 0, 0);
+    QString sheetDef =  dataTag.section(";", 1);
+
+    Layout *layout = createLayout(layoutName);
+    Sheet *sheet = createSheet(sheetDef);
+
+    TransformSpec spec = layout->transformSpec(sheet, 0);
+    QCOMPARE((int)spec.rotation, expected);
+
+    delete layout;
+    delete sheet;
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void TestBoomaga::test_PageRotation_data()
+{
+    QTest::addColumn<int>("expected");
+
+    QTest::newRow("1up; [0P]"   ) << 0;
+    QTest::newRow("1up; [0L]"   ) << 270;
+    QTest::newRow("1up; [90P]"  ) << 0;
+    QTest::newRow("1up; [90L]"  ) << 270;
+    QTest::newRow("1up; [180P]" ) << 0;
+    QTest::newRow("1up; [180L]" ) << 270;
+    QTest::newRow("1up; [270P]" ) << 0;
+    QTest::newRow("1up; [270L]" ) << 270;
+
+
+    QTest::newRow("2up; [0P]"   ) << 90;
+    QTest::newRow("2up; [0L]"   ) << 180;
+    QTest::newRow("2up; [90P]"  ) << 90;
+    QTest::newRow("2up; [90L]"  ) << 180;
+    QTest::newRow("2up; [180P]" ) << 90;
+    QTest::newRow("2up; [180L]" ) << 180;
+    QTest::newRow("2up; [270P]" ) << 90;
+    QTest::newRow("2up; [270L]" ) << 180;
+
+
+    QTest::newRow("4up_Horiz; [0P]"   ) << 0;
+    QTest::newRow("4up_Horiz; [0L]"   ) << 270;
+    QTest::newRow("4up_Horiz; [90P]"  ) << 0;
+    QTest::newRow("4up_Horiz; [90L]"  ) << 270;
+    QTest::newRow("4up_Horiz; [180P]" ) << 0;
+    QTest::newRow("4up_Horiz; [180L]" ) << 270;
+    QTest::newRow("4up_Horiz; [270P]" ) << 0;
+    QTest::newRow("4up_Horiz; [270L]" ) << 270;
+
+    QTest::newRow("4up_Vert;  [0P]"   ) << 0;
+    QTest::newRow("4up_Vert;  [0L]"   ) << 270;
+    QTest::newRow("4up_Vert;  [90P]"  ) << 0;
+    QTest::newRow("4up_Vert;  [90L]"  ) << 270;
+    QTest::newRow("4up_Vert;  [180P]" ) << 0;
+    QTest::newRow("4up_Vert;  [180L]" ) << 270;
+    QTest::newRow("4up_Vert;  [270P]" ) << 0;
+    QTest::newRow("4up_Vert;  [270L]" ) << 270;
+
+
+    QTest::newRow("8up_Horiz; [0P]"   ) << 90;
+    QTest::newRow("8up_Horiz; [0L]"   ) << 180;
+    QTest::newRow("8up_Horiz; [90P]"  ) << 90;
+    QTest::newRow("8up_Horiz; [90L]"  ) << 180;
+    QTest::newRow("8up_Horiz; [180P]" ) << 90;
+    QTest::newRow("8up_Horiz; [180L]" ) << 180;
+    QTest::newRow("8up_Horiz; [270P]" ) << 90;
+    QTest::newRow("8up_Horiz; [270L]" ) << 180;
+
+    QTest::newRow("8up_Vert;  [0P]"   ) << 90;
+    QTest::newRow("8up_Vert;  [0L]"   ) << 180;
+    QTest::newRow("8up_Vert;  [90P]"  ) << 90;
+    QTest::newRow("8up_Vert;  [90L]"  ) << 180;
+    QTest::newRow("8up_Vert;  [180P]" ) << 90;
+    QTest::newRow("8up_Vert;  [180L]" ) << 180;
+    QTest::newRow("8up_Vert;  [270P]" ) << 90;
+    QTest::newRow("8up_Vert;  [270L]" ) << 180;
+
+
+    QTest::newRow("booklet; [0P]"   ) << 90;
+    QTest::newRow("booklet; [0L]"   ) << 180;
+    QTest::newRow("booklet; [90P]"  ) << 90;
+    QTest::newRow("booklet; [90L]"  ) << 180;
+    QTest::newRow("booklet; [180P]" ) << 90;
+    QTest::newRow("booklet; [180L]" ) << 180;
+    QTest::newRow("booklet; [270P]" ) << 90;
+    QTest::newRow("booklet; [270L]" ) << 180;
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void TestBoomaga::test_PagePosition()
+{
+    QFETCH(int,      expectedCol);
+    QFETCH(int,      expectedRow);
+
+    QString dataTag = QTest::currentDataTag();
+    QString layoutName = dataTag.section(";", 0, 0);
+    QString sheetDef =  dataTag.section(";", 1, 1);
+    bool ok;
+    int pageNum = dataTag.section(";", 2, 2).toInt(&ok);
+    if (!ok)
+        FAIL(QString("Incorrect page number '%1'").arg(dataTag.section(";", 2, 2)).toLocal8Bit());
+
+    Layout *layout = createLayout(layoutName);
+    Sheet *sheet = createSheet(sheetDef);
+
+    Layout::PagePosition pos = layout->calcPagePosition(sheet, pageNum);
+    QCOMPARE((int)pos.col, expectedCol);
+    QCOMPARE((int)pos.row, expectedRow);
+
+    delete layout;
+    delete sheet;
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void TestBoomaga::test_PagePosition_data()
+{
+    QTest::addColumn<int>("expectedCol");
+    QTest::addColumn<int>("expectedRow");
+
+    //          Layout   Pages  pageNum   Col  Row
+    QTest::newRow("1up; [   0P ]; 0"   )  << 0 << 0;
+    QTest::newRow("1up; [   0L ]; 0"   )  << 0 << 0;
+    QTest::newRow("1up; [  90P ]; 0"   )  << 0 << 0;
+    QTest::newRow("1up; [  90L ]; 0"   )  << 0 << 0;
+    QTest::newRow("1up; [ 180P ]; 0"   )  << 0 << 0;
+    QTest::newRow("1up; [ 180L ]; 0"   )  << 0 << 0;
+    QTest::newRow("1up; [ 270P ]; 0"   )  << 0 << 0;
+    QTest::newRow("1up; [ 270L ]; 0"   )  << 0 << 0;
+
+    //          Layout   Pages  pageNum   Col  Row
+    QTest::newRow("2up; [   0P ]; 0"   )  << 0 << 0;
+    QTest::newRow("2up; [   0P ]; 1"   )  << 0 << 1;
+
+    QTest::newRow("2up; [   0L ]; 0"   )  << 0 << 0;
+    QTest::newRow("2up; [   0L ]; 1"   )  << 0 << 1;
+
+    QTest::newRow("2up; [  90P ]; 0"   )  << 0 << 0;
+    QTest::newRow("2up; [  90P ]; 1"   )  << 0 << 1;
+
+    QTest::newRow("2up; [  90L ]; 0"   )  << 0 << 0;
+    QTest::newRow("2up; [  90L ]; 1"   )  << 0 << 1;
+
+    QTest::newRow("2up; [ 180P ]; 0"   )  << 0 << 0;
+    QTest::newRow("2up; [ 180P ]; 1"   )  << 0 << 1;
+
+    QTest::newRow("2up; [ 180L ]; 0"   )  << 0 << 0;
+    QTest::newRow("2up; [ 180L ]; 1"   )  << 0 << 1;
+
+    QTest::newRow("2up; [ 270P ]; 0"   )  << 0 << 0;
+    QTest::newRow("2up; [ 270P ]; 1"   )  << 0 << 1;
+
+    QTest::newRow("2up; [ 270L ]; 0"   )  << 0 << 0;
+    QTest::newRow("2up; [ 270L ]; 1"   )  << 0 << 1;
+
+
+    //          Layout        Pages   pageNum   Col  Row
+    QTest::newRow("4up_Horiz; [   0P ]; 0"   )  << 0 << 0;
+    QTest::newRow("4up_Horiz; [   0P ]; 1"   )  << 1 << 0;
+    QTest::newRow("4up_Horiz; [   0P ]; 2"   )  << 0 << 1;
+    QTest::newRow("4up_Horiz; [   0P ]; 3"   )  << 1 << 1;
+
+    QTest::newRow("4up_Horiz; [  90P ]; 0"   )  << 0 << 0;
+    QTest::newRow("4up_Horiz; [  90P ]; 1"   )  << 1 << 0;
+    QTest::newRow("4up_Horiz; [  90P ]; 2"   )  << 0 << 1;
+    QTest::newRow("4up_Horiz; [  90P ]; 3"   )  << 1 << 1;
+
+    QTest::newRow("4up_Horiz; [ 180P ]; 0"   )  << 0 << 0;
+    QTest::newRow("4up_Horiz; [ 180P ]; 1"   )  << 1 << 0;
+    QTest::newRow("4up_Horiz; [ 180P ]; 2"   )  << 0 << 1;
+    QTest::newRow("4up_Horiz; [ 180P ]; 3"   )  << 1 << 1;
+
+    QTest::newRow("4up_Horiz; [ 270P ]; 0"   )  << 0 << 0;
+    QTest::newRow("4up_Horiz; [ 270P ]; 1"   )  << 1 << 0;
+    QTest::newRow("4up_Horiz; [ 270P ]; 2"   )  << 0 << 1;
+    QTest::newRow("4up_Horiz; [ 270P ]; 3"   )  << 1 << 1;
+
+
+    //          Layout        Pages   pageNum   Col  Row
+    QTest::newRow("4up_Vert;  [   0P ]; 0"   )  << 0 << 0;
+    QTest::newRow("4up_Vert;  [   0P ]; 1"   )  << 0 << 1;
+    QTest::newRow("4up_Vert;  [   0P ]; 2"   )  << 1 << 0;
+    QTest::newRow("4up_Vert;  [   0P ]; 3"   )  << 1 << 1;
+
+    QTest::newRow("4up_Vert;  [  90P ]; 0"   )  << 0 << 0;
+    QTest::newRow("4up_Vert;  [  90P ]; 1"   )  << 0 << 1;
+    QTest::newRow("4up_Vert;  [  90P ]; 2"   )  << 1 << 0;
+    QTest::newRow("4up_Vert;  [  90P ]; 3"   )  << 1 << 1;
+
+    QTest::newRow("4up_Vert;  [ 180P ]; 0"   )  << 0 << 0;
+    QTest::newRow("4up_Vert;  [ 180P ]; 1"   )  << 0 << 1;
+    QTest::newRow("4up_Vert;  [ 180P ]; 2"   )  << 1 << 0;
+    QTest::newRow("4up_Vert;  [ 180P ]; 3"   )  << 1 << 1;
+
+    QTest::newRow("4up_Vert;  [ 270P ]; 0"   )  << 0 << 0;
+    QTest::newRow("4up_Vert;  [ 270P ]; 1"   )  << 0 << 1;
+    QTest::newRow("4up_Vert;  [ 270P ]; 2"   )  << 1 << 0;
+    QTest::newRow("4up_Vert;  [ 270P ]; 3"   )  << 1 << 1;
+
+
+    //          Layout        Pages   pageNum   Col  Row
+    QTest::newRow("8up_Horiz; [   0P ]; 0"   )  << 0 << 0;
+    QTest::newRow("8up_Horiz; [   0P ]; 1"   )  << 1 << 0;
+    QTest::newRow("8up_Horiz; [   0P ]; 2"   )  << 0 << 1;
+    QTest::newRow("8up_Horiz; [   0P ]; 3"   )  << 1 << 1;
+    QTest::newRow("8up_Horiz; [   0P ]; 4"   )  << 0 << 2;
+    QTest::newRow("8up_Horiz; [   0P ]; 5"   )  << 1 << 2;
+    QTest::newRow("8up_Horiz; [   0P ]; 6"   )  << 0 << 3;
+    QTest::newRow("8up_Horiz; [   0P ]; 7"   )  << 1 << 3;
+
+    QTest::newRow("8up_Horiz; [  90P ]; 0"   )  << 0 << 0;
+    QTest::newRow("8up_Horiz; [  90P ]; 1"   )  << 1 << 0;
+    QTest::newRow("8up_Horiz; [  90P ]; 2"   )  << 0 << 1;
+    QTest::newRow("8up_Horiz; [  90P ]; 3"   )  << 1 << 1;
+    QTest::newRow("8up_Horiz; [  90P ]; 4"   )  << 0 << 2;
+    QTest::newRow("8up_Horiz; [  90P ]; 5"   )  << 1 << 2;
+    QTest::newRow("8up_Horiz; [  90P ]; 6"   )  << 0 << 3;
+    QTest::newRow("8up_Horiz; [  90P ]; 7"   )  << 1 << 3;
+
+    QTest::newRow("8up_Horiz; [ 180P ]; 0"   )  << 0 << 0;
+    QTest::newRow("8up_Horiz; [ 180P ]; 1"   )  << 1 << 0;
+    QTest::newRow("8up_Horiz; [ 180P ]; 2"   )  << 0 << 1;
+    QTest::newRow("8up_Horiz; [ 180P ]; 3"   )  << 1 << 1;
+    QTest::newRow("8up_Horiz; [ 180P ]; 4"   )  << 0 << 2;
+    QTest::newRow("8up_Horiz; [ 180P ]; 5"   )  << 1 << 2;
+    QTest::newRow("8up_Horiz; [ 180P ]; 6"   )  << 0 << 3;
+    QTest::newRow("8up_Horiz; [ 180P ]; 7"   )  << 1 << 3;
+
+    QTest::newRow("8up_Horiz; [ 270P ]; 0"   )  << 0 << 0;
+    QTest::newRow("8up_Horiz; [ 270P ]; 1"   )  << 1 << 0;
+    QTest::newRow("8up_Horiz; [ 270P ]; 2"   )  << 0 << 1;
+    QTest::newRow("8up_Horiz; [ 270P ]; 3"   )  << 1 << 1;
+    QTest::newRow("8up_Horiz; [ 270P ]; 4"   )  << 0 << 2;
+    QTest::newRow("8up_Horiz; [ 270P ]; 5"   )  << 1 << 2;
+    QTest::newRow("8up_Horiz; [ 270P ]; 6"   )  << 0 << 3;
+    QTest::newRow("8up_Horiz; [ 270P ]; 7"   )  << 1 << 3;
+
+    //          Layout        Pages   pageNum   Col  Row
+    QTest::newRow("8up_Vert;  [   0P ]; 0"   )  << 0 << 0;
+    QTest::newRow("8up_Vert;  [   0P ]; 1"   )  << 0 << 1;
+    QTest::newRow("8up_Vert;  [   0P ]; 2"   )  << 0 << 2;
+    QTest::newRow("8up_Vert;  [   0P ]; 3"   )  << 0 << 3;
+    QTest::newRow("8up_Vert;  [   0P ]; 4"   )  << 1 << 0;
+    QTest::newRow("8up_Vert;  [   0P ]; 5"   )  << 1 << 1;
+    QTest::newRow("8up_Vert;  [   0P ]; 6"   )  << 1 << 2;
+    QTest::newRow("8up_Vert;  [   0P ]; 7"   )  << 1 << 3;
+
+    QTest::newRow("8up_Vert;  [  90P ]; 0"   )  << 0 << 0;
+    QTest::newRow("8up_Vert;  [  90P ]; 1"   )  << 0 << 1;
+    QTest::newRow("8up_Vert;  [  90P ]; 2"   )  << 0 << 2;
+    QTest::newRow("8up_Vert;  [  90P ]; 3"   )  << 0 << 3;
+    QTest::newRow("8up_Vert;  [  90P ]; 4"   )  << 1 << 0;
+    QTest::newRow("8up_Vert;  [  90P ]; 5"   )  << 1 << 1;
+    QTest::newRow("8up_Vert;  [  90P ]; 6"   )  << 1 << 2;
+    QTest::newRow("8up_Vert;  [  90P ]; 7"   )  << 1 << 3;
+
+    QTest::newRow("8up_Vert;  [ 180P ]; 0"   )  << 0 << 0;
+    QTest::newRow("8up_Vert;  [ 180P ]; 1"   )  << 0 << 1;
+    QTest::newRow("8up_Vert;  [ 180P ]; 2"   )  << 0 << 2;
+    QTest::newRow("8up_Vert;  [ 180P ]; 3"   )  << 0 << 3;
+    QTest::newRow("8up_Vert;  [ 180P ]; 4"   )  << 1 << 0;
+    QTest::newRow("8up_Vert;  [ 180P ]; 5"   )  << 1 << 1;
+    QTest::newRow("8up_Vert;  [ 180P ]; 6"   )  << 1 << 2;
+    QTest::newRow("8up_Vert;  [ 180P ]; 7"   )  << 1 << 3;
+
+    QTest::newRow("8up_Vert;  [ 270P ]; 0"   )  << 0 << 0;
+    QTest::newRow("8up_Vert;  [ 270P ]; 1"   )  << 0 << 1;
+    QTest::newRow("8up_Vert;  [ 270P ]; 2"   )  << 0 << 2;
+    QTest::newRow("8up_Vert;  [ 270P ]; 3"   )  << 0 << 3;
+    QTest::newRow("8up_Vert;  [ 270P ]; 4"   )  << 1 << 0;
+    QTest::newRow("8up_Vert;  [ 270P ]; 5"   )  << 1 << 1;
+    QTest::newRow("8up_Vert;  [ 270P ]; 6"   )  << 1 << 2;
+    QTest::newRow("8up_Vert;  [ 270P ]; 7"   )  << 1 << 3;
+
+
+    //          Layout      Pages  pageNum   Col  Row
+    QTest::newRow("booklet; [   0P ]; 0"   )  << 0 << 0;
+    QTest::newRow("booklet; [   0P ]; 1"   )  << 0 << 1;
+
+    QTest::newRow("booklet; [   0L ]; 0"   )  << 0 << 0;
+    QTest::newRow("booklet; [   0L ]; 1"   )  << 0 << 1;
+
+    QTest::newRow("booklet; [  90P ]; 0"   )  << 0 << 0;
+    QTest::newRow("booklet; [  90P ]; 1"   )  << 0 << 1;
+
+    QTest::newRow("booklet; [  90L ]; 0"   )  << 0 << 0;
+    QTest::newRow("booklet; [  90L ]; 1"   )  << 0 << 1;
+
+    QTest::newRow("booklet; [ 180P ]; 0"   )  << 0 << 0;
+    QTest::newRow("booklet; [ 180P ]; 1"   )  << 0 << 1;
+
+    QTest::newRow("booklet; [ 180L ]; 0"   )  << 0 << 0;
+    QTest::newRow("booklet; [ 180L ]; 1"   )  << 0 << 1;
+
+    QTest::newRow("booklet; [ 270P ]; 0"   )  << 0 << 0;
+    QTest::newRow("booklet; [ 270P ]; 1"   )  << 0 << 1;
+
+    QTest::newRow("booklet; [ 270L ]; 0"   )  << 0 << 0;
+    QTest::newRow("booklet; [ 270L ]; 1"   )  << 0 << 1;
+}
+
 
 
 QTEST_MAIN(TestBoomaga)
