@@ -28,6 +28,7 @@
 #include <QMetaType>
 #include <QDataStream>
 #include <QVariant>
+#include <QRectF>
 
 enum DuplexType
 {
@@ -55,6 +56,17 @@ inline bool isLandscape(Rotation rotation)
 {
     return (int)rotation % 180;
 }
+
+inline bool isLandscape(const QRectF &rect)
+{
+    return rect.width() > rect.height();
+}
+
+inline bool isLandscape(const QRect &rect)
+{
+    return rect.width() > rect.height();
+}
+
 
 Rotation operator+(Rotation r1, int r2);
 Rotation operator+(Rotation r1, Rotation r2);

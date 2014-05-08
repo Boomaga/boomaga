@@ -141,6 +141,16 @@ TransformSpec LayoutNUp::transformSpec(const Sheet *sheet, int pageNumOnSheet) c
                 sheet->rotation() - page->rotation() :
                 sheet->rotation();
 
+    if (page && isLandscape(page->rect()))
+    {
+        rotatePage = Rotate270 - this->rotation();
+    }
+    else
+    {
+        rotatePage = this->rotation();
+    }
+
+
     if (isLandscape(rotatePage))
          pdfPageSize.transpose();
     // ................................
@@ -161,7 +171,12 @@ TransformSpec LayoutNUp::transformSpec(const Sheet *sheet, int pageNumOnSheet) c
     spec.rect = placeRect;
     spec.rotation = rotatePage;
     spec.scale = scale;
-
+//    qDebug() << "************************************";
+//    qDebug() << pageNumOnSheet << page->pageNum();
+//    qDebug() << "Layout" << this->rotation();
+//    qDebug() << "sheet->rotation()" << sheet->rotation();
+//    qDebug() << "spec.rotation" << spec.rotation;
+//    qDebug() << "page->rotation()" << page->rotation();
     return spec;
 }
 
@@ -183,14 +198,16 @@ Rotation LayoutNUp::rotation() const
  ************************************************/
 Rotation LayoutNUp::calcSheetRotation(const Sheet &sheet) const
 {
-    Rotation layoutRotation = project->layout()->rotation();
+    Rotation layoutRotation = rotation();
 
     for (int i=0; i< sheet.count(); ++i)
     {
         const ProjectPage *page = sheet.page(i);
         if (page)
         {
-            return layoutRotation - page->rotation();
+            return (page->rotation() + (isLandscape(page->rect()) ? Rotate90 : NoRotate))
+                    - layoutRotation;
+
         }
     }
 
