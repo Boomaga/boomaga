@@ -76,16 +76,16 @@ QRectF PreviewWidget::pageRect(int pageNum) const
         return QRectF();
 
     Sheet * sheet = project->previewSheet(mSheetNum);
-    TransformSpec spec = project->layout()->transformSpec(sheet, pageNum);
+    TransformSpec spec = project->layout()->transformSpec(sheet, pageNum, project->rotation());
 
     QSize size = QSize(spec.rect.width()  * mScaleFactor,
                        spec.rect.height() * mScaleFactor);
 
-    if (isLandscape(sheet->rotation()))
+    if (isLandscape(project->rotation()))
         size.transpose();
 
     QRect rect(QPoint(0, 0), size);
-    if (isLandscape(sheet->rotation()))
+    if (isLandscape(project->rotation()))
     {
         rect.moveLeft(mDrawRect.left() + spec.rect.top()  * mScaleFactor);
         rect.moveTop( mDrawRect.top()  + spec.rect.left() * mScaleFactor);
@@ -197,13 +197,14 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
 
 #endif
 
+
     if (mImage.isNull())
         return;
 
-    Sheet *sheet = project->previewSheet(mSheetNum);
-
     QSizeF printerSize =  project->printer()->paperRect().size();
-    if (isLandscape(sheet->rotation()))
+    Rotation rotation = project->rotation();
+
+    if (isLandscape(rotation))
         printerSize.transpose();
 
     mScaleFactor = qMin((this->geometry().width()  - 2.0 * MARGIN_H) * 1.0 / printerSize.width(),
@@ -225,7 +226,7 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
 
     if (mHints.testFlag(Sheet::HintOnlyLeft))
     {
-        switch (sheet->rotation())
+        switch (rotation)
         {
         case NoRotate:  clipRect.setBottom(0); break;
         case Rotate90:  clipRect.setRight(0);  break;
@@ -237,7 +238,7 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
 
     if (mHints.testFlag(Sheet::HintOnlyRight))
     {
-        switch (sheet->rotation())
+        switch (rotation)
         {
         case NoRotate:  clipRect.setTop(0);    break;
         case Rotate90:  clipRect.setLeft(0);   break;
@@ -265,7 +266,7 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
         pen.setStyle(Qt::SolidLine);
         pen.setColor(Qt::lightGray);
         painter.setPen(pen);
-        if (isLandscape(sheet->rotation()))
+        if (isLandscape(rotation))
             painter.drawLine(0, mDrawRect.top(), 0, mDrawRect.bottom());
         else
             painter.drawLine(mDrawRect.left(), 0, mDrawRect.right(), 0);

@@ -284,7 +284,7 @@ void TmpPdfFile::writeSheets(QIODevice *out, const QList<Sheet *> &sheets) const
         *out << "/Resources " << resourcesNum << " 0 R\n";
         *out << "/Parent " << pagesNum << " 0 R\n";
 
-        *out << "/Rotate " << (int)sheet->rotation() << "\n";
+        *out << "/Rotate " << (int)project->rotation() << "\n";
         *out << ">>\n";
         *out << "endobj\n";
 
@@ -426,7 +426,7 @@ void TmpPdfFile::getPageStream(QString *out, const Sheet *sheet) const
         if (page)
         {
 
-            TransformSpec spec = project->layout()->transformSpec(sheet, i);
+            TransformSpec spec = project->layout()->transformSpec(sheet, i, project->rotation());
 
             double dx = 0;
             double dy = 0;

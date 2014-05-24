@@ -105,9 +105,9 @@ QRectF ProjectPage::rect() const
 /************************************************
 
  ************************************************/
-Rotation ProjectPage::rotation() const
+Rotation ProjectPage::pdfRotation() const
 {
-    int r = (mPdfInfo.rotate + mManualRotation) % 360;
+    int r = mPdfInfo.rotate % 360;
 
     if (r == 90)    return Rotate90;
     if (r == 180)   return Rotate180;
@@ -143,7 +143,8 @@ Project::Project(QObject *parent) :
     mTmpFile(0),
     mLastTmpFile(0),
     mPrinter(&mNullPrinter),
-    mDoubleSided(true)
+    mDoubleSided(true),
+    mRotation(NoRotate)
 {
 }
 
@@ -290,6 +291,7 @@ void Project::update()
                 mPages << job.page(p);
         }
     }
+    mRotation = mLayout->calcProjectRotation(mPages);
 
     qDeleteAll(mSheets);
     mSheets.clear();

@@ -60,13 +60,10 @@ public:
     int count() const { return mPages.count(); }
     int indexOfPage(const ProjectPage *page, int from = 0) const;
 
-    Rotation rotation() const { return mRotation; }
-    void setRotation(Rotation value) { mRotation = value; }
 private:
     QVector<ProjectPage*> mPages;
     int mSheetNum;
     Hints mHints;
-    Rotation mRotation;
 };
 
 typedef QList<Sheet*> SheetList;

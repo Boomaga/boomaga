@@ -26,6 +26,7 @@
 
 #include "layout.h"
 #include <QString>
+#include <QList>
 #include "project.h"
 #include "sheet.h"
 #include "printer.h"
@@ -55,6 +56,25 @@ Layout::~Layout()
 void Layout::fillPreviewSheets(QList<Sheet *> *sheets) const
 {
     fillSheets(sheets);
+}
+
+
+/************************************************
+
+ ************************************************/
+Rotation Layout::calcProjectRotation(const QList<ProjectPage *> &pages) const
+{
+    foreach (const ProjectPage *page, pages)
+    {
+        if (page)
+        {
+            if ((isLandscape(page->pdfRotation()) ^ isLandscape(page->rect())) ^ isLandscape(this->rotation()))
+                return Rotate90;
+            else
+                return NoRotate;
+        }
+    }
+    return this->rotation();
 }
 
 
@@ -103,7 +123,6 @@ void LayoutNUp::fillSheets(QList<Sheet *> *sheets) const
             ++i;
         }
 
-        sheet->setRotation(calcSheetRotation(*sheet));
         sheets->append(sheet);
     }
 }
@@ -113,7 +132,7 @@ void LayoutNUp::fillSheets(QList<Sheet *> *sheets) const
  * In this place sheet is always has portrait orientation.
  * It will be rotated later based on sheet.rotation() value.
  ************************************************/
-TransformSpec LayoutNUp::transformSpec(const Sheet *sheet, int pageNumOnSheet) const
+TransformSpec LayoutNUp::transformSpec(const Sheet *sheet, int pageNumOnSheet, Rotation sheetRotation) const
 {
     Printer *printer = project->printer();
     const QRectF printerRect = printer->pageRect();
@@ -124,61 +143,48 @@ TransformSpec LayoutNUp::transformSpec(const Sheet *sheet, int pageNumOnSheet) c
 
     uint col, row;
     {
-        PagePosition colRow = calcPagePosition(sheet, pageNumOnSheet);
+        PagePosition colRow = calcPagePosition(pageNumOnSheet, sheetRotation);
         col = colRow.col;
         row = colRow.row;
     }
 
-    // ................................
-    const ProjectPage *page = sheet->page(pageNumOnSheet);
-
-    QSizeF pdfPageSize = page ?
-                sheet->page(pageNumOnSheet)->rect().size() :
-                pdfPageSize = printer->paperRect().size();
-
-
-    Rotation rotatePage = page ?
-                sheet->rotation() - page->rotation() :
-                sheet->rotation();
-
-    if (page && isLandscape(page->rect()))
+    TransformSpec spec;
+    QSizeF pageSize;
     {
-        rotatePage = Rotate270 - this->rotation();
-    }
-    else
-    {
-        rotatePage = this->rotation();
+        const ProjectPage *page = sheet->page(pageNumOnSheet);
+        spec.rotation = calcPageRotation(page, sheetRotation);
+        if (page)
+        {
+            pageSize = page->rect().size();
+            spec.rotation += page->manualRotation();
+        }
+        else
+        {
+            pageSize = printer->paperRect().size();
+        }
     }
 
+    //spec.rotation += pageManualRotation;
 
-    if (isLandscape(rotatePage))
-         pdfPageSize.transpose();
-    // ................................
+    if (isLandscape(spec.rotation))
+         pageSize.transpose();
 
-    qreal scale = qMin(colWidth  / pdfPageSize.width(),
-                       rowHeight / pdfPageSize.height());
+    spec.scale = qMin(colWidth  / pageSize.width(),
+                      rowHeight / pageSize.height());
 
     QRectF placeRect;
-    placeRect.setWidth( pdfPageSize.width() * scale);
-    placeRect.setHeight(pdfPageSize.height() * scale);
+    placeRect.setWidth( pageSize.width()  * spec.scale);
+    placeRect.setHeight(pageSize.height() * spec.scale);
     QPointF center;
     //            |  TopLeft page    |  margins       | full pages        | center of current page
     center.rx() = printerRect.left() + (margin * col) + (colWidth  * col) + (colWidth  * 0.5);
     center.ry() = printerRect.top()  + (margin * row) + (rowHeight * row) + (rowHeight * 0.5);
     placeRect.moveCenter(center);
 
-    TransformSpec spec;
     spec.rect = placeRect;
-    spec.rotation = rotatePage;
-    spec.scale = scale;
-//    qDebug() << "************************************";
-//    qDebug() << pageNumOnSheet << page->pageNum();
-//    qDebug() << "Layout" << this->rotation();
-//    qDebug() << "sheet->rotation()" << sheet->rotation();
-//    qDebug() << "spec.rotation" << spec.rotation;
-//    qDebug() << "page->rotation()" << page->rotation();
+
     return spec;
-}
+ }
 
 
 /************************************************
@@ -194,25 +200,25 @@ Rotation LayoutNUp::rotation() const
 
 
 /************************************************
- *
+
  ************************************************/
-Rotation LayoutNUp::calcSheetRotation(const Sheet &sheet) const
+Rotation LayoutNUp::calcPageRotation(const ProjectPage *page, Rotation sheetRotation) const
 {
-    Rotation layoutRotation = rotation();
+    if (!page)
+        return this->rotation();
 
-    for (int i=0; i< sheet.count(); ++i)
-    {
-        const ProjectPage *page = sheet.page(i);
-        if (page)
-        {
-            return (page->rotation() + (isLandscape(page->rect()) ? Rotate90 : NoRotate))
-                    - layoutRotation;
+    Rotation res;
+    bool isSheetLandscape = isLandscape(this->rotation())  ^ isLandscape(sheetRotation);
 
-        }
-    }
+    bool isPageLandscape = isLandscape(page->pdfRotation()) ^ isLandscape(page->rect());
+        res = page->pdfRotation();
 
-    return layoutRotation;
+    if (isPageLandscape != isSheetLandscape)
+        res -= 90;
+
+    return res - sheetRotation;
 }
+
 
 
 /************************************************
@@ -251,14 +257,12 @@ Rotation LayoutNUp::calcSheetRotation(const Sheet &sheet) const
  *  +------+                     +------+
  *
  ************************************************/
-Layout::PagePosition LayoutNUp::calcPagePosition(const Sheet *sheet, int pageNumOnSheet) const
+Layout::PagePosition LayoutNUp::calcPagePosition(int pageNumOnSheet, Rotation sheetRotation) const
 {
-    Rotation rotate = sheet->rotation();
     PagePosition res;
 
-    if (isLandscape(rotate))
+    if (isLandscape(sheetRotation))
     {
-        // 90 or 270
         switch (mOrientation)
         {
         case Qt::Horizontal:
@@ -274,7 +278,6 @@ Layout::PagePosition LayoutNUp::calcPagePosition(const Sheet *sheet, int pageNum
     }
     else
     {
-        // 0 or 180
         switch (mOrientation)
         {
         case Qt::Horizontal:
@@ -286,16 +289,9 @@ Layout::PagePosition LayoutNUp::calcPagePosition(const Sheet *sheet, int pageNum
             res.row = pageNumOnSheet % mPageCountVert;
             res.col = pageNumOnSheet / mPageCountVert;
             break;
+
         }
 
-    }
-
-
-    if (rotate == Rotate180 ||
-        rotate == Rotate270 )
-    {
-        res.row = (mPageCountVert  - 1) - res.row;
-        res.col = (mPageCountHoriz - 1) - res.col;
     }
 
     return res;
@@ -363,7 +359,6 @@ void LayoutBooklet::fillSheetsForBook(int bookStart, int bookLength, QList<Sheet
             sheet->setPage(1, page);
         }
 
-        sheet->setRotation(calcSheetRotation(*sheet));
 
         // Sheet 1 **************************
         sheet = new Sheet(2, sheets->count());
@@ -383,8 +378,6 @@ void LayoutBooklet::fillSheetsForBook(int bookStart, int bookLength, QList<Sheet
             ProjectPage *page = project->page(n + bookStart);
             sheet->setPage(1, page);
         }
-
-        sheet->setRotation(calcSheetRotation(*sheet));
     }
 }
 
@@ -437,7 +430,6 @@ void LayoutBooklet::fillPreviewSheetsForBook(int bookStart, int bookLength, QLis
             {
                 ProjectPage *page = project->page(i + bookStart);
                 sheet->setPage(0, page);
-                sheet->setRotation(calcSheetRotation(*sheet));
             }
         }
 
@@ -447,8 +439,8 @@ void LayoutBooklet::fillPreviewSheetsForBook(int bookStart, int bookLength, QLis
             {
                 ProjectPage *page = project->page(i + 1 + bookStart);
                 sheet->setPage(1, page);
-                sheet->setRotation(calcSheetRotation(*sheet));
             }
         }
     }
 }
+

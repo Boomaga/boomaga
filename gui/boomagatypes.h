@@ -52,32 +52,24 @@ enum Rotation
 };
 
 
-inline bool isLandscape(Rotation rotation)
-{
-    return (int)rotation % 180;
-}
-
-inline bool isLandscape(const QRectF &rect)
-{
-    return rect.width() > rect.height();
-}
-
-inline bool isLandscape(const QRect &rect)
-{
-    return rect.width() > rect.height();
-}
+inline bool isLandscape(Rotation rotation)  { return (int)rotation % 180; }
+inline bool isLandscape(const QSizeF &size) { return size.width() > size.height(); }
+inline bool isLandscape(const QSize &size)  { return size.width() > size.height(); }
+inline bool isLandscape(const QRectF &rect) { return isLandscape(rect.size()); }
+inline bool isLandscape(const QRect &rect)  { return isLandscape(rect.size()); }
 
 
-Rotation operator+(Rotation r1, int r2);
-Rotation operator+(Rotation r1, Rotation r2);
+inline Rotation intToRotation(int r) { return (Rotation)((360 + (r % 360)) % 360); }
 
-Rotation operator-(Rotation r1, int r2);
-Rotation operator-(Rotation r1, Rotation r2);
+inline Rotation operator+(Rotation r1, int r2)      { return intToRotation((int)r1 + (int)r2); }
+inline Rotation operator+(Rotation r1, Rotation r2) { return intToRotation((int)r1 + (int)r2); }
+inline Rotation operator-(Rotation r1, int r2)      { return intToRotation((int)r1 - (int)r2); }
+inline Rotation operator-(Rotation r1, Rotation r2) { return intToRotation((int)r1 - (int)r2); }
 
-Rotation &operator+=(Rotation &r1, int r2);
-Rotation &operator+=(Rotation &r1, Rotation r2);
+inline Rotation &operator+=(Rotation &r1, int r2)      { r1 = intToRotation((int)r1 + (int)r2); return r1; }
+inline Rotation &operator+=(Rotation &r1, Rotation r2) { r1 = intToRotation((int)r1 + (int)r2); return r1; }
 
-Rotation &operator-=(Rotation &r1, int r2);
-Rotation &operator-=(Rotation &r1, Rotation r2);
+inline Rotation &operator-=(Rotation &r1, int r2)      { r1 = intToRotation((int)r1 - (int)r2); return r1; }
+inline Rotation &operator-=(Rotation &r1, Rotation r2) { r1 = intToRotation((int)r1 - (int)r2); return r1; }
 
 #endif // BOOMAGATYPES_H

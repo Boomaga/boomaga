@@ -54,9 +54,11 @@ public:
     virtual void fillSheets(QList<Sheet*> *sheets) const = 0;
     virtual void fillPreviewSheets(QList<Sheet*> *sheets) const;
 
-    virtual TransformSpec transformSpec(const Sheet *sheet, int pageNumOnSheet) const = 0;
+    virtual Rotation calcPageRotation(const ProjectPage *page, Rotation sheetRotation) const = 0;
+    virtual TransformSpec transformSpec(const Sheet *sheet, int pageNumOnSheet, Rotation sheetRotation) const = 0;
 
     virtual Rotation rotation() const = 0;
+    Rotation calcProjectRotation(const QList<ProjectPage *> &pages) const;
 
 protected:
     struct PagePosition
@@ -65,8 +67,7 @@ protected:
         uint row;
     };
 
-    virtual PagePosition calcPagePosition(const Sheet *sheet, int pageNumOnSheet) const = 0;
-    virtual Rotation calcSheetRotation(const Sheet &sheet) const = 0;
+    virtual PagePosition calcPagePosition(int pageNumOnSheet, Rotation sheetRotation) const = 0;
 };
 
 
@@ -78,14 +79,13 @@ public:
     virtual QString id() const;
 
     void fillSheets(QList<Sheet*> *sheets) const;
-    TransformSpec transformSpec(const Sheet *sheet, int pageNumOnSheet) const;
+    TransformSpec transformSpec(const Sheet *sheet, int pageNumOnSheet, Rotation sheetRotation) const;
     virtual Rotation rotation() const;
 
 protected:
-    virtual Rotation calcSheetRotation(const Sheet &sheet) const;
-    virtual PagePosition calcPagePosition(const Sheet *sheet, int pageNumOnSheet) const;
+    virtual Rotation calcPageRotation(const ProjectPage *page, Rotation sheetRotation) const;
+    virtual PagePosition calcPagePosition(int pageNumOnSheet, Rotation sheetRotation) const;
 
-private:
     int mPageCountVert;
     int mPageCountHoriz;
     Qt::Orientation mOrientation;

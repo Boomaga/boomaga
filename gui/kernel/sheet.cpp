@@ -35,8 +35,7 @@
  ************************************************/
 Sheet::Sheet(int count, int sheetNum):
     mSheetNum(sheetNum),
-    mHints(0),
-    mRotation(NoRotate)
+    mHints(0)
 {
     mPages.resize(count);
     for (int i=0; i<count; ++i)

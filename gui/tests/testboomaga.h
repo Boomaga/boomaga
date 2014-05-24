@@ -35,8 +35,9 @@
 
 
 #include "../boomagatypes.h"
-class Layout;
+class LayoutNUp;
 class Sheet;
+class ProjectPage;
 
 class TestBoomaga : public QObject
 {
@@ -45,21 +46,23 @@ public:
     explicit TestBoomaga(QObject *parent = 0);
 
 private slots:
-    void test_Rotation();
+    void test_RotationType();
 
-    void test_SheetRotation();
-    void test_SheetRotation_data();
+    void test_ProjectRotation();
+    void test_ProjectRotation_data();
 
     void test_PageRotation();
     void test_PageRotation_data();
 
     void test_PagePosition();
     void test_PagePosition_data();
+
 private:
-    Layout *createLayout(const QString &name);
+    LayoutNUp *createLayout(const QString &name);
+    QList<ProjectPage*> createPages(const QString &definition);
     Sheet *createSheet(const QString &definition);
     Sheet *createSheet(int pagePerSheet, int pageRotation, QRectF  mediaBox = QRectF(), QRectF cropBox = QRectF());
-    int StrToRotation(const QString &str);
+    Rotation StrToRotation(const QString &str);
 };
 
 

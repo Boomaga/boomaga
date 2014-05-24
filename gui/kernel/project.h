@@ -93,7 +93,7 @@ public:
     int pageNum() const { return mPageNum; }
 
     virtual QRectF rect() const;
-    Rotation rotation() const;
+    Rotation pdfRotation() const;
     Rotation manualRotation() const { return mManualRotation; }
     void setManualRotation(Rotation value) { mManualRotation = value; }
 
@@ -171,6 +171,8 @@ public:
     void load(const QStringList &fileNames, bool autoRemove = false);
     void load(const QStringList &fileNames, const QStringList &titles, bool autoRemove = false);
 
+    Rotation rotation() const { return mRotation; }
+
 public slots:
     bool error(const QString &message);
 
@@ -209,6 +211,7 @@ private:
     bool mDoubleSided;
 
     MetaData mMetaData;
+    Rotation mRotation;
 
     TmpPdfFile *createTmpPdfFile();
     void stopMerging();
