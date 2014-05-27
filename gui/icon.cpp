@@ -27,6 +27,7 @@
 #include "icon.h"
 
 #include <QHash>
+#include <QDebug>
 
 /************************************************
  *
@@ -156,11 +157,15 @@ QIcon Icon::icon(Icon::IconName iconName)
 }
 
 
+
 /************************************************
  *
- * ***********************************************/
+ ************************************************/
 QIcon Icon::loadIcon(Icon::IconName iconName)
 {
+    const int sizes[] = {16, 22, 32, 48, 64, 128};
+    const int sizesLen = sizeof(sizes)/sizeof(*sizes);
+
     QStringList theme;
     QStringList fallback;
     iconDefs(iconName, &theme, &fallback);
@@ -169,11 +174,34 @@ QIcon Icon::loadIcon(Icon::IconName iconName)
     {
         QIcon icon = QIcon::fromTheme(s);
         if (!icon.isNull())
-            return icon;
+        {
+            QIcon res;
+            int lastSize = 0;
+            QList<QSize> availableSizes = icon.availableSizes();
+            for (int i = sizesLen-1; i>=0; --i)
+            {
+                int sz = sizes[i];
+                if (availableSizes.contains(QSize(sz, sz)))
+                {
+                    res.addPixmap(icon.pixmap(sz, sz));
+                    lastSize = sz;
+                }
+                else
+                {
+                    if (lastSize)
+                    {
+                        res.addPixmap(icon.pixmap(lastSize, lastSize).scaled(sz, sz, Qt::IgnoreAspectRatio, Qt::SmoothTransformation));
+                    }
+                }
+            }
+            return res;
+        }
+
+
     }
 
     QIcon icon;
-    int sizes[] = {16, 22, 32, 48, 64, 128};
+
     for (int i=0; i<fallback.count(); ++i)
     {
         if (!fallback.at(i).isEmpty())
