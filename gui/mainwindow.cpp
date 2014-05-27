@@ -36,6 +36,7 @@
 #include "aboutdialog/aboutdialog.h"
 #include "actions.h"
 #include "export/exporttopdfprinter.h"
+#include "icon.h"
 
 #include <math.h>
 #include <QRadioButton>
@@ -48,18 +49,7 @@
 #include <QKeyEvent>
 #include <QFileDialog>
 #include <QMimeData>
-
-/************************************************
-
- ************************************************/
-QIcon findIcon(const QString theme1, const QString fallback)
-{
-    QIcon icon = QIcon::fromTheme(theme1);
-    if (!icon.isNull())
-        return icon;
-
-    return QIcon(fallback);
-}
+#include <QInputDialog>
 
 
 /************************************************
@@ -73,13 +63,7 @@ MainWindow::MainWindow(QWidget *parent):
 
     delete ui->menuPreferences;
 
-    QIcon appIcon;
-    appIcon.addFile(":/images/icon-16x16", QSize(16, 16));
-    appIcon.addFile(":/images/icon-32x32", QSize(32, 32));
-    appIcon.addFile(":/images/icon-64x64", QSize(64, 64));
-    appIcon.addFile(":/images/icon-128x128", QSize(128, 128));
-
-    setWindowIcon(appIcon);
+    setWindowIcon(Icon::icon(Icon::ApplicationIcon));
     setWindowTitle(tr("Boomaga"));
 
     setStyleSheet("QListView::item { padding: 2px;}");
@@ -175,6 +159,9 @@ MainWindow::MainWindow(QWidget *parent):
 
     connect(ui->preview, SIGNAL(contextMenuRequested(int)),
             this, SLOT(showPreviewContextMenu(int)));
+
+    connect(ui->jobsView, SIGNAL(contextMenuRequested(Job)),
+            this, SLOT(showJobViewContextMenu(Job)));
 
     ui->preview->setFocusPolicy(Qt::StrongFocus);
     ui->preview->setFocus();
@@ -294,34 +281,34 @@ void MainWindow::initActions()
 {
     QAction *act;
     act = ui->actionPrint;
-    act->setIcon(findIcon("document-print", ":/images/print-48x48"));
+    act->setIcon(Icon::icon(Icon::Print));
     connect(act, SIGNAL(triggered()), this, SLOT(print()));
 
     act = ui->actionPrintAndClose;
-    act->setIcon(findIcon("document-print", ":/images/print-48x48"));
+    act->setIcon(Icon::icon(Icon::Print));
     connect(act, SIGNAL(triggered()), this, SLOT(printAndClose()));
 
     act = ui->actionExit;
     connect(act, SIGNAL(triggered()), this, SLOT(close()));
 
     act = ui->actionPreviousSheet;
-    act->setIcon(findIcon("go-previous-view", ":/images/previous"));
+    act->setIcon(Icon::icon(Icon::Previous));
     connect(act, SIGNAL(triggered()), ui->preview, SLOT(prevSheet()));
 
     act = ui->actionNextSheet;
-    act->setIcon(findIcon("go-next-view", ":/images/next"));
+    act->setIcon(Icon::icon(Icon::Next));
     connect(act, SIGNAL(triggered()), ui->preview, SLOT(nextSheet()));
 
     act = ui->actionOpen;
-    act->setIcon(findIcon("document-open", ":/images/open"));
+    act->setIcon(Icon::icon(Icon::Open));
     connect(act, SIGNAL(triggered()), this, SLOT(load()));
 
     act = ui->actionSave;
-    act->setIcon(findIcon("document-save", ":/images/save"));
+    act->setIcon(Icon::icon(Icon::Save));
     connect(act, SIGNAL(triggered()), this, SLOT(save()));
 
     act = ui->actionSaveAs;
-    act->setIcon(findIcon("document-save-as", ":/images/save-as"));
+    act->setIcon(Icon::icon(Icon::SaveAs));
     connect(act, SIGNAL(triggered()), this, SLOT(saveAs()));
 
 
@@ -744,6 +731,25 @@ void MainWindow::showPreviewContextMenu(int pageNum)
 
     QMenu *menu = new QMenu(this);
 
+
+    // Rotation ......................................
+    if (page)
+    {
+        PageAction *act;
+
+        act = new PageAction(Icon::icon(Icon::RotateLeft), tr("Rotate page to the left"), sheet, page, menu);
+        menu->addAction(act);
+        connect(act, SIGNAL(triggered()),
+                this, SLOT(rotatePageLeft()));
+
+        act = new PageAction(Icon::icon(Icon::RotateRight), tr("Rotate page to the right"), sheet, page, menu);
+        menu->addAction(act);
+        connect(act, SIGNAL(triggered()),
+                this, SLOT(rotatePageRight()));
+    }
+    // Rotation ......................................
+
+
     // Blank page ....................................
     if (page)
     {
@@ -818,6 +824,43 @@ void MainWindow::showPreviewContextMenu(int pageNum)
         undelMenu->setEnabled(undelMenu->isEnabled() || jm->isEnabled());
     }
     // ...............................................
+
+    menu->popup(QCursor::pos());
+}
+
+
+/************************************************
+
+ ************************************************/
+void MainWindow::showJobViewContextMenu(Job job)
+{
+    QMenu *menu = new QMenu(this);
+
+    JobAction *act;
+
+    act = new JobAction(tr("Rename job"), job, menu);
+    menu->addAction(act);
+    connect(act, SIGNAL(triggered()),
+            this, SLOT(renameJob()));
+
+
+    act = new JobAction(Icon::icon(Icon::RotateLeft), tr("Rotate job to the left"), job, menu);
+    menu->addAction(act);
+    connect(act, SIGNAL(triggered()),
+            this, SLOT(rotateJobLeft()));
+
+    act = new JobAction(Icon::icon(Icon::RotateRight), tr("Rotate job to the right"), job, menu);
+    menu->addAction(act);
+    connect(act, SIGNAL(triggered()),
+            this, SLOT(rotateJobRight()));
+
+
+    menu->addSeparator();
+
+    act = new JobAction(tr("Delete job"), job, menu);
+    menu->addAction(act);
+    connect(act, SIGNAL(triggered()),
+            this, SLOT(deleteJob()));
 
     menu->popup(QCursor::pos());
 }
@@ -930,6 +973,113 @@ void MainWindow::insertBlankPageAfter()
     Job job = project->jobs()->value(j);
     int n = job.indexOfPage(act->page());
     job.insertBlankPage(n+1);
+}
+
+
+/************************************************
+
+ ************************************************/
+void MainWindow::renameJob()
+{
+    JobAction *act = qobject_cast<JobAction*>(sender());
+    if (!act)
+        return;
+
+    bool ok;
+    QString s = QInputDialog::getText(this, tr("Rename job"), tr("Job title:"),
+                                      QLineEdit::Normal, act->job().title(false), &ok);
+
+    if (ok)
+    {
+        act->job().setTitle(s);
+        ui->jobsView->updateItems();
+    }
+}
+
+
+/************************************************
+
+ ************************************************/
+void MainWindow::rotateJobLeft()
+{
+    JobAction *act = qobject_cast<JobAction*>(sender());
+    if (!act)
+        return;
+
+    Job job = act->job();
+    for (int i=0; i< job.pageCount(); ++i)
+    {
+        ProjectPage *page = job.page(i);
+        page->setManualRotation(page->manualRotation() - Rotate90);
+    }
+    project->update();
+}
+
+
+/************************************************
+
+ ************************************************/
+void MainWindow::rotateJobRight()
+{
+    JobAction *act = qobject_cast<JobAction*>(sender());
+    if (!act)
+        return;
+
+    Job job = act->job();
+    for (int i=0; i< job.pageCount(); ++i)
+    {
+        ProjectPage *page = job.page(i);
+        page->setManualRotation(page->manualRotation() + Rotate90);
+    }
+    project->update();
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void MainWindow::rotatePageLeft()
+{
+    PageAction *act = qobject_cast<PageAction*>(sender());
+    if (!act || !act->page())
+        return;
+
+    ProjectPage *page = act->page();
+    page->setManualRotation(page->manualRotation() - Rotate90);
+    project->update();
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void MainWindow::rotatePageRight()
+{
+    PageAction *act = qobject_cast<PageAction*>(sender());
+    if (!act || !act->page())
+        return;
+
+    ProjectPage *page = act->page();
+    page->setManualRotation(page->manualRotation() + Rotate90);
+    project->update();
+}
+
+
+/************************************************
+
+ ************************************************/
+void MainWindow::deleteJob()
+{
+    JobAction *act = qobject_cast<JobAction*>(sender());
+    if (!act)
+        return;
+
+
+    int index = project->jobs()->indexOf(act->job());
+    if (index > -1)
+        project->removeJob(index);
+
+    ui->jobsView->updateItems();
 }
 
 

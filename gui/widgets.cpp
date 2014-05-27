@@ -34,7 +34,7 @@
 #include <QMenu>
 #include <QMouseEvent>
 #include <QDebug>
-#include <QInputDialog>
+
 
 /************************************************
 
@@ -139,9 +139,15 @@ JobsListView::JobsListView(QWidget *parent):
     QListWidget(parent)
 {
     setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(this, SIGNAL(customContextMenuRequested(QPoint)), this, SLOT(showContextMenu(QPoint)));
-    connect(this->model(), SIGNAL(layoutChanged()), this, SLOT(layoutChanged()));
-    connect(project, SIGNAL(changed()), this, SLOT(updateItems()));
+    connect(this, SIGNAL(customContextMenuRequested(QPoint)),
+            this, SLOT(showContextMenu(QPoint)));
+
+    connect(this->model(), SIGNAL(layoutChanged()),
+            this, SLOT(layoutChanged()));
+
+    connect(project, SIGNAL(changed()),
+            this, SLOT(updateItems()));
+
     updateItems();
 }
 
@@ -243,61 +249,10 @@ void JobsListView::showContextMenu(const QPoint &pos)
     if (!item)
         return;
 
-    QMenu *menu = new QMenu(this);
-
-    QAction *act;
-
-    act = menu->addAction(tr("Rename job"));
-    act->setData(item->data(Qt::UserRole));
-    connect(act, SIGNAL(triggered()),
-            this, SLOT(renameJob()));
-
-    menu->addSeparator();
-
-    act = menu->addAction(tr("Delete job"));
-    act->setData(item->data(Qt::UserRole));
-    connect(act, SIGNAL(triggered()),
-            this, SLOT(deleteJob()));
-
-    menu->popup(mapToGlobal(pos));
-}
-
-
-/************************************************
-
- ************************************************/
-void JobsListView::deleteJob()
-{
-    QAction *act = qobject_cast<QAction*>(sender());
-    if (act)
-    {
-        int index = act->data().toInt();
-        project->removeJob(index);
-    }
-    updateItems();
-}
-
-
-/************************************************
- *
- * ***********************************************/
-void JobsListView::renameJob()
-{
-    QAction *act = qobject_cast<QAction*>(sender());
-    if (!act)
-        return;
-
-    int index = act->data().toInt();
-    Job job = project->jobs()->at(index);
-
     bool ok;
-    QString s = QInputDialog::getText(this, tr("Rename job"), tr("Job title:"), QLineEdit::Normal, job.title(false), &ok);
-
-    if (ok)
-    {
-        job.setTitle(s);
-        updateItems();
-    }
+    int n = item->data(Qt::UserRole).toInt(&ok);
+    if (ok && n>-1 && n<project->jobs()->count())
+        emit contextMenuRequested(project->jobs()->at(n));
 }
 
 

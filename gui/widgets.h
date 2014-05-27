@@ -83,15 +83,14 @@ public:
 
 public slots:
     void setSheetNum(int sheetNum);
+    void updateItems();
 
 signals:
     void jobSelected(Job job);
+    void contextMenuRequested(Job job);
 
 private slots:
-    void updateItems();
     void showContextMenu(const QPoint &pos);
-    void deleteJob();
-    void renameJob();
     void layoutChanged();
 
 protected:

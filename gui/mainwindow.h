@@ -31,11 +31,11 @@
 #include <QLabel>
 #include <QProgressBar>
 #include <QMouseEvent>
+#include <kernel/job.h>
 
 class Layout;
 class Project;
 class Printer;
-class Job;
 class QMessageBox;
 
 namespace Ui {
@@ -69,11 +69,19 @@ private slots:
     void updateProgressBar(int value, int all);
 
     void showPreviewContextMenu(int pageNum);
+    void showJobViewContextMenu(Job job);
     void deletePage();
     void undoDeletePage();
     void deletePagesEnd();
     void insertBlankPageBefore();
     void insertBlankPageAfter();
+    void deleteJob();
+    void renameJob();
+    void rotateJobLeft();
+    void rotateJobRight();
+    void rotatePageLeft();
+    void rotatePageRight();
+
 
     void save();
     void saveAs(const QString &fileName = "");

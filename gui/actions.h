@@ -28,6 +28,7 @@
 #define ACTIONS_H
 
 #include <QAction>
+#include "kernel/job.h"
 class Sheet;
 class ProjectPage;
 
@@ -60,5 +61,32 @@ private:
     Sheet *mSheet;
     ProjectPage *mPage;
 };
+
+
+class JobAction: public QAction
+{
+    Q_OBJECT
+public:
+    explicit JobAction(const Job &job, QObject* parent):
+        QAction(parent),
+        mJob(job)
+    {}
+
+    JobAction(const QString &text, const Job &job, QObject* parent):
+        QAction(text, parent),
+        mJob(job)
+    {}
+
+    JobAction(const QIcon &icon, const QString &text, const Job &job, QObject* parent):
+        QAction(icon, text, parent),
+        mJob(job)
+    {}
+
+    Job job() const { return mJob; }
+
+private:
+    Job mJob;
+};
+
 
 #endif // ACTIONS_H

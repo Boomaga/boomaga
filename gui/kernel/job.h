@@ -56,6 +56,7 @@ public:
     virtual ~Job();
 
     Job& operator=(const Job& other);
+    bool operator==(const Job& other) const;
 
     int pageCount() const;
     ProjectPage *page(int index) const;

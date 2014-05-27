@@ -8,6 +8,12 @@
         <file alias="save">images/save.png</file>
         <file alias="save-as">images/save-as.png</file>
         <file alias="open">images/open.png</file>
+        <file alias="rotate-left-16x16">images/object-rotate-left_16.png</file>
+        <file alias="rotate-left-22x22">images/object-rotate-left_22.png</file>
+        <file alias="rotate-left-32x32">images/object-rotate-left_32.png</file>
+        <file alias="rotate-right-16x16">images/object-rotate-right_16.png</file>
+        <file alias="rotate-right-22x22">images/object-rotate-right_22.png</file>
+        <file alias="rotate-right-32x32">images/object-rotate-right_32.png</file>
         <file alias="icon-16x16">images/boomaga_16.png</file>
         <file alias="icon-32x32">images/boomaga_32.png</file>
         <file alias="icon-64x64">images/boomaga_64.png</file>

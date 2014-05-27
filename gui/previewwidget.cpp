@@ -87,7 +87,7 @@ QRectF PreviewWidget::pageRect(int pageNum) const
     QRect rect(QPoint(0, 0), size);
     if (isLandscape(project->rotation()))
     {
-        rect.moveLeft(mDrawRect.left() + spec.rect.top()  * mScaleFactor);
+        rect.moveRight(mDrawRect.right() - spec.rect.top()  * mScaleFactor);
         rect.moveTop( mDrawRect.top()  + spec.rect.left() * mScaleFactor);
     }
     else
@@ -287,6 +287,7 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
             pen.setColor(Qt::red);
             painter.setPen(pen);
             painter.drawRect(this->pageRect(i));
+            painter.drawText(this->pageRect(i).translated(10, 10), QString("%1").arg(i));
         }
         painter.restore();
     }

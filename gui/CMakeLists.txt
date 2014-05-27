@@ -43,6 +43,7 @@ set(HEADERS
     settings.h
     widgets.h
     dbus.h
+    icon.h
     printersettings/printersettings.h
     previewwidget.h
     aboutdialog/aboutdialog.h
@@ -70,6 +71,7 @@ set(SOURCES
     settings.cpp
     widgets.cpp
     dbus.cpp
+    icon.cpp
     printersettings/printersettings.cpp
     previewwidget.cpp
     aboutdialog/aboutdialog.cpp
