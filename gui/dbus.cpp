@@ -53,7 +53,7 @@ BoomagaDbus::~BoomagaDbus()
 /************************************************
 
  ************************************************/
-void BoomagaDbus::add(const QString &file, const QString &title, bool autoRemove)
+void BoomagaDbus::add(const QString &file, const QString &title, bool autoRemove, const QString &options)
 {
-    project->load(file, title, autoRemove);
+    project->load(file, title, options, autoRemove);
 }

@@ -673,25 +673,25 @@ void MetaData::addDictItem(QByteArray &out, const QString &key, const QDateTime 
 /************************************************
 
  ************************************************/
-void Project::load(const QString &fileName, const QString title, bool autoRemove)
+void Project::load(const QString &fileName, const QString &title, const QString &options, bool autoRemove)
 {
-    load(QStringList() << fileName, QStringList() << title, autoRemove);
+    load(QStringList() << fileName, QStringList() << title, options, autoRemove);
 }
 
 
 /************************************************
 
  ************************************************/
-void Project::load(const QStringList &fileNames, bool autoRemove)
+void Project::load(const QStringList &fileNames, const QString &options, bool autoRemove)
 {
-    load(fileNames, QStringList(), autoRemove);
+    load(fileNames, QStringList(), options, autoRemove);
 }
 
 
 /************************************************
 
  ************************************************/
-void Project::load(const QStringList &fileNames, const QStringList &titles, bool autoRemove)
+void Project::load(const QStringList &fileNames, const QStringList &titles, const QString &options, bool autoRemove)
 {
     stopMerging();
     QStringList errors;
@@ -702,7 +702,7 @@ void Project::load(const QStringList &fileNames, const QStringList &titles, bool
         ProjectFile file;
         try
         {
-            file.load(fileName);
+            file.load(fileName, options);
             for(int i=0; i<file.jobs().count(); ++i)
             {
                 Job job = file.jobs().at(i);

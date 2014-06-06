@@ -38,7 +38,7 @@ public:
     ~BoomagaDbus();
 
 public slots:
-    void add(const QString &file, const QString &title, bool autoRemove = false);
+    void add(const QString &file, const QString &title,bool autoRemove = false, const QString &options = "");
 };
 
 

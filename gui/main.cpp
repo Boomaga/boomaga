@@ -197,7 +197,7 @@ int main(int argc, char *argv[])
 
     try
     {
-        project->load(files, titles, autoRemove);
+        project->load(files, titles, "", autoRemove);
     }
     catch (const QString &err)
     {

@@ -52,6 +52,7 @@ public:
 
     explicit Job();
     explicit Job(const QString &fileName, qint64 startPos=0, qint64 endPos=0);
+    explicit Job(const QString &fileName, const QList<int> &pages, qint64 startPos=0, qint64 endPos=0);
     Job(const Job &other);
     virtual ~Job();
 

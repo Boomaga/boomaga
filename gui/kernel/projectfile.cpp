@@ -35,6 +35,86 @@
     #include <QTextDocument>
 #endif
 
+
+/************************************************
+ *
+ ************************************************/
+ProjectFile::PageSpec::PageSpec(int pageNum, bool hidden, Rotation rotation):
+    mPageNum(pageNum),
+    mHidden(hidden),
+    mRotation(rotation)
+{
+
+}
+
+/************************************************
+ *
+ ************************************************/
+ProjectFile::PageSpec::PageSpec(const QString &spec)
+{
+    bool ok;
+    // In the file pages are numbered starting with 1 not 0.
+    mPageNum = spec.section(":", 0, 0).toInt(&ok) - 1;
+    if (!ok)
+        mPageNum = -1;
+
+    mHidden = spec.section(":", 1, 1) == "H";
+
+    QString s = spec.section(":", 2, 2);
+    if      (s == "90" ) mRotation = Rotate90;
+    else if (s == "180") mRotation = Rotate180;
+    else if (s == "270") mRotation = Rotate270;
+    else                 mRotation = NoRotate;
+}
+
+/************************************************
+ *
+ ************************************************/
+QString ProjectFile::PageSpec::asString()
+{
+    QString res;
+
+    switch (mRotation)
+    {
+    case Rotate90:  res = ":90"  + res; break;
+    case Rotate180: res = ":180" + res; break;
+    case Rotate270: res = ":270" + res; break;
+    default:
+        if (!res.isEmpty())
+            res = ":" + res;
+    }
+
+    if (mHidden)
+        res = ":H" + res;
+    else if (!res.isEmpty())
+        res = ":" + res;
+
+
+    if (mPageNum < 0)
+        res = "B" + res;
+    else
+        res = QString("%1").arg(mPageNum + 1) + res;
+
+    return res;
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+QList<ProjectFile::PageSpec> ProjectFile::PageSpec::readPagesSpec(const QString &str)
+{
+    QList<PageSpec> res;
+
+    foreach(QString s, str.split(',', QString::SkipEmptyParts))
+    {
+        res << PageSpec(s);
+
+    }
+    return res;
+}
+
+
 /************************************************
 
  ************************************************/
@@ -56,8 +136,10 @@ ProjectFile::~ProjectFile()
 /************************************************
 
  ************************************************/
-void ProjectFile::load(const QString &fileName)
+void ProjectFile::load(const QString &fileName, const QString &options)
 {
+    BackendOptions opts = BackendOptions(options);
+
     mJobs.clear();
     QFileInfo fi(fileName);
 
@@ -87,7 +169,7 @@ void ProjectFile::load(const QString &fileName)
     {
         // Read PDF ..................................
         file.close();
-        mJobs << Job(fileName);
+        mJobs << Job(fileName, opts.pages());
         return;
         // Read PDF ..................................
     }
@@ -100,8 +182,7 @@ void ProjectFile::load(const QString &fileName)
         QString metaKeywords;
 
         QString title;
-        QList<int> deletedPages;
-        QList<int> insertedPages;
+        QList<PageSpec> pagesSpec;
 
         while (!file.atEnd())
         {
@@ -142,11 +223,8 @@ void ProjectFile::load(const QString &fileName)
                     else if (subCommand == "JOB_TITLE")
                         title = value;
 
-                    else if (subCommand == "JOB_HIDDEN_PAGES")
-                        deletedPages = readPageList(value);
-
-                    else if (subCommand == "JOB_INSERTED_PAGES")
-                        insertedPages = readPageList(value);
+                    else if (subCommand == "JOB_PAGES")
+                        pagesSpec = PageSpec::readPagesSpec(value);
 
                     else
                         qWarning() << QString("Unknown command '%1' in the line '%2'").arg(subCommand).arg(line);
@@ -174,29 +252,32 @@ void ProjectFile::load(const QString &fileName)
 
                         }
 
-                        Job job(fileName, startPos, endPos);
-                        job.setTitle(title);
-
-                        qSort(insertedPages);
-
-                        foreach (int num, insertedPages)
+                        QList<int> pages;
+                        foreach(PageSpec spec, pagesSpec)
                         {
-                            if (num>-1)
-                                job.insertBlankPage(num);
+                            if (!spec.isblank())
+                                pages << spec.pageNum();
                         }
 
+                        Job job(fileName, pages, startPos, endPos);
+                        job.setTitle(title);
 
-                        foreach (int num, deletedPages)
+                        for (int i=0; i<pagesSpec.count(); ++i)
                         {
-                            if (num > -1 && num < job.pageCount())
-                                job.page(num)->setVisible(false);
+                            PageSpec spec = pagesSpec.at(i);
+                            if (spec.isblank())
+                                job.insertBlankPage(i);
+
+                            if (spec.isHidden())
+                                job.page(i)->setVisible(false);
+
+                            job.page(i)->setManualRotation(spec.rotation());
                         }
 
 
                         mJobs << job;
                         title = "";
-                        deletedPages.clear();
-                        insertedPages.clear();
+                        pagesSpec.clear();
                     }
                 }
                 // PDF stream ......................................
@@ -215,25 +296,6 @@ void ProjectFile::load(const QString &fileName)
     {
         throw tr("I can't read file \"%1\" because is either not a supported file type or because the file has been damaged.").arg(file.fileName());
     }
-}
-
-
-/************************************************
- *
- * ***********************************************/
-QList<int> ProjectFile::readPageList(const QString &str)
-{
-    QList<int> res;
-
-    foreach(QString s, str.split(',', QString::SkipEmptyParts))
-    {
-        bool ok;
-        // In the file pages are numbered starting with 1 not 0.
-        int num = s.toInt(&ok) - 1;
-        if (ok)
-            res << num;
-    }
-    return res;
 }
 
 
@@ -285,22 +347,17 @@ void ProjectFile::save(const QString &fileName)
     {
         const Job &job = mJobs.at(i);
 
-        QList<int> insertedPages;
-        QList<int> deletedPages;
-        for(int p=0; p<job.pageCount(); ++p)
+        QStringList pages;
+        for (int p=0; p<job.pageCount(); ++p)
         {
-            if (job.page(p)->isBlankPage())
-                insertedPages << p;
-
-            if (!job.page(p)->visible())
-                deletedPages << p;
+            const ProjectPage *page = job.page(p);
+            pages << PageSpec(page->pageNum(),
+                              page->visible() == false,
+                              page->manualRotation()).asString();
         }
 
-        if (insertedPages.count())
-            writeCommand(&file, "JOB_INSERTED_PAGES", insertedPages);
+        writeCommand(&file, "JOB_PAGES", pages.join(","));
 
-        if (deletedPages.count())
-            writeCommand(&file, "JOB_HIDDEN_PAGES", deletedPages);
 
         if (!job.title(false).isEmpty())
             writeCommand(&file, "JOB_TITLE", job.title(false));
@@ -391,4 +448,48 @@ void ProjectFile::writeCommand(QFile *out, const QString &command, const QList<i
     }
 
     writeCommand(out, command, sl.join(","));
+}
+
+
+
+/************************************************
+ *
+ * ***********************************************/
+BackendOptions::BackendOptions(const QString &options)
+{
+    foreach (QString s, options.split(" ", QString::SkipEmptyParts))
+    {
+        mOptions.insert(s.section("=", 0, 0), s.section("=", 1));
+    }
+    parsePages(mOptions.value("page-ranges"));
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void BackendOptions::parsePages(const QString &value)
+{
+    QStringList items = value.split(',', QString::SkipEmptyParts);
+    foreach (QString s, items)
+    {
+        bool ok;
+
+        int fromPage = s.section("-", 0, 0).toInt(&ok)-1;
+        if (!ok)
+        {
+            qWarning() << QString("Wrong page number '%1' in page spec '%2'")
+                          .arg(s.section("-", 0, 0))
+                          .arg(value);
+            continue;
+        }
+
+        int toPage = s.section("-", 1).toInt(&ok)-1;
+        if (!ok)
+            toPage = fromPage;
+
+        for (int p = fromPage; p<=toPage; ++p)
+            mPages << p;
+    }
+
 }

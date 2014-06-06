@@ -35,6 +35,53 @@
 
 class QFile;
 
+class BackendOptions
+{
+public:
+    BackendOptions(const QString &options);
+
+    QList<int> pages() const { return mPages; }
+
+private:
+    void parsePages(const QString &value);
+
+    QList<int> mPages;
+    QHash<QString, QString> mOptions;
+};
+
+
+/************************************************
+ * File format
+ *
+ * First line - \x1B%-12345X@PJL BOOMAGA_PROGECT
+ *
+ * Project meta info:
+ *  @PJL BOOMAGA META_AUTHOR="str"      - author
+ *  @PJL BOOMAGA META_TITLE="str"       - title
+ *  @PJL BOOMAGA META_SUBJECT="str"     - subject
+ *  @PJL BOOMAGA META_KEYWORDS="str"    - keywords
+ *
+ * Job:
+ *  @PJL BOOMAGA JOB_TITLE="str"        - title of job
+ *  @PJL BOOMAGA JOB_PAGES="pagesSpec"  - define pages state
+ *                                          hidden, inserted
+ *
+ * Pages spec is a list of the pageSpec.
+ *  Page1Spec,PageNSpec,...
+ *
+ * Page spec is PageNum:Hidden:Rotation
+ *  PageNum  -  number of the page in the source PDF. If page
+ *              is a inserted blank page PageNum is letter 'B'
+ *  Hidden   -  if page is hidden then use letter 'H', otherwise
+ *              this field is empty or omitted.
+ *  Rotation -  One of 0,90,180,270. If rotation is 0 this field
+ *              can be omitted.
+ *
+ * Example:
+ *  @PJL BOOMAGA JOB_PAGES="1,2::180,B,3:H:90,4:H"
+ *
+ ************************************************/
+
 class ProjectFile : public QObject
 {
     Q_OBJECT
@@ -42,7 +89,7 @@ public:
     explicit ProjectFile(QObject *parent = 0);
     virtual ~ProjectFile();
 
-    void load(const QString &fileName);
+    void load(const QString &fileName, const QString &options = "");
     void save(const QString &fileName);
 
     JobList jobs() const { return mJobs; }
@@ -53,14 +100,32 @@ public:
 
 signals:
     
-public slots:
+protected:
+    class PageSpec
+    {
+    public:
+        PageSpec(int pageNum, bool hidden, Rotation rotation);
+        PageSpec(const QString &spec);
+        QString asString();
+
+        int pageNum() const { return mPageNum; }
+        bool isHidden() const { return mHidden; }
+        bool isblank() const { return mPageNum < 0; }
+        Rotation rotation() { return mRotation; }
+
+        static QList<PageSpec> readPagesSpec(const QString &str);
+    private:
+        int  mPageNum;
+        bool mHidden;
+        Rotation mRotation;
+
+    };
     
 private:
     QString mFileName;
     JobList mJobs;
     MetaData mMetaData;
 
-    QList<int> readPageList(const QString &str);
     QByteArray readJobPDF(const Job &job);
     void write(QFile *out, const QByteArray &data);
     void writeCommand(QFile *out, const QString &command, const QString &data);

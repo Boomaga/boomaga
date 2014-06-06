@@ -57,6 +57,11 @@ private slots:
     void test_PagePosition();
     void test_PagePosition_data();
 
+    void test_BackendOptions();
+    void test_BackendOptions_data();
+
+    void test_ProjectFilePageSpec();
+    void test_ProjectFilePageSpec_data();
 private:
     LayoutNUp *createLayout(const QString &name);
     QList<ProjectPage*> createPages(const QString &definition);

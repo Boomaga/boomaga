@@ -37,6 +37,8 @@
 #include "../kernel/layout.h"
 #include "../kernel/project.h"
 #include "../kernel/sheet.h"
+#include "../kernel/projectfile.h"
+
 
 #define COMPARE(actual, expected) \
     do {\
@@ -812,6 +814,116 @@ void TestBoomaga::test_PagePosition_data()
                                       "| 0 |"    // | 0 | No rotate
                                       "| 1 |"    // | 1 |
                                       "+---+";   // +---+
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void TestBoomaga::test_BackendOptions()
+{
+    QString options = QTest::currentDataTag();
+    QFETCH(QString, pagesExpected);
+    pagesExpected = pagesExpected.trimmed();
+
+    BackendOptions opts(options);
+    QString result;
+    for (int i=0; i<opts.pages().count(); ++i)
+    {
+        result += QString("%1 ").arg(opts.pages().at(i));
+    }
+    result = result.trimmed();
+
+    QCOMPARE(result, pagesExpected);
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void TestBoomaga::test_BackendOptions_data()
+{
+    QTest::addColumn<QString>("pagesExpected");
+
+    QTest::newRow("") << "";
+    QTest::newRow("page-ranges=1,2,5") << "0 1 4";
+    QTest::newRow("page-ranges=1-5")  << "0 1 2 3 4";
+    QTest::newRow("page-ranges=17,1-5,22") << "16 0 1 2 3 4 21";
+    QTest::newRow("landscape page-ranges=17,1-5,22 media=A4") << "16 0 1 2 3 4 21";
+
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void TestBoomaga::test_ProjectFilePageSpec()
+{
+    QString string = QTest::currentDataTag();
+    QFETCH(QString, direction);
+    QFETCH(int, pageNum);
+    QFETCH(bool, hidden);
+    QFETCH(int, rotation);
+
+    if (direction == ">")
+    {
+        ProjectFile::PageSpec spec(string);
+
+        QCOMPARE(spec.pageNum(), pageNum);
+        QCOMPARE(spec.isHidden(), hidden);
+        QCOMPARE((int)spec.rotation(), rotation);
+    }
+    else
+    {
+        ProjectFile::PageSpec spec(pageNum, hidden, (Rotation)rotation);
+        QString result = spec.asString();
+        QCOMPARE(result, string);
+    }
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void TestBoomaga::test_ProjectFilePageSpec_data()
+{
+    QTest::addColumn<QString>("direction");
+    QTest::addColumn<int>("pageNum");
+    QTest::addColumn<bool>("hidden");
+    QTest::addColumn<int>("rotation");
+
+    QTest::newRow("1")       << ">" <<  0 << false <<   0;
+    QTest::newRow("17::")    << ">" << 16 << false <<   0;
+    QTest::newRow("B::")     << ">" << -1 << false <<   0;
+    QTest::newRow("17:H:")   << ">" << 16 << true  <<   0;
+    QTest::newRow("2::0")    << ">" <<  1 << false <<   0;
+    QTest::newRow("2::90")   << ">" <<  1 << false <<  90;
+    QTest::newRow("2::180")  << ">" <<  1 << false << 180;
+    QTest::newRow("2::270")  << ">" <<  1 << false << 270;
+    QTest::newRow("2:H:0")   << ">" <<  1 << true  <<   0;
+    QTest::newRow("2:H:90")  << ">" <<  1 << true  <<  90;
+    QTest::newRow("2:H:180") << ">" <<  1 << true  << 180;
+    QTest::newRow("2:H:270") << ">" <<  1 << true  << 270;
+
+    QTest::newRow("1")       << "<" <<  0 << false <<   0;
+    QTest::newRow("1::90")   << "<" <<  0 << false <<  90;
+    QTest::newRow("1::180")  << "<" <<  0 << false << 180;
+    QTest::newRow("1::270")  << "<" <<  0 << false << 270;
+
+    QTest::newRow("3:H")     << "<" <<  2 << true  <<   0;
+    QTest::newRow("3:H:90")  << "<" <<  2 << true  <<  90;
+    QTest::newRow("3:H:180") << "<" <<  2 << true  << 180;
+    QTest::newRow("3:H:270") << "<" <<  2 << true  << 270;
+
+    QTest::newRow("B")       << "<" << -1 << false <<   0;
+    QTest::newRow("B::90")   << "<" << -1 << false <<  90;
+    QTest::newRow("B::180")  << "<" << -1 << false << 180;
+    QTest::newRow("B::270")  << "<" << -1 << false << 270;
+
+    QTest::newRow("B:H")     << "<" << -1 << true  <<   0;
+    QTest::newRow("B:H:90")  << "<" << -1 << true  <<  90;
+    QTest::newRow("B:H:180") << "<" << -1 << true  << 180;
+    QTest::newRow("B:H:270") << "<" << -1 << true  << 270;
 }
 
 

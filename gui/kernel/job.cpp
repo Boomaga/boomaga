@@ -44,7 +44,7 @@
 class JobData: public QSharedData
 {
 public:
-    JobData(const QString &fileName, qint64 startPos, qint64 endPos);
+    JobData(const QString &fileName, qint64 startPos, qint64 endPos, const QList<int> *pages);
     ~JobData();
 
     QString mFileName;
@@ -64,7 +64,7 @@ public:
 /************************************************
 
  ************************************************/
-JobData::JobData(const QString &fileName, qint64 startPos, qint64 endPos):
+JobData::JobData(const QString &fileName, qint64 startPos, qint64 endPos, const QList<int> *pages):
     mFileName(fileName),
     mStartPos(startPos),
     mEndPos(endPos),
@@ -85,8 +85,28 @@ JobData::JobData(const QString &fileName, qint64 startPos, qint64 endPos):
             int pageCount = doc->getNumPages();
 
             InputFile inputFile(mFileName, mStartPos, mEndPos);
-            for (int i=0; i< pageCount; ++i)
-                mPages << new ProjectPage(inputFile, i);
+
+            if (pages && !pages->isEmpty())
+            {
+                foreach (int p, *pages)
+                {
+                    if (p < 0 || p >= pageCount)
+                    {
+                        qWarning() << QString("Page %1 out of range 1..%3")
+                                      .arg(p+1)
+                                      .arg(pageCount);
+                        continue;
+                    }
+
+                    mPages << new ProjectPage(inputFile, p);
+                }
+
+            }
+            else
+            {
+                for (int i=0; i< pageCount; ++i)
+                    mPages << new ProjectPage(inputFile, i);
+            }
 
             mState = Job::JobNotReady;
         }
@@ -158,7 +178,7 @@ ProjectPage *JobData::takePage(ProjectPage *page)
 
  ************************************************/
 Job::Job():
-    mData(new JobData("", 0, 0))
+    mData(new JobData("", 0, 0, 0))
 {
 }
 
@@ -167,8 +187,18 @@ Job::Job():
 
  ************************************************/
 Job::Job(const QString &fileName, qint64 startPos, qint64 endPos):
-    mData(new JobData(fileName, startPos, endPos))
+    mData(new JobData(fileName, startPos, endPos, 0))
 {
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+Job::Job(const QString &fileName, const QList<int> &pages, qint64 startPos, qint64 endPos):
+    mData(new JobData(fileName, startPos, endPos, &pages))
+{
+
 }
 
 

@@ -167,9 +167,9 @@ public:
     void free();
 
     void save(const QString &fileName);
-    void load(const QString &fileName, const QString title = "", bool autoRemove = false);
-    void load(const QStringList &fileNames, bool autoRemove = false);
-    void load(const QStringList &fileNames, const QStringList &titles, bool autoRemove = false);
+    void load(const QString &fileName, const QString &title = "", const QString &options = "", bool autoRemove = false);
+    void load(const QStringList &fileNames, const QString &options = "", bool autoRemove = false);
+    void load(const QStringList &fileNames, const QStringList &titles, const QString &options = "", bool autoRemove = false);
 
     Rotation rotation() const { return mRotation; }
 

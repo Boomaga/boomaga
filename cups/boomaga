@@ -66,9 +66,24 @@ function createJobFileDir
 #*******************************************
 function copyInputFile
 {
-  # Remove PJL commands
-  grep --text -v '^@PJL\|%-12345X' $1 > $2
-  chown ${user} $2
+  if [ -z "$1" ];
+  then
+    cat - > "$2"
+  else
+    cp "$1" "$2"
+  fi
+
+  read line<$2
+
+  case $line in
+    %!PS-Adobe*)
+      mv "$2" "$2.ps"
+      ps2pdf "$2.ps" "$2"
+      rm "$2.ps"
+      ;;
+  esac
+
+  chown ${user} "$2"
 }
 
 
@@ -253,6 +268,13 @@ count=$4
 options=$5
 inputFile=$6
 
+info "jobId: ${jobID}"
+info "user: ${user}"
+info "title: ${title}"
+info "count: ${count}"
+info "options: ${options}"
+info "inputFile: ${inputFile}"
+
 if [ -z "${inputFile}" ]; then
   inputFile='-'
 fi
@@ -311,7 +333,8 @@ cmd="dbus-send --session --type=method_call --print-reply \
   org.boomaga.add \
   string:'${jobFile}' \
   string:'${title}' \
-  boolean:true"
+  boolean:true \
+  string:'${options}'"
 
 debug "command: ${cmd}"
 
