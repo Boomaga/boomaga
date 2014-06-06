@@ -24,36 +24,35 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#ifndef ICON_H
-#define ICON_H
+#ifndef CONFIGDIALOG_H
+#define CONFIGDIALOG_H
 
-#include <QIcon>
-#include <QStringList>
+#include <QDialog>
 
-class Icon
+namespace Ui {
+class ConfigDialog;
+}
+
+class ConfigDialog : public QDialog
 {
+    Q_OBJECT
+    
 public:
-    enum IconName
-    {
-        ApplicationIcon,
-        RotateLeft,
-        RotateRight,
-        Print,
-        Previous,
-        Next,
-        Open,
-        Save,
-        SaveAs,
-        Configure
-    };
+    static ConfigDialog *createAndShow(QWidget *parent = 0);
 
-    static QIcon icon(IconName iconName);
+public slots:
+    void done(int res);
+
+private slots:
+    void bookletGroupBoxClicked(bool value);
+    void loadSettings();
+    void saveSettings();
 
 private:
-    Icon();
-    static void iconDefs(IconName iconName, QStringList *theme, QStringList *fallBack);
-    static QIcon loadIcon(IconName iconName);
+    Ui::ConfigDialog *ui;
 
+    explicit ConfigDialog(QWidget *parent = 0);
+    ~ConfigDialog();
 };
 
-#endif // ICON_H
+#endif // CONFIGDIALOG_H

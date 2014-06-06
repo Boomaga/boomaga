@@ -39,10 +39,11 @@
 /************************************************
  *
  ************************************************/
-ProjectFile::PageSpec::PageSpec(int pageNum, bool hidden, Rotation rotation):
+ProjectFile::PageSpec::PageSpec(int pageNum, bool hidden, Rotation rotation, bool startBooklet):
     mPageNum(pageNum),
     mHidden(hidden),
-    mRotation(rotation)
+    mRotation(rotation),
+    mStartBooklet(startBooklet)
 {
 
 }
@@ -65,6 +66,8 @@ ProjectFile::PageSpec::PageSpec(const QString &spec)
     else if (s == "180") mRotation = Rotate180;
     else if (s == "270") mRotation = Rotate270;
     else                 mRotation = NoRotate;
+
+    mStartBooklet = spec.section(":", 3, 3) == "S";
 }
 
 /************************************************
@@ -73,6 +76,12 @@ ProjectFile::PageSpec::PageSpec(const QString &spec)
 QString ProjectFile::PageSpec::asString()
 {
     QString res;
+
+    if (mStartBooklet)
+        res = ":S" + res;
+    else if (!res.isEmpty())
+        res = ":" + res;
+
 
     switch (mRotation)
     {
@@ -268,10 +277,15 @@ void ProjectFile::load(const QString &fileName, const QString &options)
                             if (spec.isblank())
                                 job.insertBlankPage(i);
 
-                            if (spec.isHidden())
-                                job.page(i)->setVisible(false);
+                            ProjectPage *page = job.page(i);
 
-                            job.page(i)->setManualRotation(spec.rotation());
+                            if (spec.isHidden())
+                                page->setVisible(false);
+
+                            if (spec.isStartBooklet())
+                                page->setStartSubBooklet(true);
+
+                            page->setManualRotation(spec.rotation());
                         }
 
 
@@ -353,7 +367,9 @@ void ProjectFile::save(const QString &fileName)
             const ProjectPage *page = job.page(p);
             pages << PageSpec(page->pageNum(),
                               page->visible() == false,
-                              page->manualRotation()).asString();
+                              page->manualRotation(),
+                              page->isStartSubBooklet()
+                             ).asString();
         }
 
         writeCommand(&file, "JOB_PAGES", pages.join(","));

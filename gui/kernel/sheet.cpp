@@ -89,3 +89,22 @@ void Sheet::setHint(Sheet::Hint hint, bool enable)
         mHints = mHints & (~hint);
 }
 
+
+/************************************************
+
+ ************************************************/
+int SheetList::indexOfPage(const ProjectPage *page, int from) const
+{
+    for (int i=from; i<count(); ++i)
+    {
+        const Sheet *sheet = at(i);
+        for (int p=0; p<sheet->count(); ++p)
+        {
+            if (sheet->page(p) == page)
+                return i;
+        }
+    }
+
+    return -1;
+}
+

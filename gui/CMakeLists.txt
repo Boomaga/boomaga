@@ -53,6 +53,7 @@ set(HEADERS
     kernel/boomagapoppler.h
     kernel/projectfile.h
     pdfmerger/pdfmergeripc.h
+    configdialog/configdialog.h
 )
 
 set(SOURCES
@@ -81,6 +82,7 @@ set(SOURCES
     kernel/boomagapoppler.cpp
     kernel/projectfile.cpp
     pdfmerger/pdfmergeripc.cpp
+    configdialog/configdialog.cpp
 )
 
 set (MOCS
@@ -99,6 +101,7 @@ set (MOCS
     export/exporttopdf.h
     kernel/projectfile.h
     pdfmerger/pdfmergeripc.h
+    configdialog/configdialog.h
 )
 
 set(LIBRARIES
@@ -111,6 +114,7 @@ set(UI_FILES
     printersettings/printersettings.ui
     aboutdialog/aboutdialog.ui
     export/exporttopdf.ui
+    configdialog/configdialog.ui
 )
 
 # QRC files .................

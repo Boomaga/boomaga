@@ -39,9 +39,10 @@ class Sheet
 {
 public:
     enum Hint{
-        HintOnlyLeft         = 1,
-        HintOnlyRight        = 2,
-        HintDrawFold         = 4
+        HintOnlyLeft    = 1,
+        HintOnlyRight   = 2,
+        HintDrawFold    = 4,
+        HintSubBooklet  = 8
     };
 
     Q_DECLARE_FLAGS(Hints, Hint)
@@ -66,7 +67,11 @@ private:
     Hints mHints;
 };
 
-typedef QList<Sheet*> SheetList;
+class SheetList: public QList<Sheet*>
+{
+public:
+    int indexOfPage(const ProjectPage *page, int from = 0) const;
+};
 
 
 Q_DECLARE_OPERATORS_FOR_FLAGS(Sheet::Hints)

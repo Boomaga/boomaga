@@ -14,6 +14,10 @@
         <file alias="rotate-right-16x16">images/object-rotate-right_16.png</file>
         <file alias="rotate-right-22x22">images/object-rotate-right_22.png</file>
         <file alias="rotate-right-32x32">images/object-rotate-right_32.png</file>
+        <file alias="configure-16x16">images/configure_16.png</file>
+        <file alias="configure-22x22">images/configure_22.png</file>
+        <file alias="configure-32x32">images/configure_32.png</file>
+        <file alias="configure-64x64">images/configure_64.png</file>
         <file alias="icon-16x16">images/boomaga_16.png</file>
         <file alias="icon-32x32">images/boomaga_32.png</file>
         <file alias="icon-64x64">images/boomaga_64.png</file>

@@ -864,6 +864,7 @@ void TestBoomaga::test_ProjectFilePageSpec()
     QFETCH(int, pageNum);
     QFETCH(bool, hidden);
     QFETCH(int, rotation);
+    QFETCH(bool, startBooklet);
 
     if (direction == ">")
     {
@@ -875,7 +876,10 @@ void TestBoomaga::test_ProjectFilePageSpec()
     }
     else
     {
-        ProjectFile::PageSpec spec(pageNum, hidden, (Rotation)rotation);
+        ProjectFile::PageSpec spec(pageNum,
+                                   hidden,
+                                   (Rotation)rotation,
+                                   startBooklet);
         QString result = spec.asString();
         QCOMPARE(result, string);
     }
@@ -891,39 +895,48 @@ void TestBoomaga::test_ProjectFilePageSpec_data()
     QTest::addColumn<int>("pageNum");
     QTest::addColumn<bool>("hidden");
     QTest::addColumn<int>("rotation");
+    QTest::addColumn<bool>("startBooklet");
 
-    QTest::newRow("1")       << ">" <<  0 << false <<   0;
-    QTest::newRow("17::")    << ">" << 16 << false <<   0;
-    QTest::newRow("B::")     << ">" << -1 << false <<   0;
-    QTest::newRow("17:H:")   << ">" << 16 << true  <<   0;
-    QTest::newRow("2::0")    << ">" <<  1 << false <<   0;
-    QTest::newRow("2::90")   << ">" <<  1 << false <<  90;
-    QTest::newRow("2::180")  << ">" <<  1 << false << 180;
-    QTest::newRow("2::270")  << ">" <<  1 << false << 270;
-    QTest::newRow("2:H:0")   << ">" <<  1 << true  <<   0;
-    QTest::newRow("2:H:90")  << ">" <<  1 << true  <<  90;
-    QTest::newRow("2:H:180") << ">" <<  1 << true  << 180;
-    QTest::newRow("2:H:270") << ">" <<  1 << true  << 270;
+    QTest::newRow("1")          << ">" <<  0 << false <<   0  << false;
+    QTest::newRow("17::")       << ">" << 16 << false <<   0  << false;
+    QTest::newRow("B::")        << ">" << -1 << false <<   0  << false;
+    QTest::newRow("17:H:")      << ">" << 16 << true  <<   0  << false;
+    QTest::newRow("2::0")       << ">" <<  1 << false <<   0  << false;
+    QTest::newRow("2::90")      << ">" <<  1 << false <<  90  << false;
+    QTest::newRow("2::180")     << ">" <<  1 << false << 180  << false;
+    QTest::newRow("2::270")     << ">" <<  1 << false << 270  << false;
+    QTest::newRow("2:H:0")      << ">" <<  1 << true  <<   0  << false;
+    QTest::newRow("2:H:90")     << ">" <<  1 << true  <<  90  << false;
+    QTest::newRow("2:H:180")    << ">" <<  1 << true  << 180  << false;
+    QTest::newRow("2:H:270")    << ">" <<  1 << true  << 270  << false;
 
-    QTest::newRow("1")       << "<" <<  0 << false <<   0;
-    QTest::newRow("1::90")   << "<" <<  0 << false <<  90;
-    QTest::newRow("1::180")  << "<" <<  0 << false << 180;
-    QTest::newRow("1::270")  << "<" <<  0 << false << 270;
+    QTest::newRow("1")          << "<" <<  0 << false <<   0  << false;
+    QTest::newRow("1::90")      << "<" <<  0 << false <<  90  << false;
+    QTest::newRow("1::180")     << "<" <<  0 << false << 180  << false;
+    QTest::newRow("1::270")     << "<" <<  0 << false << 270  << false;
 
-    QTest::newRow("3:H")     << "<" <<  2 << true  <<   0;
-    QTest::newRow("3:H:90")  << "<" <<  2 << true  <<  90;
-    QTest::newRow("3:H:180") << "<" <<  2 << true  << 180;
-    QTest::newRow("3:H:270") << "<" <<  2 << true  << 270;
+    QTest::newRow("3:H")        << "<" <<  2 << true  <<   0  << false;
+    QTest::newRow("3:H:90")     << "<" <<  2 << true  <<  90  << false;
+    QTest::newRow("3:H:180")    << "<" <<  2 << true  << 180  << false;
+    QTest::newRow("3:H:270")    << "<" <<  2 << true  << 270  << false;
 
-    QTest::newRow("B")       << "<" << -1 << false <<   0;
-    QTest::newRow("B::90")   << "<" << -1 << false <<  90;
-    QTest::newRow("B::180")  << "<" << -1 << false << 180;
-    QTest::newRow("B::270")  << "<" << -1 << false << 270;
+    QTest::newRow("B")          << "<" << -1 << false <<   0  << false;
+    QTest::newRow("B::90")      << "<" << -1 << false <<  90  << false;
+    QTest::newRow("B::180")     << "<" << -1 << false << 180  << false;
+    QTest::newRow("B::270")     << "<" << -1 << false << 270  << false;
 
-    QTest::newRow("B:H")     << "<" << -1 << true  <<   0;
-    QTest::newRow("B:H:90")  << "<" << -1 << true  <<  90;
-    QTest::newRow("B:H:180") << "<" << -1 << true  << 180;
-    QTest::newRow("B:H:270") << "<" << -1 << true  << 270;
+    QTest::newRow("B:H")        << "<" << -1 << true  <<   0  << false;
+    QTest::newRow("B:H:90")     << "<" << -1 << true  <<  90  << false;
+    QTest::newRow("B:H:180")    << "<" << -1 << true  << 180  << false;
+    QTest::newRow("B:H:270")    << "<" << -1 << true  << 270  << false;
+
+    QTest::newRow("1:::S")      << ">" <<  0 << false <<   0  << true;
+    QTest::newRow("2:H:90:S")   << ">" <<  1 << true  <<  90  << true;
+
+    QTest::newRow("1:::S")      << "<" <<  0 << false <<   0  << true;
+    QTest::newRow("2:H::S")     << "<" <<  1 << true  <<   0  << true;
+    QTest::newRow("2:H:90:S")   << "<" <<  1 << true  <<  90  << true;
+
 }
 
 

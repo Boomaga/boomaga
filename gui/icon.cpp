@@ -135,6 +135,16 @@ void Icon::iconDefs(Icon::IconName iconName, QStringList *theme, QStringList *fa
                   << "";                            // 128
         break;
 
+    case Configure:
+        *theme << "configure";
+        *fallBack << ":/images/configure-16x16"     // 16
+                  << ":/images/configure-22x22"     // 22
+                  << ":/images/configure-32x32"     // 32
+                  << ""                             // 48
+                  << ":/images/configure-64x64"     // 64
+                  << "";                            // 128
+        break;
+
     }
 }
 

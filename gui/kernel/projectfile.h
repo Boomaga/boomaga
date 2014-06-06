@@ -69,13 +69,15 @@ private:
  * Pages spec is a list of the pageSpec.
  *  Page1Spec,PageNSpec,...
  *
- * Page spec is PageNum:Hidden:Rotation
+ * Page spec is PageNum:Hidden:Rotation:StarBooklet
  *  PageNum  -  number of the page in the source PDF. If page
  *              is a inserted blank page PageNum is letter 'B'
  *  Hidden   -  if page is hidden then use letter 'H', otherwise
  *              this field is empty or omitted.
  *  Rotation -  One of 0,90,180,270. If rotation is 0 this field
  *              can be omitted.
+ * StarBooklet- if it's first page in booklet use letter 'S',
+ *              otherwise this field is empty or omitted.
  *
  * Example:
  *  @PJL BOOMAGA JOB_PAGES="1,2::180,B,3:H:90,4:H"
@@ -104,12 +106,13 @@ protected:
     class PageSpec
     {
     public:
-        PageSpec(int pageNum, bool hidden, Rotation rotation);
+        PageSpec(int pageNum, bool hidden, Rotation rotation, bool startBooklet);
         PageSpec(const QString &spec);
         QString asString();
 
         int pageNum() const { return mPageNum; }
         bool isHidden() const { return mHidden; }
+        bool isStartBooklet() const { return mStartBooklet; }
         bool isblank() const { return mPageNum < 0; }
         Rotation rotation() { return mRotation; }
 
@@ -118,7 +121,7 @@ protected:
         int  mPageNum;
         bool mHidden;
         Rotation mRotation;
-
+        bool mStartBooklet;
     };
     
 private:

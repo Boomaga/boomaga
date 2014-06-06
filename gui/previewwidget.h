@@ -67,6 +67,8 @@ private:
     int mSheetNum;
     double mScaleFactor;
     Sheet::Hints mHints;
+
+    void drawShadow(QPainter &painter, QRectF rect);
 };
 
 #endif // PREVIEWWIDGET_H

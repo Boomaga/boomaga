@@ -42,6 +42,8 @@ public:
         DoubleSided,
 
         SaveDir,
+        SubBookletsEnabled,
+        SubBookletSize,
 
         // Printer ******************************
         Printer_DuplexType,

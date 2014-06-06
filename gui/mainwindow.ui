@@ -46,7 +46,7 @@
      <x>0</x>
      <y>0</y>
      <width>1188</width>
-     <height>22</height>
+     <height>21</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -66,6 +66,7 @@
     <property name="title">
      <string>&amp;Preferences</string>
     </property>
+    <addaction name="actionPreferences"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
     <property name="title">
@@ -303,6 +304,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+O</string>
+   </property>
+  </action>
+  <action name="actionPreferences">
+   <property name="text">
+    <string>&amp;Preferences</string>
    </property>
   </action>
  </widget>

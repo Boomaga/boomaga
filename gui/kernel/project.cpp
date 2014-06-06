@@ -51,7 +51,8 @@
 ProjectPage::ProjectPage():
     mPageNum(-1),
     mVisible(true),
-    mManualRotation(NoRotate)
+    mManualRotation(NoRotate),
+    mStartSubBooklet(false)
 {
 
 }
@@ -65,7 +66,8 @@ ProjectPage::ProjectPage(const ProjectPage *other):
     mPageNum(other->mPageNum),
     mVisible(other->mVisible),
     mPdfInfo(other->mPdfInfo),
-    mManualRotation(NoRotate)
+    mManualRotation(other->mManualRotation),
+    mStartSubBooklet(other->mStartSubBooklet)
 {
 
 }
@@ -77,7 +79,8 @@ ProjectPage::ProjectPage(const InputFile &inputFile, int pageNum):
     mInputFile(inputFile),
     mPageNum(pageNum),
     mVisible(true),
-    mManualRotation(NoRotate)
+    mManualRotation(NoRotate),
+    mStartSubBooklet(false)
 {
 }
 
@@ -131,6 +134,15 @@ void ProjectPage::setVisible(bool value)
 bool ProjectPage::isBlankPage()
 {
     return mPageNum < 0;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void ProjectPage::setStartSubBooklet(bool value)
+{
+    mStartSubBooklet = value;
 }
 
 

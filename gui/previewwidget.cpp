@@ -35,8 +35,9 @@
 #include <QDebug>
 #include <QRectF>
 
-#define MARGIN_H 20
-#define MARGIN_V 20
+#define MARGIN_H        20
+#define MARGIN_V        20
+#define MARGIN_BOOKLET  4
 
 /************************************************
 
@@ -96,6 +97,15 @@ QRectF PreviewWidget::pageRect(int pageNum) const
         rect.moveTop( mDrawRect.top()  + spec.rect.top()  * mScaleFactor);
     }
 
+    if (mHints.testFlag(Sheet::HintSubBooklet))
+    {
+        if (rect.center().x() < mDrawRect.center().x())
+            rect.adjust(-MARGIN_BOOKLET, 0, -MARGIN_BOOKLET, 0);
+        else
+            rect.adjust( MARGIN_BOOKLET, 0,  MARGIN_BOOKLET, 0);
+
+    }
+
     return rect;
 }
 
@@ -126,6 +136,39 @@ void PreviewWidget::sheetImageChanged(int sheetNum)
 {
     if (sheetNum == mSheetNum)
         setCurrentSheet(mSheetNum);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void PreviewWidget::drawShadow(QPainter &painter, QRectF rect)
+{
+    painter.save();
+    painter.setClipRect(rect.adjusted(0, 0, 3, 3));
+
+    QPen pen= painter.pen();
+    QColor color = this->palette().color(QPalette::Background);
+
+    rect.adjust(1, 1, 0, 0);
+    pen.setColor(color.darker(130));
+    painter.setPen(pen);
+    painter.drawLine(rect.topRight(), rect.bottomRight());
+    painter.drawLine(rect.bottomLeft(), rect.bottomRight());
+
+    rect.adjust(1, 1, 1, 1);
+    pen.setColor(color.darker(120));
+    painter.setPen(pen);
+    painter.drawLine(rect.topRight(), rect.bottomRight());
+    painter.drawLine(rect.bottomLeft(), rect.bottomRight());
+
+    rect.adjust(1, 1, 1, 1);
+    pen.setColor(color.darker(110));
+    painter.setPen(pen);
+    painter.drawLine(rect.topRight(), rect.bottomRight());
+    painter.drawLine(rect.bottomLeft(), rect.bottomRight());
+
+    painter.restore();
 }
 
 
@@ -255,12 +298,47 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
     painter.save();
     painter.translate(geometry().center());
 
-    painter.save();
-    painter.setClipRect(clipRect);
-    painter.drawImage(mDrawRect, img);
-    painter.restore();
 
-    if (mHints.testFlag(Sheet::HintDrawFold))
+    if (mHints.testFlag(Sheet::HintSubBooklet))
+    {
+        painter.save();
+        QPoint center = mDrawRect.center();
+        QRectF imgRect;
+
+        clipRect = mDrawRect;
+        clipRect.setRight(center.x());
+        clipRect.adjust(-MARGIN_BOOKLET, 0, -MARGIN_BOOKLET, 0);
+        painter.setClipRect(clipRect);
+
+        imgRect = img.rect();
+        imgRect.setRight(img.rect().center().x());
+        painter.drawImage(clipRect, img, imgRect);
+        drawShadow(painter, clipRect);
+
+        clipRect = mDrawRect;
+        clipRect.setLeft(center.x());
+        clipRect.adjust(MARGIN_BOOKLET, 0, MARGIN_BOOKLET, 0);
+        painter.setClipRect(clipRect);
+
+        imgRect = img.rect();
+        imgRect.setLeft(img.rect().center().x());
+        painter.drawImage(clipRect, img, imgRect);
+        drawShadow(painter, clipRect);
+
+        painter.restore();
+    }
+    else
+    {
+        painter.save();
+        painter.setClipRect(clipRect);
+        painter.drawImage(mDrawRect, img);
+        drawShadow(painter, clipRect);
+        painter.restore();
+    }
+
+
+
+    if (mHints.testFlag(Sheet::HintDrawFold) && !mHints.testFlag(Sheet::HintSubBooklet))
     {
         QPen pen = painter.pen();
         pen.setStyle(Qt::SolidLine);

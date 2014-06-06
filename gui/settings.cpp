@@ -102,6 +102,8 @@ QString Settings::keyToString(Settings::Key key) const
     case DoubleSided:               return "Project/DoubleSided";
 
     case SaveDir:                   return "Project/SaveDir";
+    case SubBookletsEnabled:        return "Project/SubBookletsEnable";
+    case SubBookletSize:            return "Project/SubBookletSize";
 
         // Printer ******************************
     case Printer_DuplexType:        return "DuplexType";
@@ -138,6 +140,8 @@ void Settings::init()
     setDefaultValue(DoubleSided, true);
     setDefaultValue(ExportPDF_FileName, tr("~/Untitled.pdf"));
     setDefaultValue(SaveDir, QDir::homePath());
+    setDefaultValue(SubBookletsEnabled, true);
+    setDefaultValue(SubBookletSize, 20);
 }
 
 

@@ -102,6 +102,16 @@ public:
     void fillSheets(QList<Sheet*> *sheets) const;
     void fillPreviewSheets(QList<Sheet*> *sheets) const;
 
+protected:
+    struct BookletInfo
+    {
+        int     start;
+        int     end;
+        bool    manualStart;
+        bool    manualEnd;
+    };
+
+    QList<BookletInfo> split(const QList<ProjectPage*> &pages) const;
 private:
     void fillSheetsForBook(int bookStart, int bookLength, QList<Sheet *> *sheets) const;
     void fillPreviewSheetsForBook(int bookStart, int bookLength, QList<Sheet *> *sheets) const;

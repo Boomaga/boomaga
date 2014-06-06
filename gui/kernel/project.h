@@ -39,9 +39,8 @@
 
 class Job;
 class TmpPdfFile;
-class Sheet;
 class Layout;
-
+#include "sheet.h"
 
 class MetaData
 {
@@ -106,12 +105,17 @@ public:
     void show() { setVisible(true); }
 
     bool isBlankPage();
+
+    bool isStartSubBooklet() const { return mStartSubBooklet; }
+    void setStartSubBooklet(bool value);
+
 private:
     InputFile mInputFile;
     int mPageNum;
     bool mVisible;
     PdfPageInfo mPdfInfo;
     Rotation mManualRotation;
+    bool mStartSubBooklet;
 };
 
 
@@ -139,14 +143,14 @@ public:
 
     int pageCount() const { return mPages.count(); }
     ProjectPage *page(int index) const { return mPages.at(index); }
+    QList<ProjectPage*> pages() const { return mPages; }
 
-
-    QList<Sheet*> sheets() const { return mSheets; }
+    SheetList sheets() const { return mSheets; }
     int sheetCount() const { return mSheets.count(); }
     Sheet *sheet(int index) const { return mSheets[index]; }
     QList<Sheet*> selectSheets(PagesType pages = AllPages, PagesOrder order = ForwardOrder) const;
 
-
+    SheetList previewSheets() const { return mPreviewSheets; }
     int previewSheetCount() const { return mPreviewSheets.count(); }
     Sheet *previewSheet(int index) const { return mPreviewSheets[index]; }
 
@@ -201,8 +205,8 @@ private:
     QList<ProjectPage*> mPages;
     JobList mJobs;
 
-    QList<Sheet*> mSheets;
-    QList<Sheet*> mPreviewSheets;
+    SheetList mSheets;
+    SheetList mPreviewSheets;
     TmpPdfFile *mTmpFile;
     TmpPdfFile *mLastTmpFile;
 

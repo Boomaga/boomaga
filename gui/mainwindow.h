@@ -82,6 +82,11 @@ private slots:
     void rotatePageLeft();
     void rotatePageRight();
 
+    void startBooklet();
+    void dontStartBooklet();
+
+    void showConfigDialog();
+
 
     void save();
     void saveAs(const QString &fileName = "");

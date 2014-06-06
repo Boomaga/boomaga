@@ -37,6 +37,7 @@
 #include "actions.h"
 #include "export/exporttopdfprinter.h"
 #include "icon.h"
+#include "configdialog/configdialog.h"
 
 #include <math.h>
 #include <QRadioButton>
@@ -60,8 +61,6 @@ MainWindow::MainWindow(QWidget *parent):
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
-
-    delete ui->menuPreferences;
 
     setWindowIcon(Icon::icon(Icon::ApplicationIcon));
     setWindowTitle(tr("Boomaga"));
@@ -282,38 +281,51 @@ void MainWindow::initActions()
     QAction *act;
     act = ui->actionPrint;
     act->setIcon(Icon::icon(Icon::Print));
-    connect(act, SIGNAL(triggered()), this, SLOT(print()));
+    connect(act, SIGNAL(triggered()),
+            this, SLOT(print()));
 
     act = ui->actionPrintAndClose;
     act->setIcon(Icon::icon(Icon::Print));
-    connect(act, SIGNAL(triggered()), this, SLOT(printAndClose()));
+    connect(act, SIGNAL(triggered()),
+            this, SLOT(printAndClose()));
 
     act = ui->actionExit;
-    connect(act, SIGNAL(triggered()), this, SLOT(close()));
+    connect(act, SIGNAL(triggered()),
+            this, SLOT(close()));
 
     act = ui->actionPreviousSheet;
     act->setIcon(Icon::icon(Icon::Previous));
-    connect(act, SIGNAL(triggered()), ui->preview, SLOT(prevSheet()));
+    connect(act, SIGNAL(triggered()),
+            ui->preview, SLOT(prevSheet()));
 
     act = ui->actionNextSheet;
     act->setIcon(Icon::icon(Icon::Next));
-    connect(act, SIGNAL(triggered()), ui->preview, SLOT(nextSheet()));
+    connect(act, SIGNAL(triggered()),
+            ui->preview, SLOT(nextSheet()));
 
     act = ui->actionOpen;
     act->setIcon(Icon::icon(Icon::Open));
-    connect(act, SIGNAL(triggered()), this, SLOT(load()));
+    connect(act, SIGNAL(triggered()),
+            this, SLOT(load()));
 
     act = ui->actionSave;
     act->setIcon(Icon::icon(Icon::Save));
-    connect(act, SIGNAL(triggered()), this, SLOT(save()));
+    connect(act, SIGNAL(triggered()),
+            this, SLOT(save()));
 
     act = ui->actionSaveAs;
     act->setIcon(Icon::icon(Icon::SaveAs));
-    connect(act, SIGNAL(triggered()), this, SLOT(saveAs()));
+    connect(act, SIGNAL(triggered()),
+            this, SLOT(saveAs()));
 
+    act = ui->actionPreferences;
+    act->setIcon(Icon::icon(Icon::Configure));
+    connect(act, SIGNAL(triggered()),
+            this, SLOT(showConfigDialog()));
 
     act = ui->actionAbout;
-    connect(act, SIGNAL(triggered()), this, SLOT(showAboutDialog()));
+    connect(act, SIGNAL(triggered()),
+            this, SLOT(showAboutDialog()));
 }
 
 
@@ -731,6 +743,28 @@ void MainWindow::showPreviewContextMenu(int pageNum)
 
     QMenu *menu = new QMenu(this);
 
+    // New subbooklet ................................
+    if (page && (page != project->page(0)))
+    {
+        if (!page->isStartSubBooklet())
+        {
+            PageAction *act = new PageAction(tr("Start new booklet from this page"), sheet, page, menu);
+            connect(act, SIGNAL(triggered()),
+                    this, SLOT(startBooklet()));
+            menu->addAction(act);
+        }
+        else
+        {
+            PageAction *act = new PageAction(tr("Don't start new booklet from this page"), sheet, page, menu);
+            connect(act, SIGNAL(triggered()),
+                    this, SLOT(dontStartBooklet()));
+            menu->addAction(act);
+        }
+
+        menu->addSeparator();
+    }
+
+    // New subbooklet ................................
 
     // Rotation ......................................
     if (page)
@@ -1062,6 +1096,51 @@ void MainWindow::rotatePageRight()
     ProjectPage *page = act->page();
     page->setManualRotation(page->manualRotation() + Rotate90);
     project->update();
+}
+
+
+/************************************************
+
+ ************************************************/
+void MainWindow::startBooklet()
+{
+    PageAction *act = qobject_cast<PageAction*>(sender());
+    if (!act || !act->page())
+        return;
+
+    act->page()->setStartSubBooklet(true);
+    project->update();
+
+    int sheetNum = project->previewSheets().indexOfPage(act->page());
+    if (sheetNum > -1)
+        ui->preview->setCurrentSheet(sheetNum);
+}
+
+
+/************************************************
+
+ ************************************************/
+void MainWindow::dontStartBooklet()
+{
+    PageAction *act = qobject_cast<PageAction*>(sender());
+    if (!act || !act->page())
+        return;
+    qDebug() << "";
+    act->page()->setStartSubBooklet(false);
+    project->update();
+
+    int sheetNum = project->previewSheets().indexOfPage(act->page());
+    if (sheetNum > -1)
+        ui->preview->setCurrentSheet(sheetNum);
+}
+
+
+/************************************************
+
+ ************************************************/
+void MainWindow::showConfigDialog()
+{
+    ConfigDialog::createAndShow(this);
 }
 
 

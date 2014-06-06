@@ -30,6 +30,7 @@
 #include "project.h"
 #include "sheet.h"
 #include "printer.h"
+#include "settings.h"
 
 #include "math.h"
 
@@ -312,7 +313,13 @@ LayoutBooklet::LayoutBooklet():
  ************************************************/
 void LayoutBooklet::fillSheets(QList<Sheet *> *sheets) const
 {
-    fillSheetsForBook(0, project->pageCount(), sheets);
+    QList<BookletInfo> booklets = split(project->pages());
+    foreach (BookletInfo booklet, booklets)
+    {
+        fillSheetsForBook(booklet.start,
+                          booklet.end - booklet.start + 1,
+                          sheets);
+    }
 }
 
 
@@ -387,7 +394,14 @@ void LayoutBooklet::fillSheetsForBook(int bookStart, int bookLength, QList<Sheet
  ************************************************/
 void LayoutBooklet::fillPreviewSheets(QList<Sheet *> *sheets) const
 {
-    fillPreviewSheetsForBook(0, project->pageCount(), sheets);
+    QList<BookletInfo> booklets = split(project->pages());
+    foreach (BookletInfo booklet, booklets)
+    {
+        fillPreviewSheetsForBook(booklet.start,
+                                 booklet.end - booklet.start + 1,
+                                 sheets);
+    }
+
     if (sheets->count() > 1)
     {
         sheets->first()->setHint(Sheet::HintOnlyRight, true);
@@ -420,13 +434,22 @@ void LayoutBooklet::fillPreviewSheetsForBook(int bookStart, int bookLength, QLis
 
     for (int i = -1; i < cnt; i+=2)
     {
-        Sheet *sheet = new Sheet(2, sheets->count());
-        sheet->setHints(Sheet::HintDrawFold);
+        Sheet *sheet;
+        if (i<0 && !sheets->isEmpty())
+        {
+            sheet = sheets->last();
+            sheet->setHints(Sheet::HintDrawFold | Sheet::HintSubBooklet);
+        }
+        else
+        {
+            sheet = new Sheet(2, sheets->count());
+            sheet->setHints(Sheet::HintDrawFold);
+            *sheets << sheet;
+        }
 
-        sheets->append(sheet);
         if (i>-1)
         {
-            if (i<project->pageCount())
+            if (i < bookLength)
             {
                 ProjectPage *page = project->page(i + bookStart);
                 sheet->setPage(0, page);
@@ -435,7 +458,7 @@ void LayoutBooklet::fillPreviewSheetsForBook(int bookStart, int bookLength, QLis
 
         if (i+1<cnt)
         {
-            if (i+1<project->pageCount())
+            if (i +1 < bookLength)
             {
                 ProjectPage *page = project->page(i + 1 + bookStart);
                 sheet->setPage(1, page);
@@ -444,3 +467,38 @@ void LayoutBooklet::fillPreviewSheetsForBook(int bookStart, int bookLength, QLis
     }
 }
 
+
+/************************************************
+ *
+ ************************************************/
+QList<LayoutBooklet::BookletInfo> LayoutBooklet::split(const QList<ProjectPage *> &pages) const
+{
+    QList<BookletInfo> res;
+    int pagePerBook = settings->value(Settings::SubBookletSize).toInt() * 4;
+    if (!settings->value(Settings::SubBookletsEnabled).toBool())
+        pagePerBook = -99999;
+
+    int start = 0;
+    int manualStart = false;
+    int cnt = pages.count();
+
+    for (int i=0; i<=cnt; ++i)
+    {
+        if (i == cnt ||
+            i - start == pagePerBook ||
+            pages.at(i)->isStartSubBooklet())
+        {
+            BookletInfo booklet;
+            booklet.start = start;
+            booklet.end = i -1;
+            booklet.manualStart = manualStart;
+            booklet.manualEnd = (i < cnt && pages.at(i)->isStartSubBooklet());
+            res << booklet;
+
+            start = i;
+            manualStart = booklet.manualEnd;
+        }
+    }
+
+    return res;
+}
