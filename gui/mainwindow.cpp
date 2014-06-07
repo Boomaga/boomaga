@@ -366,6 +366,8 @@ void MainWindow::updateWidgets()
     ui->actionPreviousSheet->setEnabled(ui->preview->currentSheet() > 0);
     ui->actionNextSheet->setEnabled(ui->preview->currentSheet() < project->previewSheetCount() - 1);
 
+    ui->actionSave->setEnabled(project->pageCount() > 0);
+    ui->actionSaveAs->setEnabled(ui->actionSave->isEnabled());
 
     if (project->layout()->id() == "Booklet")
     {

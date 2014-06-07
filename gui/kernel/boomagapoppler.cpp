@@ -244,7 +244,7 @@ QString BoomagaPDFDoc::getMetaInfo(const char *tag)
 /************************************************
  *
  * ***********************************************/
-GooString *createGooString(const QString string)
+GooString *createGooString(const QString &string)
 {
     return new GooString(string.toLocal8Bit(), string.length());
 }

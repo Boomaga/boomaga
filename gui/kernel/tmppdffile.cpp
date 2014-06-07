@@ -81,7 +81,7 @@ QString TmpPdfFile::genFileName()
 /************************************************
 
  ************************************************/
-TmpPdfFile::TmpPdfFile(const JobList jobs, QObject *parent):
+TmpPdfFile::TmpPdfFile(const JobList &jobs, QObject *parent):
     QObject(parent),
     mMerger(0),
     mValid(false),

@@ -95,7 +95,7 @@ public:
     void save(const QString &fileName);
 
     JobList jobs() const { return mJobs; }
-    void setJobs(const JobList value) { mJobs = value; }
+    void setJobs(const JobList &value) { mJobs = value; }
 
     const MetaData metaData() const { return mMetaData; }
     void setMetadata(const MetaData &value) { mMetaData = value; }

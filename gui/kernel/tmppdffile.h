@@ -46,7 +46,7 @@ class TmpPdfFile: public QObject
     Q_OBJECT
     friend class PdfMerger;
 public:
-    explicit TmpPdfFile(const JobList jobs, QObject *parent = 0);
+    explicit TmpPdfFile(const JobList &jobs, QObject *parent = 0);
     virtual ~TmpPdfFile();
 
     void merge();
