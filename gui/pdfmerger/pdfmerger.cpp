@@ -266,12 +266,8 @@ PdfMerger::PdfMerger():
     mNextFreeNum(0),
     mXrefPos(0)
 {
-    static bool popplerGlobalParamsInited(false);
-    if (!popplerGlobalParamsInited)
-    {
+    if (!globalParams)
         globalParams = new GlobalParams();
-        popplerGlobalParamsInited = true;
-    }
 }
 
 
