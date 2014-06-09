@@ -77,7 +77,7 @@ JobData::JobData(const QString &fileName, qint64 startPos, qint64 endPos, const 
         if (!mEndPos)
             mEndPos = fi.size();
 
-        BoomagaPDFDoc *doc = new BoomagaPDFDoc(fi.absoluteFilePath(), startPos, endPos);
+        BoomagaPDFDoc *doc = new BoomagaPDFDoc(fi.absoluteFilePath(), mStartPos, mEndPos);
 
         if (doc->isValid())
         {
