@@ -321,56 +321,56 @@ Jste si jistý, že jej chcete přepsat?</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished"/>
+        <translation>Uložit</translation>
     </message>
     <message>
         <source>Save project</source>
-        <translation type="unfinished"/>
+        <translation>Uložit projekt</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
         <source>Save as ...</source>
-        <translation type="unfinished"/>
+        <translation>Uložit jako...</translation>
     </message>
     <message>
         <source>Save project under a new name</source>
-        <translation type="unfinished"/>
+        <translation>Uložit projekt pod novým názvem</translation>
     </message>
     <message>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
         <source>Open ...</source>
-        <translation type="unfinished"/>
+        <translation>Otevřít...</translation>
     </message>
     <message>
         <source>Open an existing project</source>
-        <translation type="unfinished"/>
+        <translation>Otevřít stávající projekt</translation>
     </message>
     <message>
         <source>Ctrl+O</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+O</translation>
     </message>
     <message>
         <source>Page %1</source>
         <comment>'Undo deletion' menu item</comment>
-        <translation type="unfinished"/>
+        <translation>Strana %1</translation>
     </message>
     <message>
         <source>Boomaga files (*.boo);;All files (*.*)</source>
-        <translation type="unfinished"/>
+        <translation>Soubory Boomaga (*.boo);;Všechny soubory (*.*)</translation>
     </message>
     <message>
         <source>Project saved successfully.</source>
-        <translation type="unfinished"/>
+        <translation>Projekt byl úspěšně uložen.</translation>
     </message>
     <message>
         <source>All supported files (*.pdf *.boo);;Boomaga files (*.boo);;PDF files (*.pdf);;All files (*.*)</source>
-        <translation type="unfinished"/>
+        <translation>Všechny podporované soubory (*.pdf *.boo);;Soubory Boomaga (*.boo);;Soubory PDF (*.pdf);;Všechny soubory (*.*)</translation>
     </message>
 </context>
 <context>
@@ -444,23 +444,23 @@ Jste si jistý, že jej chcete přepsat?</translation>
     <name>ProjectFile</name>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
-        <translation type="unfinished"/>
+        <translation>Nelze otevřít soubor &quot;%1&quot; (Žádný takový soubor nebo adresář)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
-        <translation type="unfinished"/>
+        <translation>Nelze otevřít soubor &quot;%1&quot; (Přístup odepřen)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Nelze otevřít soubor &quot;%1&quot;</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Nelze zapisovat do souboru &apos;%1&apos;</translation>
     </message>
     <message>
         <source>I can&apos;t read file &quot;%1&quot; because is either not a supported file type or because the file has been damaged.</source>
-        <translation type="unfinished"/>
+        <translation>Nelze přečíst soubor &quot;%1&quot;, protože buď tento není podporovaným souborovým typem, nebo protože soubor byl poškozen.</translation>
     </message>
 </context>
 <context>
@@ -483,11 +483,11 @@ Jste si jistý, že jej chcete přepsat?</translation>
     </message>
     <message>
         <source>I can&apos;t read from file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Nelze číst ze souboru &apos;%1&apos;</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Nelze zapisovat do souboru &apos;%1&apos;</translation>
     </message>
 </context>
 <context>

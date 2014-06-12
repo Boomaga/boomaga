@@ -321,56 +321,56 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished"/>
+        <translation>Enregistrer</translation>
     </message>
     <message>
         <source>Save project</source>
-        <translation type="unfinished"/>
+        <translation>Enregistrer le projet</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
         <source>Save as ...</source>
-        <translation type="unfinished"/>
+        <translation>Enregistrer sous...</translation>
     </message>
     <message>
         <source>Save project under a new name</source>
-        <translation type="unfinished"/>
+        <translation>Enregistrer le projet sous un nouveau nom</translation>
     </message>
     <message>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+Maj+S</translation>
     </message>
     <message>
         <source>Open ...</source>
-        <translation type="unfinished"/>
+        <translation>Ouvrir...</translation>
     </message>
     <message>
         <source>Open an existing project</source>
-        <translation type="unfinished"/>
+        <translation>Ouvrir un projet existant</translation>
     </message>
     <message>
         <source>Ctrl+O</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+O</translation>
     </message>
     <message>
         <source>Page %1</source>
         <comment>'Undo deletion' menu item</comment>
-        <translation type="unfinished"/>
+        <translation>Page %1</translation>
     </message>
     <message>
         <source>Boomaga files (*.boo);;All files (*.*)</source>
-        <translation type="unfinished"/>
+        <translation>Fichiers Boomaga (*.boo);;Tous les fichiers (*.*)</translation>
     </message>
     <message>
         <source>Project saved successfully.</source>
-        <translation type="unfinished"/>
+        <translation>Projet enregistré avec succès</translation>
     </message>
     <message>
         <source>All supported files (*.pdf *.boo);;Boomaga files (*.boo);;PDF files (*.pdf);;All files (*.*)</source>
-        <translation type="unfinished"/>
+        <translation>Tous les fichiers pris en charge (*.pdf *.boo);;Fichiers Boomaga (*.boo);;Fichiers PDF (*.pdf);;Tous les fichiers (*.*)</translation>
     </message>
 </context>
 <context>
@@ -444,23 +444,23 @@ Are you sure you want to overwrite it?</source>
     <name>ProjectFile</name>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
-        <translation type="unfinished"/>
+        <translation>Je ne peux pas ouvrir le fichier « %1 » (fichier ou répertoire inexistant)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
-        <translation type="unfinished"/>
+        <translation>Je ne peux pas ouvrir le fichier « %1 » (accès refusé)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Je ne peux pas ouvrir le fichier « %1 »</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Je ne peux pas écrire le fichier « %1 »</translation>
     </message>
     <message>
         <source>I can&apos;t read file &quot;%1&quot; because is either not a supported file type or because the file has been damaged.</source>
-        <translation type="unfinished"/>
+        <translation>Je ne peux pas lire le fichier « %1 » car il n&apos;est pas pris en charge ou car le fichier est endommagé.</translation>
     </message>
 </context>
 <context>
@@ -483,11 +483,11 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>I can&apos;t read from file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Je ne peux pas lire le fichier « %1 »</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Je ne peux pas écrire le fichier « %1 »</translation>
     </message>
 </context>
 <context>
