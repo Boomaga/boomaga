@@ -59,6 +59,29 @@
     </message>
 </context>
 <context>
+    <name>ConfigDialog</name>
+    <message>
+        <source>Preferences</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Divide your long booklets into smaller sub-booklets for printing.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Print as sub-booklets</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Maximum number of sheets in your sub-booklet.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Sheets per sub-booklet:</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
     <name>ExportToPdf</name>
     <message>
         <source>Print to PDF</source>
@@ -128,26 +151,7 @@ Sei sicuro di volerlo sovracrivere?</translation>
     </message>
 </context>
 <context>
-    <name>Job</name>
-    <message>
-        <source>Untitled</source>
-        <translation>Senza titolo</translation>
-    </message>
-</context>
-<context>
     <name>JobsListView</name>
-    <message>
-        <source>Rename job</source>
-        <translation>Rinominare lavoro di stampa</translation>
-    </message>
-    <message>
-        <source>Delete job</source>
-        <translation>Cancellare lavoro di stampa</translation>
-    </message>
-    <message>
-        <source>Job title:</source>
-        <translation>Titolo del lavoro di stampa:</translation>
-    </message>
     <message>
         <source>( %1 pages )</source>
         <translation>( %1 pagine )</translation>
@@ -182,14 +186,6 @@ Sei sicuro di volerlo sovracrivere?</translation>
     <message>
         <source>2 up</source>
         <translation>su 2</translation>
-    </message>
-    <message>
-        <source>4 up</source>
-        <translation>su 4</translation>
-    </message>
-    <message>
-        <source>8 up</source>
-        <translation>su 8</translation>
     </message>
     <message>
         <source>Booklet</source>
@@ -372,6 +368,58 @@ Sei sicuro di volerlo sovracrivere?</translation>
         <source>All supported files (*.pdf *.boo);;Boomaga files (*.boo);;PDF files (*.pdf);;All files (*.*)</source>
         <translation>Tutti i file supportati (*.pdf *.boo);;File Boomaga (*.boo);;File PDF (*.pdf);;Tutti i file (*.*)</translation>
     </message>
+    <message>
+        <source>4 up horizontal</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>4 up vertical</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>8 up horizontal</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>8 up vertical</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Start new booklet from this page</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Don&apos;t start new booklet from this page</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Rotate page to the left</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Rotate page to the right</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Rename job</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Rotate job to the left</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Rotate job to the right</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Delete job</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Job title:</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>PrinterSettings</name>
@@ -488,6 +536,10 @@ Sei sicuro di volerlo sovracrivere?</translation>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Non posso scrivere nel file &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <source>Untitled</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>

@@ -61,6 +61,29 @@
     </message>
 </context>
 <context>
+    <name>ConfigDialog</name>
+    <message>
+        <source>Preferences</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Divide your long booklets into smaller sub-booklets for printing.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Print as sub-booklets</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Maximum number of sheets in your sub-booklet.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Sheets per sub-booklet:</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>ExportToPdf</name>
     <message>
         <source>Print to PDF</source>
@@ -129,26 +152,7 @@ Are you sure you want to overwrite it?</source>
     </message>
 </context>
 <context>
-    <name>Job</name>
-    <message>
-        <source>Untitled</source>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
     <name>JobsListView</name>
-    <message>
-        <source>Rename job</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Delete job</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Job title:</source>
-        <translation type="unfinished"></translation>
-    </message>
     <message>
         <source>( %1 pages )</source>
         <translation type="unfinished"></translation>
@@ -182,14 +186,6 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>2 up</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>4 up</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>8 up</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -373,6 +369,58 @@ Are you sure you want to overwrite it?</source>
         <source>All supported files (*.pdf *.boo);;Boomaga files (*.boo);;PDF files (*.pdf);;All files (*.*)</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>4 up horizontal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>4 up vertical</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>8 up horizontal</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>8 up vertical</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Start new booklet from this page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Don&apos;t start new booklet from this page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate page to the left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate page to the right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rename job</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate job to the left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate job to the right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete job</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Job title:</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PrinterSettings</name>
@@ -488,6 +536,10 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Untitled</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

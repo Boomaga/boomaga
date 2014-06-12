@@ -59,6 +59,29 @@
     </message>
 </context>
 <context>
+    <name>ConfigDialog</name>
+    <message>
+        <source>Preferences</source>
+        <translation>Настройки</translation>
+    </message>
+    <message>
+        <source>Divide your long booklets into smaller sub-booklets for printing.</source>
+        <translation>Разбивать большую книгу на небольшие тетрадки при печати.</translation>
+    </message>
+    <message>
+        <source>Print as sub-booklets</source>
+        <translation>Печатать с разбивкой на тетради </translation>
+    </message>
+    <message>
+        <source>Maximum number of sheets in your sub-booklet.</source>
+        <translation>Максимальное число листов в тетради.</translation>
+    </message>
+    <message>
+        <source>Sheets per sub-booklet:</source>
+        <translation>Листов в тетради:</translation>
+    </message>
+</context>
+<context>
     <name>ExportToPdf</name>
     <message>
         <source>Print to PDF</source>
@@ -128,26 +151,7 @@ Are you sure you want to overwrite it?</source>
     </message>
 </context>
 <context>
-    <name>Job</name>
-    <message>
-        <source>Untitled</source>
-        <translation>Без имени</translation>
-    </message>
-</context>
-<context>
     <name>JobsListView</name>
-    <message>
-        <source>Rename job</source>
-        <translation>Переименовать задание</translation>
-    </message>
-    <message>
-        <source>Delete job</source>
-        <translation>Удалить задание</translation>
-    </message>
-    <message>
-        <source>Job title:</source>
-        <translation>Имя задания:</translation>
-    </message>
     <message>
         <source>( %1 pages )</source>
         <translation>( %1 стр.) </translation>
@@ -182,14 +186,6 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>2 up</source>
         <translation>2 страницы на лист</translation>
-    </message>
-    <message>
-        <source>4 up</source>
-        <translation>4 страницы на лист</translation>
-    </message>
-    <message>
-        <source>8 up</source>
-        <translation>8 страниц на лист</translation>
     </message>
     <message>
         <source>Booklet</source>
@@ -372,6 +368,58 @@ Are you sure you want to overwrite it?</source>
         <source>All supported files (*.pdf *.boo);;Boomaga files (*.boo);;PDF files (*.pdf);;All files (*.*)</source>
         <translation>Все поддерживаемые файлы (*.pdf *.boo);;Бумажные файлы (*.boo);;PDF документы (*.pdf);;Все файлы (*.*)</translation>
     </message>
+    <message>
+        <source>4 up horizontal</source>
+        <translation>4 стр. на лист горизонтально</translation>
+    </message>
+    <message>
+        <source>4 up vertical</source>
+        <translation>4 стр. на лист вертикально</translation>
+    </message>
+    <message>
+        <source>8 up horizontal</source>
+        <translation>8 стр. на лист горизонтально</translation>
+    </message>
+    <message>
+        <source>8 up vertical</source>
+        <translation>8 стр. на лист вертикально</translation>
+    </message>
+    <message>
+        <source>Start new booklet from this page</source>
+        <translation>Начать новую тетрадь с этой страницы</translation>
+    </message>
+    <message>
+        <source>Don&apos;t start new booklet from this page</source>
+        <translation>Не начинать новую тетрадь с этой страницы</translation>
+    </message>
+    <message>
+        <source>Rotate page to the left</source>
+        <translation>Повернуть страницу против часовой стрелки</translation>
+    </message>
+    <message>
+        <source>Rotate page to the right</source>
+        <translation>Повернуть страницу по часовой стрелке</translation>
+    </message>
+    <message>
+        <source>Rename job</source>
+        <translation>Переименовать задание</translation>
+    </message>
+    <message>
+        <source>Rotate job to the left</source>
+        <translation>Повернуть задание против часовой стрелки</translation>
+    </message>
+    <message>
+        <source>Rotate job to the right</source>
+        <translation>Повернуть задание по часовой стрелке</translation>
+    </message>
+    <message>
+        <source>Delete job</source>
+        <translation>Удалить</translation>
+    </message>
+    <message>
+        <source>Job title:</source>
+        <translation>Имя задания:</translation>
+    </message>
 </context>
 <context>
     <name>PrinterSettings</name>
@@ -488,6 +536,10 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Не получилось записать файл: &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>Untitled</source>
+        <translation>Без имени</translation>
     </message>
 </context>
 <context>

@@ -59,6 +59,29 @@
     </message>
 </context>
 <context>
+    <name>ConfigDialog</name>
+    <message>
+        <source>Preferences</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Divide your long booklets into smaller sub-booklets for printing.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Print as sub-booklets</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Maximum number of sheets in your sub-booklet.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Sheets per sub-booklet:</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
     <name>ExportToPdf</name>
     <message>
         <source>Print to PDF</source>
@@ -128,26 +151,7 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
 </context>
 <context>
-    <name>Job</name>
-    <message>
-        <source>Untitled</source>
-        <translation>Unbenannt</translation>
-    </message>
-</context>
-<context>
     <name>JobsListView</name>
-    <message>
-        <source>Rename job</source>
-        <translation>Druckauftrag umbenennen</translation>
-    </message>
-    <message>
-        <source>Delete job</source>
-        <translation>Druckauftrag löschen</translation>
-    </message>
-    <message>
-        <source>Job title:</source>
-        <translation>Titel des Druckauftrags:</translation>
-    </message>
     <message>
         <source>( %1 pages )</source>
         <translation>( %1 Seiten )</translation>
@@ -182,14 +186,6 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     <message>
         <source>2 up</source>
         <translation>2 Seiten</translation>
-    </message>
-    <message>
-        <source>4 up</source>
-        <translation>4 Seiten</translation>
-    </message>
-    <message>
-        <source>8 up</source>
-        <translation>8 Seiten</translation>
     </message>
     <message>
         <source>Booklet</source>
@@ -372,6 +368,58 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
         <source>All supported files (*.pdf *.boo);;Boomaga files (*.boo);;PDF files (*.pdf);;All files (*.*)</source>
         <translation>Alle unterstützten Dateien (*.pdf *.boo);;Boomaga-Dateien (*.boo);;PDF-Dateien (*.pdf);;Alle Dateien (*.*)</translation>
     </message>
+    <message>
+        <source>4 up horizontal</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>4 up vertical</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>8 up horizontal</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>8 up vertical</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Start new booklet from this page</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Don&apos;t start new booklet from this page</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Rotate page to the left</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Rotate page to the right</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Rename job</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Rotate job to the left</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Rotate job to the right</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Delete job</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Job title:</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>PrinterSettings</name>
@@ -488,6 +536,10 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Ich kann nicht in die Datei &apos;%1&apos; schreiben</translation>
+    </message>
+    <message>
+        <source>Untitled</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
