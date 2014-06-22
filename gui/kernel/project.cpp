@@ -737,7 +737,7 @@ void Project::load(const QStringList &fileNames, const QStringList &titles, cons
         addJobs(jobs);
 
     if (!errors.isEmpty())
-        throw errors.join("\n\n");
+        error(errors.join("\n\n"));
 
 }
 

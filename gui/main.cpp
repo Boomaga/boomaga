@@ -195,14 +195,7 @@ int main(int argc, char *argv[])
     mainWindow.show();
     application.processEvents();
 
-    try
-    {
-        project->load(files, titles, "", autoRemove);
-    }
-    catch (const QString &err)
-    {
-        project->error(err);
-    }
+    project->load(files, titles, "", autoRemove);
 
     return application.exec();
 }

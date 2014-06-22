@@ -215,14 +215,7 @@ void MainWindow::dropEvent(QDropEvent *event)
     foreach(QUrl url, event->mimeData()->urls())
         files << url.toLocalFile();
 
-    try
-    {
-        project->load(files);
-    }
-    catch (const QString &err)
-    {
-        project->error(err);
-    }
+    project->load(files);
 }
 
 
