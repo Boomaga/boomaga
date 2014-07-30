@@ -52,11 +52,21 @@ function error
 #*******************************************
 function createJobFileDir
 {
-  if [ ! -d ${jobFileDir} ];
+  if [ -d "${jobFileDir}" ];
   then
-    mkdir ${jobFileDir}
-    chmod 700 ${jobFileDir}
-    chown ${user} ${jobFileDir}
+    return
+  fi
+
+  if [ -e "${jobFileDir}" ];
+  then
+    error "File '${jobFileDir}' exists, and int isn't directory.";
+  fi
+
+  if [ ! -"d ${jobFileDir}" ];
+  then
+    mkdir "${jobFileDir}"
+    chmod 700 "${jobFileDir}"
+    chown "${user}" "${jobFileDir}"
   fi
 }
 
@@ -338,7 +348,8 @@ cmd="dbus-send --session --type=method_call --print-reply \
 
 debug "command: ${cmd}"
 
-errorLog="/tmp/boomaga_${jobID}.err"
+errorLog=$(mktemp)
+
 res=${CUPS_BACKEND_OK}
 su -c "/bin/bash -c \"export DBUS_SESSION_BUS_ADDRESS=${dbusSessionAddress} && ${cmd}\"" ${user} 2>${errorLog} 1>/dev/null || res=${CUPS_BACKEND_FAILED}
 
