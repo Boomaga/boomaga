@@ -31,12 +31,17 @@ project(boomagaCups)
 set(CUPS_BACKEND_ID "MFG:${CUPS_BACKEND_MANUFACTURER};CMD:PJL,PDF;MDL:${CUPS_BACKEND_MODEL};CLS:PRINTER;DES:${CUPS_BACKEND_DESCRIPTION};DRV:DPDF,R1,M0;")
 add_definitions(-DCUPS_BACKEND_ID=\"${CUPS_BACKEND_ID}\")
 
+
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/boomaga
                ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}
                @ONLY)
 
 configure_file(${CMAKE_CURRENT_SOURCE_DIR}/boomaga.ppd
                ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}.ppd
+               @ONLY)
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/boomagabackend
+               ${CMAKE_CURRENT_BINARY_DIR}/boomagabackend
                @ONLY)
 
 
@@ -61,4 +66,12 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}.ppd
     OWNER_READ OWNER_WRITE
     GROUP_READ
     WORLD_READ
+)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/boomagabackend
+  DESTINATION ${NONGUI_DIR}
+  PERMISSIONS
+    OWNER_READ OWNER_WRITE OWNER_EXECUTE
+    GROUP_READ             GROUP_EXECUTE
+    WORLD_READ             WORLD_EXECUTE
 )

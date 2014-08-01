@@ -79,6 +79,8 @@ endmacro()
 set(GUI_DIR ${CMAKE_INSTALL_PREFIX}/bin)
 add_definitions(-DGUI_DIR=\"${GUI_DIR}\")
 
+set(NONGUI_DIR ${CMAKE_INSTALL_PREFIX}/lib/boomaga)
+add_definitions(-DNONGUI_DIR=\"${NONGUI_DIR}\")
 
 ###########################################################
 
