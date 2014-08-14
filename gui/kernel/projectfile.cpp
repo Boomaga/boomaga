@@ -250,7 +250,7 @@ void ProjectFile::load(const QString &fileName, const QString &options)
                     if (subCommand == "LANGUAGE=PDF")
                     {
                         qint64 startPos = file.pos();
-                        qint64 endPos;
+                        qint64 endPos = 0;
                         while (!file.atEnd())
                         {
                             QByteArray buf = file.readLine();
