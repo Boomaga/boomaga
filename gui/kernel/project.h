@@ -145,16 +145,14 @@ public:
     ProjectPage *page(int index) const { return mPages.at(index); }
     QList<ProjectPage*> pages() const { return mPages; }
 
-    SheetList sheets() const { return mSheets; }
-    int sheetCount() const { return mSheets.count(); }
-    Sheet *sheet(int index) const { return mSheets[index]; }
+    int sheetCount() const { return mSheetCount; }
     QList<Sheet*> selectSheets(PagesType pages = AllPages, PagesOrder order = ForwardOrder) const;
 
     SheetList previewSheets() const { return mPreviewSheets; }
     int previewSheetCount() const { return mPreviewSheets.count(); }
     Sheet *previewSheet(int index) const { return mPreviewSheets[index]; }
 
-    bool writeDocument(const QList<Sheet *> &sheets, QIODevice *out);
+    bool writeDocument(const QList<Sheet*> &sheets, QIODevice *out);
     bool writeDocument(const QList<Sheet*> &sheets, const QString &fileName);
 
     const Layout *layout() const { return mLayout; }
@@ -205,7 +203,7 @@ private:
     QList<ProjectPage*> mPages;
     JobList mJobs;
 
-    SheetList mSheets;
+    int mSheetCount;
     SheetList mPreviewSheets;
     TmpPdfFile *mTmpFile;
     TmpPdfFile *mLastTmpFile;

@@ -152,6 +152,7 @@ void ProjectPage::setStartSubBooklet(bool value)
 Project::Project(QObject *parent) :
     QObject(parent),
     mLayout(0),
+    mSheetCount(0),
     mTmpFile(0),
     mLastTmpFile(0),
     mPrinter(&mNullPrinter),
@@ -305,15 +306,15 @@ void Project::update()
     }
     mRotation = mLayout->calcProjectRotation(mPages);
 
-    qDeleteAll(mSheets);
-    mSheets.clear();
+    mSheetCount = 0;
 
     qDeleteAll(mPreviewSheets);
     mPreviewSheets.clear();
 
     if (!mPages.isEmpty())
     {
-        mLayout->fillSheets(&mSheets);
+        mSheetCount = mLayout->calcSheetCount();
+
         mLayout->fillPreviewSheets(&mPreviewSheets);
 
         if (mTmpFile)
@@ -386,18 +387,28 @@ QList<Sheet*> Project::selectSheets(Project::PagesType pages, Project::PagesOrde
         break;
     }
 
+    QList<Sheet *> sheets;
+    mLayout->fillSheets(&sheets);
     QList<Sheet *> res;
 
     if (order == Project::ForwardOrder)
     {
         for (int i=start; i < end; i += inc)
-            res.append(mSheets.at(i));
+        {
+            res.append(sheets.at(i));
+            sheets[i] = 0;
+        }
     }
     else
     {
         for (int i=start; i < end; i += inc)
-            res.insert(0, mSheets.at(i));
+        {
+            res.insert(0, sheets.at(i));
+            sheets[i] = 0;
+        }
     }
+
+    qDeleteAll(sheets);
 
     return res;
 }
@@ -406,7 +417,7 @@ QList<Sheet*> Project::selectSheets(Project::PagesType pages, Project::PagesOrde
 /************************************************
 
  ************************************************/
-bool Project::writeDocument(const QList<Sheet *> &sheets, QIODevice *out)
+bool Project::writeDocument(const QList<Sheet*> &sheets, QIODevice *out)
 {
     return mTmpFile->writeDocument(sheets, out);
 }
@@ -415,7 +426,7 @@ bool Project::writeDocument(const QList<Sheet *> &sheets, QIODevice *out)
 /************************************************
 
  ************************************************/
-bool Project::writeDocument(const QList<Sheet *> &sheets, const QString &fileName)
+bool Project::writeDocument(const QList<Sheet*> &sheets, const QString &fileName)
 {
     QFile f(fileName);
     if (!f.open(QIODevice::WriteOnly))

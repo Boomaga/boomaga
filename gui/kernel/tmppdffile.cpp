@@ -220,7 +220,7 @@ void TmpPdfFile::stop()
 /************************************************
 
  ************************************************/
-bool TmpPdfFile::writeDocument(const QList<Sheet *> &sheets, QIODevice *out)
+bool TmpPdfFile::writeDocument(const QList<Sheet*> &sheets, QIODevice *out)
 {
     QFile f(mFileName);
     if (!f.open(QFile::ReadOnly))
@@ -284,7 +284,7 @@ void TmpPdfFile::writeSheets(QIODevice *out, const QList<Sheet *> &sheets) const
         *out << "/Resources " << resourcesNum << " 0 R\n";
         *out << "/Parent " << pagesNum << " 0 R\n";
 
-        *out << "/Rotate " << (int)project->rotation() << "\n";
+        *out << "/Rotate " << (int)sheet->rotation() << "\n";
         *out << ">>\n";
         *out << "endobj\n";
 

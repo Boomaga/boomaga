@@ -38,6 +38,7 @@
 #include "export/exporttopdfprinter.h"
 #include "icon.h"
 #include "configdialog/configdialog.h"
+#include "boomagatypes.h"
 
 #include <math.h>
 #include <QRadioButton>
@@ -488,13 +489,25 @@ QMessageBox *MainWindow::showPrintDialog(const QString &text)
  ************************************************/
 bool MainWindow::print()
 {
+    struct Keeper
+    {
+        QList<Sheet*> sheets_1;
+        QList<Sheet*> sheets_2;
+
+        ~Keeper()
+        {
+            qDeleteAll(sheets_1);
+            qDeleteAll(sheets_2);
+        }
+    };
+
+    Keeper keeper;
     if (!project->sheetCount())
         return false;
 
     bool res = true;
     bool showDialog = project->printer()->isShowProgressDialog();
     QMessageBox *infoDialog = 0;
-    Sheet emptySheet(1, 0);
 
     bool split = project->doubleSided() &&
                  project->printer()->duplexType() != DuplexAuto;
@@ -542,42 +555,41 @@ bool MainWindow::print()
         }
 
 
-         QList<Sheet*> sheets_1 = project->selectSheets(pagesType_1, order_1);
-         QList<Sheet*> sheets_2 = project->selectSheets(pagesType_2, order_2);
+         keeper.sheets_1 = project->selectSheets(pagesType_1, order_1);
+         keeper.sheets_2 = project->selectSheets(pagesType_2, order_2);
 
 
-         if (sheets_1.count())
+         if (keeper.sheets_1.count())
          {
              if (order_1 == Project::BackOrder)
              {
-                 while (sheets_1.count() < sheets_2.count())
-                     sheets_1.insert(0, &emptySheet);
+                 while (keeper.sheets_1.count() < keeper.sheets_2.count())
+                     keeper.sheets_1.insert(0, new Sheet(1, 0));
              }
              else
              {
-                 while (sheets_1.count() < sheets_2.count())
-                     sheets_1.append(&emptySheet);
+                 while (keeper.sheets_1.count() < keeper.sheets_2.count())
+                     keeper.sheets_1.append(new Sheet(1, 0));
              }
 
 
-             if (showDialog && !sheets_2.count())
+             if (showDialog && !keeper.sheets_2.count())
              {
                  infoDialog = showPrintDialog(tr("Print the all pages on %1.").arg(project->printer()->printerName()));
              }
 
 
-             res = project->printer()->print(sheets_1, "", false, 1);
+             res = project->printer()->print(keeper.sheets_1, "", false, 1);
              if (!res)
              {
                  delete(infoDialog);
                  return false;
              }
-
          }
 
 
          // Show dialog ....................................
-         if (sheets_1.count() && sheets_2.count())
+         if (keeper.sheets_1.count() && keeper.sheets_2.count())
          {
              QMessageBox dialog(this);
              dialog.setWindowTitle(this->windowTitle() + " ");
@@ -600,23 +612,36 @@ bool MainWindow::print()
          // ................................................
 
 
-         if (sheets_2.count())
+         if (keeper.sheets_2.count())
          {
              if (order_2 == Project::BackOrder)
              {
-                 while (sheets_2.count() < sheets_1.count())
-                     sheets_2.insert(0, &emptySheet);
+                 while (keeper.sheets_2.count() < keeper.sheets_1.count())
+                     keeper.sheets_2.insert(0, new Sheet(1, 0));
              }
              else
              {
-                 while (sheets_2.count() < sheets_1.count())
-                     sheets_2.append(&emptySheet);
+                 while (keeper.sheets_2.count() < keeper.sheets_1.count())
+                     keeper.sheets_2.append(new Sheet(1, 0));
              }
+
+             if (project->doubleSided())
+             {
+                 for (int i=0; i<keeper.sheets_2.count(); ++i)
+                 {
+                     Sheet *sheet = keeper.sheets_2.at(i);
+                     if (isPortrate(sheet->rotation()))
+                     {
+                         sheet->setRotation(sheet->rotation() + Rotate180);
+                     }
+                 }
+             }
+
 
              if (showDialog)
                 infoDialog = showPrintDialog(tr("Print the even pages on %1.").arg(project->printer()->printerName()));
 
-             res = project->printer()->print(sheets_2, "", false, 1);
+             res = project->printer()->print(keeper.sheets_2, "", false, 1);
              if (!res)
              {
                  delete(infoDialog);
@@ -625,7 +650,7 @@ bool MainWindow::print()
          }
 
     }
-    else //if (split)
+    else //if (split) no
     {
         if (showDialog)
             infoDialog = showPrintDialog(tr("Print the all pages on %1.").arg(project->printer()->printerName()));
@@ -636,23 +661,34 @@ bool MainWindow::print()
         else
             order = Project::ForwardOrder;
 
-        QList<Sheet*> sheets = project->selectSheets(Project::AllPages, order);
+        keeper.sheets_1 = project->selectSheets(Project::AllPages, order);
 
-        if (project->doubleSided() && sheets.count() % 2)
+        if (project->doubleSided() && keeper.sheets_1.count() % 2)
         {
             if (order == Project::BackOrder)
             {
-                sheets.insert(0, &emptySheet);
-                qDebug() << Q_FUNC_INFO << "insert";
+                keeper.sheets_1.insert(0, new Sheet(1, 0));
             }
             else
             {
-                sheets.append(&emptySheet);
-                qDebug() << Q_FUNC_INFO << "append";
+                keeper.sheets_1.append(new Sheet(1, 0));
             }
         }
 
-        res = project->printer()->print(sheets, "", project->doubleSided(), 1);
+
+        if (project->doubleSided())
+        {
+            for (int i=1; i<keeper.sheets_1.count(); i+=2)
+            {
+                Sheet *sheet = keeper.sheets_1.at(i);
+                if (isLandscape(sheet->rotation()))
+                {
+                    sheet->setRotation(sheet->rotation() + Rotate180);
+                }
+            }
+        }
+
+        res = project->printer()->print(keeper.sheets_1, "", project->doubleSided(), 1);
         if (!res)
         {
             delete(infoDialog);

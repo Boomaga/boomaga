@@ -51,6 +51,7 @@ public:
 
     virtual QString id() const = 0;
 
+    virtual int calcSheetCount() const = 0;
     virtual void fillSheets(QList<Sheet*> *sheets) const = 0;
     virtual void fillPreviewSheets(QList<Sheet*> *sheets) const;
 
@@ -78,6 +79,7 @@ public:
 
     virtual QString id() const;
 
+    virtual int calcSheetCount() const;
     void fillSheets(QList<Sheet*> *sheets) const;
     TransformSpec transformSpec(const Sheet *sheet, int pageNumOnSheet, Rotation sheetRotation) const;
     virtual Rotation rotation() const;
@@ -99,6 +101,7 @@ public:
 
     virtual QString id() const { return "Booklet"; }
 
+    virtual int calcSheetCount() const;
     void fillSheets(QList<Sheet*> *sheets) const;
     void fillPreviewSheets(QList<Sheet*> *sheets) const;
 

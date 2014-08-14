@@ -103,6 +103,17 @@ QString LayoutNUp::id() const
 
 
 /************************************************
+ *
+ * ***********************************************/
+int LayoutNUp::calcSheetCount() const
+{
+    int pps = mPageCountVert * mPageCountHoriz;
+
+    return ceil(project->pageCount() * 1.0 / pps);
+}
+
+
+/************************************************
 
  ************************************************/
 void LayoutNUp::fillSheets(QList<Sheet *> *sheets) const
@@ -305,6 +316,22 @@ Layout::PagePosition LayoutNUp::calcPagePosition(int pageNumOnSheet, Rotation sh
 LayoutBooklet::LayoutBooklet():
     LayoutNUp(2, 1)
 {
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+int LayoutBooklet::calcSheetCount() const
+{
+    int result = 0;
+    QList<BookletInfo> booklets = split(project->pages());
+
+    foreach (BookletInfo booklet, booklets)
+    {
+        result += ceil((booklet.end - booklet.start + 1) / 4.0 ) * 2;
+    }
+    return result;
 }
 
 

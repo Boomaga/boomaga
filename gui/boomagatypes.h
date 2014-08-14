@@ -58,6 +58,12 @@ inline bool isLandscape(const QSize &size)  { return size.width() > size.height(
 inline bool isLandscape(const QRectF &rect) { return isLandscape(rect.size()); }
 inline bool isLandscape(const QRect &rect)  { return isLandscape(rect.size()); }
 
+inline bool isPortrate(Rotation rotation)  { return ! isLandscape(rotation); }
+inline bool isPortrate(const QSizeF &size) { return ! isLandscape(size); }
+inline bool isPortrate(const QSize &size)  { return ! isLandscape(size); }
+inline bool isPortrate(const QRectF &rect) { return ! isLandscape(rect); }
+inline bool isPortrate(const QRect &rect)  { return ! isLandscape(rect); }
+
 
 inline Rotation intToRotation(int r) { return (Rotation)((360 + (r % 360)) % 360); }
 
