@@ -38,6 +38,7 @@
 #include "../kernel/project.h"
 #include "../kernel/sheet.h"
 #include "../kernel/projectfile.h"
+#include "../boomagatypes.h"
 
 
 #define COMPARE(actual, expected) \
@@ -325,7 +326,7 @@ void TestBoomaga::test_ProjectRotation()
     Layout *layout = createLayout(layoutName);
     QList<ProjectPage*> pages = createPages(pagesDef);
 
-    Rotation result = layout->calcProjectRotation(pages);
+    Rotation result = project->calcRotation(pages, layout);
     QCOMPARE((int)result, (int)expected);
 
     delete layout;
@@ -936,6 +937,63 @@ void TestBoomaga::test_ProjectFilePageSpec_data()
     QTest::newRow("1:::S")      << "<" <<  0 << false <<   0  << true;
     QTest::newRow("2:H::S")     << "<" <<  1 << true  <<   0  << true;
     QTest::newRow("2:H:90:S")   << "<" <<  1 << true  <<  90  << true;
+
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void TestBoomaga::test_SheetRotation()
+{
+     QStringList tags = QString(QTest::currentDataTag()).split(" ", QString::SkipEmptyParts);
+     LayoutNUp *layout = createLayout(tags.at(0));
+     DuplexType duplex = (tags.at(1).toUpper() == "AUTO") ?
+                            DuplexAuto :
+                            DuplexManual;
+
+     Rotation projectRotation = StrToRotation(tags.at(2));
+
+     QFETCH(QString, rotationsExpected);
+
+     QStringList expectedSl = rotationsExpected.split(" ", QString::SkipEmptyParts);
+     QStringList resultSl;
+     for (int i=0; i<expectedSl.count(); ++i)
+     {
+         resultSl << QString::number(
+                         (int)layout->calcSheetRotation(i, projectRotation, duplex, true));
+     }
+
+     QString result = resultSl.join(" ");
+     QString expected = expectedSl.join(" ");
+     QCOMPARE(result, expected);
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void TestBoomaga::test_SheetRotation_data()
+{
+    QTest::addColumn<QString>("rotationsExpected");
+
+    //          Layout duplex rotation    results
+    QTest::newRow("1up Manual  0") << " 0 180   0 180";
+    QTest::newRow("1up Manual 90") << "90  90  90  90";
+    QTest::newRow("2up Manual  0") << " 0 180   0 180";
+    QTest::newRow("2up Manual 90") << "90  90  90  90";
+
+
+    QTest::newRow("1up Auto    0") << " 0   0   0   0";
+    QTest::newRow("1up Auto   90") << "90 270  90 270";
+    QTest::newRow("2up Auto    0") << " 0   0   0   0";
+    QTest::newRow("2up Auto   90") << "90 270  90 270";
+
+
+    QTest::newRow("booklet Manual  0") << " 0   0   0   0";
+    QTest::newRow("booklet Manual 90") << "90  90  90  90";
+    QTest::newRow("booklet Auto    0") << " 0 180   0 180";
+    QTest::newRow("booklet Auto   90") << "90 270  90 270";
 
 }
 

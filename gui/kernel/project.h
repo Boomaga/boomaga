@@ -191,6 +191,9 @@ signals:
     void progress(int progr, int all) const;
     void sheetImageChanged(int sheetNum);
 
+protected:
+    Rotation calcRotation(const QList<ProjectPage *> &pages, const Layout *layout) const;
+
 private slots:
     void tmpFileMerged();
     void tmpFileProgress(int progr, int all) const;

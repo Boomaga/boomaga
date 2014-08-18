@@ -625,19 +625,6 @@ bool MainWindow::print()
                      keeper.sheets_2.append(new Sheet(1, 0));
              }
 
-             if (project->doubleSided())
-             {
-                 for (int i=0; i<keeper.sheets_2.count(); ++i)
-                 {
-                     Sheet *sheet = keeper.sheets_2.at(i);
-                     if (isPortrate(sheet->rotation()))
-                     {
-                         sheet->setRotation(sheet->rotation() + Rotate180);
-                     }
-                 }
-             }
-
-
              if (showDialog)
                 infoDialog = showPrintDialog(tr("Print the even pages on %1.").arg(project->printer()->printerName()));
 
@@ -672,19 +659,6 @@ bool MainWindow::print()
             else
             {
                 keeper.sheets_1.append(new Sheet(1, 0));
-            }
-        }
-
-
-        if (project->doubleSided())
-        {
-            for (int i=1; i<keeper.sheets_1.count(); i+=2)
-            {
-                Sheet *sheet = keeper.sheets_1.at(i);
-                if (isLandscape(sheet->rotation()))
-                {
-                    sheet->setRotation(sheet->rotation() + Rotate180);
-                }
             }
         }
 

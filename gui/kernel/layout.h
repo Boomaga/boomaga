@@ -52,6 +52,7 @@ public:
     virtual QString id() const = 0;
 
     virtual int calcSheetCount() const = 0;
+
     virtual void fillSheets(QList<Sheet*> *sheets) const = 0;
     virtual void fillPreviewSheets(QList<Sheet*> *sheets) const;
 
@@ -59,7 +60,6 @@ public:
     virtual TransformSpec transformSpec(const Sheet *sheet, int pageNumOnSheet, Rotation sheetRotation) const = 0;
 
     virtual Rotation rotation() const = 0;
-    Rotation calcProjectRotation(const QList<ProjectPage *> &pages) const;
 
 protected:
     struct PagePosition
@@ -69,6 +69,7 @@ protected:
     };
 
     virtual PagePosition calcPagePosition(int pageNumOnSheet, Rotation sheetRotation) const = 0;
+    virtual Rotation calcSheetRotation(int sheetNum, Rotation projectRotation, DuplexType printerType, bool doubleSided) const = 0;
 };
 
 
@@ -87,6 +88,7 @@ public:
 protected:
     virtual Rotation calcPageRotation(const ProjectPage *page, Rotation sheetRotation) const;
     virtual PagePosition calcPagePosition(int pageNumOnSheet, Rotation sheetRotation) const;
+    virtual Rotation calcSheetRotation(int sheetNum, Rotation projectRotation, DuplexType printerType, bool doubleSided) const;
 
     int mPageCountVert;
     int mPageCountHoriz;
@@ -115,6 +117,8 @@ protected:
     };
 
     QList<BookletInfo> split(const QList<ProjectPage*> &pages) const;
+    virtual Rotation calcSheetRotation(int sheetNum, Rotation projectRotation, DuplexType printerType, bool doubleSided) const;
+
 private:
     void fillSheetsForBook(int bookStart, int bookLength, QList<Sheet *> *sheets) const;
     void fillPreviewSheetsForBook(int bookStart, int bookLength, QList<Sheet *> *sheets) const;

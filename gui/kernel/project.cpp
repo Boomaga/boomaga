@@ -304,7 +304,7 @@ void Project::update()
                 mPages << job.page(p);
         }
     }
-    mRotation = mLayout->calcProjectRotation(mPages);
+    mRotation = calcRotation(mPages, mLayout);
 
     mSheetCount = 0;
 
@@ -322,6 +322,25 @@ void Project::update()
     }
 
     emit changed();
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+Rotation Project::calcRotation(const QList<ProjectPage *> &pages, const Layout *layout) const
+{
+    foreach (const ProjectPage *page, pages)
+    {
+        if (page)
+        {
+            if ((isLandscape(page->pdfRotation()) ^ isLandscape(page->rect())) ^ isLandscape(layout->rotation()))
+                return Rotate90;
+            else
+                return NoRotate;
+        }
+    }
+    return layout->rotation();
 }
 
 
