@@ -121,9 +121,27 @@ Rotation LayoutNUp::calcSheetRotation(int sheetNum, Rotation projectRotation, Du
 
 
 /************************************************
+ *
+ * ***********************************************/
+void LayoutNUp::fillSheets(QList<Sheet *> *sheets) const
+{
+    doFillSheets(sheets, false);
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void LayoutNUp::fillPreviewSheets(QList<Sheet *> *sheets) const
+{
+    doFillSheets(sheets, true);
+}
+
+
+/************************************************
 
  ************************************************/
-void LayoutNUp::fillSheets(QList<Sheet *> *sheets) const
+void LayoutNUp::doFillSheets(QList<Sheet *> *sheets, bool forPreview) const
 {
     int pps = mPageCountVert * mPageCountHoriz;
 
@@ -142,7 +160,10 @@ void LayoutNUp::fillSheets(QList<Sheet *> *sheets) const
             ++i;
         }
 
-        sheet->setRotation(calcSheetRotation(sheets->count(),
+        if (forPreview)
+            sheet->setRotation(project->rotation());
+        else
+            sheet->setRotation(calcSheetRotation(sheets->count(),
                                              project->rotation(),
                                              project->printer()->duplexType(),
                                              project->doubleSided()));

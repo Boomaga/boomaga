@@ -82,10 +82,12 @@ public:
 
     virtual int calcSheetCount() const;
     void fillSheets(QList<Sheet*> *sheets) const;
+    void fillPreviewSheets(QList<Sheet*> *sheets) const;
     TransformSpec transformSpec(const Sheet *sheet, int pageNumOnSheet, Rotation sheetRotation) const;
     virtual Rotation rotation() const;
 
 protected:
+    void doFillSheets(QList<Sheet*> *sheets, bool forPreview) const;
     virtual Rotation calcPageRotation(const ProjectPage *page, Rotation sheetRotation) const;
     virtual PagePosition calcPagePosition(int pageNumOnSheet, Rotation sheetRotation) const;
     virtual Rotation calcSheetRotation(int sheetNum, Rotation projectRotation, DuplexType printerType, bool doubleSided) const;
