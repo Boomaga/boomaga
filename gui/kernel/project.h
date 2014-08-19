@@ -159,7 +159,7 @@ public:
     bool doubleSided() const;
 
     Printer *printer() const { return mPrinter; }
-    void setPrinter(Printer *value);
+    void setPrinter(Printer *value, bool update = true);
 
     QImage sheetImage(int sheetNum) const;
 

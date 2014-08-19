@@ -493,15 +493,18 @@ void Project::setDoubleSided(bool value)
 /************************************************
 
  ************************************************/
-void Project::setPrinter(Printer *value)
+void Project::setPrinter(Printer *value, bool update)
 {
     if (value)
         mPrinter = value;
     else
         mPrinter = &mNullPrinter;
 
-    update();
-    emit changed();
+    if (update)
+    {
+        this->update();
+        emit changed();
+    }
 }
 
 

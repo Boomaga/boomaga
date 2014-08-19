@@ -39,6 +39,7 @@
 #include "icon.h"
 #include "configdialog/configdialog.h"
 #include "boomagatypes.h"
+#include "export/exporttopdf.h"
 
 #include <math.h>
 #include <QRadioButton>
@@ -73,7 +74,8 @@ MainWindow::MainWindow(QWidget *parent):
         ui->printersCbx->addPrinter(printer);
     }
     ui->printersCbx->insertSeparator(99999);
-    ui->printersCbx->addPrinter(new ExportToPDFPrinter());
+    mExportPrinter = new ExportToPDFPrinter();
+    ui->printersCbx->addPrinter(mExportPrinter);
 
     initStatusBar();
     initActions();
@@ -311,6 +313,11 @@ void MainWindow::initActions()
     act->setIcon(Icon::icon(Icon::SaveAs));
     connect(act, SIGNAL(triggered()),
             this, SLOT(saveAs()));
+
+    act = ui->actionExport;
+    act->setIcon(Icon::icon(Icon::SaveAs));
+    connect(act, SIGNAL(triggered()),
+            this, SLOT(exportAs()));
 
     act = ui->actionPreferences;
     act->setIcon(Icon::icon(Icon::Configure));
@@ -1206,6 +1213,18 @@ void MainWindow::saveAs(const QString &fileName)
     {
         project->error(err);
     }
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void MainWindow::exportAs()
+{
+    Printer *prevPrinter = project->printer();
+    project->setPrinter(mExportPrinter, false);
+    print();
+    project->setPrinter(prevPrinter, false);
 }
 
 

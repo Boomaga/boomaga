@@ -37,6 +37,7 @@ class Layout;
 class Project;
 class Printer;
 class QMessageBox;
+class ExportToPDFPrinter;
 
 namespace Ui {
 class MainWindow;
@@ -90,6 +91,7 @@ private slots:
 
     void save();
     void saveAs(const QString &fileName = "");
+    void exportAs();
     void load();
 
 protected:
@@ -107,6 +109,7 @@ private:
 
     QProgressBar mProgressBar;
     QString      mSaveFile;
+    ExportToPDFPrinter *mExportPrinter;
 
     void initActions();
     void initStatusBar();
