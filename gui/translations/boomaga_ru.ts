@@ -420,6 +420,18 @@ Are you sure you want to overwrite it?</source>
         <source>Job title:</source>
         <translation>Имя задания:</translation>
     </message>
+    <message>
+        <source>&amp;Export...</source>
+        <translation>&amp;Экспортировать ...</translation>
+    </message>
+    <message>
+        <source>Export the project to PDF</source>
+        <translation>Экспортировать проект в PDF</translation>
+    </message>
+    <message>
+        <source>Ctrl+E</source>
+        <translation>Ctrl+E</translation>
+    </message>
 </context>
 <context>
     <name>PrinterSettings</name>

@@ -420,6 +420,18 @@ Are you sure you want to overwrite it?</source>
         <source>Job title:</source>
         <translation type="unfinished"/>
     </message>
+    <message>
+        <source>&amp;Export...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Export the project to PDF</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Ctrl+E</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>PrinterSettings</name>

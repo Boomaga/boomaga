@@ -27,7 +27,7 @@
     </message>
     <message>
         <source>Boomaga provides a virtual printer for CUPS. This can be used for print preview or for print booklets.</source>
-        <translation>Boomaga fornisce una stampante virtuale per CUPS. Questo può essere usato per l&apos;anteprima di stampa o per la stampa di libretti.</translation>
+        <translation>Boomaga fornisce una stampante virtuale per CUPS. Questa può essere usata per l&apos;anteprima di stampa o per la stampa di libretti.</translation>
     </message>
     <message>
         <source>Copyright: %1-%2 %3</source>
@@ -62,23 +62,23 @@
     <name>ConfigDialog</name>
     <message>
         <source>Preferences</source>
-        <translation type="unfinished"/>
+        <translation>Preferenze</translation>
     </message>
     <message>
         <source>Divide your long booklets into smaller sub-booklets for printing.</source>
-        <translation type="unfinished"/>
+        <translation>Dividi i tuoi lunghi fascicoli in sotto-fascicoli più piccoli per la stampa.</translation>
     </message>
     <message>
         <source>Print as sub-booklets</source>
-        <translation type="unfinished"/>
+        <translation>Stampa come sotto-fascicoli</translation>
     </message>
     <message>
         <source>Maximum number of sheets in your sub-booklet.</source>
-        <translation type="unfinished"/>
+        <translation>Numero massimo di fogli nel tuo sotto-fascicolo.</translation>
     </message>
     <message>
         <source>Sheets per sub-booklet:</source>
-        <translation type="unfinished"/>
+        <translation>Fogli per sotto-fascicolo:</translation>
     </message>
 </context>
 <context>
@@ -189,7 +189,7 @@ Sei sicuro di volerlo sovracrivere?</translation>
     </message>
     <message>
         <source>Booklet</source>
-        <translation>Opuscolo</translation>
+        <translation>Libretto</translation>
     </message>
     <message>
         <source>Print on both sides of a sheet.</source>
@@ -370,54 +370,66 @@ Sei sicuro di volerlo sovracrivere?</translation>
     </message>
     <message>
         <source>4 up horizontal</source>
-        <translation type="unfinished"/>
+        <translation>4 in orizzontale</translation>
     </message>
     <message>
         <source>4 up vertical</source>
-        <translation type="unfinished"/>
+        <translation>4 in verticale</translation>
     </message>
     <message>
         <source>8 up horizontal</source>
-        <translation type="unfinished"/>
+        <translation>8 in orizzontale</translation>
     </message>
     <message>
         <source>8 up vertical</source>
-        <translation type="unfinished"/>
+        <translation>8 in verticale</translation>
     </message>
     <message>
         <source>Start new booklet from this page</source>
-        <translation type="unfinished"/>
+        <translation>Inizia un nuovo libretto da questa pagina</translation>
     </message>
     <message>
         <source>Don&apos;t start new booklet from this page</source>
-        <translation type="unfinished"/>
+        <translation>Non iniziare un nuovo libretto da questa pagina</translation>
     </message>
     <message>
         <source>Rotate page to the left</source>
-        <translation type="unfinished"/>
+        <translation>Ruotare la pagina verso sinistra</translation>
     </message>
     <message>
         <source>Rotate page to the right</source>
-        <translation type="unfinished"/>
+        <translation>Ruotare la pagina verso destra</translation>
     </message>
     <message>
         <source>Rename job</source>
-        <translation type="unfinished"/>
+        <translation>Rinominare il lavoro di stampa</translation>
     </message>
     <message>
         <source>Rotate job to the left</source>
-        <translation type="unfinished"/>
+        <translation>Ruotare il lavoro di stampa verso sinistra</translation>
     </message>
     <message>
         <source>Rotate job to the right</source>
-        <translation type="unfinished"/>
+        <translation>Ruotare il lavoro di stampa verso destra</translation>
     </message>
     <message>
         <source>Delete job</source>
-        <translation type="unfinished"/>
+        <translation>Cancellare il lavoro di stampa</translation>
     </message>
     <message>
         <source>Job title:</source>
+        <translation>Nome del lavoro di stampa:</translation>
+    </message>
+    <message>
+        <source>&amp;Export...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Export the project to PDF</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Ctrl+E</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -539,7 +551,7 @@ Sei sicuro di volerlo sovracrivere?</translation>
     </message>
     <message>
         <source>Untitled</source>
-        <translation type="unfinished"/>
+        <translation>Senza nome</translation>
     </message>
 </context>
 <context>

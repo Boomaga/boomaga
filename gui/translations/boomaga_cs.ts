@@ -62,23 +62,23 @@
     <name>ConfigDialog</name>
     <message>
         <source>Preferences</source>
-        <translation type="unfinished"/>
+        <translation>Nastavení</translation>
     </message>
     <message>
         <source>Divide your long booklets into smaller sub-booklets for printing.</source>
-        <translation type="unfinished"/>
+        <translation>Rozdělit velké knížečky pro tisk na menší dílčí knížečky.</translation>
     </message>
     <message>
         <source>Print as sub-booklets</source>
-        <translation type="unfinished"/>
+        <translation>Rozdělit tisk knížeček (dílčí knížečky)</translation>
     </message>
     <message>
         <source>Maximum number of sheets in your sub-booklet.</source>
-        <translation type="unfinished"/>
+        <translation>Největší počet listů na dílčí knížečku.</translation>
     </message>
     <message>
         <source>Sheets per sub-booklet:</source>
-        <translation type="unfinished"/>
+        <translation>Listů na dílčí knížečku</translation>
     </message>
 </context>
 <context>
@@ -370,54 +370,66 @@ Jste si jistý, že jej chcete přepsat?</translation>
     </message>
     <message>
         <source>4 up horizontal</source>
-        <translation type="unfinished"/>
+        <translation>4 listy na stranu (formát na šířku)</translation>
     </message>
     <message>
         <source>4 up vertical</source>
-        <translation type="unfinished"/>
+        <translation>4 listy na stranu (formát na výšku)</translation>
     </message>
     <message>
         <source>8 up horizontal</source>
-        <translation type="unfinished"/>
+        <translation>8 listů na stranu (formát na šířku)</translation>
     </message>
     <message>
         <source>8 up vertical</source>
-        <translation type="unfinished"/>
+        <translation>8 listů na stranu (formát na výšku)</translation>
     </message>
     <message>
         <source>Start new booklet from this page</source>
-        <translation type="unfinished"/>
+        <translation>Začít novou knížečku od této strany</translation>
     </message>
     <message>
         <source>Don&apos;t start new booklet from this page</source>
-        <translation type="unfinished"/>
+        <translation>Nezačínat novou knížečku od této strany</translation>
     </message>
     <message>
         <source>Rotate page to the left</source>
-        <translation type="unfinished"/>
+        <translation>Otočit stranu doleva</translation>
     </message>
     <message>
         <source>Rotate page to the right</source>
-        <translation type="unfinished"/>
+        <translation>Otočit stranu doprava</translation>
     </message>
     <message>
         <source>Rename job</source>
-        <translation type="unfinished"/>
+        <translation>Přejmenovat tiskovou úlohu</translation>
     </message>
     <message>
         <source>Rotate job to the left</source>
-        <translation type="unfinished"/>
+        <translation>Otočit tiskovou úlohu doleva</translation>
     </message>
     <message>
         <source>Rotate job to the right</source>
-        <translation type="unfinished"/>
+        <translation>Otočit tiskovou úlohu doprava</translation>
     </message>
     <message>
         <source>Delete job</source>
-        <translation type="unfinished"/>
+        <translation>Smazat tiskovou úlohu</translation>
     </message>
     <message>
         <source>Job title:</source>
+        <translation>Název tiskové úlohy:</translation>
+    </message>
+    <message>
+        <source>&amp;Export...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Export the project to PDF</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Ctrl+E</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -539,7 +551,7 @@ Jste si jistý, že jej chcete přepsat?</translation>
     </message>
     <message>
         <source>Untitled</source>
-        <translation type="unfinished"/>
+        <translation>Bez názvu</translation>
     </message>
 </context>
 <context>

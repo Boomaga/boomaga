@@ -62,23 +62,23 @@
     <name>ConfigDialog</name>
     <message>
         <source>Preferences</source>
-        <translation type="unfinished"/>
+        <translation>Einstellungen</translation>
     </message>
     <message>
         <source>Divide your long booklets into smaller sub-booklets for printing.</source>
-        <translation type="unfinished"/>
+        <translation>Große Broschüren (zum Drucken) aufteilen</translation>
     </message>
     <message>
         <source>Print as sub-booklets</source>
-        <translation type="unfinished"/>
+        <translation>Broschürendruck aufteilen (sub-booklets)</translation>
     </message>
     <message>
         <source>Maximum number of sheets in your sub-booklet.</source>
-        <translation type="unfinished"/>
+        <translation>Maximale Blätter pro sub-booklet.</translation>
     </message>
     <message>
         <source>Sheets per sub-booklet:</source>
-        <translation type="unfinished"/>
+        <translation>Blätter pro sub-booklet:</translation>
     </message>
 </context>
 <context>
@@ -177,7 +177,7 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
     <message>
         <source>Layout</source>
-        <translation>Gestaltung</translation>
+        <translation>Gestaltung (Layout)</translation>
     </message>
     <message>
         <source>1 up</source>
@@ -370,54 +370,66 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
     <message>
         <source>4 up horizontal</source>
-        <translation type="unfinished"/>
+        <translation>4 Blätter pro Seite (Querformat)</translation>
     </message>
     <message>
         <source>4 up vertical</source>
-        <translation type="unfinished"/>
+        <translation>4 Blätter pro Seite (Hochformat)</translation>
     </message>
     <message>
         <source>8 up horizontal</source>
-        <translation type="unfinished"/>
+        <translation>8 Blätter pro Seite (Querformat)</translation>
     </message>
     <message>
         <source>8 up vertical</source>
-        <translation type="unfinished"/>
+        <translation>8 Blätter pro Seite (Hochformat)</translation>
     </message>
     <message>
         <source>Start new booklet from this page</source>
-        <translation type="unfinished"/>
+        <translation>Neue Broschüre ab dieser Seite beginnen</translation>
     </message>
     <message>
         <source>Don&apos;t start new booklet from this page</source>
-        <translation type="unfinished"/>
+        <translation>Keine neue Broschüre ab dieser Seite beginnen</translation>
     </message>
     <message>
         <source>Rotate page to the left</source>
-        <translation type="unfinished"/>
+        <translation>Seite nach links drehen</translation>
     </message>
     <message>
         <source>Rotate page to the right</source>
-        <translation type="unfinished"/>
+        <translation>Seite nach rechts drehen</translation>
     </message>
     <message>
         <source>Rename job</source>
-        <translation type="unfinished"/>
+        <translation>Druckauftrag umbenennen</translation>
     </message>
     <message>
         <source>Rotate job to the left</source>
-        <translation type="unfinished"/>
+        <translation>Druckauftrag nach links drehen</translation>
     </message>
     <message>
         <source>Rotate job to the right</source>
-        <translation type="unfinished"/>
+        <translation>Druckauftrag nach rechts drehen</translation>
     </message>
     <message>
         <source>Delete job</source>
-        <translation type="unfinished"/>
+        <translation>Druckauftrag löschen</translation>
     </message>
     <message>
         <source>Job title:</source>
+        <translation>Titel des Druckauftrags:</translation>
+    </message>
+    <message>
+        <source>&amp;Export...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Export the project to PDF</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Ctrl+E</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -492,7 +504,7 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     <name>ProjectFile</name>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
-        <translation>Ich kann die Datei &quot;%1&quot; nicht öffnen (Keine solche Datei oder Verzeichnis)</translation>
+        <translation>Ich kann die Datei &quot;%1&quot; nicht öffnen (keine solche Datei oder Verzeichnis)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
@@ -508,7 +520,7 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
     <message>
         <source>I can&apos;t read file &quot;%1&quot; because is either not a supported file type or because the file has been damaged.</source>
-        <translation>Ich kann die Datei &quot;%1&quot; nicht lesen, weil entweder ihr Dateityp nicht unterstützt wird oder weil die Datei beschädigt ist.</translation>
+        <translation>Ich kann die Datei &quot;%1&quot; nicht lesen, weil ihr Dateityp entweder nicht unterstützt wird oder die Datei beschädigt ist.</translation>
     </message>
 </context>
 <context>
@@ -539,7 +551,7 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
     <message>
         <source>Untitled</source>
-        <translation type="unfinished"/>
+        <translation>Unbenannt</translation>
     </message>
 </context>
 <context>

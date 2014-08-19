@@ -62,23 +62,23 @@
     <name>ConfigDialog</name>
     <message>
         <source>Preferences</source>
-        <translation type="unfinished"/>
+        <translation>Préférences</translation>
     </message>
     <message>
         <source>Divide your long booklets into smaller sub-booklets for printing.</source>
-        <translation type="unfinished"/>
+        <translation>Divisez vos livrets longs en de plus petits, pour l&apos;impression.</translation>
     </message>
     <message>
         <source>Print as sub-booklets</source>
-        <translation type="unfinished"/>
+        <translation>Imprimer comme sous-livrets</translation>
     </message>
     <message>
         <source>Maximum number of sheets in your sub-booklet.</source>
-        <translation type="unfinished"/>
+        <translation>Nombre maximale de feuilles dans votre sous-livret.</translation>
     </message>
     <message>
         <source>Sheets per sub-booklet:</source>
-        <translation type="unfinished"/>
+        <translation>Feuilles dans votre sous-livret :</translation>
     </message>
 </context>
 <context>
@@ -313,7 +313,7 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Delete pages until the end of the job.</source>
-        <translation>Supprimer les pages restantes du travail d&apos;impression.</translation>
+        <translation>Supprimer les pages restantes du travail.</translation>
     </message>
     <message>
         <source>Save</source>
@@ -370,54 +370,66 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>4 up horizontal</source>
-        <translation type="unfinished"/>
+        <translation>4 dans 1 horizontal</translation>
     </message>
     <message>
         <source>4 up vertical</source>
-        <translation type="unfinished"/>
+        <translation>4 dans 1 vertical</translation>
     </message>
     <message>
         <source>8 up horizontal</source>
-        <translation type="unfinished"/>
+        <translation>8 dans 1 horizontal</translation>
     </message>
     <message>
         <source>8 up vertical</source>
-        <translation type="unfinished"/>
+        <translation>8 dans 1 vertical</translation>
     </message>
     <message>
         <source>Start new booklet from this page</source>
-        <translation type="unfinished"/>
+        <translation>Démarrer un nouveau livret à partir de cette page</translation>
     </message>
     <message>
         <source>Don&apos;t start new booklet from this page</source>
-        <translation type="unfinished"/>
+        <translation>Ne pas démarrer un nouveau livret à partir de cette page</translation>
     </message>
     <message>
         <source>Rotate page to the left</source>
-        <translation type="unfinished"/>
+        <translation>Tourner la page vers la gauche</translation>
     </message>
     <message>
         <source>Rotate page to the right</source>
-        <translation type="unfinished"/>
+        <translation>Tourner la page vers la droite</translation>
     </message>
     <message>
         <source>Rename job</source>
-        <translation type="unfinished"/>
+        <translation>Renommer le travail</translation>
     </message>
     <message>
         <source>Rotate job to the left</source>
-        <translation type="unfinished"/>
+        <translation>Tourner le travail vers la gauche</translation>
     </message>
     <message>
         <source>Rotate job to the right</source>
-        <translation type="unfinished"/>
+        <translation>Tourner le travail vers la droite</translation>
     </message>
     <message>
         <source>Delete job</source>
-        <translation type="unfinished"/>
+        <translation>Supprimer le travail</translation>
     </message>
     <message>
         <source>Job title:</source>
+        <translation>Titre du travail :</translation>
+    </message>
+    <message>
+        <source>&amp;Export...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Export the project to PDF</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Ctrl+E</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -539,7 +551,7 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Untitled</source>
-        <translation type="unfinished"/>
+        <translation>Sans titre</translation>
     </message>
 </context>
 <context>
