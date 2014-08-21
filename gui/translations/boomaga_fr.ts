@@ -422,15 +422,15 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>&amp;Export...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Exporter...</translation>
     </message>
     <message>
         <source>Export the project to PDF</source>
-        <translation type="unfinished"/>
+        <translation>Exporter le projet en PDF</translation>
     </message>
     <message>
         <source>Ctrl+E</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+E</translation>
     </message>
 </context>
 <context>

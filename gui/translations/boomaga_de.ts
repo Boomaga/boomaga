@@ -422,15 +422,15 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
     <message>
         <source>&amp;Export...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Exportieren...</translation>
     </message>
     <message>
         <source>Export the project to PDF</source>
-        <translation type="unfinished"/>
+        <translation>Das Projekt als PDF exportieren</translation>
     </message>
     <message>
         <source>Ctrl+E</source>
-        <translation type="unfinished"/>
+        <translation>Strg+E</translation>
     </message>
 </context>
 <context>

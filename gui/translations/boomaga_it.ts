@@ -422,15 +422,15 @@ Sei sicuro di volerlo sovracrivere?</translation>
     </message>
     <message>
         <source>&amp;Export...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Esportare...</translation>
     </message>
     <message>
         <source>Export the project to PDF</source>
-        <translation type="unfinished"/>
+        <translation>Esportare il progetto in PDF</translation>
     </message>
     <message>
         <source>Ctrl+E</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+E</translation>
     </message>
 </context>
 <context>
