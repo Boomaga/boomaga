@@ -369,6 +369,7 @@ void MainWindow::updateWidgets()
 
     ui->actionSave->setEnabled(project->pageCount() > 0);
     ui->actionSaveAs->setEnabled(ui->actionSave->isEnabled());
+    ui->actionExport->setEnabled(ui->actionSave->isEnabled());
 
     if (project->layout()->id() == "Booklet")
     {
