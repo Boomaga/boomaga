@@ -422,15 +422,15 @@ Jste si jistý, že jej chcete přepsat?</translation>
     </message>
     <message>
         <source>&amp;Export...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Vyvést...</translation>
     </message>
     <message>
         <source>Export the project to PDF</source>
-        <translation type="unfinished"/>
+        <translation>Vyvést projekt do PDF</translation>
     </message>
     <message>
         <source>Ctrl+E</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+E</translation>
     </message>
 </context>
 <context>

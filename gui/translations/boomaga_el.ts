@@ -317,7 +317,7 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished"/>
+        <translation>Αποθήκευση</translation>
     </message>
     <message>
         <source>Save project</source>
