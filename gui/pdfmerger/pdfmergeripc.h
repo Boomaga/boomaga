@@ -66,6 +66,7 @@ signals:
 
 private slots:
     void mergerOutputReady();
+    void mergerStdErrReady();
 
 private:
     QProcess *mProcess;
@@ -86,6 +87,7 @@ public:
     void writeXRefInfo(qint64 xrefPos, qint32 freeNum);
     void writeProgressStatus(int pageNum);
     void writeError(const QString &message);
+    void writeWarning(const QString &message);
     void writeDebug(const QString &message);
 
 private:

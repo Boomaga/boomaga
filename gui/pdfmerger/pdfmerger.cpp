@@ -113,6 +113,24 @@ void error(const QString &message)
 /************************************************
 
  ************************************************/
+void warning(const QString &message)
+{
+    qWarning("%s", message.toLocal8Bit().data());
+}
+
+
+/************************************************
+
+ ************************************************/
+void warning(const char *message)
+{
+    warning(QString(message));
+}
+
+
+/************************************************
+
+ ************************************************/
 void debug(const QString &message)
 {
     QTextStream out(stdout);
@@ -252,8 +270,34 @@ public:
     Object  page;
     Object  stream;
     int     pageNum;
+
+    QString dump();
 };
 
+
+/************************************************
+
+ ************************************************/
+QString PdfMergerPageInfo::dump()
+{
+    QString res;
+    res += QString("  Page: %1\n").arg(pageNum);
+    res += QString("  Content type: %1\n").arg(stream.getTypeName());
+    if (stream.isArray())
+    {
+        Array *array = stream.getArray();
+        res += QString("  Array length: %1\n").arg(array->getLength());
+
+        for (int i=0; i < array->getLength(); ++i)
+        {
+            Object o;
+            array->get(i, &o);
+            res += QString("    * %1 - %2\n").arg(i).arg(o.getTypeName());
+        }
+    }
+
+    return res;
+}
 
 
 /************************************************
@@ -507,12 +551,39 @@ bool PdfMerger::writePageAsXObject(PdfMergerPageInfo *pageInfo)
     writeDictValue(pageDict, "StructParents", pageInfo->numOffset);
     // ..........................................
 
-    // Copy dict from the stream object .........
+
     Stream *stream = 0;
+
     if (pageInfo->stream.isStream())
     {
         stream = pageInfo->stream.getStream();
+    }
+    else if (pageInfo->stream.isArray())
+    {
+        Array *array = pageInfo->stream.getArray();
+        if (array->getLength() == 1)
+        {
+            Object o;
+            array->get(0, &o);
+            if (o.isStream())
+                stream = o.getStream();
+            else
+                warning("Page content is array with incorrect item type:\n" + pageInfo->dump() + "\n");
+        }
+        else
+        {
+            warning("Page content is array with incorrect length:\n" +pageInfo->dump() + "\n");
+        }
+    }
+    else
+    {
+        warning("Page has incorrect content type:\n" + pageInfo->dump() + "\n");
+    }
 
+
+    if (stream)
+    {
+        // Copy dict from the stream object .........
         Dict *dict = stream->getDict();
         for (int i=0; i<dict->getLength(); ++i)
         {
@@ -523,20 +594,21 @@ bool PdfMerger::writePageAsXObject(PdfMergerPageInfo *pageInfo)
             *mStream << "\n";
             value.free();
         }
+        *mStream << " >>\n";
+
+        // Write stream .............................
+        *mStream << "stream\n";
+        *mStream << *stream;
+        *mStream << "endstream\n";
     }
     else
     {
         *mStream << "/Length 0\n";
-    }
-    *mStream << " >>\n";
-    // ..........................................
+        *mStream << " >>\n";
 
-    // Write stream .............................
-    *mStream << "stream\n";
-    if (stream)
-        *mStream << *stream;
-    *mStream << "endstream\n";
-    // ..........................................
+        *mStream << "stream\n";
+        *mStream << "endstream\n";
+    }
 
     *mStream << "endobj\n";
     return true;
@@ -559,4 +631,3 @@ bool PdfMerger::writeDictValue(Dict *dict, const char *key, Guint numOffset)
     value.free();
     return true;
 }
-

@@ -87,6 +87,9 @@ PdfMergerIPCReader::PdfMergerIPCReader(QProcess *process, QObject *parent):
 {
     connect(mProcess, SIGNAL(readyReadStandardOutput()),
             this, SLOT(mergerOutputReady()));
+
+    connect(mProcess, SIGNAL(readyReadStandardError()),
+            this, SLOT(mergerStdErrReady()));
 }
 
 
@@ -155,6 +158,11 @@ void PdfMergerIPCReader::mergerOutputReady()
             emit error(data.at(1));
         }
 
+        //***************************************
+        else if (data.at(0) == "W")
+        {
+            qWarning() << data.at(1);
+        }
 
         //***************************************
         else if (data.at(0) == "D")
@@ -166,6 +174,16 @@ void PdfMergerIPCReader::mergerOutputReady()
     }
 
     mBuf.remove(0, i);
+}
+
+
+/************************************************
+
+ ************************************************/
+void PdfMergerIPCReader::mergerStdErrReady()
+{
+    QTextStream out(stderr);
+    out << mProcess->readAllStandardError();
 }
 
 
@@ -242,6 +260,16 @@ void PdfMergerIPCWriter::writeProgressStatus(int pageNum)
 void PdfMergerIPCWriter::writeError(const QString &message)
 {
     mStdOut << "E:" + message + '\n';
+    mStdOut.flush();
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void PdfMergerIPCWriter::writeWarning(const QString &message)
+{
+    mStdOut << "W:" + message + '\n';
     mStdOut.flush();
 }
 
