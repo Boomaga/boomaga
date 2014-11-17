@@ -73,6 +73,23 @@ void POPPLER_WritePageObjects(PDFDoc *doc, OutStream *outStr, XRef *xRef, Guint 
 #endif
 }
 
+void POPPLER_replacePageDict(PDFDoc *doc, int pageNo, int rotate, PDFRectangle *mediaBox, PDFRectangle *cropBox)
+{
+#if POPPLER_VERSION < 2800
+    doc->replacePageDict(pageNo, rotate, mediaBox, cropBox, NULL);
+#else
+    doc->replacePageDict(pageNo, rotate, mediaBox, cropBox);
+#endif
+}
+
+void POPPLER_markPageObjects(PDFDoc *doc, Dict *pageDict, XRef *xRef, XRef *countRef, Guint numOffset, int oldRefNum, int newRefNum)
+{
+#if POPPLER_VERSION < 2800
+    doc->markPageObjects(pageDict, xRef, countRef, numOffset);
+#else
+    doc->markPageObjects(pageDict, xRef, countRef, numOffset, oldRefNum, newRefNum);
+#endif
+}
 
 void writeTrailer(XRef *xRef, int rootNum, OutStream* stream)
 {
@@ -421,9 +438,9 @@ bool PdfMerger::run(const QString &outFileName)
                 if (page->isCropped())
                     cropBox = page->getCropBox();
 
-                doc->replacePageDict(i,
+                POPPLER_replacePageDict(doc, i,
                                  doc->getCatalog()->getPage(i)->getRotate(),
-                                 doc->getCatalog()->getPage(i)->getMediaBox(), cropBox, NULL);
+                                 doc->getCatalog()->getPage(i)->getMediaBox(), cropBox);
             }
 
             Ref *refPage = doc->getCatalog()->getPageRef(i);
@@ -458,7 +475,7 @@ bool PdfMerger::run(const QString &outFileName)
 
             mOrigPages[n] = pageInfo;
 
-            doc->markPageObjects(pageDict, &mXRef, &countXref, numOffset);
+            POPPLER_markPageObjects(doc, pageDict, &mXRef, &countXref, numOffset, refPage->num, refPage->num);
 
             if (n % 2)
                 ipc.writeProgressStatus((n + 1) / 2);
