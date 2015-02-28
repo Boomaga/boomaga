@@ -84,6 +84,7 @@ public:
     void setAutoRemove(bool value);
     void insertBlankPage(int before);
 
+    Job clone();
 private:
     QExplicitlySharedDataPointer<JobData> mData;
 };

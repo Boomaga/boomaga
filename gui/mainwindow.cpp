@@ -904,6 +904,13 @@ void MainWindow::showJobViewContextMenu(Job job)
 
     menu->addSeparator();
 
+    act = new JobAction(tr("Clone job..."), job, menu);
+    menu->addAction(act);
+    connect(act, SIGNAL(triggered()),
+            this, SLOT(cloneJob()));
+
+    menu->addSeparator();
+
     act = new JobAction(tr("Delete job"), job, menu);
     menu->addAction(act);
     connect(act, SIGNAL(triggered()),
@@ -1154,6 +1161,29 @@ void MainWindow::dontStartBooklet()
 void MainWindow::showConfigDialog()
 {
     ConfigDialog::createAndShow(this);
+}
+
+
+/************************************************
+
+ ************************************************/
+void MainWindow::cloneJob()
+{
+    JobAction *act = qobject_cast<JobAction*>(sender());
+    if (!act)
+        return;
+
+    bool ok;
+    int cnt = QInputDialog::getInt(this, tr("Clone job"), tr("Number of copies:"), 2, 2, 100, 1, &ok);
+    if (ok)
+    {
+        for (int i=1; i<cnt; ++i)
+        {
+            Job job = act->job().clone();
+            job.setTitle(QString("%1 [ %2 ]").arg(job.title()).arg(i+1));
+            project->addJob(job);
+        }
+    }
 }
 
 

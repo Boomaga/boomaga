@@ -76,6 +76,8 @@ private slots:
     void deletePagesEnd();
     void insertBlankPageBefore();
     void insertBlankPageAfter();
+
+    void cloneJob();
     void deleteJob();
     void renameJob();
     void rotateJobLeft();
