@@ -323,6 +323,7 @@ dbus-send --session --type=method_call --print-reply\
    string:"${title}" \
    boolean:true \
    string:"${options}" \
+   uint32:${count} \
    2>${errorLog} 1>/dev/null \
    || res=${CUPS_BACKEND_FAILED}
 

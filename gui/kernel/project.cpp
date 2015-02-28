@@ -718,51 +718,54 @@ void MetaData::addDictItem(QByteArray &out, const QString &key, const QDateTime 
 /************************************************
 
  ************************************************/
-void Project::load(const QString &fileName, const QString &title, const QString &options, bool autoRemove)
+void Project::load(const QString &fileName, const QString &title, const QString &options, bool autoRemove, uint count)
 {
-    load(QStringList() << fileName, QStringList() << title, options, autoRemove);
+    load(QStringList() << fileName, QStringList() << title, options, autoRemove, count);
 }
 
 
 /************************************************
 
  ************************************************/
-void Project::load(const QStringList &fileNames, const QString &options, bool autoRemove)
+void Project::load(const QStringList &fileNames, const QString &options, bool autoRemove, uint count)
 {
-    load(fileNames, QStringList(), options, autoRemove);
+    load(fileNames, QStringList(), options, autoRemove, count);
 }
 
 
 /************************************************
 
  ************************************************/
-void Project::load(const QStringList &fileNames, const QStringList &titles, const QString &options, bool autoRemove)
+void Project::load(const QStringList &fileNames, const QStringList &titles, const QString &options, bool autoRemove, uint count)
 {
     stopMerging();
     QStringList errors;
 
     JobList jobs;
-    foreach(QString fileName, fileNames)
+    for (int i=0; i<count; ++i)
     {
-        ProjectFile file;
-        try
+        foreach(QString fileName, fileNames)
         {
-            file.load(fileName, options);
-            for(int i=0; i<file.jobs().count(); ++i)
+            ProjectFile file;
+            try
             {
-                Job job = file.jobs().at(i);
-                job.setAutoRemove(autoRemove);
-                if (i<titles.count())
-                    job.setTitle(titles.at(i));
+                file.load(fileName, options);
+                for(int i=0; i<file.jobs().count(); ++i)
+                {
+                    Job job = file.jobs().at(i);
+                    job.setAutoRemove(autoRemove);
+                    if (i<titles.count())
+                        job.setTitle(titles.at(i));
 
-                jobs << job;
+                    jobs << job;
+                }
+
+                project->setMetadata(file.metaData());
             }
-
-            project->setMetadata(file.metaData());
-        }
-        catch (const QString &err)
-        {
-            errors << err;
+            catch (const QString &err)
+            {
+                errors << err;
+            }
         }
     }
 
