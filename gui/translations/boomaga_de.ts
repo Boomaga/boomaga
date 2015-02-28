@@ -432,6 +432,18 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
         <source>Ctrl+E</source>
         <translation>Strg+E</translation>
     </message>
+    <message>
+        <source>Clone job...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Clone job</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Number of copies:</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>PrinterSettings</name>

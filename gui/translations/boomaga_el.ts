@@ -432,6 +432,18 @@ Are you sure you want to overwrite it?</source>
         <source>Ctrl+E</source>
         <translation type="unfinished"/>
     </message>
+    <message>
+        <source>Clone job...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Clone job</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Number of copies:</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>PrinterSettings</name>

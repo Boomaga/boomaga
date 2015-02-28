@@ -432,6 +432,18 @@ Jste si jistý, že jej chcete přepsat?</translation>
         <source>Ctrl+E</source>
         <translation>Ctrl+E</translation>
     </message>
+    <message>
+        <source>Clone job...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Clone job</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Number of copies:</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>PrinterSettings</name>
