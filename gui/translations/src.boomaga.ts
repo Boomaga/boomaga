@@ -211,7 +211,7 @@ Are you sure you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Configure ...</source>
+        <source>Configure...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -329,7 +329,7 @@ Are you sure you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Save as ...</source>
+        <source>Save as...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -341,7 +341,7 @@ Are you sure you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Open ...</source>
+        <source>Open...</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
@@ -431,6 +431,18 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Ctrl+E</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clone job...</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Clone job</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Number of copies:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

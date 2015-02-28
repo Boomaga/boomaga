@@ -210,8 +210,8 @@ Sei sicuro di volerlo sovracrivere?</translation>
         <translation>Stampante</translation>
     </message>
     <message>
-        <source>Configure ...</source>
-        <translation>Configura ...</translation>
+        <source>Configure...</source>
+        <translation>Configura...</translation>
     </message>
     <message>
         <source>Toolbar</source>
@@ -328,8 +328,8 @@ Sei sicuro di volerlo sovracrivere?</translation>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <source>Save as ...</source>
-        <translation>Salva come ...</translation>
+        <source>Save as...</source>
+        <translation>Salva come...</translation>
     </message>
     <message>
         <source>Save project under a new name</source>
@@ -340,8 +340,8 @@ Sei sicuro di volerlo sovracrivere?</translation>
         <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <source>Open ...</source>
-        <translation>Apri ...</translation>
+        <source>Open...</source>
+        <translation>Apri...</translation>
     </message>
     <message>
         <source>Open an existing project</source>

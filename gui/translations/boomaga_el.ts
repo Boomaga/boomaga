@@ -210,8 +210,8 @@ Are you sure you want to overwrite it?</source>
         <translation>Εκτυπωτής</translation>
     </message>
     <message>
-        <source>Configure ...</source>
-        <translation>Διαμόρφωση ...</translation>
+        <source>Configure...</source>
+        <translation>Διαμόρφωση...</translation>
     </message>
     <message>
         <source>Toolbar</source>
@@ -328,7 +328,7 @@ Are you sure you want to overwrite it?</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <source>Save as ...</source>
+        <source>Save as...</source>
         <translation type="unfinished"/>
     </message>
     <message>
@@ -340,7 +340,7 @@ Are you sure you want to overwrite it?</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <source>Open ...</source>
+        <source>Open...</source>
         <translation type="unfinished"/>
     </message>
     <message>

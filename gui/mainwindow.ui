@@ -46,7 +46,7 @@
      <x>0</x>
      <y>0</y>
      <width>1188</width>
-     <height>22</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -178,7 +178,7 @@
            <bool>true</bool>
           </property>
           <property name="text">
-           <string>Configure ...</string>
+           <string>Configure...</string>
           </property>
          </widget>
         </item>
@@ -287,7 +287,7 @@
   </action>
   <action name="actionSaveAs">
    <property name="text">
-    <string>Save as ...</string>
+    <string>Save as...</string>
    </property>
    <property name="toolTip">
     <string>Save project under a new name</string>
@@ -298,7 +298,7 @@
   </action>
   <action name="actionOpen">
    <property name="text">
-    <string>Open ...</string>
+    <string>Open...</string>
    </property>
    <property name="toolTip">
     <string>Open an existing project</string>

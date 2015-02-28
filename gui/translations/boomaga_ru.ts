@@ -210,8 +210,8 @@ Are you sure you want to overwrite it?</source>
         <translation>Принтер</translation>
     </message>
     <message>
-        <source>Configure ...</source>
-        <translation>Настроить ...</translation>
+        <source>Configure...</source>
+        <translation>Настроить...</translation>
     </message>
     <message>
         <source>Toolbar</source>
@@ -328,7 +328,7 @@ Are you sure you want to overwrite it?</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <source>Save as ...</source>
+        <source>Save as...</source>
         <translation>Сохранить как...</translation>
     </message>
     <message>
@@ -340,8 +340,8 @@ Are you sure you want to overwrite it?</source>
         <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <source>Open ...</source>
-        <translation>Открыть ...</translation>
+        <source>Open...</source>
+        <translation>Открыть...</translation>
     </message>
     <message>
         <source>Open an existing project</source>
@@ -422,7 +422,7 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>&amp;Export...</source>
-        <translation>&amp;Экспортировать ...</translation>
+        <translation>&amp;Экспортировать...</translation>
     </message>
     <message>
         <source>Export the project to PDF</source>

@@ -209,7 +209,7 @@ Are you sure you want to overwrite it?</source>
         <translation>Printer</translation>
     </message>
     <message>
-        <source>Configure ...</source>
+        <source>Configure...</source>
         <translation>Sozlash...</translation>
     </message>
     <message>
@@ -327,7 +327,7 @@ Are you sure you want to overwrite it?</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <source>Save as ...</source>
+        <source>Save as...</source>
         <translation type="unfinished"/>
     </message>
     <message>
@@ -339,7 +339,7 @@ Are you sure you want to overwrite it?</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <source>Open ...</source>
+        <source>Open...</source>
         <translation type="unfinished"/>
     </message>
     <message>

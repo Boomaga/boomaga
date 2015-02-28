@@ -210,7 +210,7 @@ Jste si jistý, že jej chcete přepsat?</translation>
         <translation>Tiskárna</translation>
     </message>
     <message>
-        <source>Configure ...</source>
+        <source>Configure...</source>
         <translation>Nastavit...</translation>
     </message>
     <message>
@@ -328,7 +328,7 @@ Jste si jistý, že jej chcete přepsat?</translation>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <source>Save as ...</source>
+        <source>Save as...</source>
         <translation>Uložit jako...</translation>
     </message>
     <message>
@@ -340,7 +340,7 @@ Jste si jistý, že jej chcete přepsat?</translation>
         <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
-        <source>Open ...</source>
+        <source>Open...</source>
         <translation>Otevřít...</translation>
     </message>
     <message>

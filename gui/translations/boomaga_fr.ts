@@ -210,7 +210,7 @@ Are you sure you want to overwrite it?</source>
         <translation>Imprimante</translation>
     </message>
     <message>
-        <source>Configure ...</source>
+        <source>Configure...</source>
         <translation>Configurer...</translation>
     </message>
     <message>
@@ -328,7 +328,7 @@ Are you sure you want to overwrite it?</source>
         <translation>Ctrl+S</translation>
     </message>
     <message>
-        <source>Save as ...</source>
+        <source>Save as...</source>
         <translation>Enregistrer sous...</translation>
     </message>
     <message>
@@ -340,7 +340,7 @@ Are you sure you want to overwrite it?</source>
         <translation>Ctrl+Maj+S</translation>
     </message>
     <message>
-        <source>Open ...</source>
+        <source>Open...</source>
         <translation>Ouvrir...</translation>
     </message>
     <message>
