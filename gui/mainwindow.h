@@ -57,8 +57,9 @@ private slots:
 
     void switchToJob(const Job &job);
 
-    bool print();
-    void printAndClose();
+    bool print(uint count = 1);
+    void printAndClose(uint count = 1);
+    void printWithOptions();
 
     void updateWidgets();
 

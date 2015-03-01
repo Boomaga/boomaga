@@ -40,6 +40,7 @@
 #include "configdialog/configdialog.h"
 #include "boomagatypes.h"
 #include "export/exporttopdf.h"
+#include "printdialog/printdialog.h"
 
 #include <math.h>
 #include <QRadioButton>
@@ -285,6 +286,12 @@ void MainWindow::initActions()
     connect(act, SIGNAL(triggered()),
             this, SLOT(printAndClose()));
 
+    act = ui->actionPrintWithOptions;
+    act->setIcon(Icon::icon(Icon::Print));
+    connect(act, SIGNAL(triggered()),
+            this, SLOT(printWithOptions()));
+
+
     act = ui->actionExit;
     connect(act, SIGNAL(triggered()),
             this, SLOT(close()));
@@ -495,7 +502,7 @@ QMessageBox *MainWindow::showPrintDialog(const QString &text)
 /************************************************
 
  ************************************************/
-bool MainWindow::print()
+bool MainWindow::print(uint count)
 {
     struct Keeper
     {
@@ -587,7 +594,7 @@ bool MainWindow::print()
              }
 
 
-             res = project->printer()->print(keeper.sheets_1, "", false, 1);
+             res = project->printer()->print(keeper.sheets_1, "", false, count);
              if (!res)
              {
                  delete(infoDialog);
@@ -636,7 +643,7 @@ bool MainWindow::print()
              if (showDialog)
                 infoDialog = showPrintDialog(tr("Print the even pages on %1.").arg(project->printer()->printerName()));
 
-             res = project->printer()->print(keeper.sheets_2, "", false, 1);
+             res = project->printer()->print(keeper.sheets_2, "", false, count);
              if (!res)
              {
                  delete(infoDialog);
@@ -670,7 +677,7 @@ bool MainWindow::print()
             }
         }
 
-        res = project->printer()->print(keeper.sheets_1, "", project->doubleSided(), 1);
+        res = project->printer()->print(keeper.sheets_1, "", project->doubleSided(), count);
         if (!res)
         {
             delete(infoDialog);
@@ -690,10 +697,23 @@ bool MainWindow::print()
 /************************************************
 
  ************************************************/
-void MainWindow::printAndClose()
+void MainWindow::printAndClose(uint count)
 {
-    if (print())
+    if (print(count))
         QTimer::singleShot(200, this, SLOT(close()));
+}
+
+
+/************************************************
+
+ ************************************************/
+void MainWindow::printWithOptions()
+{
+    PrintDialog dialog;
+    if (dialog.exec())
+    {
+        print(dialog.copies());
+    }
 }
 
 

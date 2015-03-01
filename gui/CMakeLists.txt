@@ -54,6 +54,7 @@ set(HEADERS
     kernel/projectfile.h
     pdfmerger/pdfmergeripc.h
     configdialog/configdialog.h
+    printdialog/printdialog.h
 )
 
 set(SOURCES
@@ -83,6 +84,7 @@ set(SOURCES
     kernel/projectfile.cpp
     pdfmerger/pdfmergeripc.cpp
     configdialog/configdialog.cpp
+    printdialog/printdialog.cpp
 )
 
 set (MOCS
@@ -102,6 +104,7 @@ set (MOCS
     kernel/projectfile.h
     pdfmerger/pdfmergeripc.h
     configdialog/configdialog.h
+    printdialog/printdialog.h
 )
 
 set(LIBRARIES
@@ -115,6 +118,7 @@ set(UI_FILES
     aboutdialog/aboutdialog.ui
     export/exporttopdf.ui
     configdialog/configdialog.ui
+    printdialog/printdialog.ui
 )
 
 # QRC files .................
