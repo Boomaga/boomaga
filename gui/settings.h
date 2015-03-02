@@ -60,6 +60,9 @@ public:
         MainWindow_Geometry,
         MainWindow_State,
 
+        // PrinterDialog ************************
+        PrinterDialog_Geometry,
+
         // ExportPDF ****************************
         ExportPDF_FileName
 

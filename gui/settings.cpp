@@ -121,6 +121,8 @@ QString Settings::keyToString(Settings::Key key) const
     case MainWindow_Geometry:       return "MainWindow/Geometry";
     case MainWindow_State:          return "MainWindow/State";
 
+    // PrinterDialog ************************
+    case PrinterDialog_Geometry:    return "PrinterDialog/Geometry";
 
     // ExportPDF ****************************
     case ExportPDF_FileName:        return "ExportPDF/FileName";

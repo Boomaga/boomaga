@@ -26,6 +26,7 @@
 
 #include "printdialog.h"
 #include "ui_printdialog.h"
+#include "../settings.h"
 
 static int mCopiesSave = 1;
 
@@ -41,6 +42,8 @@ PrintDialog::PrintDialog(QWidget *parent) :
 
     connect(ui->copiesEdit, SIGNAL(valueChanged(int)),
             this, SLOT(CopiesEditValueChanged(int)));
+
+    restoreGeometry(settings->value(Settings::PrinterDialog_Geometry).toByteArray());
 }
 
 
@@ -49,6 +52,7 @@ PrintDialog::PrintDialog(QWidget *parent) :
  ************************************************/
 PrintDialog::~PrintDialog()
 {
+    settings->setValue(Settings::PrinterDialog_Geometry, saveGeometry());
     delete ui;
 }
 
