@@ -144,7 +144,7 @@ endif (NOT CMAKE_BUILD_TYPE)
 #set(CMAKE_BUILD_TYPE Debug)
 
 if(CMAKE_COMPILER_IS_GNUCXX)
-    #add_definitions (-Wall -pedantic)
+    add_definitions (-Wall -pedantic)
 endif()
 
 #*******************************************

@@ -29,6 +29,7 @@
 #include <QDataStream>
 #include <QVariant>
 #include <QRectF>
+#include <QApplication>
 
 enum DuplexType
 {
@@ -77,5 +78,30 @@ inline Rotation &operator+=(Rotation &r1, Rotation r2) { r1 = intToRotation((int
 
 inline Rotation &operator-=(Rotation &r1, int r2)      { r1 = intToRotation((int)r1 - (int)r2); return r1; }
 inline Rotation &operator-=(Rotation &r1, Rotation r2) { r1 = intToRotation((int)r1 - (int)r2); return r1; }
+
+enum Unit {
+    UnitMillimeter = 0,
+    UnitPoint      = 1
+    //UnitInch       = 2
+};
+
+
+//enum PaperSize { A4, B5, Letter, Legal, Executive,
+//                 A0, A1, A2, A3, A5, A6, A7, A8, A9, B0, B1,
+//                 B10, B2, B3, B4, B6, B7, B8, B9, C5E, Comm10E,
+//                 DLE, Folio, Ledger, Tabloid, Custom, NPageSize = Custom, NPaperSize = Custom };
+
+template<class T>
+T* findExistingForm()
+{
+    foreach(QWidget *widget, qApp->topLevelWidgets())
+    {
+        T* res = qobject_cast<T*>(widget);
+        if (res)
+            return res;
+    }
+    return 0;
+}
+
 
 #endif // BOOMAGATYPES_H

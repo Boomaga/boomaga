@@ -33,7 +33,7 @@ class ExportToPDFPrinter: public Printer
 {
 public:
     ExportToPDFPrinter();
-    virtual QString printerName() const;
+    virtual QString name() const;
     bool print(const QList<Sheet*> &sheets, const QString &jobName, bool duplex, int numCopies = 1) const;
 private:
     mutable QString mOutFileName ;

@@ -46,15 +46,19 @@ public:
         SubBookletSize,
 
         // Printer ******************************
-        Printer_DuplexType,
-        Printer_DrawBorder,
-        Printer_ReverseOrder,
+        Printer_CurrentProfile,
 
-        Printer_LeftMargin,
-        Printer_RightMargin,
-        Printer_TopMargin,
-        Printer_BottomMargin,
-        Printer_InternalMargin,
+        // PrinterProfile ******************************
+        PrinterProfile_Name,
+        PrinterProfile_DuplexType,
+        PrinterProfile_DrawBorder,
+        PrinterProfile_ReverseOrder,
+
+        PrinterProfile_LeftMargin,
+        PrinterProfile_RightMargin,
+        PrinterProfile_TopMargin,
+        PrinterProfile_BottomMargin,
+        PrinterProfile_InternalMargin,
 
         // MainWindow ***************************
         MainWindow_Geometry,
@@ -73,11 +77,9 @@ public:
 
     QVariant value(Key key, const QVariant &defaultValue = QVariant()) const;
     QVariant value(const QString &key, const QVariant &defaultValue = QVariant()) const;
-    QVariant printerValue(const QString &printerId, Key key, const QVariant &defaultValue = QVariant()) const;
 
     void setValue(Key key, const QVariant &value);
     void setValue(const QString &key, const QVariant &value);
-    void setPrinterValue(const QString &printerId, Key key, const QVariant &value);
 
 private:
     explicit Settings(const QString &organization, const QString &application);
@@ -89,7 +91,6 @@ private:
     void setDefaultValue(Key key, const QVariant &defaultValue);
 
     QString keyToString(Key key) const;
-    QSet<QString> mPrograms;
     static QString mFileName;
 };
 

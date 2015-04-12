@@ -155,6 +155,7 @@ Project::Project(QObject *parent) :
     mSheetCount(0),
     mTmpFile(0),
     mLastTmpFile(0),
+    mNullPrinter("Fake"),
     mPrinter(&mNullPrinter),
     mDoubleSided(true),
     mRotation(NoRotate)
@@ -493,12 +494,17 @@ void Project::setDoubleSided(bool value)
 /************************************************
 
  ************************************************/
-void Project::setPrinter(Printer *value, bool update)
+void Project::setPrinterProfile(Printer *printer, int profile, bool update)
 {
-    if (value)
-        mPrinter = value;
+    if (printer)
+    {
+        mPrinter = printer;
+        mPrinter->setCurrentProfile(profile);
+    }
     else
+    {
         mPrinter = &mNullPrinter;
+    }
 
     if (update)
     {
@@ -742,7 +748,7 @@ void Project::load(const QStringList &fileNames, const QStringList &titles, cons
     QStringList errors;
 
     JobList jobs;
-    for (int i=0; i<count; ++i)
+    for (uint i=0; i<count; ++i)
     {
         foreach(QString fileName, fileNames)
         {

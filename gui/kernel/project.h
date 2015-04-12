@@ -86,7 +86,7 @@ public:
     explicit ProjectPage();
     explicit ProjectPage(const ProjectPage *other);
     explicit ProjectPage(const InputFile &inputFile, int pageNum);
-    ~ProjectPage();
+    virtual ~ProjectPage();
 
     InputFile inputFile() const { return mInputFile; }
     int pageNum() const { return mPageNum; }
@@ -159,7 +159,7 @@ public:
     bool doubleSided() const;
 
     Printer *printer() const { return mPrinter; }
-    void setPrinter(Printer *value, bool update = true);
+    void setPrinterProfile(Printer *printer, int profile, bool update = true);
 
     QImage sheetImage(int sheetNum) const;
 
@@ -211,8 +211,8 @@ private:
     TmpPdfFile *mTmpFile;
     TmpPdfFile *mLastTmpFile;
 
-    Printer *mPrinter;
     Printer mNullPrinter;
+    Printer *mPrinter;
     bool mDoubleSided;
 
     MetaData mMetaData;

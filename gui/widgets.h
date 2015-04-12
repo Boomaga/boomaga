@@ -33,6 +33,7 @@
 #include <kernel/job.h>
 
 class Printer;
+class PrinterProfile;
 class Layout;
 
 
@@ -62,15 +63,21 @@ public:
     explicit PrintersComboBox(QWidget *parent = 0);
     ~PrintersComboBox();
 
-    Printer *currentPrinter();
-    void setCurrentPrinter(const QString &printerName);
+    Printer *currentPrinter() const {return itemPrinter(currentIndex()); }
+    int currentProfile() const { return itemProfile(currentIndex()); }
+    void setCurrentPrinterProfile(const QString &printerName, int profileIndex = 0);
+    void setCurrentPrinterProfile(const Printer *printer, int profileIndex = 0);
 
     int addPrinter(Printer *printer);
-
-    Printer *itemPrinter(int index);
+    int findItem(const QString &printerName, int profileIndex = 0) const;
+    int findItem(const Printer *printer, int profileIndex = 0) const;
 
 private:
     QList<Printer*> mPrinters;
+
+    int addProfile(Printer *printer, int profileIndex);
+    Printer *itemPrinter(int index) const;
+    int itemProfile(int index) const;
 };
 
 

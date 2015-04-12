@@ -39,12 +39,14 @@ namespace Ui {
 class PrinterSettings;
 }
 
+class ProfileItem;
+
 class PrinterSettings : public QDialog
 {
     Q_OBJECT
 
 public slots:
-    static PrinterSettings *create(Printer *printer);
+    static PrinterSettings *execute(Printer *printer);
 
 public:
     explicit PrinterSettings(QWidget *parent = 0);
@@ -53,21 +55,33 @@ public:
     Printer *currentPrinter() const { return mPrinter; }
     void setCurrentPrinter(Printer *printer);
 
+    void save();
+
 protected:
-    void showEvent(QShowEvent *);
     bool eventFilter(QObject *obj, QEvent *event);
 
 private slots:
     void updateWidgets();
-    void btnClicked(QAbstractButton *button);
-
+    void updateProfile();
     void updatePreview();
+
+    void btnClicked(QAbstractButton *button);
+    void addProfile();
+    void delProfile();
+
+    void selectProfile(QListWidgetItem * current, QListWidgetItem * previous);
+    void profileRenamed(QWidget * editor, QAbstractItemDelegate::EndEditHint hint);
+
+    void resetToDefault();
 
 private:
     Ui::PrinterSettings *ui;
-    static PrinterSettings *mInstance;
     Printer *mPrinter;
-    Printer::Unit mUnit;
+    Unit mUnit;
+
+    void applyUpdates();
+    ProfileItem *currentItem() const;
+    PrinterProfile *currentProfile() const;
 };
 
 #endif // PRINTERSETTINGS_H

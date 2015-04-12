@@ -29,7 +29,7 @@
 
 #include "boomagatypes.h"
 #include <QObject>
-#include <QList>
+#include <QVector>
 #include <QString>
 #include <QPrinterInfo>
 #include <QExplicitlySharedDataPointer>
@@ -37,61 +37,110 @@
 
 class Sheet;
 
-class Printer
+
+class PrinterProfile
 {
 public:
+    explicit PrinterProfile();
+    PrinterProfile &operator=(const PrinterProfile &other);
 
-    enum Unit {
-        Millimeter = 0,
-        Point      = 1
-        //Inch       = 2
-    };
+    QString name() const { return mName; }
+    void setName(const QString &name);
 
-    //enum PaperSize { A4, B5, Letter, Legal, Executive,
-    //                 A0, A1, A2, A3, A5, A6, A7, A8, A9, B0, B1,
-    //                 B10, B2, B3, B4, B6, B7, B8, B9, C5E, Comm10E,
-    //                 DLE, Folio, Ledger, Tabloid, Custom, NPageSize = Custom, NPaperSize = Custom };
-
-    Printer();
-    explicit Printer(QPrinterInfo printerInfo);
-    virtual ~Printer();
-
-    virtual QString printerName() const;
-
-    QSizeF paperSize(Unit unit) const;
-
-    void setPaperSize(const QSizeF & paperSize, Unit unit);
-
-    QRectF paperRect(Unit unit=Point) const;
-
-    QRectF pageRect(Unit unit=Point) const;
-
-    qreal leftMargin(Unit unit=Point);
+    qreal leftMargin(Unit unit=UnitPoint) const;
     void setLeftMargin(qreal value, Unit unit);
 
-    qreal rightMargin(Unit unit=Point);
+    qreal rightMargin(Unit unit=UnitPoint) const;
     void setRightMargin(qreal value, Unit unit);
 
-    qreal topMargin(Unit unit=Point);
+    qreal topMargin(Unit unit=UnitPoint) const;
     void setTopMargin(qreal value, Unit unit);
 
-    qreal bottomMargin(Unit unit=Point);
+    qreal bottomMargin(Unit unit=UnitPoint) const;
     void setBottomMargin(qreal value, Unit unit);
 
-    qreal internalMarhin(Unit unit=Point);
+    qreal internalMargin(Unit unit=UnitPoint) const;
     void setInternalMargin(qreal value, Unit unit);
-
-    bool drawBorder() const { return mDrawBorder; }
-    void setDrawBorder(bool value);
 
     DuplexType duplexType() const { return mDuplexType; }
     void setDuplexType(DuplexType duplexType);
 
-    bool canChangeDuplexType() const { return mCanChangeDuplexType; }
-    bool isShowProgressDialog() const { return mShowProgressDialog; }
+    bool drawBorder() const { return mDrawBorder; }
+    void setDrawBorder(bool value);
 
     bool reverseOrder() const { return mReverseOrder; }
     void setReverseOrder(bool value);
+
+    QSizeF paperSize(Unit unit) const;
+    void setPaperSize(const QSizeF & paperSize, Unit unit);
+
+    void readSettings();
+    void saveSettings() const;
+
+private:
+    QString mName;
+    qreal mLeftMargin;
+    qreal mRightMargin;
+    qreal mTopMargin;
+    qreal mBottomMargin;
+    qreal mInternalMargin;
+    DuplexType mDuplexType;
+    bool mDrawBorder;
+    bool mReverseOrder;
+    QSizeF mPaperSize;
+
+};
+
+
+class Printer
+{
+public:
+    explicit Printer(const QString &name);
+    virtual ~Printer();
+
+    virtual QString name() const { return mPrinterName; }
+
+    QVector<PrinterProfile> *profiles() { return &mProfiles; }
+    const QVector<PrinterProfile> *profiles() const { return &mProfiles; }
+
+    int currentProfile() const { return mCurrentProfileIndex; }
+    void setCurrentProfile(int index);
+
+    const PrinterProfile *cupsProfile() const { return &mCupsProfile; }
+
+    QSizeF paperSize(Unit unit) const { return mCurrentProfile->paperSize(unit); }
+    void setPaperSize(const QSizeF & paperSize, Unit unit) { mCurrentProfile->setPaperSize(paperSize, unit); }
+
+    QRectF paperRect(Unit unit=UnitPoint) const;
+    QRectF pageRect(Unit unit=UnitPoint) const;
+
+    qreal leftMargin(Unit unit=UnitPoint) const { return mCurrentProfile->leftMargin(unit); }
+    void setLeftMargin(qreal value, Unit unit)  { mCurrentProfile->setLeftMargin(value, unit); }
+
+    qreal rightMargin(Unit unit=UnitPoint)      { return mCurrentProfile->rightMargin(unit); }
+    void setRightMargin(qreal value, Unit unit) { mCurrentProfile->setRightMargin(value, unit); }
+
+    qreal topMargin(Unit unit=UnitPoint)        { return mCurrentProfile->topMargin(unit); }
+    void setTopMargin(qreal value, Unit unit)   { mCurrentProfile->setTopMargin(value, unit); }
+
+    qreal bottomMargin(Unit unit=UnitPoint)     { return mCurrentProfile->bottomMargin(unit); }
+    void setBottomMargin(qreal value, Unit unit){ mCurrentProfile->setBottomMargin(value, unit); }
+
+    qreal internalMarhin(Unit unit=UnitPoint)   { return mCurrentProfile->internalMargin(unit); }
+    void setInternalMargin(qreal value, Unit unit) { mCurrentProfile->setInternalMargin(value, unit); }
+
+    bool drawBorder() const        { return mCurrentProfile->drawBorder(); }
+    void setDrawBorder(bool value) { mCurrentProfile->setDrawBorder(value); }
+
+    DuplexType duplexType() const             { return mCurrentProfile->duplexType(); }
+    void setDuplexType(DuplexType duplexType) { mCurrentProfile->setDuplexType(duplexType); }
+
+    bool reverseOrder() const        { return mCurrentProfile->reverseOrder(); }
+    void setReverseOrder(bool value) { mCurrentProfile->setReverseOrder(value); }
+
+    bool canChangeDuplexType() const { return mCanChangeDuplexType; }
+    bool isShowProgressDialog() const { return mShowProgressDialog; }
+
 
     virtual bool print(const QList<Sheet*> &sheets, const QString &jobName, bool duplex, int numCopies = 1) const;
 
@@ -101,27 +150,20 @@ public:
     void saveSettings();
 
     static QList<Printer*> availablePrinters();
+    static Printer *printerByName(const QString &name);
+    static Printer *nullPrinter();
 
 protected:
     bool mCanChangeDuplexType;
     bool mShowProgressDialog;
 
 private:
-    QPrinterInfo mPrinterInfo;
-    QString mDeviceUri;    QSizeF mPaperSize;
-    qreal mLeftMargin;
-    qreal mRightMargin;
-    qreal mTopMargin;
-    qreal mBottomMargin;
-    qreal mInternalMargin;
-    DuplexType mDuplexType;
-    bool mDrawBorder;
-    bool mReverseOrder;
-
-    void init();
-    void initFromCups();
-
+    const QString mPrinterName;
+    QString mDeviceUri;
+    QVector<PrinterProfile> mProfiles;
+    int mCurrentProfileIndex;
+    PrinterProfile *mCurrentProfile;
+    PrinterProfile mCupsProfile;
 };
-
 
 #endif // PRINTER_H

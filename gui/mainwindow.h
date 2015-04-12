@@ -53,7 +53,7 @@ public:
 
 private slots:
     void switchLayout();
-    void switchPrinter();
+    void switchPrinterProfile();
 
     void switchToJob(const Job &job);
 
@@ -114,6 +114,7 @@ private:
     QString      mSaveFile;
     ExportToPDFPrinter *mExportPrinter;
 
+    void fillPrintersCombo();
     void initActions();
     void initStatusBar();
 

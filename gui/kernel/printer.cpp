@@ -69,14 +69,14 @@
 /************************************************
 
  ************************************************/
-qreal toUnit(qreal value, Printer::Unit unit)
+qreal toUnit(qreal value, Unit unit)
 {
     switch (unit)
     {
-    case Printer::Point:
+    case UnitPoint:
         return value;
 
-    case Printer::Millimeter:
+    case UnitMillimeter:
         return value * PT_TO_MM;
     }
     return 0;
@@ -86,80 +86,33 @@ qreal toUnit(qreal value, Printer::Unit unit)
 /************************************************
 
  ************************************************/
-qreal fromUnit(qreal value, Printer::Unit unit)
+qreal fromUnit(qreal value, Unit unit)
 {
     switch (unit)
     {
-    case Printer::Point:
+    case UnitPoint:
         return value;
 
-    case Printer::Millimeter:
+    case UnitMillimeter:
         return value * MM_TO_PT;
     }
     return 0;
 }
 
 
-/************************************************
-
- ************************************************/
-Printer::Printer()
-{
-    init();
-}
-
 
 /************************************************
 
  ************************************************/
-Printer::Printer(QPrinterInfo printerInfo):
-    mPrinterInfo(printerInfo)
-{
-    init();
-    initFromCups();
-    readSettings();
-}
-
-
-/************************************************
- *
- * ***********************************************/
-Printer::~Printer()
-{
-
-}
-
-
-/************************************************
-
- ************************************************/
-void Printer::init()
-{
-    mDeviceUri = "";
-
-    mDuplexType = DuplexManualReverse;
-    mReverseOrder = false;
-    mPaperSize = QSizeF(A4_WIDTH_PT, A4_HEIGHT_PT);
-    mLeftMargin = 0;
-    mRightMargin = 0;
-    mTopMargin = 0;
-    mBottomMargin = 0;
-    mInternalMargin = 14;
-    mDrawBorder = false;
-    mCanChangeDuplexType = true;
-    mShowProgressDialog = true;
-}
-
-
-/************************************************
-
- ************************************************/
-void Printer::initFromCups()
+void initFromCups(const QString &printerName, QString *deviceUri, PrinterProfile *profile)
 {
     cups_dest_t *dests;
     int num_dests = cupsGetDests(&dests);
-    cups_dest_t *dest = cupsGetDest(mPrinterInfo.printerName().toLocal8Bit().data(),
+    cups_dest_t *dest = cupsGetDest(printerName.toLocal8Bit().data(),
                                     0, num_dests, dests);
+
+    if (!dest)
+        return;
 
 #if 0
     qDebug() << "**" << mPrinterInfo.printerName() << "*******************";
@@ -168,7 +121,8 @@ void Printer::initFromCups()
 #endif
 
 
-    mDeviceUri = cupsGetOption(CUPS_DEVICE_URI, dest->num_options, dest->options);
+
+    *deviceUri = QString(cupsGetOption(CUPS_DEVICE_URI, dest->num_options, dest->options));
     QString duplexStr = cupsGetOption(CUPS_SIDES, dest->num_options, dest->options);
 
     bool duplex = false;
@@ -180,7 +134,7 @@ void Printer::initFromCups()
 
     // Read values from PPD
     // The returned filename is stored in a static buffer
-    const char * ppdFile = cupsGetPPD(mPrinterInfo.printerName().toLocal8Bit().data());
+    const char * ppdFile = cupsGetPPD(printerName.toLocal8Bit().data());
     if (ppdFile != 0)
     {
         ppd_file_t *ppd = ppdOpenFile(ppdFile);
@@ -191,11 +145,11 @@ void Printer::initFromCups()
             ppd_size_t *size = ppdPageSize(ppd, 0);
             if (size)
             {
-                mPaperSize = QSizeF(size->width, size->length);
-                mLeftMargin   = size->left;
-                mRightMargin  = size->width - size->right;
-                mTopMargin    = size->length - size->top;
-                mBottomMargin = size->bottom;
+                profile->setPaperSize(QSizeF(size->width, size->length), UnitPoint);
+                profile->setLeftMargin(size->left, UnitPoint);
+                profile->setRightMargin(size->width - size->right, UnitPoint);
+                profile->setTopMargin(size->length - size->top, UnitPoint);
+                profile->setBottomMargin(size->bottom, UnitPoint);
             }
 
             duplex = duplex || ppdIsMarked(ppd, "Duplex",     "DuplexNoTumble");
@@ -213,27 +167,26 @@ void Printer::initFromCups()
     }
 
     if (duplex)
-        mDuplexType = DuplexAuto;
-
+        profile->setDuplexType(DuplexAuto);
 
     bool ok;
     int n;
 
     n = QString(cupsGetOption("page-left", dest->num_options, dest->options)).toInt(&ok);
     if (ok)
-        mLeftMargin = n;
+        profile->setLeftMargin(n, UnitPoint);
 
     n = QString(cupsGetOption("page-right", dest->num_options, dest->options)).toInt(&ok);
     if (ok)
-        mRightMargin = n;
+        profile->setRightMargin(n, UnitPoint);
 
     n = QString(cupsGetOption("page-top", dest->num_options, dest->options)).toInt(&ok);
     if (ok)
-        mTopMargin = n;
+        profile->setTopMargin(n, UnitPoint);
 
     n = QString(cupsGetOption("page-bottom", dest->num_options, dest->options)).toInt(&ok);
     if (ok)
-        mBottomMargin = n;
+        profile->setBottomMargin(n, UnitPoint);
 
     cupsFreeDests(num_dests, dests);
 }
@@ -242,19 +195,292 @@ void Printer::initFromCups()
 /************************************************
 
  ************************************************/
+PrinterProfile::PrinterProfile():
+    mLeftMargin(0),
+    mRightMargin(0),
+    mTopMargin(0),
+    mBottomMargin(0),
+    mInternalMargin(14),
+    mDuplexType(DuplexManualReverse),
+    mDrawBorder(false),
+    mReverseOrder(false),
+    mPaperSize(QSizeF(A4_WIDTH_PT, A4_HEIGHT_PT))
+{
+
+}
+
+
+/************************************************
+ *
+ ************************************************/
+PrinterProfile &PrinterProfile::operator=(const PrinterProfile &other)
+{
+    mName           = other.mName;
+    mLeftMargin     = other.mLeftMargin;
+    mRightMargin    = other.mRightMargin;
+    mTopMargin      = other.mTopMargin;
+    mBottomMargin   = other.mBottomMargin;
+    mInternalMargin = other.mInternalMargin;
+    mDuplexType     = other.mDuplexType;
+    mDrawBorder     = other.mDrawBorder;
+    mReverseOrder   = other.mReverseOrder;
+    mPaperSize      = other.mPaperSize;
+
+    return *this;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void PrinterProfile::setName(const QString &name)
+{
+    mName = name;
+}
+
+
+/************************************************
+
+ ************************************************/
+qreal PrinterProfile::leftMargin(Unit unit) const
+{
+    return toUnit(mLeftMargin, unit);
+}
+
+
+/************************************************
+
+ ************************************************/
+void PrinterProfile::setLeftMargin(qreal value, Unit unit)
+{
+    mLeftMargin = fromUnit(value, unit);
+}
+
+
+/************************************************
+
+ ************************************************/
+qreal PrinterProfile::rightMargin(Unit unit) const
+{
+    return toUnit(mRightMargin, unit);
+}
+
+
+/************************************************
+
+ ************************************************/
+void PrinterProfile::setRightMargin(qreal value, Unit unit)
+{
+    mRightMargin = fromUnit(value, unit);
+}
+
+
+/************************************************
+
+ ************************************************/
+qreal PrinterProfile::topMargin(Unit unit) const
+{
+    return toUnit(mTopMargin, unit);
+}
+
+
+/************************************************
+
+ ************************************************/
+void PrinterProfile::setTopMargin(qreal value, Unit unit)
+{
+    mTopMargin = fromUnit(value, unit);
+}
+
+
+/************************************************
+
+ ************************************************/
+qreal PrinterProfile::bottomMargin(Unit unit) const
+{
+    return toUnit(mBottomMargin, unit);
+}
+
+
+/************************************************
+
+ ************************************************/
+void PrinterProfile::setBottomMargin(qreal value, Unit unit)
+{
+    mBottomMargin = fromUnit(value, unit);
+}
+
+
+/************************************************
+
+ ************************************************/
+qreal PrinterProfile::internalMargin(Unit unit) const
+{
+    return toUnit(mInternalMargin, unit);
+}
+
+
+/************************************************
+
+ ************************************************/
+void PrinterProfile::setInternalMargin(qreal value, Unit unit)
+{
+    mInternalMargin = fromUnit(value, unit);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void PrinterProfile::setDuplexType(DuplexType duplexType)
+{
+    mDuplexType = duplexType;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void PrinterProfile::setDrawBorder(bool value)
+{
+    mDrawBorder = value;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void PrinterProfile::setReverseOrder(bool value)
+{
+    mReverseOrder = value;
+}
+
+
+/************************************************
+
+ ************************************************/
+QSizeF PrinterProfile::paperSize(Unit unit) const
+{
+    return QSizeF(toUnit(mPaperSize.width(),  unit),
+                  toUnit(mPaperSize.height(), unit));
+}
+
+
+/************************************************
+
+     ************************************************/
+void PrinterProfile::setPaperSize(const QSizeF &paperSize, Unit unit)
+{
+    mPaperSize.setWidth( fromUnit(paperSize.width(),  unit));
+    mPaperSize.setHeight(fromUnit(paperSize.height(), unit));
+}
+
+
+/************************************************
+
+ ************************************************/
+void PrinterProfile::readSettings()
+{
+    mName           = settings->value(Settings::PrinterProfile_Name,            mName).toString();
+    mLeftMargin     = settings->value(Settings::PrinterProfile_LeftMargin,      mLeftMargin).toDouble();
+    mRightMargin    = settings->value(Settings::PrinterProfile_RightMargin,     mRightMargin).toDouble();
+    mTopMargin      = settings->value(Settings::PrinterProfile_TopMargin,       mTopMargin).toDouble();
+    mBottomMargin   = settings->value(Settings::PrinterProfile_BottomMargin,    mBottomMargin).toDouble();
+    mInternalMargin = settings->value(Settings::PrinterProfile_InternalMargin,  mInternalMargin).toDouble();
+
+    QString s = settings->value(Settings::PrinterProfile_DuplexType, duplexTypetoStr(mDuplexType)).toString();
+    mDuplexType = strToDuplexType(s);
+
+    mDrawBorder     = settings->value(Settings::PrinterProfile_DrawBorder,      mDrawBorder).toBool();
+    mReverseOrder   = settings->value(Settings::PrinterProfile_ReverseOrder,    mReverseOrder).toBool();
+}
+
+
+/************************************************
+
+ ************************************************/
+void PrinterProfile::saveSettings() const
+{
+    settings->setValue(Settings::PrinterProfile_Name,           mName);
+    settings->setValue(Settings::PrinterProfile_LeftMargin,     mLeftMargin);
+    settings->setValue(Settings::PrinterProfile_RightMargin,    mRightMargin);
+    settings->setValue(Settings::PrinterProfile_TopMargin,      mTopMargin);
+    settings->setValue(Settings::PrinterProfile_BottomMargin,   mBottomMargin);
+    settings->setValue(Settings::PrinterProfile_InternalMargin, mInternalMargin);
+
+    settings->setValue(Settings::PrinterProfile_DuplexType,     duplexTypetoStr(mDuplexType));
+    settings->setValue(Settings::PrinterProfile_DrawBorder,     mDrawBorder);
+    settings->setValue(Settings::PrinterProfile_ReverseOrder,   mReverseOrder);
+}
+
+
+/************************************************
+
+ ************************************************/
+Printer::Printer(const QString &printerName):
+    mCanChangeDuplexType(true),
+    mShowProgressDialog(true),
+    mPrinterName(printerName),
+    mCurrentProfileIndex(-1),
+    mCurrentProfile(0)
+{
+    initFromCups(mPrinterName, &mDeviceUri, &mCupsProfile);
+    readSettings();
+}
+
+
+/************************************************
+ *
+ ************************************************/
+Printer::~Printer()
+{
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Printer::setCurrentProfile(int index)
+{
+    mCurrentProfileIndex = index;
+    mCurrentProfile = &mProfiles[mCurrentProfileIndex];
+}
+
+
+/************************************************
+
+ ************************************************/
 void Printer::readSettings()
 {
-    QString id = mPrinterInfo.printerName();
-    mDuplexType     = static_cast<DuplexType>(settings->printerValue(id, Settings::Printer_DuplexType, mDuplexType).toInt());
-    mDrawBorder     = settings->printerValue(id, Settings::Printer_DrawBorder,      mDrawBorder).toBool();
-    mReverseOrder   = settings->printerValue(id, Settings::Printer_ReverseOrder,    mReverseOrder).toBool();
+    settings->beginGroup(QString("Printer_%1").arg(mPrinterName));
+    mCurrentProfileIndex = settings->value(Settings::Printer_CurrentProfile, 0).toInt();
+    int size = settings->beginReadArray("Profiles");
+    for (int i=0; i<size; ++i)
+    {
+        PrinterProfile profile;
+        profile = mCupsProfile;
 
-    mLeftMargin     = settings->printerValue(id, Settings::Printer_LeftMargin,      mLeftMargin).toDouble();
-    mRightMargin    = settings->printerValue(id, Settings::Printer_RightMargin,     mRightMargin).toDouble();
-    mTopMargin      = settings->printerValue(id, Settings::Printer_TopMargin,       mTopMargin).toDouble();
-    mBottomMargin   = settings->printerValue(id, Settings::Printer_BottomMargin,    mBottomMargin).toDouble();
-    mInternalMargin = settings->printerValue(id, Settings::Printer_InternalMargin,  mInternalMargin).toDouble();
+        settings->setArrayIndex(i);
+        profile.readSettings();
+        mProfiles.append(profile);
+    }
+    settings->endArray();
 
+    if (mProfiles.isEmpty())
+    {
+        PrinterProfile profile;
+        profile = mCupsProfile;
+
+        profile.readSettings();
+        profile.setName(QObject::tr("Default", "Printer profile default name"));
+        mProfiles.append(profile);
+    }
+    settings->endGroup();
+
+    if (mCurrentProfileIndex < 0 || mCurrentProfileIndex >= mProfiles.count())
+        mCurrentProfileIndex = 0;
+
+    mCurrentProfile = &mProfiles[mCurrentProfileIndex];
 }
 
 
@@ -263,16 +489,17 @@ void Printer::readSettings()
  ************************************************/
 void Printer::saveSettings()
 {
-    QString id = mPrinterInfo.printerName();
-    settings->setPrinterValue(id, Settings::Printer_DuplexType,     mDuplexType);
-    settings->setPrinterValue(id, Settings::Printer_DrawBorder,     mDrawBorder);
-    settings->setPrinterValue(id, Settings::Printer_ReverseOrder,   mReverseOrder);
+    settings->beginGroup(QString("Printer_%1").arg(mPrinterName));
+    settings->setValue(Settings::Printer_CurrentProfile, mCurrentProfileIndex);
 
-    settings->setPrinterValue(id, Settings::Printer_LeftMargin,     mLeftMargin);
-    settings->setPrinterValue(id, Settings::Printer_RightMargin,    mRightMargin);
-    settings->setPrinterValue(id, Settings::Printer_TopMargin,      mTopMargin);
-    settings->setPrinterValue(id, Settings::Printer_BottomMargin,   mBottomMargin);
-    settings->setPrinterValue(id, Settings::Printer_InternalMargin, mInternalMargin);
+    settings->beginWriteArray("Profiles");
+    for (int i=0; i<mProfiles.count(); ++i)
+    {
+        settings->setArrayIndex(i);
+        mProfiles[i].saveSettings();
+    }
+    settings->endArray();
+    settings->endGroup();
 }
 
 
@@ -290,7 +517,7 @@ QList<Printer*> Printer::availablePrinters()
         QList<QPrinterInfo> piList = QPrinterInfo::availablePrinters();
         foreach (const QPrinterInfo &pi, piList)
         {
-            Printer *printer = new Printer(pi);
+            Printer *printer = new Printer(pi.printerName());
             if (printer->deviceUri() != CUPS_BACKEND_URI)
                 *printers << printer;
             else
@@ -303,38 +530,34 @@ QList<Printer*> Printer::availablePrinters()
 
 
 /************************************************
-
+ *
  ************************************************/
-QString Printer::printerName() const
+Printer *Printer::printerByName(const QString &printerName)
 {
-    return mPrinterInfo.printerName();
+    foreach(Printer *printer, availablePrinters())
+    {
+        if (printer->name() == printerName)
+            return printer;
+    }
+
+    return 0;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+Printer *Printer::nullPrinter()
+{
+    static Printer nullPrinter = Printer("Fake");
+    return &nullPrinter;
 }
 
 
 /************************************************
 
  ************************************************/
-QSizeF Printer::paperSize(Printer::Unit unit) const
-{
-    return QSizeF(toUnit(mPaperSize.width(),  unit),
-                  toUnit(mPaperSize.height(), unit));
-}
-
-
-/************************************************
-
- ************************************************/
-void Printer::setPaperSize(const QSizeF &paperSize, Printer::Unit unit)
-{
-    mPaperSize.setWidth( fromUnit(paperSize.width(),  unit));
-    mPaperSize.setHeight(fromUnit(paperSize.height(), unit));
-}
-
-
-/************************************************
-
- ************************************************/
-QRectF Printer::paperRect(Printer::Unit unit) const
+QRectF Printer::paperRect(Unit unit) const
 {
     return QRectF(QPointF(0, 0), paperSize(unit));
 }
@@ -343,130 +566,13 @@ QRectF Printer::paperRect(Printer::Unit unit) const
 /************************************************
 
  ************************************************/
-QRectF Printer::pageRect(Printer::Unit unit) const
+QRectF Printer::pageRect(Unit unit) const
 {
     return paperRect(unit).adjusted(
-                mLeftMargin,
-                mTopMargin,
-                -mRightMargin,
-                -mBottomMargin);
-}
-
-
-/************************************************
-
- ************************************************/
-qreal Printer::leftMargin(Printer::Unit unit)
-{
-    return toUnit(mLeftMargin, unit);
-}
-
-
-/************************************************
-
- ************************************************/
-void Printer::setLeftMargin(qreal value, Printer::Unit unit)
-{
-    mLeftMargin = fromUnit(value, unit);
-}
-
-
-/************************************************
-
- ************************************************/
-qreal Printer::rightMargin(Printer::Unit unit)
-{
-    return toUnit(mRightMargin, unit);
-}
-
-
-/************************************************
-
- ************************************************/
-void Printer::setRightMargin(qreal value, Printer::Unit unit)
-{
-    mRightMargin = fromUnit(value, unit);
-}
-
-
-/************************************************
-
- ************************************************/
-qreal Printer::topMargin(Printer::Unit unit)
-{
-    return toUnit(mTopMargin, unit);
-}
-
-
-/************************************************
-
- ************************************************/
-void Printer::setTopMargin(qreal value, Printer::Unit unit)
-{
-    mTopMargin = fromUnit(value, unit);
-}
-
-
-/************************************************
-
- ************************************************/
-qreal Printer::bottomMargin(Printer::Unit unit)
-{
-    return toUnit(mBottomMargin, unit);
-}
-
-
-/************************************************
-
- ************************************************/
-void Printer::setBottomMargin(qreal value, Printer::Unit unit)
-{
-    mBottomMargin = fromUnit(value, unit);
-}
-
-
-/************************************************
-
- ************************************************/
-qreal Printer::internalMarhin(Printer::Unit unit)
-{
-    return toUnit(mInternalMargin, unit);
-}
-
-
-/************************************************
-
- ************************************************/
-void Printer::setInternalMargin(qreal value, Printer::Unit unit)
-{
-    mInternalMargin = fromUnit(value, unit);
-}
-
-
-/************************************************
-
- ************************************************/
-void Printer::setDrawBorder(bool value)
-{
-    mDrawBorder = value;
-}
-
-
-/************************************************
-
- ************************************************/
-void Printer::setDuplexType(DuplexType duplexType)
-{
-    mDuplexType = duplexType;
-}
-
-
-/************************************************
-
- ************************************************/
-void Printer::setReverseOrder(bool value)
-{
-    mReverseOrder = value;
+                mCurrentProfile->leftMargin(),
+                mCurrentProfile->topMargin(),
+                -mCurrentProfile->rightMargin(),
+                -mCurrentProfile->bottomMargin());
 }
 
 
@@ -497,12 +603,12 @@ bool Printer::print(const QList<Sheet *> &sheets, const QString &jobName, bool d
     project->writeDocument(sheets, file);
 
     QStringList args;
-    args << "-P" << printerName();               // Prints files to the named printer.
-    args << "-#" << QString("%1").arg(numCopies);// Sets the number of copies to print
-    args << "-T" << jobName;                     // Sets the job name.
-    args << "-r";                                // The print files should be deleted after printing them
-    if (mDuplexType == DuplexAuto && !duplex)
-        args << "-o sides=one-sided";            // Turn off duplex printing
+    args << "-P" << name();                       // Prints files to the named printer.
+    args << "-#" << QString("%1").arg(numCopies); // Sets the number of copies to print
+    args << "-T" << jobName;                      // Sets the job name.
+    args << "-r";                                 // The print files should be deleted after printing them
+    if (duplexType() == DuplexAuto && !duplex)
+        args << "-o sides=one-sided";             // Turn off duplex printing
 
     args << file.toLocal8Bit();
 
@@ -511,3 +617,4 @@ bool Printer::print(const QList<Sheet *> &sheets, const QString &jobName, bool d
     return true;
 #endif
 }
+

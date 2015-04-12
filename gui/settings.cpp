@@ -97,35 +97,39 @@ QString Settings::keyToString(Settings::Key key) const
 {
     switch (key)
     {
-    case Layout:                    return "Project/Layout";
-    case Printer:                   return "Project/Printer";
-    case DoubleSided:               return "Project/DoubleSided";
+    case Layout:                        return "Project/Layout";
+    case Printer:                       return "Project/Printer";
+    case DoubleSided:                   return "Project/DoubleSided";
 
-    case SaveDir:                   return "Project/SaveDir";
-    case SubBookletsEnabled:        return "Project/SubBookletsEnable";
-    case SubBookletSize:            return "Project/SubBookletSize";
+    case SaveDir:                       return "Project/SaveDir";
+    case SubBookletsEnabled:            return "Project/SubBookletsEnable";
+    case SubBookletSize:                return "Project/SubBookletSize";
 
-        // Printer ******************************
-    case Printer_DuplexType:        return "DuplexType";
-    case Printer_DrawBorder:        return "Border";
-    case Printer_ReverseOrder:      return "ReverseOrder";
+    // Printer ******************************
+    case Printer_CurrentProfile:        return "CurrentProfile";
 
-    case Printer_LeftMargin:        return "LeftMargin";
-    case Printer_RightMargin:       return "RightMargin";
-    case Printer_TopMargin:         return "TopMargin";
-    case Printer_BottomMargin:      return "BottomMargin";
-    case Printer_InternalMargin:    return "InternalMargin";
+    // PrinterProfile ***********************
+    case PrinterProfile_Name:           return "Name";
+    case PrinterProfile_DuplexType:     return "DuplexType";
+    case PrinterProfile_DrawBorder:     return "Border";
+    case PrinterProfile_ReverseOrder:   return "ReverseOrder";
+
+    case PrinterProfile_LeftMargin:     return "LeftMargin";
+    case PrinterProfile_RightMargin:    return "RightMargin";
+    case PrinterProfile_TopMargin:      return "TopMargin";
+    case PrinterProfile_BottomMargin:   return "BottomMargin";
+    case PrinterProfile_InternalMargin: return "InternalMargin";
 
 
     // MainWindow **************************
-    case MainWindow_Geometry:       return "MainWindow/Geometry";
-    case MainWindow_State:          return "MainWindow/State";
+    case MainWindow_Geometry:           return "MainWindow/Geometry";
+    case MainWindow_State:              return "MainWindow/State";
 
     // PrinterDialog ************************
-    case PrinterDialog_Geometry:    return "PrinterDialog/Geometry";
+    case PrinterDialog_Geometry:        return "PrinterDialog/Geometry";
 
     // ExportPDF ****************************
-    case ExportPDF_FileName:        return "ExportPDF/FileName";
+    case ExportPDF_FileName:            return "ExportPDF/FileName";
 
     }
 
@@ -138,6 +142,7 @@ QString Settings::keyToString(Settings::Key key) const
  ************************************************/
 void Settings::init()
 {
+    setIniCodec("UTF-8");
     setDefaultValue(Layout,   "1up");
     setDefaultValue(DoubleSided, true);
     setDefaultValue(ExportPDF_FileName, tr("~/Untitled.pdf"));
@@ -186,22 +191,6 @@ QVariant Settings::value(const QString &key, const QVariant &defaultValue) const
 /************************************************
 
  ************************************************/
-QVariant Settings::printerValue(const QString &printerId, Settings::Key key, const QVariant &defaultValue) const
-{
-    QString keyStr = QString("Printer_%1/%2").arg(printerId, keyToString(key));
-    if (key == Printer_DuplexType)
-    {
-        QString s = value(keyStr, duplexTypetoStr(static_cast<DuplexType>(defaultValue.toInt()))).toString();
-        return strToDuplexType(s);
-    }
-
-    return value(keyStr, defaultValue);
-}
-
-
-/************************************************
-
- ************************************************/
 void Settings::setValue(Settings::Key key, const QVariant &value)
 {
     setValue(keyToString(key), value);
@@ -215,24 +204,6 @@ void Settings::setValue(const QString &key, const QVariant &value)
 {
     QSettings::setValue(key, value);
 }
-
-
-/************************************************
-
- ************************************************/
-void Settings::setPrinterValue(const QString &printerId, Key key, const QVariant &value)
-{
-    QVariant v;
-    if (key == Printer_DuplexType)
-    {
-        v = duplexTypetoStr(static_cast<DuplexType>(value.toInt()));
-    }
-    else
-        v = value;
-
-    setValue(QString("Printer_%1/%2").arg(printerId, keyToString(key)), v);
-}
-
 
 
 

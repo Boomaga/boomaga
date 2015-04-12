@@ -33,7 +33,20 @@
 
 #include <QMenu>
 #include <QMouseEvent>
+#include <QStandardItem>
 #include <QDebug>
+
+
+#define CUSTOM_PROFILE_DELEGATE
+#ifdef CUSTOM_PROFILE_DELEGATE
+#include <QStyledItemDelegate>
+#include <QPen>
+#include <QPainter>
+#include <QApplication>
+#endif
+#define PRINTER_ITEM_TEXT_ROLE      Qt::UserRole + 1
+#define PRINTER_ITEM_PRINTER_ROLE   Qt::UserRole + 2
+#define PRINTER_ITEM_PROFILE_ROLE   Qt::UserRole + 3
 
 
 /************************************************
@@ -57,12 +70,163 @@ LayoutRadioButton::LayoutRadioButton(const QString &text, QWidget *parent):
 }
 
 
+#ifdef CUSTOM_PROFILE_DELEGATE
+
+class PrintersComboBoxDelegate: public QStyledItemDelegate
+{
+public:
+    explicit PrintersComboBoxDelegate(QComboBox *cmb, QWidget *parent = 0):  QStyledItemDelegate(parent),  mCombo(cmb) {}
+    void paint(QPainter *painter,  const QStyleOptionViewItem &option,  const QModelIndex &index) const;
+    QSize sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const;
+    bool isSeparator(const QModelIndex &index) const;
+    QStyleOptionMenuItem getStyleOption(const QStyleOptionViewItem &option, const QModelIndex &index) const;
+
+private:
+    QComboBox *mCombo;
+};
+
+
+/************************************************
+ *
+ ************************************************/
+bool PrintersComboBoxDelegate::isSeparator(const QModelIndex &index) const
+{
+    return index.data(Qt::AccessibleDescriptionRole).toString() == QLatin1String("separator");
+}
+
+
+/************************************************
+ *
+ ************************************************/
+QSize PrintersComboBoxDelegate::sizeHint(const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    QSize res = QStyledItemDelegate::sizeHint(option, index);
+
+    if (isSeparator(index))
+    {
+        int pm = mCombo->style()->pixelMetric(QStyle::PM_DefaultFrameWidth, 0, mCombo);
+        res.setHeight(pm);
+    }
+
+    return res;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void PrintersComboBoxDelegate::paint(QPainter *painter,
+           const QStyleOptionViewItem &option,
+           const QModelIndex &index) const
+{
+    QStyleOptionMenuItem opt = getStyleOption(option, index);
+    painter->fillRect(option.rect, opt.palette.background());
+
+    QString type = index.data( Qt::AccessibleDescriptionRole ).toString();
+
+    if (type == QLatin1String("printer"))
+    {
+        opt.state |= QStyle::State_Enabled;
+        opt.font.setBold(true);
+    }
+    else if (type == QLatin1String("profile"))
+    {
+        opt.text = "    " + opt.text;
+    }
+
+    mCombo->style()->drawControl(QStyle::CE_MenuItem, &opt, painter, mCombo);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+QStyleOptionMenuItem PrintersComboBoxDelegate::getStyleOption(const QStyleOptionViewItem &option, const QModelIndex &index) const
+{
+    QStyleOptionMenuItem menuOption;
+    menuOption.menuHasCheckableItems = false;
+    menuOption.checkType = QStyleOptionMenuItem::NotCheckable;
+
+    QPalette resolvedpalette = option.palette.resolve(QApplication::palette("QMenu"));
+    QVariant value = index.data(Qt::ForegroundRole);
+    if (value.canConvert<QBrush>())
+    {
+        resolvedpalette.setBrush(QPalette::WindowText, qvariant_cast<QBrush>(value));
+        resolvedpalette.setBrush(QPalette::ButtonText, qvariant_cast<QBrush>(value));
+        resolvedpalette.setBrush(QPalette::Text, qvariant_cast<QBrush>(value));
+    }
+
+    menuOption.palette = resolvedpalette;
+    menuOption.state = QStyle::State_None;
+    menuOption.tabWidth = 0;
+    menuOption.maxIconWidth =  0;
+
+    if (mCombo->window()->isActiveWindow())
+        menuOption.state = QStyle::State_Active;
+
+    if ((option.state & QStyle::State_Enabled) && (index.model()->flags(index) & Qt::ItemIsEnabled))
+        menuOption.state |= QStyle::State_Enabled;
+    else
+        menuOption.palette.setCurrentColorGroup(QPalette::Disabled);
+
+    if (option.state & QStyle::State_Selected)
+        menuOption.state |= QStyle::State_Selected;
+
+
+    if (isSeparator(index))
+        menuOption.menuItemType = QStyleOptionMenuItem::Separator;
+    else
+        menuOption.menuItemType = QStyleOptionMenuItem::Normal;
+
+
+    if (index.data(Qt::BackgroundRole).canConvert<QBrush>())
+    {
+        menuOption.palette.setBrush(QPalette::All, QPalette::Background,
+                                    qvariant_cast<QBrush>(index.data(Qt::BackgroundRole)));
+    }
+
+    menuOption.text = index.model()->data(index, PRINTER_ITEM_TEXT_ROLE).toString()
+                           .replace(QLatin1Char('&'), QLatin1String("&&"));
+
+    menuOption.menuRect = option.rect;
+    menuOption.rect = option.rect;
+    menuOption.font = mCombo->font();
+    menuOption.fontMetrics = QFontMetrics(menuOption.font);
+
+    return menuOption;
+}
+#endif
+
+
+class PrintersComboBoxItem: public QStandardItem
+{
+public:
+    PrintersComboBoxItem(const QString &text):
+        QStandardItem(text),
+        mPrinter(0),
+        mProfile(0)
+    {}
+
+    Printer *printer() const { return mPrinter; }
+    void setPrinter(Printer *value) { mPrinter = value;}
+
+    int profile() const { return mProfile; }
+    void setProfile(int value) { mProfile = value; }
+private:
+    Printer *mPrinter;
+    int mProfile;
+};
+
+
 /************************************************
 
  ************************************************/
 PrintersComboBox::PrintersComboBox(QWidget *parent):
     QComboBox(parent)
 {
+#ifdef CUSTOM_PROFILE_DELEGATE
+    setItemDelegate(new PrintersComboBoxDelegate(this, this));
+#endif
 }
 
 
@@ -77,35 +241,21 @@ PrintersComboBox::~PrintersComboBox()
 /************************************************
 
  ************************************************/
-Printer *PrintersComboBox::currentPrinter()
+void PrintersComboBox::setCurrentPrinterProfile(const QString &printerName, int profileIndex)
 {
-    return itemPrinter(currentIndex());
+    setCurrentIndex(findItem(printerName, profileIndex));
 }
 
 
 /************************************************
-
+ *
  ************************************************/
-void PrintersComboBox::setCurrentPrinter(const QString &printerName)
+void PrintersComboBox::setCurrentPrinterProfile(const Printer *printer, int profileIndex)
 {
-    int curIndex = -1;
-    for (int i=0; i<count(); ++i)
-    {
-        if (itemPrinter(i))
-        {
-            if (itemPrinter(i)->printerName() == printerName)
-            {
-
-                setCurrentIndex(i);
-                return;
-            }
-
-            if (curIndex < 0)
-                curIndex = i;
-        }
-    }
-
-    setCurrentIndex(curIndex);
+    if (printer)
+        setCurrentPrinterProfile(printer->name(), profileIndex);
+    else
+        setCurrentIndex(-1);
 }
 
 
@@ -114,7 +264,45 @@ void PrintersComboBox::setCurrentPrinter(const QString &printerName)
  ************************************************/
 int PrintersComboBox::addPrinter(Printer *printer)
 {
-    addItem(printer->printerName(), qVariantFromValue((void *)printer));
+    QStandardItem *item = new QStandardItem(printer->name());
+    item->setData(printer->name(), PRINTER_ITEM_TEXT_ROLE);
+    item->setData(qVariantFromValue((void *)printer), PRINTER_ITEM_PRINTER_ROLE);
+    item->setData(-1, PRINTER_ITEM_PROFILE_ROLE);
+
+    item->setFlags( item->flags() & ~( Qt::ItemIsEnabled | Qt::ItemIsSelectable ) );
+    item->setData("printer", Qt::AccessibleDescriptionRole );
+
+    QFont font = item->font();
+    font.setBold( true );
+    item->setFont(font);
+
+    QStandardItemModel* itemModel = (QStandardItemModel*)model();
+    itemModel->appendRow(item);
+
+    for (int i=0; i<printer->profiles()->count(); ++i)
+        addProfile(printer, i);
+
+    return this->count() - 1;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+int PrintersComboBox::addProfile(Printer *printer, int profileIndex)
+{
+    const PrinterProfile &profile = printer->profiles()->at(profileIndex);
+
+    QStandardItem *item = new QStandardItem(printer->name() + " (" + profile.name() + ") ");
+    item->setData(profile.name(), PRINTER_ITEM_TEXT_ROLE);
+    item->setData(qVariantFromValue((void *)printer), PRINTER_ITEM_PRINTER_ROLE);
+    item->setData(profileIndex, PRINTER_ITEM_PROFILE_ROLE);
+
+
+    item->setData("profile", Qt::AccessibleDescriptionRole );
+
+    QStandardItemModel* itemModel = (QStandardItemModel*)model();
+    itemModel->appendRow(item);
     return this->count() - 1;
 }
 
@@ -122,13 +310,69 @@ int PrintersComboBox::addPrinter(Printer *printer)
 /************************************************
 
  ************************************************/
-Printer *PrintersComboBox::itemPrinter(int index)
+Printer *PrintersComboBox::itemPrinter(int index) const
 {
-    QVariant v = itemData(index);
+    if (index < 0)
+        return 0;
+
+    QStandardItemModel* itemModel = (QStandardItemModel*)model();
+    QVariant v = itemModel->index(index, 0).data(PRINTER_ITEM_PRINTER_ROLE);
+
     if (v.isNull())
         return 0;
     else
-        return static_cast<Printer*>(itemData(index).value<void *>());
+        return static_cast<Printer*>(v.value<void *>());
+}
+
+
+/************************************************
+ *
+ ************************************************/
+int PrintersComboBox::itemProfile(int index) const
+{
+    if (index < 0)
+        return -1;
+
+    QStandardItemModel* itemModel = (QStandardItemModel*)model();
+    QVariant v = itemModel->index(index, 0).data(PRINTER_ITEM_PROFILE_ROLE);
+
+    bool ok;
+    int res = v.toInt(&ok);
+
+    if (ok)
+        return res;
+    else
+        return -1;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+int PrintersComboBox::findItem(const QString &printerName, int profileIndex) const
+{
+    for (int i=0; i<count(); ++i)
+    {
+        if (itemPrinter(i) &&
+            itemPrinter(i)->name() == printerName &&
+            itemProfile(i) == profileIndex )
+        {
+            return i;
+        }
+    }
+    return -1;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+int PrintersComboBox::findItem(const Printer *printer, int profileIndex) const
+{
+    if (printer)
+        return findItem(printer->name(), profileIndex);
+    else
+        return -1;
 }
 
 
@@ -226,6 +470,7 @@ void JobsListView::setSheetNum(int sheetNum)
  ************************************************/
 void JobsListView::updateItems()
 {
+    this->setUpdatesEnabled(false);
     clear();
     for (int i=0; i<project->jobs()->count(); ++i)
     {
@@ -237,6 +482,7 @@ void JobsListView::updateItems()
 
         addItem(item);
     }
+    this->setUpdatesEnabled(true);
 }
 
 

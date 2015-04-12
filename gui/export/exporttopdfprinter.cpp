@@ -36,20 +36,20 @@
 /************************************************
 
  ************************************************/
-ExportToPDFPrinter::ExportToPDFPrinter()
+ExportToPDFPrinter::ExportToPDFPrinter():
+    Printer("ExportToPDF")
 {
     setDuplexType(DuplexAuto);
     mCanChangeDuplexType = false;
     mShowProgressDialog = false;
     mOutFileName = settings->value(Settings::ExportPDF_FileName).toString();
-    readSettings();
 }
 
 
 /************************************************
 
  ************************************************/
-QString ExportToPDFPrinter::printerName() const
+QString ExportToPDFPrinter::name() const
 {
     return QObject::tr("Print to file (PDF)");
 }

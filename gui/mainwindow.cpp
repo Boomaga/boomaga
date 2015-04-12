@@ -70,13 +70,8 @@ MainWindow::MainWindow(QWidget *parent):
 
     setStyleSheet("QListView::item { padding: 2px;}");
 
-    foreach(Printer *printer, Printer::availablePrinters())
-    {
-        ui->printersCbx->addPrinter(printer);
-    }
-    ui->printersCbx->insertSeparator(99999);
     mExportPrinter = new ExportToPDFPrinter();
-    ui->printersCbx->addPrinter(mExportPrinter);
+    fillPrintersCombo();
 
     initStatusBar();
     initActions();
@@ -111,7 +106,7 @@ MainWindow::MainWindow(QWidget *parent):
 
 
     loadSettings();
-    switchPrinter();
+    switchPrinterProfile();
     updateWidgets();
     updateWidgets();
 
@@ -142,8 +137,8 @@ MainWindow::MainWindow(QWidget *parent):
     connect(ui->jobsView, SIGNAL(jobSelected(Job)),
             this, SLOT(switchToJob(Job)));
 
-    connect(ui->printersCbx, SIGNAL(activated(int)),
-            this, SLOT(switchPrinter()));
+    connect(ui->printersCombo, SIGNAL(activated(int)),
+            this, SLOT(switchPrinterProfile()));
 
     connect(project, SIGNAL(changed()),
             this, SLOT(updateWidgets()));
@@ -181,6 +176,41 @@ MainWindow::~MainWindow()
 {
     saveSettings();
     delete ui;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void MainWindow::fillPrintersCombo()
+{
+    PrintersComboBox *combo = ui->printersCombo;
+
+    Printer *prevPrinter = combo->currentPrinter();
+    int prevProfile = combo->currentProfile();
+
+    combo->setUpdatesEnabled(false);
+    combo->clear();
+
+    foreach(Printer *printer, Printer::availablePrinters())
+    {
+        combo->addPrinter(printer);
+    }
+
+    combo->insertSeparator(99999);
+    combo->addPrinter(mExportPrinter);
+
+    int index = combo->findItem(prevPrinter, prevProfile);
+
+    if (index < 0)
+        index = combo->findItem(prevPrinter, 0);
+
+
+    if (index < 0)
+        index = 1; // The first item is, so set item[1]
+
+    combo->setCurrentIndex(index);
+    ui->printersCombo->setUpdatesEnabled(true);
 }
 
 
@@ -231,10 +261,20 @@ void MainWindow::loadSettings()
     restoreGeometry(settings->value(Settings::MainWindow_Geometry).toByteArray());
     restoreState(settings->value(Settings::MainWindow_State).toByteArray());
 
+    Printer *currentPrinter = Printer::printerByName(settings->value(Settings::Printer).toString());
+    if (!currentPrinter)
+    {
+        QList<Printer*> pl = Printer::availablePrinters();
+        if (!pl.isEmpty())
+            currentPrinter = pl.first();
+    }
 
-    ui->printersCbx->setCurrentPrinter(settings->value(Settings::Printer).toString());
-    if (ui->printersCbx->currentIndex() < 0)
-        ui->printersCbx->setCurrentIndex(0);
+    if (!currentPrinter)
+        currentPrinter = Printer::nullPrinter();
+
+    ui->printersCombo->setCurrentPrinterProfile(currentPrinter->name(), currentPrinter->currentProfile());
+    if (ui->printersCombo->currentIndex() < 1)
+        ui->printersCombo->setCurrentIndex(1);    // item[0] is priner, so set item[1]
 
     QString layoutId = settings->value(Settings::Layout).toString();
 
@@ -259,12 +299,15 @@ void MainWindow::saveSettings()
     settings->setValue(Settings::MainWindow_Geometry, saveGeometry());
     settings->setValue(Settings::MainWindow_State, saveState());
 
-    Printer *printer = ui->printersCbx->currentPrinter();
+    Printer *printer = ui->printersCombo->currentPrinter();
     if (printer)
-        settings->setValue(Settings::Printer, printer->printerName());
+        settings->setValue(Settings::Printer, printer->name());
 
     settings->setValue(Settings::Layout, project->layout()->id());
     settings->setValue(Settings::DoubleSided, project->doubleSided());
+
+    if (project->printer() != Printer::nullPrinter())
+        project->printer()->saveSettings();
 
     settings->sync();
 }
@@ -411,7 +454,7 @@ void MainWindow::updateWidgets()
         mStatusBarCurrentSheetLabel.clear();
     }
 
-    ui->printerConfigBtn->setEnabled(ui->printersCbx->currentPrinter() != 0);
+    ui->printerConfigBtn->setEnabled(ui->printersCombo->currentPrinter() != 0);
 }
 
 
@@ -420,12 +463,11 @@ void MainWindow::updateWidgets()
  ************************************************/
 void MainWindow::showPrinterSettingsDialog()
 {
-    Printer *printer = ui->printersCbx->currentPrinter();
+    Printer *printer = ui->printersCombo->currentPrinter();
     if (printer)
     {
-        PrinterSettings *dialog = PrinterSettings::create(printer);
+        PrinterSettings *dialog = PrinterSettings::execute(printer);
         connect(dialog, SIGNAL(accepted()), this, SLOT(applyPrinterSettings()));
-        dialog->show();
     }
 }
 
@@ -436,7 +478,8 @@ void MainWindow::showPrinterSettingsDialog()
 void MainWindow::applyPrinterSettings()
 {
     project->printer()->saveSettings();
-    switchPrinter();
+    fillPrintersCombo();
+    switchPrinterProfile();
 }
 
 
@@ -456,9 +499,10 @@ void MainWindow::switchLayout()
 /************************************************
 
  ************************************************/
-void MainWindow::switchPrinter()
+void MainWindow::switchPrinterProfile()
 {
-    project->setPrinter(ui->printersCbx->currentPrinter());
+    project->setPrinterProfile(ui->printersCombo->currentPrinter(),
+                               ui->printersCombo->currentProfile());
 }
 
 
@@ -590,7 +634,7 @@ bool MainWindow::print(uint count)
 
              if (showDialog && !keeper.sheets_2.count())
              {
-                 infoDialog = showPrintDialog(tr("Print the all pages on %1.").arg(project->printer()->printerName()));
+                 infoDialog = showPrintDialog(tr("Print the all pages on %1.").arg(project->printer()->name()));
              }
 
 
@@ -612,7 +656,7 @@ bool MainWindow::print(uint count)
 
              dialog.setText(tr("Print the odd pages on %1.<p>"
                                "When finished, turn the pages, insert them into the printer<br>"
-                               "and click the Continue button.").arg(project->printer()->printerName()));
+                               "and click the Continue button.").arg(project->printer()->name()));
 
              dialog.addButton(QMessageBox::Abort);
              QPushButton *btn = dialog.addButton(QMessageBox::Ok);
@@ -641,7 +685,7 @@ bool MainWindow::print(uint count)
              }
 
              if (showDialog)
-                infoDialog = showPrintDialog(tr("Print the even pages on %1.").arg(project->printer()->printerName()));
+                infoDialog = showPrintDialog(tr("Print the even pages on %1.").arg(project->printer()->name()));
 
              res = project->printer()->print(keeper.sheets_2, "", false, count);
              if (!res)
@@ -655,7 +699,7 @@ bool MainWindow::print(uint count)
     else //if (split) no
     {
         if (showDialog)
-            infoDialog = showPrintDialog(tr("Print the all pages on %1.").arg(project->printer()->printerName()));
+            infoDialog = showPrintDialog(tr("Print the all pages on %1.").arg(project->printer()->name()));
 
         Project::PagesOrder order;
         if (project->printer()->reverseOrder())
@@ -722,6 +766,7 @@ void MainWindow::printWithOptions()
  ************************************************/
 void MainWindow::showAboutDialog()
 {
+    project->printer()->saveSettings();
     AboutDialog dialog(this);
     dialog.exec();
 
@@ -1273,9 +1318,9 @@ void MainWindow::saveAs(const QString &fileName)
 void MainWindow::exportAs()
 {
     Printer *prevPrinter = project->printer();
-    project->setPrinter(mExportPrinter, false);
+    project->setPrinterProfile(mExportPrinter, mExportPrinter->currentProfile(), false);
     print();
-    project->setPrinter(prevPrinter, false);
+    project->setPrinterProfile(prevPrinter, prevPrinter->currentProfile(), false);
 }
 
 
