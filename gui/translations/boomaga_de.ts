@@ -149,6 +149,10 @@ Are you sure you want to overwrite it?</source>
         <translation>Eine Datei &quot;%1&quot; existiert bereits.
 Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
+    <message>
+        <source> The document&apos;s title.</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>JobsListView</name>
@@ -434,15 +438,38 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
     <message>
         <source>Clone job...</source>
-        <translation type="unfinished"/>
+        <translation>Druckauftrag klonen...</translation>
     </message>
     <message>
         <source>Clone job</source>
-        <translation type="unfinished"/>
+        <translation>Druckauftrag klonen</translation>
     </message>
     <message>
         <source>Number of copies:</source>
-        <translation type="unfinished"/>
+        <translation>Anzahl der Kopien:</translation>
+    </message>
+    <message>
+        <source>Print with options...</source>
+        <translation>Mit Optionen drucken...</translation>
+    </message>
+    <message>
+        <source>Select number of copies before printing.</source>
+        <translation>Wählen Sie die Anzahl der Kopien vor dem Drucken aus.</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+P</source>
+        <translation>Strg+Umschalt+P</translation>
+    </message>
+</context>
+<context>
+    <name>PrintDialog</name>
+    <message>
+        <source>Print document</source>
+        <translation>Dokument drucken</translation>
+    </message>
+    <message>
+        <source>Number of copies:</source>
+        <translation>Anzahl der Kopien:</translation>
     </message>
 </context>
 <context>
@@ -498,6 +525,27 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     <message>
         <source>Preferences of &quot;%1&quot;</source>
         <translation>Einstellungen von &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>Profiles</source>
+        <translation>Profile</translation>
+    </message>
+    <message>
+        <source>+</source>
+        <translation>+</translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation>-</translation>
+    </message>
+    <message>
+        <source>Reset to default</source>
+        <translation>Auf Standardeinstellung zurücksetzen</translation>
+    </message>
+    <message>
+        <source>Profile %1</source>
+        <comment>Defaul name for created printer profile in the Printer Settings diaog</comment>
+        <translation>Profil %1</translation>
     </message>
 </context>
 <context>
@@ -564,6 +612,11 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     <message>
         <source>Untitled</source>
         <translation>Unbenannt</translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <comment>Printer profile default name</comment>
+        <translation>Standard</translation>
     </message>
 </context>
 <context>

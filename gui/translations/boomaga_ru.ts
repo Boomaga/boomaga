@@ -149,6 +149,10 @@ Are you sure you want to overwrite it?</source>
         <translation>Файл с именем &quot;%1&quot; уже существует.
 Заменить его?</translation>
     </message>
+    <message>
+        <source> The document&apos;s title.</source>
+        <translation>Заголовок документа.</translation>
+    </message>
 </context>
 <context>
     <name>JobsListView</name>
@@ -434,15 +438,38 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Clone job...</source>
-        <translation type="unfinished"/>
+        <translation>Клонировать задание...</translation>
     </message>
     <message>
         <source>Clone job</source>
-        <translation type="unfinished"/>
+        <translation>Клонирование задания</translation>
     </message>
     <message>
         <source>Number of copies:</source>
-        <translation type="unfinished"/>
+        <translation>Количество копий</translation>
+    </message>
+    <message>
+        <source>Print with options...</source>
+        <translation>Печать с выбором настроек...</translation>
+    </message>
+    <message>
+        <source>Select number of copies before printing.</source>
+        <translation>Выбор количества копий перед печатью.</translation>
+    </message>
+    <message>
+        <source>Ctrl+Shift+P</source>
+        <translation>Ctrl+Shift+P</translation>
+    </message>
+</context>
+<context>
+    <name>PrintDialog</name>
+    <message>
+        <source>Print document</source>
+        <translation>Печать документа</translation>
+    </message>
+    <message>
+        <source>Number of copies:</source>
+        <translation>Количество копий:</translation>
     </message>
 </context>
 <context>
@@ -498,6 +525,27 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>Preferences of &quot;%1&quot;</source>
         <translation>Настройки &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>Profiles</source>
+        <translation>Профили</translation>
+    </message>
+    <message>
+        <source>+</source>
+        <translation>+</translation>
+    </message>
+    <message>
+        <source>-</source>
+        <translation>-</translation>
+    </message>
+    <message>
+        <source>Reset to default</source>
+        <translation>Сброс</translation>
+    </message>
+    <message>
+        <source>Profile %1</source>
+        <comment>Defaul name for created printer profile in the Printer Settings diaog</comment>
+        <translation>Профиль %1</translation>
     </message>
 </context>
 <context>
@@ -564,6 +612,11 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>Untitled</source>
         <translation>Без имени</translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <comment>Printer profile default name</comment>
+        <translation>По умолчанию</translation>
     </message>
 </context>
 <context>

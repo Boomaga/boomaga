@@ -149,6 +149,10 @@ Are you sure you want to overwrite it?</source>
         <translation>Un file con nome &quot;%1&quot; esiste già.
 Sei sicuro di volerlo sovracrivere?</translation>
     </message>
+    <message>
+        <source> The document&apos;s title.</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>JobsListView</name>
@@ -434,10 +438,33 @@ Sei sicuro di volerlo sovracrivere?</translation>
     </message>
     <message>
         <source>Clone job...</source>
-        <translation type="unfinished"/>
+        <translation>Clonare un lavoro di stampa...</translation>
     </message>
     <message>
         <source>Clone job</source>
+        <translation>Clonare un lavoro di stampa</translation>
+    </message>
+    <message>
+        <source>Number of copies:</source>
+        <translation>Numero di copie:</translation>
+    </message>
+    <message>
+        <source>Print with options...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Select number of copies before printing.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Ctrl+Shift+P</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>PrintDialog</name>
+    <message>
+        <source>Print document</source>
         <translation type="unfinished"/>
     </message>
     <message>
@@ -498,6 +525,27 @@ Sei sicuro di volerlo sovracrivere?</translation>
     <message>
         <source>Preferences of &quot;%1&quot;</source>
         <translation>Preferenze di &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>Profiles</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>+</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>-</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Reset to default</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Profile %1</source>
+        <comment>Defaul name for created printer profile in the Printer Settings diaog</comment>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -564,6 +612,11 @@ Sei sicuro di volerlo sovracrivere?</translation>
     <message>
         <source>Untitled</source>
         <translation>Senza nome</translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <comment>Printer profile default name</comment>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
