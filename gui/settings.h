@@ -60,6 +60,9 @@ public:
         PrinterProfile_BottomMargin,
         PrinterProfile_InternalMargin,
 
+        // PrinterSettingsDialog ****************
+        PrinterSettingsDialog_Geometry,
+
         // MainWindow ***************************
         MainWindow_Geometry,
         MainWindow_State,

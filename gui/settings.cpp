@@ -121,6 +121,9 @@ QString Settings::keyToString(Settings::Key key) const
     case PrinterProfile_InternalMargin: return "InternalMargin";
 
 
+    // PrinterSettingsDialog ****************
+    case PrinterSettingsDialog_Geometry:return "PrinterSettingsDialog/Geometry";
+
     // MainWindow **************************
     case MainWindow_Geometry:           return "MainWindow/Geometry";
     case MainWindow_State:              return "MainWindow/State";

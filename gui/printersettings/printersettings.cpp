@@ -34,6 +34,7 @@
 #include <QRect>
 #include <QDebug>
 #include <QMessageBox>
+#include "settings.h"
 
 
 class ProfileItem: public QListWidgetItem
@@ -164,6 +165,8 @@ PrinterSettings::PrinterSettings(QWidget *parent) :
 
     connect(ui->resetButton, SIGNAL(clicked()),
             this, SLOT(resetToDefault()));
+
+    restoreGeometry(settings->value(Settings::PrinterSettingsDialog_Geometry).toByteArray());
 }
 
 
@@ -172,6 +175,7 @@ PrinterSettings::PrinterSettings(QWidget *parent) :
  ************************************************/
 PrinterSettings::~PrinterSettings()
 {
+    settings->setValue(Settings::PrinterSettingsDialog_Geometry, saveGeometry());
     delete ui;
 }
 

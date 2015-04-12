@@ -262,3 +262,9 @@ install(FILES   ${CMAKE_CURRENT_BINARY_DIR}/boomaga.desktop DESTINATION "share/a
 install(FILES   misc/boomaga.xml        DESTINATION "share/mime/packages")
 
 add_subdirectory(pdfmerger)
+
+if(USE_QT4)
+    message(STATUS "Use Qt4, for building with Qt5 use -DUSE_QT5=Yes option.")
+else()
+    message(STATUS "Use Qt5, for building with Qt4 use -DUSE_QT4=Yes option.")
+endif()
