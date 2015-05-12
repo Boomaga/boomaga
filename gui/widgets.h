@@ -72,6 +72,7 @@ public:
     int findItem(const QString &printerName, int profileIndex = 0) const;
     int findItem(const Printer *printer, int profileIndex = 0) const;
 
+    int findFirstProfile() const;
 private:
     QList<Printer*> mPrinters;
 

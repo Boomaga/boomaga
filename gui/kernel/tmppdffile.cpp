@@ -469,7 +469,7 @@ void TmpPdfFile::getPageStream(QString *out, const Sheet *sheet) const
 
             // Scale ...........................
             *out += QString("q\n%1 0 0 %1 0 0 cm\n")
-                    .arg(spec.scale);
+                    .arg(spec.scale, 0, 'f', 3);
 
             // Translate for page rect(x1,y1) ..
             *out += QString("q\n1 0 0 1 %1 %2 cm\n")

@@ -205,9 +205,9 @@ void MainWindow::fillPrintersCombo()
     if (index < 0)
         index = combo->findItem(prevPrinter, 0);
 
-
     if (index < 0)
-        index = 1; // The first item is, so set item[1]
+        index = combo->findFirstProfile();
+
 
     combo->setCurrentIndex(index);
     ui->printersCombo->setUpdatesEnabled(true);
@@ -274,7 +274,7 @@ void MainWindow::loadSettings()
 
     ui->printersCombo->setCurrentPrinterProfile(currentPrinter->name(), currentPrinter->currentProfile());
     if (ui->printersCombo->currentIndex() < 1)
-        ui->printersCombo->setCurrentIndex(1);    // item[0] is priner, so set item[1]
+        ui->printersCombo->setCurrentIndex(ui->printersCombo->findFirstProfile());
 
     QString layoutId = settings->value(Settings::Layout).toString();
 

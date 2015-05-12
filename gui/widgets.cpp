@@ -379,6 +379,21 @@ int PrintersComboBox::findItem(const Printer *printer, int profileIndex) const
 /************************************************
 
  ************************************************/
+int PrintersComboBox::findFirstProfile() const
+{
+    // Search first item with printer and profile
+    for (int i=0; i<count(); ++i )
+    {
+        if (itemPrinter(i) && itemProfile(i) > -1)
+            return i;
+    }
+    return -1;
+}
+
+
+/************************************************
+
+ ************************************************/
 JobsListView::JobsListView(QWidget *parent):
     QListWidget(parent)
 {
