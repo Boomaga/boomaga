@@ -24,6 +24,10 @@ count=$4
 options=$5
 inputFile=$6
 
+# Escape possible double quotes (by using a bash-specific pattern substitution
+# in parameter expansion) to construct valid cmd string.
+title="${title//\"/\\\\\\\"}"
+
 cmd="@NONGUI_DIR@/boomagabackend  ${jobID} \\\"${title}\\\" ${count} \\\"${options}\\\""
 
 echo "DEBUG: [Boomaga] Start $cmd" >&2
