@@ -151,7 +151,7 @@ Sei sicuro di volerlo sovracrivere?</translation>
     </message>
     <message>
         <source> The document&apos;s title.</source>
-        <translation type="unfinished"/>
+        <translation>Il titolo del documento.</translation>
     </message>
 </context>
 <context>
@@ -450,26 +450,26 @@ Sei sicuro di volerlo sovracrivere?</translation>
     </message>
     <message>
         <source>Print with options...</source>
-        <translation type="unfinished"/>
+        <translation>Stampare con opzioni...</translation>
     </message>
     <message>
         <source>Select number of copies before printing.</source>
-        <translation type="unfinished"/>
+        <translation>Selezionare il numero di copie prima di stampare.</translation>
     </message>
     <message>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+Shift+P</translation>
     </message>
 </context>
 <context>
     <name>PrintDialog</name>
     <message>
         <source>Print document</source>
-        <translation type="unfinished"/>
+        <translation>Stampare il documento</translation>
     </message>
     <message>
         <source>Number of copies:</source>
-        <translation type="unfinished"/>
+        <translation>Numero di copie:</translation>
     </message>
 </context>
 <context>
@@ -528,24 +528,24 @@ Sei sicuro di volerlo sovracrivere?</translation>
     </message>
     <message>
         <source>Profiles</source>
-        <translation type="unfinished"/>
+        <translation>Profili</translation>
     </message>
     <message>
         <source>+</source>
-        <translation type="unfinished"/>
+        <translation>+</translation>
     </message>
     <message>
         <source>-</source>
-        <translation type="unfinished"/>
+        <translation>-</translation>
     </message>
     <message>
         <source>Reset to default</source>
-        <translation type="unfinished"/>
+        <translation>Ripristinare impostazioni predefinite</translation>
     </message>
     <message>
         <source>Profile %1</source>
         <comment>Defaul name for created printer profile in the Printer Settings diaog</comment>
-        <translation type="unfinished"/>
+        <translation>Profilo %1</translation>
     </message>
 </context>
 <context>
@@ -616,7 +616,7 @@ Sei sicuro di volerlo sovracrivere?</translation>
     <message>
         <source>Default</source>
         <comment>Printer profile default name</comment>
-        <translation type="unfinished"/>
+        <translation>Predefinito</translation>
     </message>
 </context>
 <context>

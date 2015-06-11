@@ -151,7 +151,7 @@ Ar tikrai norite pakeisti šį failą?</translation>
     </message>
     <message>
         <source> The document&apos;s title.</source>
-        <translation type="unfinished"/>
+        <translation>Dokumento pavadinimas.</translation>
     </message>
 </context>
 <context>
@@ -450,26 +450,26 @@ Ar tikrai norite pakeisti šį failą?</translation>
     </message>
     <message>
         <source>Print with options...</source>
-        <translation type="unfinished"/>
+        <translation>Spausdinti su parinktimis...</translation>
     </message>
     <message>
         <source>Select number of copies before printing.</source>
-        <translation type="unfinished"/>
+        <translation>Pasirinkti kopijų skaičių prieš spausdinant.</translation>
     </message>
     <message>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+Shift+P</translation>
     </message>
 </context>
 <context>
     <name>PrintDialog</name>
     <message>
         <source>Print document</source>
-        <translation type="unfinished"/>
+        <translation>Spausdinti dokumentą</translation>
     </message>
     <message>
         <source>Number of copies:</source>
-        <translation type="unfinished"/>
+        <translation>Kopijų skaičius:</translation>
     </message>
 </context>
 <context>
@@ -528,24 +528,24 @@ Ar tikrai norite pakeisti šį failą?</translation>
     </message>
     <message>
         <source>Profiles</source>
-        <translation type="unfinished"/>
+        <translation>Profiliai</translation>
     </message>
     <message>
         <source>+</source>
-        <translation type="unfinished"/>
+        <translation>+</translation>
     </message>
     <message>
         <source>-</source>
-        <translation type="unfinished"/>
+        <translation>-</translation>
     </message>
     <message>
         <source>Reset to default</source>
-        <translation type="unfinished"/>
+        <translation>Atstatyti numatytasias reikšmes</translation>
     </message>
     <message>
         <source>Profile %1</source>
         <comment>Defaul name for created printer profile in the Printer Settings diaog</comment>
-        <translation type="unfinished"/>
+        <translation>Profilis %1</translation>
     </message>
 </context>
 <context>
@@ -616,7 +616,7 @@ Ar tikrai norite pakeisti šį failą?</translation>
     <message>
         <source>Default</source>
         <comment>Printer profile default name</comment>
-        <translation type="unfinished"/>
+        <translation>Numatytasis</translation>
     </message>
 </context>
 <context>

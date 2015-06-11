@@ -151,7 +151,7 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
     <message>
         <source> The document&apos;s title.</source>
-        <translation type="unfinished"/>
+        <translation>Der Titel des Dokuments.</translation>
     </message>
 </context>
 <context>

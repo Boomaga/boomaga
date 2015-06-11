@@ -151,7 +151,7 @@ Jste si jistý, že jej chcete přepsat?</translation>
     </message>
     <message>
         <source> The document&apos;s title.</source>
-        <translation type="unfinished"/>
+        <translation>Název dokumentu.</translation>
     </message>
 </context>
 <context>
@@ -438,38 +438,38 @@ Jste si jistý, že jej chcete přepsat?</translation>
     </message>
     <message>
         <source>Clone job...</source>
-        <translation type="unfinished"/>
+        <translation>Klonovat úlohu...</translation>
     </message>
     <message>
         <source>Clone job</source>
-        <translation type="unfinished"/>
+        <translation>Klonovat úlohu</translation>
     </message>
     <message>
         <source>Number of copies:</source>
-        <translation type="unfinished"/>
+        <translation>Počet kopií:</translation>
     </message>
     <message>
         <source>Print with options...</source>
-        <translation type="unfinished"/>
+        <translation>Tisknout s volbami...</translation>
     </message>
     <message>
         <source>Select number of copies before printing.</source>
-        <translation type="unfinished"/>
+        <translation>Vybrat před tiskem počet kopií.</translation>
     </message>
     <message>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+Shift+P</translation>
     </message>
 </context>
 <context>
     <name>PrintDialog</name>
     <message>
         <source>Print document</source>
-        <translation type="unfinished"/>
+        <translation>Vytisknout dokument</translation>
     </message>
     <message>
         <source>Number of copies:</source>
-        <translation type="unfinished"/>
+        <translation>Počet kopií:</translation>
     </message>
 </context>
 <context>
@@ -528,24 +528,24 @@ Jste si jistý, že jej chcete přepsat?</translation>
     </message>
     <message>
         <source>Profiles</source>
-        <translation type="unfinished"/>
+        <translation>Profily</translation>
     </message>
     <message>
         <source>+</source>
-        <translation type="unfinished"/>
+        <translation>+</translation>
     </message>
     <message>
         <source>-</source>
-        <translation type="unfinished"/>
+        <translation>-</translation>
     </message>
     <message>
         <source>Reset to default</source>
-        <translation type="unfinished"/>
+        <translation>Obnovit výchozí nastavení</translation>
     </message>
     <message>
         <source>Profile %1</source>
         <comment>Defaul name for created printer profile in the Printer Settings diaog</comment>
-        <translation type="unfinished"/>
+        <translation>Profil %1</translation>
     </message>
 </context>
 <context>
@@ -616,7 +616,7 @@ Jste si jistý, že jej chcete přepsat?</translation>
     <message>
         <source>Default</source>
         <comment>Printer profile default name</comment>
-        <translation type="unfinished"/>
+        <translation>Výchozí</translation>
     </message>
 </context>
 <context>
