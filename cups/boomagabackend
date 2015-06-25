@@ -226,7 +226,10 @@ function getDbusAddr_Linux_Proc
     debug "  * ${file}     disp='${disp}' addr='${addr}'"
     if [ -n "${addr}" ];
     then
-      if [ "${disp}" = "${xDisplay}" ] || [ "${xDisplay}" = "" ];
+      if [ "${disp}" = "${xDisplay}" ]   || \
+         [ "${disp}.0" = "${xDisplay}" ] || \
+         [ "${disp}" = "${xDisplay}.0" ] || \
+         [ "${xDisplay}" = "" ];
       then
         debug "*** USE ${file} disp='${disp}' addr='${addr}'"
         dbusSessionAddress=${addr}
