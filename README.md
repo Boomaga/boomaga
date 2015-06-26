@@ -76,7 +76,7 @@ not work in some environments. Please, look through the error messages in CUPS l
 discovered bugs to [Issue tracker](https://github.com/Boomaga/boomaga/issues), or contact the developers.
 
 
-Instalation
+Installation
 ===========
 
 One simple solution is to install the program from the packets for your distribution kit. Access the list of packets at our site.
