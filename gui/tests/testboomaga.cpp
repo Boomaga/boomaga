@@ -730,91 +730,92 @@ void TestBoomaga::test_PagePosition_data()
      *  +---+
      ********************************************/
     //          Layout Rotation     Expected
-    QTest::newRow("1up; 0"   )  << "+---+"
-                                   "| 0 |"
-                                   "+---+";
-    QTest::newRow("1up; 90"  )  << "+---+"
-                                   "| 0 |"
-                                   "+---+";
+    QTest::newRow("1up; 0"   )     << "+---+"
+                                      "| 0 |"
+                                      "+---+";
+
+    QTest::newRow("1up; 90"  )     << "+---+"
+                                      "| 0 |"
+                                      "+---+";
 
 
-    //          Layout Rotation    Expected      On screen
-    QTest::newRow("2up; 90"  )  << "+---+"    // +------+
-                                   "| 1 |"    // | 0  1 | Rotate
-                                   "| 0 |"    // +------+
-                                   "+---+";
+    //          Layout Rotation    Expected          On screen
+    QTest::newRow("2up; 90"  )     << "+---+"     // +------+
+                                      "| 1 |"     // | 0  1 | Rotate
+                                      "| 0 |"     // +------+
+                                      "+---+";
 
-    QTest::newRow("2up; 0"   )  << "+---+"    // +---+
-                                   "| 0 |"    // | 0 | No rotate
-                                   "| 1 |"    // | 1 |
-                                   "+---+";   // +---+
-
-
-    //          Layout Rotation        Expected       On screen
-    QTest::newRow("4up_Horiz; 0")  << "+-----+"    // +-----+
-                                      "| 0 1 |"    // | 0 1 | No rotate
-                                      "| 2 3 |"    // | 2 3 |
-                                      "+-----+";   // +-----+
-
-    QTest::newRow("4up_Horiz; 90") << "+-----+"    // +-----+
-                                      "| 1 3 |"    // | 0 1 | Rotate
-                                      "| 0 2 |"    // | 2 3 |
-                                      "+-----+";   // +-----+
+    QTest::newRow("2up; 0"   )     << "+---+"     // +---+
+                                      "| 0 |"     // | 0 | No rotate
+                                      "| 1 |"     // | 1 |
+                                      "+---+";    // +---+
 
 
-    //          Layout Rotation        Expected       On screen
-    QTest::newRow("4up_Vert;  0")  << "+-----+"    // +-----+
-                                      "| 0 2 |"    // | 0 2 | No rotate
-                                      "| 1 3 |"    // | 1 3 |
-                                      "+-----+";   // +-----+
+    //          Layout Rotation        Expected      On screen
+    QTest::newRow("4up_Horiz; 0")  << "+-----+"   // +-----+
+                                      "| 0 1 |"   // | 0 1 | No rotate
+                                      "| 2 3 |"   // | 2 3 |
+                                      "+-----+";  // +-----+
 
-    QTest::newRow("4up_Vert; 90")  << "+-----+"    // +-----+
-                                      "| 2 3 |"    // | 0 2 | Rotate
-                                      "| 0 1 |"    // | 1 3 |
-                                      "+-----+";   // +-----+
+    QTest::newRow("4up_Horiz; 90") << "+-----+"   // +-----+
+                                      "| 1 3 |"   // | 0 1 | Rotate
+                                      "| 0 2 |"   // | 2 3 |
+                                      "+-----+";  // +-----+
 
 
-    //          Layout Rotation        Expected           On screen
-    QTest::newRow("8up_Horiz; 90") << "+-----+"        // +---------+
-                                      "| 3 7 |"        // | 0 1 2 3 | Rotate
-                                      "| 2 6 |"        // | 4 5 6 7 |
-                                      "| 1 5 |"        // +---------+
+    //          Layout Rotation        Expected      On screen
+    QTest::newRow("4up_Vert;  0")  << "+-----+"   // +-----+
+                                      "| 0 2 |"   // | 0 2 | No rotate
+                                      "| 1 3 |"   // | 1 3 |
+                                      "+-----+";  // +-----+
+
+    QTest::newRow("4up_Vert; 90")  << "+-----+"   // +-----+
+                                      "| 2 3 |"   // | 0 2 | Rotate
+                                      "| 0 1 |"   // | 1 3 |
+                                      "+-----+";  // +-----+
+
+
+    //          Layout Rotation        Expected      On screen
+    QTest::newRow("8up_Horiz; 90") << "+-----+"   // +---------+
+                                      "| 3 7 |"   // | 0 1 2 3 | Rotate
+                                      "| 2 6 |"   // | 4 5 6 7 |
+                                      "| 1 5 |"   // +---------+
                                       "| 0 4 |"
                                       "+-----+";
 
-    QTest::newRow("8up_Horiz;  0") << "+-----+"        // +-----+
-                                      "| 0 1 |"        // | 0 1 | No rotate
-                                      "| 2 3 |"        // | 2 3 |
-                                      "| 4 5 |"        // | 4 5 |
-                                      "| 6 7 |"        // | 6 7 |
-                                      "+-----+";       // +-----+
+    QTest::newRow("8up_Horiz;  0") << "+-----+"   // +-----+
+                                      "| 0 1 |"   // | 0 1 | No rotate
+                                      "| 2 3 |"   // | 2 3 |
+                                      "| 4 5 |"   // | 4 5 |
+                                      "| 6 7 |"   // | 6 7 |
+                                      "+-----+";  // +-----+
 
 
-    //          Layout Rotation        Expected           On screen
-    QTest::newRow("8up_Vert;  90") << "+-----+"        // +---------+
-                                      "| 6 7 |"        // | 0 2 4 6 | Rotate
-                                      "| 4 5 |"        // | 1 3 5 7 |
-                                      "| 2 3 |"        // +---------+
+    //          Layout Rotation        Expected      On screen
+    QTest::newRow("8up_Vert;  90") << "+-----+"   // +---------+
+                                      "| 6 7 |"   // | 0 2 4 6 | Rotate
+                                      "| 4 5 |"   // | 1 3 5 7 |
+                                      "| 2 3 |"   // +---------+
                                       "| 0 1 |"
                                       "+-----+";
 
-    QTest::newRow("8up_Vert;   0") << "+-----+"        // +-----+
-                                      "| 0 4 |"        // | 0 4 | No rotate
-                                      "| 1 5 |"        // | 1 5 |
-                                      "| 2 6 |"        // | 2 6 |
-                                      "| 3 7 |"        // | 3 7 |
-                                      "+-----+";       // +-----+
+    QTest::newRow("8up_Vert;   0") << "+-----+"   // +-----+
+                                      "| 0 4 |"   // | 0 4 | No rotate
+                                      "| 1 5 |"   // | 1 5 |
+                                      "| 2 6 |"   // | 2 6 |
+                                      "| 3 7 |"   // | 3 7 |
+                                      "+-----+";  // +-----+
 
-    //          Layout Rotation         Expected      On screen
-    QTest::newRow("booklet; 90" )  << "+---+"    // +------+
-                                      "| 1 |"    // | 0  1 | Rotate
-                                      "| 0 |"    // +------+
+    //          Layout Rotation        Expected      On screen
+    QTest::newRow("booklet; 90" )  << "+---+"     // +------+
+                                      "| 1 |"     // | 0  1 | Rotate
+                                      "| 0 |"     // +------+
                                       "+---+";
 
-    QTest::newRow("booklet; 0"  )  << "+---+"    // +---+
-                                      "| 0 |"    // | 0 | No rotate
-                                      "| 1 |"    // | 1 |
-                                      "+---+";   // +---+
+    QTest::newRow("booklet; 0"  )  << "+---+"     // +---+
+                                      "| 0 |"     // | 0 | No rotate
+                                      "| 1 |"     // | 1 |
+                                      "+---+";    // +---+
 }
 
 
