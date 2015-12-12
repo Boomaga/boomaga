@@ -477,6 +477,10 @@ void TmpPdfFile::getPageStream(QString *out, const Sheet *sheet) const
                     .arg(-page->rect().top(), 0, 'f', 3);
 
 
+            if (page->pdfInfo().objNum)
+                *out += QString("/Im%1 Do\n").arg(i);
+
+
             if (printer->drawBorder())
             {
                 *out += QString("%1 %2 %3 %4 re\nS\n")
@@ -486,8 +490,6 @@ void TmpPdfFile::getPageStream(QString *out, const Sheet *sheet) const
                         .arg(page->rect().height(), 0, 'f', 3);
             }
 
-            if (page->pdfInfo().objNum)
-                *out += QString("/Im%1 Do\n").arg(i);
 
             *out += "Q\n";
             *out += "Q\n";
