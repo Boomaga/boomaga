@@ -150,7 +150,7 @@ void TmpPdfFile::merge()
     {
         QStringList dirs;
         dirs << QApplication::applicationDirPath() + "/";
-        dirs << QApplication::applicationDirPath() + "/../lib/boomaga/";
+        dirs << NONGUI_DIR;
 
         foreach (QString dir, dirs)
         {
