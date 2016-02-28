@@ -236,9 +236,9 @@ target_link_libraries(${INSTANCE_NAME} ${LIBRARIES})
 if(BUILD_TESTS STREQUAL "Yes")
     add_subdirectory(tests)
 else()
-    message(STATUS "")
-    message(STATUS "For building tests use -DBUILD_TESTS=Yes option.")
-    message(STATUS "")
+    statusMessage(" ")
+    statusMessage("For building tests use -DBUILD_TESTS=Yes option.")
+    statusMessage(" ")
 endif()
 
 
@@ -262,9 +262,3 @@ install(FILES   ${CMAKE_CURRENT_BINARY_DIR}/boomaga.desktop DESTINATION "share/a
 install(FILES   misc/boomaga.xml        DESTINATION "share/mime/packages")
 
 add_subdirectory(pdfmerger)
-
-if(USE_QT4)
-    message(STATUS "Use Qt4, for building with Qt5 use -DUSE_QT5=Yes option.")
-else()
-    message(STATUS "Use Qt5, for building with Qt4 use -DUSE_QT4=Yes option.")
-endif()

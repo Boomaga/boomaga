@@ -97,7 +97,11 @@ int printError(const QString &msg)
  ************************************************/
 void readEnvFile()
 {
-    QFile envFile(QDir::homePath() + "/.cache/boomaga.env");
+    QString cacheDir = getenv("XDG_CACHE_HOME");
+    if (cacheDir.isEmpty())
+        cacheDir = QDir::homePath() + QLatin1String("/.cache");
+
+    QFile envFile(cacheDir + "/boomaga.env");
     if (envFile.exists())
     {
         envFile.open(QFile::ReadOnly);

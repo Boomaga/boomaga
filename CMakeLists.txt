@@ -38,6 +38,12 @@ add_definitions(-DMINOR_VERSION=\"${MINOR_VERSION}\")
 add_definitions(-DPATCH_VERSION=\"${PATCH_VERSION}\")
 add_definitions(-DFULL_VERSION=\"${FULL_VERSION}\")
 
+include("cmake/tools.cmake")
+statusMessage("boomaga ver. ${FULL_VERSION}")
+statusMessage(" ")
+
+
+
 find_program(CUPS_CONFIG_EXECUTABLE NAMES cups-config)
 if(CUPS_CONFIG_EXECUTABLE)
     exec_program(${CUPS_CONFIG_EXECUTABLE} ARGS --serverbin OUTPUT_VARIABLE CUPS_SERVERBIN)
@@ -63,25 +69,13 @@ elseif(${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
 
 endif()
 
-macro(setByDefault VAR_NAME VAR_VALUE)
-  if (NOT DEFINED ${VAR_NAME})
-    set (${VAR_NAME} ${VAR_VALUE})
-    add_definitions(-D${VAR_NAME}=\"${VAR_VALUE}\")
-  endif()
-endmacro()
-
-macro(setFirstUpper VAR_NAME VAR_VALUE)
-  string(SUBSTRING ${VAR_VALUE} 0 1 FIRST_LETTER)
-  string(TOUPPER ${FIRST_LETTER} FIRST_LETTER)
-  string(REGEX REPLACE "^.(.*)" "${FIRST_LETTER}\\1" ${VAR_NAME} "${VAR_VALUE}")
-endmacro()
-
 set(GUI_DIR ${CMAKE_INSTALL_PREFIX}/bin)
 add_definitions(-DGUI_DIR=\"${GUI_DIR}\")
 
 set(NONGUI_DIR ${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}/boomaga)
 add_definitions(-DNONGUI_DIR=\"${NONGUI_DIR}\")
 
+getQtVersion(QT_VERSION)
 ###########################################################
 
 setByDefault(INSTANCE_NAME      "boomaga")
@@ -103,31 +97,28 @@ setByDefault(DBUS_MACINE_ID_DIR ${DEF_DBUS_MACINE_ID_DIR})
 setByDefault(DBUS_SERVICE_DIR   ${DEF_DBUS_SERVICE_DIR})
 
 
+statusMessage(" ")
+statusMessage("You can change the following directories using cmake options like:")
+statusMessage("-DCUPS_PPD_DIR=your_path")
+statusMessage(" ")
+statusMessage("  CUPS_BACKEND_DIR     =  ${CUPS_BACKEND_DIR}")
+statusMessage("  CUPS_FILTER_DIR      =  ${CUPS_FILTER_DIR}")
+statusMessage("  CUPS_PPD_DIR         =  ${CUPS_PPD_DIR}")
+statusMessage("  DBUS_MACINE_ID_DIR   =  ${DBUS_MACINE_ID_DIR}")
+statusMessage("  DBUS_SERVICE_DIR     =  ${DBUS_SERVICE_DIR}")
+statusMessage(" ")
+statusMessage(" You can change the following options using cmake options:")
+statusMessage("  INSTANCE_NAME        =  ${INSTANCE_NAME}")
+statusMessage("  CUPS_BACKEND_URI     =  ${CUPS_BACKEND_URI}")
+statusMessage("  CUPS_BACKEND_INFO    =  ${CUPS_BACKEND_INFO}")
+statusMessage("  CUPS_BACKEND_MODEL   =  ${CUPS_BACKEND_MODEL}")
+statusMessage("  CUPS_BACKEND_DESCRIPTION  = ${CUPS_BACKEND_DESCRIPTION}")
+statusMessage("  CUPS_BACKEND_MANUFACTURER = ${CUPS_BACKEND_MANUFACTURER}")
+
+
 add_subdirectory(cups)
 add_subdirectory(gui)
 install(FILES boomaga.1.gz  DESTINATION share/man/man1)
-
-message(STATUS "*****************************************************")
-message(STATUS "* boomaga ver. ${FULL_VERSION}")
-message(STATUS "*")
-message(STATUS "* You can change the following directories using cmake options like:")
-message(STATUS "*   -DCUPS_PPD_DIR=your_path")
-message(STATUS "*")
-message(STATUS "*  CUPS_BACKEND_DIR     =  ${CUPS_BACKEND_DIR}")
-message(STATUS "*  CUPS_FILTER_DIR      =  ${CUPS_FILTER_DIR}")
-message(STATUS "*  CUPS_PPD_DIR         =  ${CUPS_PPD_DIR}")
-message(STATUS "*  DBUS_MACINE_ID_DIR   =  ${DBUS_MACINE_ID_DIR}")
-message(STATUS "*  DBUS_SERVICE_DIR     =  ${DBUS_SERVICE_DIR}")
-message(STATUS "*")
-message(STATUS "* You can change the following options using cmake options:")
-message(STATUS "*  INSTANCE_NAME        =  ${INSTANCE_NAME}")
-message(STATUS "*  CUPS_BACKEND_URI     =  ${CUPS_BACKEND_URI}")
-message(STATUS "*  CUPS_BACKEND_INFO    =  ${CUPS_BACKEND_INFO}")
-message(STATUS "*  CUPS_BACKEND_MODEL   =  ${CUPS_BACKEND_MODEL}")
-message(STATUS "*  CUPS_BACKEND_DESCRIPTION  = ${CUPS_BACKEND_DESCRIPTION}")
-message(STATUS "*  CUPS_BACKEND_MANUFACTURER = ${CUPS_BACKEND_MANUFACTURER}")
-
-message(STATUS "*****************************************************")
 
 ########## Add make dist target ################
 SET(CPACK_PACKAGE_VERSION "${FULL_VERSION}")
@@ -143,3 +134,5 @@ SET(CPACK_SOURCE_IGNORE_FILES ${CPACK_IGNORE_FILES})
 INCLUDE(CPack)
 # simulate autotools' "make dist"
 add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
+
+showStatus()

@@ -34,7 +34,7 @@ echo "DEBUG: [Boomaga] Start $cmd" >&2
 
 if [ -n "${inputFile}" ];
 then
-    cat "${inputFile}" | su -c "/bin/bash -c \"${cmd} \"" ${user}
+    cat "${inputFile}" | su -c "${cmd}" ${user}
 else
-    su -c "/bin/bash -c \"${cmd} \"" ${user}
+    su -c "${cmd}" ${user}
 fi

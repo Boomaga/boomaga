@@ -26,22 +26,81 @@
 
 cmake_minimum_required( VERSION 2.6 )
 
-project(boomagaCups)
+project(boomagabackend)
+
+set(HEADERS
+    common.h
+    inputfile.h
+    systemd.h
+    consolekit.h
+    envinfo.h
+)
+
+set(SOURCES
+    main.cpp
+    common.cpp
+    inputfile.cpp
+    systemd.cpp
+    consolekit.cpp
+    envinfo.cpp
+)
+
+set(LIBRARIES
+)
+
+set (MOCS
+)
+
+
+if(CMAKE_COMPILER_IS_GNUCXX)
+    add_definitions (-Wall -pedantic)
+endif()
+
+include_directories(
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
+   # ${CUPS_INCLUDE_DIR}
+)
+
+set(QT_LIBRARIES, "")
+if (USE_QT4)
+    find_package(Qt4 REQUIRED QUIET COMPONENTS QTCORE QTDBUS)
+    include(${QT_USE_FILE})
+    qt4_wrap_cpp(MOC_SOURCES ${MOCS})
+endif()
+
+if (USE_QT5)
+    cmake_minimum_required(VERSION 2.8.3)
+
+    find_package(Qt5Core REQUIRED QUIET)
+    include_directories(${Qt5Core_INCLUDE_DIRS})
+    add_definitions(${Qt5Core_DEFINITIONS})
+    set(QT_LIBRARIES ${QT_LIBRARIES} ${Qt5Core_LIBRARIES})
+
+    find_package(Qt5DBus REQUIRED)
+    include_directories(${Qt5DBus_INCLUDE_DIRS})
+    add_definitions(${Qt5DBus_DEFINITIONS})
+    set(QT_LIBRARIES ${QT_LIBRARIES} ${Qt5DBus_LIBRARIES})
+
+    qt5_wrap_cpp(MOC_SOURCES ${MOCS})
+endif()
+
+
+set(LIBRARIES ${LIBRARIES} ${QT_LIBRARIES})
+
+add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES} ${MOC_SOURCES})
+target_link_libraries(${PROJECT_NAME} ${LIBRARIES})
+
 
 set(CUPS_BACKEND_ID "MFG:${CUPS_BACKEND_MANUFACTURER};CMD:PJL,PDF;MDL:${CUPS_BACKEND_MODEL};CLS:PRINTER;DES:${CUPS_BACKEND_DESCRIPTION};DRV:DPDF,R1,M0;")
-add_definitions(-DCUPS_BACKEND_ID=\"${CUPS_BACKEND_ID}\")
 
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/boomaga
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/backend/boomaga
                ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}
                @ONLY)
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/boomaga.ppd
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/backend/boomaga.ppd
                ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}.ppd
-               @ONLY)
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/boomagabackend
-               ${CMAKE_CURRENT_BINARY_DIR}/boomagabackend
                @ONLY)
 
 
@@ -49,14 +108,6 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}
   DESTINATION ${CUPS_BACKEND_DIR}
   PERMISSIONS
     OWNER_READ OWNER_WRITE OWNER_EXECUTE
-)
-
-install(FILES boomaga_pstopdf
-  DESTINATION ${CUPS_FILTER_DIR}
-  PERMISSIONS
-    OWNER_READ OWNER_WRITE OWNER_EXECUTE
-    GROUP_READ             GROUP_EXECUTE
-    WORLD_READ             WORLD_EXECUTE
 )
 
 
