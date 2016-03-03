@@ -119,9 +119,11 @@ void messageOutput(QtMsgType type, const QMessageLogContext &context, const QStr
         warning(message);
         break;
 
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 5, 0))
     case QtInfoMsg:
         info(message);
         break;
+#endif
 
     case QtCriticalMsg:
         error(message);

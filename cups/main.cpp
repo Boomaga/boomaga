@@ -24,11 +24,7 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#include <string>
-#include <iostream>
-#include <cstdlib>
 #include <QString>
-#include <QTextStream>
 #include <QDebug>
 #include <QCoreApplication>
 #include <QDir>
@@ -36,15 +32,12 @@
 #include <QtDBus/QDBusInterface>
 #include <QtDBus/QDBusConnection>
 #include <QtDBus/QDBusMessage>
-#include <unistd.h>
-#include <pwd.h>
 
 #include "common.h"
 #include "envinfo.h"
 #include "inputfile.h"
 #include "systemd.h"
 #include "consolekit.h"
-
 
 
 /************************************************
@@ -74,6 +67,14 @@ void runGUI(const QString &dbusAddr, const QStringList &files, const QString &ti
         args << count;
         msg.setArguments(args);
 
+        QStringList sl;
+        foreach (const QVariant &arg, args)
+        {
+            sl << "'" + arg.toString() +"'";
+        }
+
+        debug(QString("Start boomaga: %1").arg(sl.join(" ")));
+
         QDBusMessage reply = dbus.call(msg);
 
         if (reply.type() != QDBusMessage::ReplyMessage)
@@ -94,6 +95,7 @@ int main(int argc, char *argv[])
 #else
     qInstallMessageHandler(messageOutput);
 #endif
+
     QCoreApplication a(argc, argv);
 
     if (argc < 4)
@@ -122,12 +124,17 @@ int main(int argc, char *argv[])
 
 
     // Get Xdisplay .............................
-    QString xDisplay = getActiveSessionDisplaySystemd();
+    QString xDisplay;
+#ifdef Q_OS_LINUX
+    xDisplay = getActiveSessionDisplaySystemd();
     if (xDisplay.isEmpty())
         xDisplay = getActiveSessionDisplayConsoleKit();
+#else
+    xDisplay = getActiveSessionDisplayConsoleKit();
+#endif
 
     if (xDisplay.isEmpty())
-        error(QString("Can't found active session for user '%1'.").arg(user));
+        warning(QString("Can't found active session for user '%1'.").arg(user));
     else
         debug(QString("xDisplay: %1").arg(xDisplay));
 
@@ -135,7 +142,7 @@ int main(int argc, char *argv[])
     EnvInfo envInfo = EnvInfo::find(xDisplay);
     if (envInfo.dbusAddr().isEmpty())
     {
-        error(QString("Can't extract D-Bus bus address for user %1 and xSession %2").arg(user, xDisplay));
+        error(QString("Can't extract D-Bus bus address for user \"%1\" and session \"%2\"").arg(user, xDisplay));
     }
     else
     {

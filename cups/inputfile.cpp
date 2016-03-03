@@ -170,12 +170,12 @@ QStringList processPostScript(QFile &in, QByteArray &buf, const QString &jobId, 
 
     if (proc.exitStatus() == 0 && proc.exitCode() == 0)
     {
-        debug("gs was successfully finished");
+        debug("Convert PostScript to PDF: gs was successfully finished");
     }
     else
     {
         QString msg = QString::fromLocal8Bit(proc.readAllStandardError());
-        error(QString("gs exit with code %1: %2")
+        error(QString("Convert PostScript to PDF: gs exit with code %1: %2")
               .arg(proc.exitCode())
               .arg(msg));
     }

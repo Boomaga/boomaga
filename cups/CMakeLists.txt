@@ -60,7 +60,6 @@ include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
-   # ${CUPS_INCLUDE_DIR}
 )
 
 set(QT_LIBRARIES, "")
@@ -78,7 +77,7 @@ if (USE_QT5)
     add_definitions(${Qt5Core_DEFINITIONS})
     set(QT_LIBRARIES ${QT_LIBRARIES} ${Qt5Core_LIBRARIES})
 
-    find_package(Qt5DBus REQUIRED)
+    find_package(Qt5DBus REQUIRED QUIET)
     include_directories(${Qt5DBus_INCLUDE_DIRS})
     add_definitions(${Qt5DBus_DEFINITIONS})
     set(QT_LIBRARIES ${QT_LIBRARIES} ${Qt5DBus_LIBRARIES})

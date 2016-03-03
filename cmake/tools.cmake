@@ -6,10 +6,10 @@ if (CMAKE_BUILD_TYPE MATCHES [Dd]ebug)
     add_definitions("-g")
 endif()
 
-set(STATUS_MESSAGES "")
+set(STATUS_MESSAGES "" CACHE INTERNAL "STATUS_MESSAGES_CACHE")
 
 macro(statusMessage message)
-	set(STATUS_MESSAGES ${STATUS_MESSAGES} ${message})
+        set(STATUS_MESSAGES ${STATUS_MESSAGES} ${message}  CACHE INTERNAL "STATUS_MESSAGES_CACHE")
 endmacro()
 
 
