@@ -30,7 +30,76 @@
 #include <QProcess>
 #include <QDebug>
 
-#define BUF_SIZE  10485760
+#define BUF_SIZE 1024 * 1024 * 10
+
+
+class InputFile
+{
+public:
+    explicit InputFile(QFile &file, const QByteArray &prev);
+
+    bool atEnd() { return mAtEnd; }
+    QByteArray readLine();
+private:
+    QFile &mFile;
+    QByteArray mBuffer;
+    bool mNeedRead;
+    int mStart;
+    bool mAtEnd;
+};
+
+
+
+/************************************************
+ *
+ ************************************************/
+InputFile::InputFile(QFile &file, const QByteArray &prev):
+    mFile(file),
+    mBuffer(prev),
+    mNeedRead(true),
+    mStart(0),
+    mAtEnd(false)
+{
+}
+
+
+/************************************************
+ *
+ ************************************************/
+QByteArray InputFile::readLine()
+{
+    if (mNeedRead)
+    {
+        mBuffer.append(mFile.read(BUF_SIZE));
+        mNeedRead = false;
+    }
+
+    int end = mBuffer.indexOf('\n', mStart) + 1;
+    if (end)
+    {
+        int n = mStart;
+        mStart = end;
+        if (mFile.atEnd())
+            mAtEnd = (end == mBuffer.length());
+
+        return  mBuffer.mid(n, (end - n));
+
+    }
+    else
+    {
+        if (mFile.atEnd())
+        {
+            mAtEnd = true;
+            return mBuffer.right(mBuffer.length() - mStart);
+        }
+
+        mBuffer = mBuffer.right(mBuffer.length() - mStart);
+        mStart = 0;
+        mNeedRead = true;
+        return readLine();
+    }
+}
+
 
 /************************************************
  *
@@ -39,6 +108,7 @@ QString getOutFileName(const QString &dir, const QString &jobId, int fileNum,  c
 {
     return QString("%1/boomaga_in_file_%2[%4].%3").arg(dir, jobId, ext).arg(fileNum, 2, 10, QChar('0'));
 }
+
 
 /************************************************
  *
@@ -62,77 +132,30 @@ void openOutFile(const QString &dir, const QString &jobId, int fileNum,  const Q
 QStringList processPDF(QFile &in, QByteArray &buf, const QString &jobId, const QString &outDir)
 {
     QStringList res;
-    int fileNum = 1;
     QFile out;
-    openOutFile(outDir, jobId, fileNum, "pdf", &out);
-    res << out.fileName();
+    int fileNum = 0;
 
-    QByteArray prep;
-    out.write(buf);
+    bool prevIsEOF = true;
 
-    while (!in.atEnd())
+    InputFile file(in, buf);
+    while (!file.atEnd())
     {
-
-        buf = in.read(BUF_SIZE);
-        if (prep.length())
-            buf.prepend(prep);
-
-        int start = 0;
-        int pos = buf.indexOf("\n%PDF-", start);
-        while (pos > -1)
+        QByteArray line = file.readLine();
+        if (prevIsEOF && line.startsWith("%PDF-"))
         {
-            out.write(buf.data() + start, pos - start);
-            start = pos;
+            if (out.isOpen())
+                out.close();
 
-            out.close();
             fileNum++;
             openOutFile(outDir, jobId, fileNum, "pdf", &out);
             res << out.fileName();
-
-            pos = buf.indexOf("\n%PDF-", start+1);
         }
 
-        int end = buf.length();
-        if (buf.endsWith("\n%PDF"))
-        {
-            prep = "\n%PDF";
-            end -= 5;
-        }
-        else if (buf.endsWith("\n%PD"))
-        {
-            prep = "\n%PD";
-            end -= 4;
-        }
-        else if (buf.endsWith("\n%P"))
-        {
-            prep = "\n%P";
-            end -= 3;
-        }
-        else if (buf.endsWith("\n%"))
-        {
-            prep = "\n%";
-            end -= 2;
-        }
-        else if (buf.endsWith("\n"))
-        {
-            prep = "\n";
-            end -= 1;
-        }
-        else
-        {
-            prep = "";
-        }
-
-        out.write(buf.data() + start, end - start);
+        prevIsEOF = line.startsWith("%%EOF");
+        out.write(line);
     }
-
-    if (prep.length())
-        out.write(prep);
-
     return res;
-
 }
-
 
 
 /************************************************
