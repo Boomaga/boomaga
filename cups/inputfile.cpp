@@ -167,12 +167,12 @@ QStringList processPostScript(QFile &in, QByteArray &buf, const QString &jobId, 
 {
     QString outFileName = getOutFileName(outDir, jobId, 1, "pdf");
 
-    QFile out;
-    openOutFile(outDir, jobId, 1, "ps", &out);
-    out.write(buf);
+    QFile ps;
+    openOutFile(outDir, jobId, 1, "ps", &ps);
+    ps.write(buf);
     while (!in.atEnd())
-        out.write(in.read(BUF_SIZE));
-    out.close();
+        ps.write(in.read(BUF_SIZE));
+    ps.close();
 
 
     QStringList args;
@@ -183,13 +183,14 @@ QStringList processPostScript(QFile &in, QByteArray &buf, const QString &jobId, 
     //args << "-sstdout=%stderr";   // Redirect stdout to stderr
     args << QString("-sOutputFile=%1").arg(outFileName).toLocal8Bit();
     args << "-c" << ".setpdfwrite";
-    args << "-f" << out.fileName().toLocal8Bit();
+    args << "-f" << ps.fileName().toLocal8Bit();
     debug(QString("Start gs: '%1'").arg(args.join("', '")));
 
     QProcess proc;
     proc.start("gs", args);
     proc.waitForStarted();
     proc.waitForFinished(-1);
+    ps.remove();
 
     if (proc.exitStatus() == 0 && proc.exitCode() == 0)
     {
