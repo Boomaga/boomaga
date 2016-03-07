@@ -175,7 +175,7 @@ QStringList processPostScript(QFile &in, QByteArray &buf, const QString &jobId, 
     out.close();
 
 
-    QList<QString> args;
+    QStringList args;
     args << "-dSAFER";              // Restricts file operations the job can perform. Strongly recommended
     args << "-dNOPAUSE";            // Disables the prompt and pause at the end of each page.
     args << "-dBATCH";              // Causes Ghostscript to exit after processing all files
@@ -184,7 +184,7 @@ QStringList processPostScript(QFile &in, QByteArray &buf, const QString &jobId, 
     args << QString("-sOutputFile=%1").arg(outFileName).toLocal8Bit();
     args << "-c" << ".setpdfwrite";
     args << "-f" << out.fileName().toLocal8Bit();
-    //qDebug() << args;
+    debug(QString("Start gs: '%1'").arg(args.join("', '")));
 
     QProcess proc;
     proc.start("gs", args);

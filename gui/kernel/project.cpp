@@ -277,9 +277,6 @@ void Project::tmpFileMerged()
 
     delete mTmpFile;
     mTmpFile = mLastTmpFile;
-    connect(mTmpFile, SIGNAL(imageChanged(int)),
-            this, SIGNAL(sheetImageChanged(int)));
-
     mLastTmpFile = 0;
 
     if (mMetaData.title().isEmpty() && !mJobs.isEmpty())
@@ -319,7 +316,10 @@ void Project::update()
         mLayout->fillPreviewSheets(&mPreviewSheets);
 
         if (mTmpFile)
+        {
             mTmpFile->updateSheets(mPreviewSheets);
+            emit tmpFileRenamed(mTmpFile->fileName());
+        }
     }
 
     emit changed();
@@ -524,22 +524,6 @@ Project *Project::instance()
         inst = new Project();
 
     return inst;
-}
-
-
-/************************************************
-
- ************************************************/
-QImage Project::sheetImage(int sheetNum) const
-{
-    if (mTmpFile)
-        return mTmpFile->image(sheetNum);
-    else
-    {
-        QImage img(1, 1, QImage::Format_ARGB32);
-        img.fill(Qt::white);
-        return img;
-    }
 }
 
 

@@ -97,6 +97,11 @@ int main(int argc, char *argv[])
 #endif
 
     QCoreApplication a(argc, argv);
+    QStringList sl;
+    for (int i=0; i<argc; ++i)
+        sl << ("'" + QString::fromLocal8Bit(argv[i]) + "'");
+
+    debug(QString("Start boomagabacked %1").arg(sl.join(", ")));
 
     if (argc < 4)
     {
@@ -104,6 +109,7 @@ int main(int argc, char *argv[])
         info("boomaga backend takes the file from standard input.");
         error(QString("Not enough arguments, expected 4, got %1.").arg(argc));
     }
+
 
 
     QString jobId = QString::fromLocal8Bit(argv[1]);
@@ -122,15 +128,15 @@ int main(int argc, char *argv[])
     info(QString("options: %1").arg(options));
     info(QString("user:    %1").arg(user));
 
-
     // Get Xdisplay .............................
-    QString xDisplay;
 #ifdef Q_OS_LINUX
-    xDisplay = getActiveSessionDisplaySystemd();
+    QString xDisplay = getActiveSessionDisplaySystemd();
     if (xDisplay.isEmpty())
         xDisplay = getActiveSessionDisplayConsoleKit();
+
 #else
-    xDisplay = getActiveSessionDisplayConsoleKit();
+    QString xDisplay = getActiveSessionDisplayConsoleKit();
+
 #endif
 
     if (xDisplay.isEmpty())
@@ -156,6 +162,9 @@ int main(int argc, char *argv[])
         cacheDir = QDir::homePath() + QLatin1String("/.cache");
 
     debug(QString("Cache dir: %1").arg(cacheDir));
+    setenv("TMP",    cacheDir.toLocal8Bit().data(), 1);
+    setenv("TMPDIR", cacheDir.toLocal8Bit().data(), 1);
+
 
     if (!QDir(cacheDir).mkpath("."))
         error(QString("Can't create chache directory %1").arg(cacheDir));

@@ -31,6 +31,8 @@
 #include <QFrame>
 #include "kernel/sheet.h"
 
+class Render;
+
 class PreviewWidget : public QFrame
 {
     Q_OBJECT
@@ -58,8 +60,9 @@ protected:
     void keyPressEvent(QKeyEvent *event);
     void contextMenuEvent(QContextMenuEvent *event);
 
+
 private slots:
-    void sheetImageChanged(int sheetNum);
+    void sheetImageReady(QImage image, int sheetNum);
 
 private:
     QImage mImage;
@@ -67,6 +70,7 @@ private:
     int mSheetNum;
     double mScaleFactor;
     Sheet::Hints mHints;
+    Render *mRender;
 
     void drawShadow(QPainter &painter, QRectF rect);
 };

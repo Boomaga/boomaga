@@ -27,6 +27,7 @@
 #include "previewwidget.h"
 #include "kernel/project.h"
 #include "kernel/layout.h"
+#include "render.h"
 
 #include <QPaintEvent>
 #include <QPainter>
@@ -38,6 +39,7 @@
 #define MARGIN_H        20
 #define MARGIN_V        20
 #define MARGIN_BOOKLET  4
+#define RESOLUTIN 150
 
 /************************************************
 
@@ -55,8 +57,12 @@ PreviewWidget::PreviewWidget(QWidget *parent) :
     connect(project, SIGNAL(changed()),
             this, SLOT(refresh()));
 
-    connect(project, SIGNAL(sheetImageChanged(int)),
-            this, SLOT(sheetImageChanged(int)));
+    mRender = new Render(this);
+    connect(project, SIGNAL(tmpFileRenamed(QString)),
+            mRender, SLOT(setFileName(QString)));
+
+    connect(mRender, SIGNAL(imageReady(QImage,int)),
+            this, SLOT(sheetImageReady(QImage,int)));
 }
 
 
@@ -126,16 +132,6 @@ int PreviewWidget::pageAt(const QPoint &point) const
     }
 
     return -1;
-}
-
-
-/************************************************
-
- ************************************************/
-void PreviewWidget::sheetImageChanged(int sheetNum)
-{
-    if (sheetNum == mSheetNum)
-        setCurrentSheet(mSheetNum);
 }
 
 
@@ -381,8 +377,7 @@ void PreviewWidget::setCurrentSheet(int sheetNum)
     if (project->previewSheetCount())
     {
         mSheetNum = qBound(0, sheetNum, project->previewSheetCount()-1);
-        mHints = project->previewSheet(mSheetNum)->hints();
-        mImage = project->sheetImage(mSheetNum);
+        mRender->render(mSheetNum, RESOLUTIN);
     }
     else
     {
@@ -390,6 +385,18 @@ void PreviewWidget::setCurrentSheet(int sheetNum)
         mImage = QImage();
     }
 
+    emit changed(mSheetNum);
+    update();
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void PreviewWidget::sheetImageReady(QImage image, int sheetNum)
+{
+    mImage = image;
+    mHints = project->previewSheet(mSheetNum)->hints();
     emit changed(mSheetNum);
     update();
 }

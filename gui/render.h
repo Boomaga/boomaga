@@ -30,67 +30,54 @@
 #include <QObject>
 #include <QImage>
 #include <QThread>
-#include <QMutex>
+
 
 namespace poppler
 {
     class document;
 }
 
-class CompressedImage;
-
-class RenderThread: public QThread
+class RenderWorker: public QObject
 {
     Q_OBJECT
 public:
-    RenderThread(const QString &pdfFileName);
-    ~RenderThread();
+    explicit RenderWorker(const QString &fileName);
+    virtual ~RenderWorker();
 
 public slots:
-    void setSheetNumHint(int sheetNum);
-
-    void stop();
-
-protected:
-    void run();
+    void render(int sheetNum, int resolution);
 
 signals:
-    void sheetReady(CompressedImage *image, int sheetNum);
+    void imageReady(QImage image, int sheetNum) const;
+
+private slots:
+    void doRender(int sheetNum, int resolution) const;
 
 private:
-    QString mPdfFileName;
-    volatile int mNextSheet;
-    QMutex mNextSheetMutex;
-    volatile bool mStopped;
+    int mSheetNum;
+    poppler::document *mPopplerDoc;
 };
-
 
 
 class Render : public QObject
 {
     Q_OBJECT
 public:
-    explicit Render(const QString &pdfFileName, QObject *parent = 0);
+    explicit Render(QObject *parent = 0);
     virtual ~Render();
 
-    QImage image(int sheetNum) const;
 
-    void start();
-    void stop();
+public slots:
+    void render(int sheetNum, int resolution) const;
+    void setFileName(const QString &fileName);
+
 signals:
-    void imageChanged(int sheetNum);
-    void setSheetNumHint(int sheetNum) const;
-
-private slots:
-    void sheetRenderUpdated(CompressedImage *image, int sheetNum);
+    void imageReady(QImage image, int sheetNum) const;
 
 private:
-    QString mPdfFileName;
-    RenderThread mThread;
-    QVector<CompressedImage*> mImages;
-    poppler::document *mLoResDoc;
+    QThread mThread;
+    RenderWorker *mWorker;
+
 };
-
-
 
 #endif // RENDER_H

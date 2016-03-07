@@ -161,8 +161,6 @@ public:
     Printer *printer() const { return mPrinter; }
     void setPrinterProfile(Printer *printer, int profile, bool update = true);
 
-    QImage sheetImage(int sheetNum) const;
-
     MetaData metaData() const { return mMetaData; }
     void setMetadata(const MetaData &value) { mMetaData = value; }
 
@@ -189,7 +187,7 @@ public slots:
 signals:
     void changed();
     void progress(int progr, int all) const;
-    void sheetImageChanged(int sheetNum);
+    void tmpFileRenamed(const QString mTmpFileName);
 
 protected:
     Rotation calcRotation(const QList<ProjectPage *> &pages, const Layout *layout) const;

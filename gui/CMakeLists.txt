@@ -34,7 +34,7 @@ set(HEADERS
     kernel/job.h
     kernel/tmppdffile.h
     kernel/layout.h
-    kernel/render.h
+    render.h
     kernel/project.h
     kernel/printer.h
     boomagatypes.h
@@ -64,7 +64,7 @@ set(SOURCES
     kernel/job.cpp
     kernel/tmppdffile.cpp
     kernel/layout.cpp
-    kernel/render.cpp
+    render.cpp
     kernel/project.cpp
     kernel/printer.cpp
     boomagatypes.cpp
@@ -90,7 +90,7 @@ set(SOURCES
 set (MOCS
     kernel/project.h
     kernel/tmppdffile.h
-    kernel/render.h
+    render.h
 
     settings.h
     mainwindow.h
@@ -164,22 +164,23 @@ if((USE_QT4 AND USE_QT5) OR
     endif()
 endif()
 
-SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-find_package(Cups REQUIRED QUIET)
-find_package(snappy REQUIRED QUIET)
-find_package(Poppler REQUIRED QUIET)
-
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/third-party
-    ${CMAKE_CURRENT_SOURCE_DIR}/third-party/libspectre
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
-    ${CUPS_INCLUDE_DIR}
-    ${SNAPPY_INCLUDE_DIRS}
-    ${POPPLER_INCLUDE_DIRS}
-    ${POPPLERCPP_INCLUDE_DIRS}
 )
+
+
+SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+find_package(Cups REQUIRED QUIET)
+include_directories(${CUPS_INCLUDE_DIR})
+set(LIBRARIES ${LIBRARIES} ${CUPS_LIBRARIES})
+
+find_package(Poppler REQUIRED QUIET)
+include_directories(${POPPLER_INCLUDE_DIRS} ${POPPLERCPP_INCLUDE_DIRS})
+set(LIBRARIES ${LIBRARIES} ${POPPLER_LIBRARIES})
+set(LIBRARIES ${LIBRARIES} ${POPPLERCPP_LIBRARIES})
+
 
 include(translations/translatorsinfo/CMakeLists.txt)
 get_translatorsinfo_qrc(translatorsinfo_qrc)
@@ -224,10 +225,6 @@ else()
 
 endif()
 set(LIBRARIES ${LIBRARIES} ${QT_LIBRARIES})
-set(LIBRARIES ${LIBRARIES} ${CUPS_LIBRARIES})
-set(LIBRARIES ${LIBRARIES} ${SNAPPY_LIBRARIES})
-set(LIBRARIES ${LIBRARIES} ${POPPLER_LIBRARIES})
-set(LIBRARIES ${LIBRARIES} ${POPPLERCPP_LIBRARIES})
 
 add_executable(${INSTANCE_NAME} ${HEADERS} ${SOURCES} ${MOC_SOURCES} ${QM_FILES} ${QRC_SOURCES} ${UI_HEADERS} ${QRC_CXX_SOURCES})
 target_link_libraries(${INSTANCE_NAME} ${LIBRARIES})
