@@ -127,6 +127,7 @@ QString Settings::keyToString(Settings::Key key) const
     // MainWindow **************************
     case MainWindow_Geometry:           return "MainWindow/Geometry";
     case MainWindow_State:              return "MainWindow/State";
+    case MainWindow_SplitterPos:        return "MainWindow/SplitterPos";
 
     // PrinterDialog ************************
     case PrinterDialog_Geometry:        return "PrinterDialog/Geometry";

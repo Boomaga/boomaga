@@ -203,7 +203,7 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
             pen.setStyle(Qt::DotLine);
             pen.setColor(Qt::darkGray);
             painter.setPen(pen);
-            TransformSpec spec = project->layout()->transformSpec(sheet, i);
+            TransformSpec spec = project->layout()->transformSpec(sheet, i, project->rotation());
 
             painter.drawRect(spec.rect);
             QFont font = painter.font();
@@ -296,7 +296,8 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
     // Draw .....................................
     QPainter painter(this);
     painter.save();
-    painter.translate(geometry().center());
+    QPoint center = QRect(0, 0, geometry().width(), geometry().height()).center();
+    painter.translate(center);
 
 
     if (mHints.testFlag(Sheet::HintSubBooklet))
@@ -349,9 +350,10 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
         else
             painter.drawLine(mDrawRect.left(), 0, mDrawRect.right(), 0);
     }
+
     painter.restore();
 
-    mDrawRect.moveCenter(geometry().center());
+    mDrawRect.moveCenter(center);
 
 //#define DEBUG_CLICK_RECT
 #ifdef DEBUG_CLICK_RECT

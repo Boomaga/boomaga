@@ -260,6 +260,7 @@ void MainWindow::loadSettings()
 {
     restoreGeometry(settings->value(Settings::MainWindow_Geometry).toByteArray());
     restoreState(settings->value(Settings::MainWindow_State).toByteArray());
+    ui->optionsPanel->setGeometry(0, 0, settings->value(Settings::MainWindow_SplitterPos, 0).toInt(), 0);
 
     Printer *currentPrinter = Printer::printerByName(settings->value(Settings::Printer).toString());
     if (!currentPrinter)
@@ -298,6 +299,7 @@ void MainWindow::saveSettings()
 {
     settings->setValue(Settings::MainWindow_Geometry, saveGeometry());
     settings->setValue(Settings::MainWindow_State, saveState());
+    settings->setValue(Settings::MainWindow_SplitterPos, ui->optionsPanel->width());
 
     Printer *printer = ui->printersCombo->currentPrinter();
     if (printer)

@@ -17,26 +17,185 @@
    <set>QMainWindow::AnimatedDocks</set>
   </property>
   <widget class="QWidget" name="centralwidget">
-   <layout class="QHBoxLayout" name="horizontalLayout">
+   <layout class="QVBoxLayout" name="verticalLayout_6">
+    <property name="spacing">
+     <number>0</number>
+    </property>
+    <property name="leftMargin">
+     <number>0</number>
+    </property>
     <property name="topMargin">
+     <number>0</number>
+    </property>
+    <property name="rightMargin">
      <number>0</number>
     </property>
     <property name="bottomMargin">
      <number>0</number>
     </property>
     <item>
-     <layout class="QVBoxLayout" name="verticalLayout_3">
-      <item>
-       <widget class="PreviewWidget" name="preview">
-        <property name="frameShape">
-         <enum>QFrame::StyledPanel</enum>
+     <widget class="QSplitter" name="splitter">
+      <property name="orientation">
+       <enum>Qt::Horizontal</enum>
+      </property>
+      <property name="childrenCollapsible">
+       <bool>false</bool>
+      </property>
+      <widget class="QWidget" name="optionsPanel" native="true">
+       <property name="maximumSize">
+        <size>
+         <width>700</width>
+         <height>16777215</height>
+        </size>
+       </property>
+       <layout class="QVBoxLayout" name="verticalLayout_3">
+        <property name="bottomMargin">
+         <number>0</number>
         </property>
-        <property name="frameShadow">
-         <enum>QFrame::Raised</enum>
-        </property>
-       </widget>
-      </item>
-     </layout>
+        <item>
+         <widget class="QGroupBox" name="layoutBox">
+          <property name="title">
+           <string>Layout</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_2">
+           <item>
+            <widget class="LayoutRadioButton" name="layout1UpBtn">
+             <property name="text">
+              <string>1 up</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="LayoutRadioButton" name="layout2UpBtn">
+             <property name="text">
+              <string>2 up</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="LayoutRadioButton" name="layout4UpHorizBtn">
+             <property name="text">
+              <string>4 up horizontal</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="LayoutRadioButton" name="layout4UpVertBtn">
+             <property name="text">
+              <string>4 up vertical</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="LayoutRadioButton" name="layout8UpHorizBtn">
+             <property name="text">
+              <string>8 up horizontal</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="LayoutRadioButton" name="layout8UpVertBtn">
+             <property name="text">
+              <string>8 up vertical</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="LayoutRadioButton" name="layoutBookletBtn">
+             <property name="text">
+              <string>Booklet</string>
+             </property>
+            </widget>
+           </item>
+           <item>
+            <widget class="QCheckBox" name="doubleSidedCbx">
+             <property name="toolTip">
+              <string comment="MainForm::Double-sided checkbox tooltip">Print on both sides of a sheet.</string>
+             </property>
+             <property name="text">
+              <string comment="MainForm::Double-sided checkbox">Double-sided</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="printerBox">
+          <property name="title">
+           <string>Printer</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_4">
+           <item>
+            <widget class="PrintersComboBox" name="printersCombo"/>
+           </item>
+           <item>
+            <widget class="QToolButton" name="printerConfigBtn">
+             <property name="enabled">
+              <bool>true</bool>
+             </property>
+             <property name="text">
+              <string>Configure...</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+        <item>
+         <widget class="QGroupBox" name="jobsBox">
+          <property name="title">
+           <string>Jobs</string>
+          </property>
+          <layout class="QVBoxLayout" name="verticalLayout_5">
+           <property name="bottomMargin">
+            <number>0</number>
+           </property>
+           <item>
+            <widget class="JobsListView" name="jobsView">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="acceptDrops">
+              <bool>true</bool>
+             </property>
+             <property name="dragEnabled">
+              <bool>true</bool>
+             </property>
+             <property name="dragDropMode">
+              <enum>QAbstractItemView::InternalMove</enum>
+             </property>
+             <property name="defaultDropAction">
+              <enum>Qt::MoveAction</enum>
+             </property>
+             <property name="alternatingRowColors">
+              <bool>true</bool>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </widget>
+        </item>
+       </layout>
+      </widget>
+      <widget class="PreviewWidget" name="preview">
+       <property name="sizePolicy">
+        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+         <horstretch>2</horstretch>
+         <verstretch>0</verstretch>
+        </sizepolicy>
+       </property>
+       <property name="frameShape">
+        <enum>QFrame::StyledPanel</enum>
+       </property>
+       <property name="frameShadow">
+        <enum>QFrame::Raised</enum>
+       </property>
+      </widget>
+     </widget>
     </item>
    </layout>
   </widget>
@@ -81,148 +240,6 @@
    <addaction name="menuHelp"/>
   </widget>
   <widget class="QStatusBar" name="statusbar"/>
-  <widget class="QDockWidget" name="dockWidget">
-   <property name="features">
-    <set>QDockWidget::DockWidgetMovable</set>
-   </property>
-   <property name="allowedAreas">
-    <set>Qt::LeftDockWidgetArea|Qt::RightDockWidgetArea</set>
-   </property>
-   <property name="windowTitle">
-    <string>Options</string>
-   </property>
-   <attribute name="dockWidgetArea">
-    <number>1</number>
-   </attribute>
-   <widget class="QWidget" name="dockWidgetContents">
-    <layout class="QVBoxLayout" name="verticalLayout">
-     <item>
-      <widget class="QGroupBox" name="layoutBox">
-       <property name="title">
-        <string>Layout</string>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_2">
-        <item>
-         <widget class="LayoutRadioButton" name="layout1UpBtn">
-          <property name="text">
-           <string>1 up</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="LayoutRadioButton" name="layout2UpBtn">
-          <property name="text">
-           <string>2 up</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="LayoutRadioButton" name="layout4UpHorizBtn">
-          <property name="text">
-           <string>4 up horizontal</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="LayoutRadioButton" name="layout4UpVertBtn">
-          <property name="text">
-           <string>4 up vertical</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="LayoutRadioButton" name="layout8UpHorizBtn">
-          <property name="text">
-           <string>8 up horizontal</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="LayoutRadioButton" name="layout8UpVertBtn">
-          <property name="text">
-           <string>8 up vertical</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="LayoutRadioButton" name="layoutBookletBtn">
-          <property name="text">
-           <string>Booklet</string>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <widget class="QCheckBox" name="doubleSidedCbx">
-          <property name="toolTip">
-           <string comment="MainForm::Double-sided checkbox tooltip">Print on both sides of a sheet.</string>
-          </property>
-          <property name="text">
-           <string comment="MainForm::Double-sided checkbox">Double-sided</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item>
-      <widget class="QGroupBox" name="printerBox">
-       <property name="title">
-        <string>Printer</string>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_4">
-        <item>
-         <widget class="PrintersComboBox" name="printersCombo"/>
-        </item>
-        <item>
-         <widget class="QToolButton" name="printerConfigBtn">
-          <property name="enabled">
-           <bool>true</bool>
-          </property>
-          <property name="text">
-           <string>Configure...</string>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-     <item>
-      <widget class="QGroupBox" name="jobsBox">
-       <property name="title">
-        <string>Jobs</string>
-       </property>
-       <layout class="QVBoxLayout" name="verticalLayout_5">
-        <item>
-         <widget class="JobsListView" name="jobsView">
-          <property name="sizePolicy">
-           <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
-            <horstretch>0</horstretch>
-            <verstretch>0</verstretch>
-           </sizepolicy>
-          </property>
-          <property name="acceptDrops">
-           <bool>true</bool>
-          </property>
-          <property name="dragEnabled">
-           <bool>true</bool>
-          </property>
-          <property name="dragDropMode">
-           <enum>QAbstractItemView::InternalMove</enum>
-          </property>
-          <property name="defaultDropAction">
-           <enum>Qt::MoveAction</enum>
-          </property>
-          <property name="alternatingRowColors">
-           <bool>true</bool>
-          </property>
-         </widget>
-        </item>
-       </layout>
-      </widget>
-     </item>
-    </layout>
-   </widget>
-  </widget>
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
     <string>Toolbar</string>
