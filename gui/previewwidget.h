@@ -72,6 +72,7 @@ private:
     double mScaleFactor;
     Sheet::Hints mHints;
     Render *mRender;
+    int mWheelDelta;
 
     void drawShadow(QPainter &painter, QRectF rect);
 };

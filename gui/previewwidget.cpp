@@ -49,7 +49,8 @@ PreviewWidget::PreviewWidget(QWidget *parent) :
     QFrame(parent),
     mSheetNum(-1),
     mDisplayedSheetNum(-1),
-    mScaleFactor(0)
+    mScaleFactor(0),
+    mWheelDelta(0)
 {
     QPalette pal(palette());
     pal.setColor(QPalette::Background, QColor(105, 101, 98));
@@ -439,12 +440,23 @@ void PreviewWidget::refresh()
 
 
 /************************************************
-
+ * Most mouse types work in steps of 15 degrees, in which case
+ * the delta value is a multiple of 120; i.e., 120 units * 1/8 = 15 degrees.
+ *
+ * However, some mice have finer-resolution wheels and send delta values that
+ * are less than 120 units (less than 15 degrees). To support this possibility,
+ * you can either cumulatively add the delta values.
  ************************************************/
 void PreviewWidget::wheelEvent(QWheelEvent *event)
 {
-    setCurrentSheet(mSheetNum +
-                    (event->delta() < 0 ? 1 : -1));
+    mWheelDelta -= event->delta();
+    int pages = mWheelDelta / 120;
+
+    if (pages)
+    {
+        mWheelDelta = 0;
+        setCurrentSheet(mSheetNum + pages);
+    }
 }
 
 
