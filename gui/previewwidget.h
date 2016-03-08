@@ -68,6 +68,7 @@ private:
     QImage mImage;
     QRect mDrawRect;
     int mSheetNum;
+    int mDisplayedSheetNum;
     double mScaleFactor;
     Sheet::Hints mHints;
     Render *mRender;

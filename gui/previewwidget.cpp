@@ -39,7 +39,8 @@
 #define MARGIN_H        20
 #define MARGIN_V        20
 #define MARGIN_BOOKLET  4
-#define RESOLUTIN 150
+#define RESOLUTIN       150
+
 
 /************************************************
 
@@ -47,6 +48,7 @@
 PreviewWidget::PreviewWidget(QWidget *parent) :
     QFrame(parent),
     mSheetNum(-1),
+    mDisplayedSheetNum(-1),
     mScaleFactor(0)
 {
     QPalette pal(palette());
@@ -57,7 +59,8 @@ PreviewWidget::PreviewWidget(QWidget *parent) :
     connect(project, SIGNAL(changed()),
             this, SLOT(refresh()));
 
-    mRender = new Render(this);
+    mRender = new Render(RESOLUTIN, 8, this);
+
     connect(project, SIGNAL(tmpFileRenamed(QString)),
             mRender, SLOT(setFileName(QString)));
 
@@ -376,8 +379,9 @@ void PreviewWidget::setCurrentSheet(int sheetNum)
 {
     if (project->previewSheetCount())
     {
+        mRender->cancel(mSheetNum);
         mSheetNum = qBound(0, sheetNum, project->previewSheetCount()-1);
-        mRender->render(mSheetNum, RESOLUTIN);
+        mRender->render(mSheetNum);
     }
     else
     {
@@ -395,10 +399,15 @@ void PreviewWidget::setCurrentSheet(int sheetNum)
  ************************************************/
 void PreviewWidget::sheetImageReady(QImage image, int sheetNum)
 {
-    mImage = image;
-    mHints = project->previewSheet(mSheetNum)->hints();
-    emit changed(mSheetNum);
-    update();
+    if (sheetNum >= qMin(mDisplayedSheetNum, mSheetNum) &&
+        sheetNum <= qMax(mDisplayedSheetNum, mSheetNum))
+    {
+        mImage = image;
+        mDisplayedSheetNum = sheetNum;
+        mHints = project->previewSheet(mSheetNum)->hints();
+        emit changed(mSheetNum);
+        update();
+    }
 }
 
 

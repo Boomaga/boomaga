@@ -27,12 +27,8 @@
 #include <poppler/cpp/poppler-document.h>
 #include <poppler/cpp/poppler-page-renderer.h>
 #include <poppler/cpp/poppler-page.h>
-
 #include <QDebug>
-
-
-#include <sys/time.h>
-#include <time.h>
+#include <QFile>
 
 
 /************************************************
@@ -80,9 +76,11 @@ QImage renderSheet(poppler::document *doc, int sheetNum, double resolution)
 /************************************************
  *
  ************************************************/
-RenderWorker::RenderWorker(const QString &fileName):
+RenderWorker::RenderWorker(const QString &fileName, int resolution):
     QObject(),
-    mSheetNum(0)
+    mSheetNum(0),
+    mResolution(resolution),
+    mBussy(false)
 {
     mPopplerDoc = poppler::document::load_from_file(fileName.toLocal8Bit().data());
 }
@@ -100,35 +98,24 @@ RenderWorker::~RenderWorker()
 /************************************************
  *
  ************************************************/
-void RenderWorker::render(int sheetNum, int resolution)
+void RenderWorker::render(int sheetNum)
 {
-    mSheetNum = sheetNum;
-    QMetaObject::invokeMethod(this, "doRender", Qt::QueuedConnection, Q_ARG(int, sheetNum), Q_ARG(int, resolution));
+    mBussy = true;
+    QImage img = renderSheet(mPopplerDoc, sheetNum, mResolution);
+    emit imageReady(img, sheetNum);
+    mBussy = false;
 }
 
 
 /************************************************
  *
  ************************************************/
-void RenderWorker::doRender(int sheetNum, int resolution) const
-{
-    if (sheetNum == mSheetNum)
-    {
-        QImage img = renderSheet(mPopplerDoc, sheetNum, resolution);
-        emit imageReady(img, sheetNum);
-    }
-}
-
-
-
-/************************************************
- *
- ************************************************/
-Render::Render(QObject *parent):
+Render::Render(double resolution, int threadCount, QObject *parent):
     QObject(parent),
-    mWorker(0)
+    mResolution(resolution),
+    mThreadCount(threadCount)
 {
-
+    mWorkers.reserve(threadCount);
 }
 
 
@@ -137,9 +124,12 @@ Render::Render(QObject *parent):
  ************************************************/
 Render::~Render()
 {
-    mThread.quit();
-    mThread.wait();
-    delete mWorker;
+    foreach (RenderWorker *worker, mWorkers)
+    {
+        worker->thread()->quit();
+        worker->thread()->wait();
+        delete worker;
+    }
 }
 
 
@@ -148,23 +138,68 @@ Render::~Render()
  ************************************************/
 void Render::setFileName(const QString &fileName)
 {
-    mThread.quit();
-    mThread.wait();
-    delete mWorker;
+    foreach(RenderWorker *worker, mWorkers)
+    {
+        worker->thread()->quit();
+        worker->thread()->wait();
+        delete worker;
+    }
 
-    mWorker = new RenderWorker(fileName);
-    connect(mWorker, SIGNAL(imageReady(QImage,int)),
-            this, SIGNAL(imageReady(QImage,int)));
+    mWorkers.resize(mThreadCount);
 
-    mWorker->moveToThread(&mThread);
-    mThread.start();
+    for (int i=0; i<mWorkers.count(); ++i)
+    {
+        RenderWorker *worker = new RenderWorker(fileName, mResolution);
+        mWorkers[i] = worker;
+
+        connect(worker, SIGNAL(imageReady(QImage,int)),
+                this, SIGNAL(imageReady(QImage,int)));
+
+        connect(worker, SIGNAL(imageReady(QImage,int)),
+                this, SLOT(workerFinished()));
+
+        worker->moveToThread(worker->thread());
+        worker->thread()->start();
+    }
 }
 
 
 /************************************************
  *
  ************************************************/
-void Render::render(int sheetNum, int resolution) const
+void Render::render(int sheetNum)
 {
-    QMetaObject::invokeMethod(mWorker, "render", Qt::QueuedConnection, Q_ARG(int, sheetNum), Q_ARG(int, resolution));
+    foreach (RenderWorker *worker, mWorkers)
+    {
+        if (!worker->isBussy())
+        {
+            QMetaObject::invokeMethod(worker, "render", Qt::QueuedConnection, Q_ARG(int, sheetNum));
+            return;
+        }
+    }
+
+    if (!mQueue.contains(sheetNum))
+        mQueue.prepend(sheetNum);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Render::cancel(int sheetNum)
+{
+    mQueue.removeAll(sheetNum);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Render::workerFinished()
+{
+    if (!mQueue.isEmpty())
+    {
+        RenderWorker *worker = qobject_cast<RenderWorker*>(sender());
+        QMetaObject::invokeMethod(worker, "render", Qt::QueuedConnection, Q_ARG(int, mQueue.takeFirst()));
+    }
 }

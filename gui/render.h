@@ -30,7 +30,7 @@
 #include <QObject>
 #include <QImage>
 #include <QThread>
-
+#include <QList>
 
 namespace poppler
 {
@@ -41,20 +41,23 @@ class RenderWorker: public QObject
 {
     Q_OBJECT
 public:
-    explicit RenderWorker(const QString &fileName);
+    explicit RenderWorker(const QString &fileName, int resolution);
     virtual ~RenderWorker();
 
+    bool isBussy() const { return mBussy; }
+    QThread *thread() { return &mThread; }
+
 public slots:
-    void render(int sheetNum, int resolution);
+    void render(int sheetNum);
 
 signals:
-    void imageReady(QImage image, int sheetNum) const;
-
-private slots:
-    void doRender(int sheetNum, int resolution) const;
+    void imageReady(QImage image, int sheetNum);
 
 private:
     int mSheetNum;
+    int mResolution;
+    bool mBussy;
+    QThread mThread;
     poppler::document *mPopplerDoc;
 };
 
@@ -63,21 +66,26 @@ class Render : public QObject
 {
     Q_OBJECT
 public:
-    explicit Render(QObject *parent = 0);
+    explicit Render(double resolution, int threadCount = 8, QObject *parent = 0);
     virtual ~Render();
 
 
 public slots:
-    void render(int sheetNum, int resolution) const;
+    void render(int sheetNum);
+    void cancel(int sheetNum);
     void setFileName(const QString &fileName);
 
 signals:
     void imageReady(QImage image, int sheetNum) const;
 
-private:
-    QThread mThread;
-    RenderWorker *mWorker;
+private slots:
+    void workerFinished();
 
+private:
+    QVector<RenderWorker*> mWorkers;
+    int mResolution;
+    int mThreadCount;
+    QList<int> mQueue;
 };
 
 #endif // RENDER_H
