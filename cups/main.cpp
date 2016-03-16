@@ -32,6 +32,9 @@
 #include <QtDBus/QDBusInterface>
 #include <QtDBus/QDBusConnection>
 #include <QtDBus/QDBusMessage>
+#include <pwd.h>
+#include <sys/types.h>
+#include <unistd.h>
 
 #include "common.h"
 #include "envinfo.h"
@@ -120,13 +123,16 @@ int main(int argc, char *argv[])
         error("Invalid usage: job-id title copies options");
 
     QString options = QString::fromLocal8Bit(argv[4]);
-    QString user = qgetenv("USER");
+    passwd *pwd = getpwuid(getuid());
+    QString user = QString::fromLocal8Bit(pwd->pw_name);
 
     info(QString("jobId:   %1").arg(jobId));
     info(QString("title:   %1").arg(title));
     info(QString("count:   %1").arg(count));
     info(QString("options: %1").arg(options));
+    info(QString("uid:     %1").arg(pwd->pw_uid));
     info(QString("user:    %1").arg(user));
+    info(QString("home:    %1").arg(QDir::homePath()));
 
     // Get Xdisplay .............................
 #ifdef Q_OS_LINUX

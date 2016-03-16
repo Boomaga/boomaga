@@ -2,7 +2,7 @@
  # (c)LGPL2+
  #
  #
- # Copyright: 2012-2013 Boomaga team https://github.com/Boomaga
+ # Copyright: 2012-2016 Boomaga team https://github.com/Boomaga
  # Authors:
  #   Alexander Sokoloff <sokoloff.a@gmail.com>
  #
@@ -91,33 +91,6 @@ set(LIBRARIES ${LIBRARIES} ${QT_LIBRARIES})
 add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES} ${MOC_SOURCES})
 target_link_libraries(${PROJECT_NAME} ${LIBRARIES})
 
-
-set(CUPS_BACKEND_ID "MFG:${CUPS_BACKEND_MANUFACTURER};CMD:PJL,PDF;MDL:${CUPS_BACKEND_MODEL};CLS:PRINTER;DES:${CUPS_BACKEND_DESCRIPTION};DRV:DPDF,R1,M0;")
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/backend/boomaga
-               ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}
-               @ONLY)
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/backend/boomaga.ppd
-               ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}.ppd
-               @ONLY)
-
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}
-  DESTINATION ${CUPS_BACKEND_DIR}
-  PERMISSIONS
-    OWNER_READ OWNER_WRITE OWNER_EXECUTE
-)
-
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}.ppd
-  DESTINATION ${CUPS_PPD_DIR}
-  PERMISSIONS
-    OWNER_READ OWNER_WRITE
-    GROUP_READ
-    WORLD_READ
-)
-
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/boomagabackend
   DESTINATION ${NONGUI_DIR}
   PERMISSIONS
@@ -125,3 +98,5 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/boomagabackend
     GROUP_READ             GROUP_EXECUTE
     WORLD_READ             WORLD_EXECUTE
 )
+
+add_subdirectory(backend)
