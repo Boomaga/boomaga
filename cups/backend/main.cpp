@@ -37,7 +37,7 @@ using namespace std;
 #define CUPS_BACKEND_FAILED 1
 
 /************************************************
- *
+ * http://www.cups.org/documentation.php/doc-1.6/api-filter.html
  ************************************************/
 int main(int argc, char *argv[])
 {
@@ -66,23 +66,26 @@ int main(int argc, char *argv[])
     passwd *pwd = getpwnam(user);
     if (!pwd)
     {
-        cout << "ERROR: [Boomaga root] Can't get uid for user " << user << endl;
+        cerr << "ERROR: [Boomaga root] Can't get uid for user " << user << endl;
         return CUPS_BACKEND_FAILED;
     }
 
-    cout << "DEBUG: [Boomaga root] run boomagabackend as UID:" << pwd->pw_uid << " GID: " << pwd->pw_gid << endl;
+    cerr << "DEBUG: [Boomaga root] run boomagabackend as UID:" << pwd->pw_uid << " GID: " << pwd->pw_gid << endl;
 
     setenv("HOME", pwd->pw_dir, 1);
+
     if (setgid(pwd->pw_gid) != 0)
     {
-        cout << "ERROR: [Boomaga root] Can't change GID to " << pwd->pw_gid << endl;
+        cerr << "ERROR: [Boomaga root] Can't change GID to " << pwd->pw_gid << ": ";
+        perror("");
         return CUPS_BACKEND_FAILED;
     }
 
 
     if (setuid(pwd->pw_uid) != 0)
     {
-        cout << "ERROR: [Boomaga root] Can't change uid to " << pwd->pw_uid << endl;
+        cerr << "ERROR: [Boomaga root] Can't change UID to " << pwd->pw_uid << ": ";
+        perror("");
         return CUPS_BACKEND_FAILED;
     }
 
