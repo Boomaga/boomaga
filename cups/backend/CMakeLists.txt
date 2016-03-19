@@ -50,6 +50,11 @@ add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${INSTANCE_NAME})
 
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/boomaga.ppd
+               ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}.ppd
+               @ONLY)
+
+
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}
   DESTINATION ${CUPS_BACKEND_DIR}
   PERMISSIONS
