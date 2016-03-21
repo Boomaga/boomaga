@@ -128,6 +128,7 @@ QString Settings::keyToString(Settings::Key key) const
     case MainWindow_Geometry:           return "MainWindow/Geometry";
     case MainWindow_State:              return "MainWindow/State";
     case MainWindow_SplitterPos:        return "MainWindow/SplitterPos";
+    case MainWindow_PageListIconSize:   return "MainWindow/PageListIconSize";
 
     // PrinterDialog ************************
     case PrinterDialog_Geometry:        return "PrinterDialog/Geometry";
@@ -153,6 +154,7 @@ void Settings::init()
     setDefaultValue(SaveDir, QDir::homePath());
     setDefaultValue(SubBookletsEnabled, true);
     setDefaultValue(SubBookletSize, 20);
+    setDefaultValue(MainWindow_PageListIconSize, 64);
 }
 
 

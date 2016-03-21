@@ -65,7 +65,7 @@ PreviewWidget::PreviewWidget(QWidget *parent) :
     connect(project, SIGNAL(tmpFileRenamed(QString)),
             mRender, SLOT(setFileName(QString)));
 
-    connect(mRender, SIGNAL(imageReady(QImage,int)),
+    connect(mRender, SIGNAL(sheetReady(QImage,int)),
             this, SLOT(sheetImageReady(QImage,int)));
 }
 
@@ -382,9 +382,9 @@ void PreviewWidget::setCurrentSheet(int sheetNum)
 {
     if (project->previewSheetCount())
     {
-        mRender->cancel(mSheetNum);
+        mRender->cancelSheet(mSheetNum);
         mSheetNum = qBound(0, sheetNum, project->previewSheetCount()-1);
-        mRender->render(mSheetNum);
+        mRender->renderSheet(mSheetNum);
     }
     else
     {

@@ -134,8 +134,8 @@ MainWindow::MainWindow(QWidget *parent):
     connect(ui->doubleSidedCbx, SIGNAL(clicked(bool)),
             project, SLOT(setDoubleSided(bool)));
 
-    connect(ui->jobsView, SIGNAL(jobSelected(Job)),
-            this, SLOT(switchToJob(Job)));
+    connect(ui->jobsView, SIGNAL(sheetSelected(int)),
+            ui->preview, SLOT(setCurrentSheet(int)));
 
     connect(ui->printersCombo, SIGNAL(activated(int)),
             this, SLOT(switchPrinterProfile()));
@@ -289,6 +289,7 @@ void MainWindow::loadSettings()
         project->setLayout(mAvailableLayouts.at(0));
 
     project->setDoubleSided(settings->value(Settings::DoubleSided).toBool());
+    ui->jobsView->setIconSize(settings->value(Settings::MainWindow_PageListIconSize).toInt());
 }
 
 
@@ -311,6 +312,7 @@ void MainWindow::saveSettings()
     if (project->printer() != Printer::nullPrinter())
         project->printer()->saveSettings();
 
+    settings->setValue(Settings::MainWindow_PageListIconSize, ui->jobsView->iconSize());
     settings->sync();
 }
 

@@ -118,3 +118,41 @@ int SheetList::indexOfPage(const ProjectPage *page, int from) const
     return -1;
 }
 
+/************************************************
+ *
+ ************************************************/
+int  SheetList::indexOfPage(int pageNum, int from) const
+{
+    return indexOfPage(project->page(pageNum), from);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+QDebug operator<<(QDebug dbg, const Sheet &sheet)
+{
+    dbg.space() << "{ Sheet: " << sheet.sheetNum() << "\n"
+                << "  pages: " << sheet.count() << "\n";
+    for (int i=0; i<sheet.count(); ++i)
+    {
+        const ProjectPage *page = sheet.page(i);
+        if (page)
+        {
+            dbg.space() << "   * " << i << "---------\n"
+                        << "       pageNum:"        << page->pageNum() << "\n"
+                        << "       blankPage:"      << page->isBlankPage() << "\n"
+                        << "       visible:"        << page->visible() << "\n"
+                        << "       startBooklet:"   << page->isStartSubBooklet() << "\n"
+                        << "\n";
+        }
+        else
+        {
+            dbg.space() << "   * " << i << "---------\n"
+                        << "       NULL\n"
+                        << "\n";
+        }
+    }
+    dbg.space() << " }";
+    return dbg;
+}

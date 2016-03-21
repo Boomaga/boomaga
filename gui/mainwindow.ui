@@ -22,7 +22,7 @@
      <number>0</number>
     </property>
     <property name="leftMargin">
-     <number>0</number>
+     <number>1</number>
     </property>
     <property name="topMargin">
      <number>0</number>
@@ -152,7 +152,7 @@
             <number>0</number>
            </property>
            <item>
-            <widget class="JobsListView" name="jobsView">
+            <widget class="JobListView" name="jobsView">
              <property name="sizePolicy">
               <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
                <horstretch>0</horstretch>
@@ -200,14 +200,6 @@
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
-   <property name="geometry">
-    <rect>
-     <x>0</x>
-     <y>0</y>
-     <width>1188</width>
-     <height>20</height>
-    </rect>
-   </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>&amp;File</string>
@@ -357,23 +349,23 @@
   <customwidget>
    <class>LayoutRadioButton</class>
    <extends>QRadioButton</extends>
-   <header location="global">widgets.h</header>
+   <header location="global">widgets/layoutradiobutton.h</header>
   </customwidget>
   <customwidget>
    <class>PrintersComboBox</class>
    <extends>QComboBox</extends>
-   <header location="global">widgets.h</header>
-  </customwidget>
-  <customwidget>
-   <class>JobsListView</class>
-   <extends>QListWidget</extends>
-   <header location="global">widgets.h</header>
+   <header location="global">widgets/printerscombobox.h</header>
   </customwidget>
   <customwidget>
    <class>PreviewWidget</class>
    <extends>QFrame</extends>
-   <header location="global">previewwidget.h</header>
+   <header location="global">widgets/previewwidget.h</header>
    <container>1</container>
+  </customwidget>
+  <customwidget>
+   <class>JobListView</class>
+   <extends>QListWidget</extends>
+   <header location="global">widgets/joblistview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

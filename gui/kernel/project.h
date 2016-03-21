@@ -104,7 +104,7 @@ public:
     void hide() { setVisible(false); }
     void show() { setVisible(true); }
 
-    bool isBlankPage();
+    bool isBlankPage() const;
 
     bool isStartSubBooklet() const { return mStartSubBooklet; }
     void setStartSubBooklet(bool value);

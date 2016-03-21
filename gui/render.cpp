@@ -30,11 +30,14 @@
 #include <QDebug>
 #include <QFile>
 
+#include "kernel/project.h"
+#include "kernel/layout.h"
+
 
 /************************************************
 
  ************************************************/
-QImage renderSheet(poppler::document *doc, int sheetNum, double resolution)
+QImage doRenderSheet(poppler::document *doc, int sheetNum, double resolution)
 {
     poppler::page *page = doc->create_page(sheetNum);
     if (page)
@@ -98,12 +101,55 @@ RenderWorker::~RenderWorker()
 /************************************************
  *
  ************************************************/
-void RenderWorker::render(int sheetNum)
+QImage RenderWorker::renderSheet(int sheetNum)
 {
     mBussy = true;
-    QImage img = renderSheet(mPopplerDoc, sheetNum, mResolution);
-    emit imageReady(img, sheetNum);
+    QImage img = doRenderSheet(mPopplerDoc, sheetNum, mResolution);
+    emit sheetReady(img, sheetNum);
     mBussy = false;
+    return img;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+QImage RenderWorker::renderPage(int sheetNum, const QRectF pageRect, int pageNum)
+{
+    mBussy = true;
+    QImage img = doRenderSheet(mPopplerDoc, sheetNum, mResolution);
+
+    QSizeF printerSize =  project->printer()->paperRect().size();
+
+    if (isLandscape(project->rotation()))
+        printerSize.transpose();
+
+    double scale = qMin(img.width() * 1.0 / printerSize.width(),
+                        img.height() * 1.0 / printerSize.height());
+
+    QSize size = QSize(pageRect.width()  * scale,
+                       pageRect.height() * scale);
+
+    if (isLandscape(project->rotation()))
+        size.transpose();
+
+    QRect rect(QPoint(0, 0), size);
+    if (isLandscape(project->rotation()))
+    {
+        rect.moveRight(img.width() - pageRect.top()  * scale);
+        rect.moveTop(pageRect.left() * scale);
+    }
+    else
+    {
+        rect.moveLeft(pageRect.left() * scale);
+        rect.moveTop(pageRect.top()  * scale);
+    }
+
+    img = img.copy(rect);
+
+    emit pageReady(img, pageNum);
+    mBussy = false;
+    return img;
 }
 
 
@@ -138,6 +184,8 @@ Render::~Render()
  ************************************************/
 void Render::setFileName(const QString &fileName)
 {
+    mFileName = fileName;
+
     foreach(RenderWorker *worker, mWorkers)
     {
         worker->thread()->quit();
@@ -152,11 +200,18 @@ void Render::setFileName(const QString &fileName)
         RenderWorker *worker = new RenderWorker(fileName, mResolution);
         mWorkers[i] = worker;
 
-        connect(worker, SIGNAL(imageReady(QImage,int)),
-                this, SIGNAL(imageReady(QImage,int)));
+        connect(worker, SIGNAL(sheetReady(QImage,int)),
+                this, SIGNAL(sheetReady(QImage,int)));
 
-        connect(worker, SIGNAL(imageReady(QImage,int)),
+        connect(worker, SIGNAL(sheetReady(QImage,int)),
                 this, SLOT(workerFinished()));
+
+        connect(worker, SIGNAL(pageReady(QImage,int)),
+                this, SIGNAL(pageReady(QImage,int)));
+
+        connect(worker, SIGNAL(pageReady(QImage,int)),
+                this, SLOT(workerFinished()));
+
 
         worker->moveToThread(worker->thread());
         worker->thread()->start();
@@ -167,28 +222,59 @@ void Render::setFileName(const QString &fileName)
 /************************************************
  *
  ************************************************/
-void Render::render(int sheetNum)
+void Render::renderSheet(int sheetNum)
 {
     foreach (RenderWorker *worker, mWorkers)
     {
         if (!worker->isBussy())
         {
-            QMetaObject::invokeMethod(worker, "render", Qt::QueuedConnection, Q_ARG(int, sheetNum));
+            startRenderSheet(worker, sheetNum);
             return;
         }
     }
 
-    if (!mQueue.contains(sheetNum))
-        mQueue.prepend(sheetNum);
+    QPair<int,bool> job(sheetNum, false);
+    if (!mQueue.contains(job))
+        mQueue.prepend(job);
 }
 
 
 /************************************************
  *
  ************************************************/
-void Render::cancel(int sheetNum)
+void Render::renderPage(int pageNum)
 {
-    mQueue.removeAll(sheetNum);
+    foreach (RenderWorker *worker, mWorkers)
+    {
+        if (!worker->isBussy())
+        {
+            startRenderPage(worker, pageNum);
+            return;
+        }
+    }
+
+    QPair<int,bool> job(pageNum, true);
+    if (!mQueue.contains(job))
+        mQueue.prepend(job);
+
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Render::cancelSheet(int sheetNum)
+{
+    mQueue.removeAll(QPair<int,bool>(sheetNum, false));
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Render::cancelPage(int pageNum)
+{
+    mQueue.removeAll(QPair<int,bool>(pageNum, true));
 }
 
 
@@ -200,6 +286,56 @@ void Render::workerFinished()
     if (!mQueue.isEmpty())
     {
         RenderWorker *worker = qobject_cast<RenderWorker*>(sender());
-        QMetaObject::invokeMethod(worker, "render", Qt::QueuedConnection, Q_ARG(int, mQueue.takeFirst()));
+        QPair<int,bool> job = mQueue.takeFirst();
+        if (!job.second)
+            startRenderSheet(worker, job.first);
+        else
+            startRenderPage(worker, job.first);
     }
 }
+
+
+/************************************************
+ *
+ ************************************************/
+void Render::startRenderSheet(RenderWorker *worker, int sheetNum)
+{
+    QMetaObject::invokeMethod(worker,
+                              "renderSheet",
+                              Qt::QueuedConnection,
+                              Q_ARG(int, sheetNum));
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Render::startRenderPage(RenderWorker *worker, int pageNum)
+{
+    int sheetNum = project->previewSheets().indexOfPage(pageNum);
+    if (sheetNum < 0)
+        return;
+
+    Sheet *sheet = project->previewSheets().at(sheetNum);
+    ProjectPage *page = project->page(pageNum);
+
+    int pageOnSheet = -1;
+    for (int i = 0; i<sheet->count(); ++i)
+    {
+        if (sheet->page(i) == page)
+            pageOnSheet = i;
+    }
+
+    if (pageOnSheet < 0)
+        return;
+
+    TransformSpec spec = project->layout()->transformSpec(sheet, pageOnSheet, project->rotation());
+
+    QMetaObject::invokeMethod(worker,
+                              "renderPage",
+                              Qt::QueuedConnection,
+                              Q_ARG(int, sheetNum),
+                              Q_ARG(QRectF, spec.rect),
+                              Q_ARG(int, pageNum));
+}
+

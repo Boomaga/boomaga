@@ -131,7 +131,7 @@ void ProjectPage::setVisible(bool value)
 /************************************************
 
  ************************************************/
-bool ProjectPage::isBlankPage()
+bool ProjectPage::isBlankPage() const
 {
     return mPageNum < 0;
 }

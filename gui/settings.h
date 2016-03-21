@@ -67,6 +67,7 @@ public:
         MainWindow_Geometry,
         MainWindow_State,
         MainWindow_SplitterPos,
+        MainWindow_PageListIconSize,
 
         // PrinterDialog ************************
         PrinterDialog_Geometry,

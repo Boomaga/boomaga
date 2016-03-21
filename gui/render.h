@@ -31,6 +31,7 @@
 #include <QImage>
 #include <QThread>
 #include <QList>
+#include <QPair>
 
 namespace poppler
 {
@@ -48,10 +49,12 @@ public:
     QThread *thread() { return &mThread; }
 
 public slots:
-    void render(int sheetNum);
+    QImage renderSheet(int sheetNum);
+    QImage renderPage(int sheetNum, const QRectF pageRect, int pageNum);
 
 signals:
-    void imageReady(QImage image, int sheetNum);
+    void sheetReady(QImage, int sheetNum);
+    void pageReady(QImage, int pageNum);
 
 private:
     int mSheetNum;
@@ -69,23 +72,35 @@ public:
     explicit Render(double resolution, int threadCount = 8, QObject *parent = 0);
     virtual ~Render();
 
+    QString fileName() const { return mFileName; }
 
 public slots:
-    void render(int sheetNum);
-    void cancel(int sheetNum);
     void setFileName(const QString &fileName);
 
+    void renderSheet(int sheetNum);
+    void cancelSheet(int sheetNum);
+
+    void renderPage(int pageNum);
+    void cancelPage(int pageNum);
+
 signals:
-    void imageReady(QImage image, int sheetNum) const;
+    void sheetReady(QImage, int sheetNum);
+    void pageReady(QImage, int pageNum);
 
 private slots:
     void workerFinished();
 
 private:
+    QString mFileName;
     QVector<RenderWorker*> mWorkers;
     int mResolution;
     int mThreadCount;
-    QList<int> mQueue;
+    QList<QPair<int, bool> > mQueue;
+
+    void startRenderSheet(RenderWorker *worker, int sheetNum);
+    void startRenderPage(RenderWorker *worker, int pageNum);
+
 };
+
 
 #endif // RENDER_H

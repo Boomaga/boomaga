@@ -483,6 +483,9 @@ JobList::JobList(const QList<Job> &other):
  ************************************************/
 int JobList::indexOfProjectPage(const ProjectPage * page, int from) const
 {
+    if (!page)
+        return -1;
+
     for(int i=from; i<this->count(); ++i)
     {
         if (at(i).indexOfPage(page) > -1)

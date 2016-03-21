@@ -41,11 +41,9 @@ set(HEADERS
     mainwindow.h
     actions.h
     settings.h
-    widgets.h
     dbus.h
     icon.h
     printersettings/printersettings.h
-    previewwidget.h
     aboutdialog/aboutdialog.h
     translations/translatorsinfo/translatorsinfo.h
     export/exporttopdf.h
@@ -55,6 +53,11 @@ set(HEADERS
     pdfmerger/pdfmergeripc.h
     configdialog/configdialog.h
     printdialog/printdialog.h
+    widgets/pagelistview.h
+    widgets/joblistview.h
+    widgets/layoutradiobutton.h
+    widgets/printerscombobox.h
+    widgets/previewwidget.h
 )
 
 set(SOURCES
@@ -71,11 +74,9 @@ set(SOURCES
     mainwindow.cpp
     actions.cpp
     settings.cpp
-    widgets.cpp
     dbus.cpp
     icon.cpp
     printersettings/printersettings.cpp
-    previewwidget.cpp
     aboutdialog/aboutdialog.cpp
     translations/translatorsinfo/translatorsinfo.cpp
     export/exporttopdf.cpp
@@ -85,6 +86,11 @@ set(SOURCES
     pdfmerger/pdfmergeripc.cpp
     configdialog/configdialog.cpp
     printdialog/printdialog.cpp
+    widgets/pagelistview.cpp
+    widgets/joblistview.cpp
+    widgets/layoutradiobutton.cpp
+    widgets/printerscombobox.cpp
+    widgets/previewwidget.cpp
 )
 
 set (MOCS
@@ -95,16 +101,19 @@ set (MOCS
     settings.h
     mainwindow.h
     actions.h
-    widgets.h
     dbus.h
     printersettings/printersettings.h
-    previewwidget.h
     aboutdialog/aboutdialog.h
     export/exporttopdf.h
     kernel/projectfile.h
     pdfmerger/pdfmergeripc.h
     configdialog/configdialog.h
     printdialog/printdialog.h
+    widgets/pagelistview.h
+    widgets/joblistview.h
+    widgets/layoutradiobutton.h
+    widgets/printerscombobox.h
+    widgets/previewwidget.h
 )
 
 set(LIBRARIES

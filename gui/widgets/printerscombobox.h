@@ -2,7 +2,7 @@
  * (c)LGPL2+
  *
  *
- * Copyright: 2012-2013 Boomaga team https://github.com/Boomaga
+ * Copyright: 2012-2016 Boomaga team https://github.com/Boomaga
  * Authors:
  *   Alexander Sokoloff <sokoloff.a@gmail.com>
  *
@@ -24,37 +24,16 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#ifndef WIDGETS_H
-#define WIDGETS_H
+#ifndef PRINTERCOMBOBOX_H
+#define PRINTERCOMBOBOX_H
 
-#include <QRadioButton>
+//#include <QRadioButton>
 #include <QComboBox>
-#include <QListWidget>
-#include <kernel/job.h>
+//#include <QListWidget>
+//#include <kernel/job.h>
 
 class Printer;
 class PrinterProfile;
-class Layout;
-
-
-class LayoutRadioButton : public QRadioButton
-{
-    Q_OBJECT
-public:
-    explicit LayoutRadioButton(QWidget *parent=0);
-    explicit LayoutRadioButton(const QString &text, QWidget *parent=0);
-
-
-    Layout *layout() const { return mLayout; }
-    void setLayout(Layout *value) { mLayout = value; }
-signals:
-    
-public slots:
-    
-private:
-    Layout *mLayout;
-};
-
 
 class PrintersComboBox: public QComboBox
 {
@@ -81,30 +60,4 @@ private:
     int itemProfile(int index) const;
 };
 
-
-class JobsListView: public QListWidget
-{
-    Q_OBJECT
-public:
-    explicit JobsListView(QWidget *parent = 0);
-    Job currentJob() const;
-
-public slots:
-    void setSheetNum(int sheetNum);
-    void updateItems();
-
-signals:
-    void jobSelected(Job job);
-    void contextMenuRequested(Job job);
-
-private slots:
-    void showContextMenu(const QPoint &pos);
-    void layoutChanged();
-
-protected:
-    void mouseReleaseEvent(QMouseEvent *event);
-
-};
-
-
-#endif // WIDGETS_H
+#endif // PRINTERCOMBOBOX_H

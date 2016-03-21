@@ -37,7 +37,6 @@ class QProcess;
 class Sheet;
 class Job;
 class JobList;
-class Render;
 
 #include "job.h"
 
