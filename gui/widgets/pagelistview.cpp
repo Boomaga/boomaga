@@ -96,13 +96,13 @@ void PagesListView::setIconSize(int size)
  ************************************************/
 void PagesListView::updateItems()
 {
-    QList<Page> pages = getPages();
+    QList<ItemInfo> pages = getPages();
 
     int cur = currentRow();
     setUpdatesEnabled(false);
     clear();
 
-    foreach (Page page, pages)
+    foreach (ItemInfo page, pages)
     {
         QListWidgetItem *item = new QListWidgetItem(this);
         item->setText(page.title);

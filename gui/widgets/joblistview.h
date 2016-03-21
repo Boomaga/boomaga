@@ -48,7 +48,7 @@ signals:
     void contextMenuRequested(Job job);
 
 protected:
-    QList<Page> getPages() const;
+    QList<ItemInfo> getPages() const;
     void contextMenuEvent(QContextMenuEvent *e);
 };
 

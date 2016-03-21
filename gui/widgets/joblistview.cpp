@@ -48,14 +48,14 @@ JobListView::JobListView(QWidget *parent):
 /************************************************
  *
  ************************************************/
-QList<PagesListView::Page> JobListView::getPages() const
+QList<PagesListView::ItemInfo> JobListView::getPages() const
 {
-    QList<Page> res;
+    QList<ItemInfo> res;
     int pageNum = 0;
     for (int i=0; i<project->jobs()->count(); ++i)
     {
         Job job = project->jobs()->at(i);
-        Page page;
+        ItemInfo page;
         page.title = job.title() + "\n      " + tr("%1 pages").arg(job.visiblePageCount());
         page.page = job.visiblePageCount() ? pageNum : -1;
         page.toolTip = QString("<b>%1</b><p><font size=-1><i>%2</i></font>")

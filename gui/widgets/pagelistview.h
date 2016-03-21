@@ -50,12 +50,12 @@ signals:
     void itemMoved(int from, int to);
 
 protected:
-    struct Page {
+    struct ItemInfo {
         QString title;
         int page;
         QString toolTip;
     };
-    virtual QList<Page> getPages() const = 0;
+    virtual QList<ItemInfo> getPages() const = 0;
     void mouseReleaseEvent(QMouseEvent *e);
     void wheelEvent(QWheelEvent *e);
     void dropEvent(QDropEvent *e);
