@@ -34,9 +34,12 @@
 #include <QList>
 #include <QVector>
 #include <QRectF>
-#include <poppler/PDFDoc.h>
 
 class PdfMergerPageInfo;
+class BoomagaPDFDoc;
+class FileOutStream;
+class Dict;
+class XRef;
 
 class PdfMerger
 {
@@ -46,24 +49,23 @@ public:
     int majorVer() const { return mMajorVer; }
     int minorVer() const { return mMinorVer; }
 
-    PDFDoc *addFile(const QString &fileName, qint64 startPos, qint64 endPos);
+    BoomagaPDFDoc *addFile(const QString &fileName, qint64 startPos, qint64 endPos);
     bool run(const QString &outFileName);
 
     qint64 xrefPos() const { return mXrefPos; }
 
 private:
-    XRef mXRef;
-    QList<PDFDoc*> mDocs;
+    XRef *mXRef;
+    QList<BoomagaPDFDoc*> mDocs;
     QVector<PdfMergerPageInfo*> mOrigPages;
     int mMajorVer;
     int mMinorVer;
     FileOutStream *mStream;
-
-    Guint  mNextFreeNum;
+    uint mNextFreeNum;
     qint64 mXrefPos;
+
     bool writePageAsXObject(PdfMergerPageInfo *pageInfo);
-    bool writeDictValue(Dict *dict, const char *key, Guint numOffset);
-    QString getDocumentMetaInfo(PDFDoc *doc, const char *tag);
+    bool writeDictValue(Dict *dict, const char *key, uint numOffset);
 };
 
 #endif // PDFMERGER_H

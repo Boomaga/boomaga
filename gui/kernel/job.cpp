@@ -82,7 +82,7 @@ JobData::JobData(const QString &fileName, qint64 startPos, qint64 endPos, const 
         if (doc->isValid())
         {
             mTitle = doc->getMetaInfo("Title");
-            int pageCount = doc->getNumPages();
+            int pageCount = doc->pageCount();
 
             InputFile inputFile(mFileName, mStartPos, mEndPos);
 

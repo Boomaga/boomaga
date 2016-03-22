@@ -28,10 +28,12 @@
 #define BOOMAGAPOPPLER_H
 
 #include <QString>
-#include <poppler/PDFDoc.h>
-class QString;
 
-class BoomagaPDFDoc: public PDFDoc
+class QString;
+class PDFDoc;
+
+
+class BoomagaPDFDoc
 {
 public:
     BoomagaPDFDoc(const QString &fileName, qint64 startPos, qint64 endPos);
@@ -41,7 +43,14 @@ public:
 
     QString getMetaInfo(const char *tag);
 
+    PDFDoc *popplerDoc() { return mPDFDoc; }
+
+    int PDFMajorVersion();
+    int PDFMinorVersion();
+    int pageCount();
+
 private:
+    PDFDoc *mPDFDoc;
     bool mValid;
     QString mErrorString;
 };

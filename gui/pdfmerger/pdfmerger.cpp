@@ -31,8 +31,6 @@
 #include <QDebug>
 #include <QDir>
 
-#include "../kernel/project.h"
-
 #include <poppler/PDFDoc.h>
 #include <poppler/GlobalParams.h>
 #include <poppler/poppler-config.h>
@@ -215,7 +213,7 @@ OutStream &operator<<(OutStream &stream, const PDFRectangle *rect)
 /************************************************
 
  ************************************************/
-OutStream &operator<<(OutStream &stream, const unsigned int value)
+OutStream &operator<<(OutStream &stream, const uint value)
 {
     stream << QString("%1").arg(value);
     return stream;
@@ -321,6 +319,7 @@ QString PdfMergerPageInfo::dump()
 
  ************************************************/
 PdfMerger::PdfMerger():
+    mXRef(new XRef()),
     mMajorVer(1),
     mMinorVer(4),
     mStream(0),
@@ -340,13 +339,14 @@ PdfMerger::~PdfMerger()
     qDeleteAll(mOrigPages);
     qDeleteAll(mDocs);
     delete mStream;
+    delete mXRef;
 }
 
 
 /************************************************
 
  ************************************************/
-PDFDoc *PdfMerger::addFile(const QString &fileName, qint64 startPos, qint64 endPos)
+BoomagaPDFDoc *PdfMerger::addFile(const QString &fileName, qint64 startPos, qint64 endPos)
 {
     BoomagaPDFDoc *doc = new BoomagaPDFDoc(fileName, startPos, endPos);
 
@@ -355,16 +355,16 @@ PDFDoc *PdfMerger::addFile(const QString &fileName, qint64 startPos, qint64 endP
         error(doc->errorString());
     }
 
-    if (doc->getPDFMajorVersion() > mMajorVer)
+    if (doc->PDFMajorVersion() > mMajorVer)
     {
-        mMajorVer = doc->getPDFMajorVersion();
-        mMinorVer = doc->getPDFMinorVersion();
+        mMajorVer = doc->PDFMajorVersion();
+        mMinorVer = doc->PDFMinorVersion();
     }
-    else if (doc->getPDFMajorVersion() == mMinorVer)
+    else if (doc->PDFMajorVersion() == mMinorVer)
     {
-        if (doc->getPDFMinorVersion() > mMinorVer)
+        if (doc->PDFMinorVersion() > mMinorVer)
         {
-            mMinorVer = doc->getPDFMinorVersion();
+            mMinorVer = doc->PDFMinorVersion();
         }
     }
 
@@ -387,14 +387,14 @@ bool PdfMerger::run(const QString &outFileName)
     mStream = new FileOutStream(f, 0);
     PDFDoc::writeHeader(mStream, mMajorVer, mMinorVer);
 
-    mXRef.add(0, 65535, 0, false);
+    mXRef->add(0, 65535, 0, false);
 
-    int rootNum = mXRef.getNumObjects();
+    int rootNum = mXRef->getNumObjects();
     int pagesNum = rootNum +1;
 
 
     // Catalog object ...........................
-    mXRef.add(rootNum, 0, mStream->getPos(), true);
+    mXRef->add(rootNum, 0, mStream->getPos(), true);
     *mStream << rootNum << " 0 obj\n";
     *mStream << "<<\n";
     *mStream << "/Type /Catalog\n";
@@ -405,7 +405,7 @@ bool PdfMerger::run(const QString &outFileName)
 
 
     // Pages object .............................
-    mXRef.add(pagesNum, 0, mStream->getPos(), true);
+    mXRef->add(pagesNum, 0, mStream->getPos(), true);
     *mStream << pagesNum << " 0 obj\n";
     *mStream << "<<\n";
     *mStream << "/Type /Pages\n";
@@ -415,20 +415,22 @@ bool PdfMerger::run(const QString &outFileName)
     // ..........................................
 
     int pagesCnt = 0;
-    foreach (PDFDoc *doc, mDocs)
-        pagesCnt += doc->getNumPages();
+    foreach (BoomagaPDFDoc *doc, mDocs)
+        pagesCnt += doc->pageCount();
 
     mOrigPages.resize(pagesCnt);
 
     PdfMergerIPCWriter ipc;
     ipc.writeAllPagesCount(pagesCnt);
 
-    Guint numOffset = mXRef.getNumObjects();
+    Guint numOffset = mXRef->getNumObjects();
     XRef countXref;
 
     int n=0;
-    foreach (PDFDoc *doc, mDocs)
+    foreach (BoomagaPDFDoc *bDoc, mDocs)
     {
+        PDFDoc *doc = bDoc->popplerDoc();
+
         //*mStream << "\n% Document **************************************\n\n";
         for (int i = 1; i <= doc->getNumPages(); i++)
         {
@@ -475,7 +477,7 @@ bool PdfMerger::run(const QString &outFileName)
 
             mOrigPages[n] = pageInfo;
 
-            POPPLER_markPageObjects(doc, pageDict, &mXRef, &countXref, numOffset, refPage->num, refPage->num);
+            POPPLER_markPageObjects(doc, pageDict, mXRef, &countXref, numOffset, refPage->num, refPage->num);
 
             if (n % 2)
                 ipc.writeProgressStatus((n + 1) / 2);
@@ -483,11 +485,11 @@ bool PdfMerger::run(const QString &outFileName)
             n++;
         }
 
-        POPPLER_WritePageObjects(doc, mStream, &mXRef, numOffset);
-        numOffset = mXRef.getNumObjects() + 1;
+        POPPLER_WritePageObjects(doc, mStream, mXRef, numOffset);
+        numOffset = mXRef->getNumObjects() + 1;
     }
 
-    int xformStartNum = mXRef.getNumObjects();
+    int xformStartNum = mXRef->getNumObjects();
     //*mStream  << "\n% XObjects **************************************\n\n";
     for (int i=0; i<mOrigPages.count(); ++i)
     {
@@ -500,7 +502,7 @@ bool PdfMerger::run(const QString &outFileName)
 
     mXrefPos = mStream->getPos();
 
-    writeTrailer(&mXRef, rootNum, mStream);
+    writeTrailer(mXRef, rootNum, mStream);
 
     //*mStream  << "\n% End update **************************************\n\n";
 
@@ -512,7 +514,7 @@ bool PdfMerger::run(const QString &outFileName)
     int i = 0;
     for (int docNum=0; docNum<mDocs.count(); ++docNum)
     {
-        PDFDoc *doc = mDocs.at(docNum);
+        PDFDoc *doc = mDocs.at(docNum)->popplerDoc();
 
         int pc = doc->getNumPages();
         for (int pageNum=0; pageNum<pc; ++pageNum)
@@ -523,7 +525,7 @@ bool PdfMerger::run(const QString &outFileName)
         }
     }
 
-    ipc.writeXRefInfo(mXrefPos, mXRef.getNumObjects());
+    ipc.writeXRefInfo(mXrefPos, mXRef->getNumObjects());
     return true;
 }
 
@@ -550,7 +552,7 @@ bool PdfMerger::run(const QString &outFileName)
  ************************************************/
 bool PdfMerger::writePageAsXObject(PdfMergerPageInfo *pageInfo)
 {
-    mXRef.add(pageInfo->objNum, 0, mStream->getPos(), true);
+    mXRef->add(pageInfo->objNum, 0, mStream->getPos(), true);
     *mStream << pageInfo->objNum << " 0 obj\n";
     *mStream << "<<\n";
     Dict *pageDict = pageInfo->page.getDict();
@@ -607,7 +609,7 @@ bool PdfMerger::writePageAsXObject(PdfMergerPageInfo *pageInfo)
             Object value;
             dict->getVal(i, &value);
             *mStream << "/" << dict->getKey(i) << " ";
-            POPPLER_WriteObject(&value, 0, mStream, &mXRef, pageInfo->numOffset);
+            POPPLER_WriteObject(&value, 0, mStream, mXRef, pageInfo->numOffset);
             *mStream << "\n";
             value.free();
         }
@@ -635,7 +637,7 @@ bool PdfMerger::writePageAsXObject(PdfMergerPageInfo *pageInfo)
 /************************************************
 
  ************************************************/
-bool PdfMerger::writeDictValue(Dict *dict, const char *key, Guint numOffset)
+bool PdfMerger::writeDictValue(Dict *dict, const char *key, uint numOffset)
 {
     if (!dict->hasKey((char*)key))
         return false;
@@ -643,7 +645,7 @@ bool PdfMerger::writeDictValue(Dict *dict, const char *key, Guint numOffset)
     Object value;
     dict->lookupNF((char*)key, &value);
     *mStream << "/" << key << " ";
-    POPPLER_WriteObject(&value, 0, mStream, &mXRef, numOffset);
+    POPPLER_WriteObject(&value, 0, mStream, mXRef, numOffset);
     *mStream << "\n";
     value.free();
     return true;

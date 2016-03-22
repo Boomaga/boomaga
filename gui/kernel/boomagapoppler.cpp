@@ -35,6 +35,7 @@
 
 #include <poppler/GlobalParams.h>
 #include <poppler/poppler-config.h>
+#include <poppler/PDFDoc.h>
 
 #if POPPLER_VERSION >= 2300
 #include <poppler/goo/gfile.h>
@@ -50,6 +51,10 @@
 static GBool GCC_VARIABLE_IS_USED printVersion = true;
 static GBool GCC_VARIABLE_IS_USED printHelp = true;
 
+
+/************************************************
+ *
+ ************************************************/
 void initPoppler()
 {
     if (!globalParams)
@@ -57,7 +62,9 @@ void initPoppler()
 }
 
 
-
+/************************************************
+ *
+ ************************************************/
 class PJLFileStreamData
 {
 public:
@@ -129,6 +136,9 @@ public:
 };
 
 
+/************************************************
+ *
+ ************************************************/
 class PJLFileStream: protected PJLFileStreamData, public FileStream
 {
 public:
@@ -154,10 +164,12 @@ public:
  *
  * ***********************************************/
 BoomagaPDFDoc::BoomagaPDFDoc(const QString &fileName, qint64 startPos, qint64 endPos):
-    PDFDoc(new PJLFileStream(fileName, startPos, endPos)),
     mValid(true)
 {    
-    PJLFileStream *stream = static_cast<PJLFileStream*>(getBaseStream());
+    mPDFDoc = new PDFDoc(new PJLFileStream(fileName, startPos, endPos));
+
+
+    PJLFileStream *stream = static_cast<PJLFileStream*>(mPDFDoc->getBaseStream());
     if (!stream->isValid())
     {
         mErrorString = stream->errorString();
@@ -165,14 +177,14 @@ BoomagaPDFDoc::BoomagaPDFDoc(const QString &fileName, qint64 startPos, qint64 en
         return;
     }
 
-    if (!isOk())
+    if (!mPDFDoc->isOk())
     {
         mErrorString = QObject::tr("PDF file \"%1\" is damaged.").arg(fileName);
         mValid = false;
         return;
     }
 
-    if (isEncrypted())
+    if (mPDFDoc->isEncrypted())
     {
         mErrorString = QObject::tr("PDF file \"%1\" is encripted.").arg(fileName);
         mValid = false;
@@ -189,7 +201,7 @@ QString BoomagaPDFDoc::getMetaInfo(const char *tag)
     QString result;
     Object docInfo;
 
-    getDocInfo(&docInfo);
+    mPDFDoc->getDocInfo(&docInfo);
     if (docInfo.isDict())
     {
         Dict *dict = docInfo.getDict();
@@ -218,6 +230,32 @@ QString BoomagaPDFDoc::getMetaInfo(const char *tag)
     return result;
 }
 
+
+/************************************************
+ *
+ ************************************************/
+int BoomagaPDFDoc::PDFMajorVersion()
+{
+    return mPDFDoc->getPDFMajorVersion();
+}
+
+
+/************************************************
+ *
+ ************************************************/
+int BoomagaPDFDoc::PDFMinorVersion()
+{
+    return mPDFDoc->getPDFMinorVersion();
+}
+
+
+/************************************************
+ *
+ ************************************************/
+int BoomagaPDFDoc::pageCount()
+{
+    return mPDFDoc->getNumPages();
+}
 
 
 /************************************************
