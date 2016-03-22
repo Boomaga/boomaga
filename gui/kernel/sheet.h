@@ -33,7 +33,7 @@
 #include <QDebug>
 #include "boomagatypes.h"
 
-class ProjectPage;
+class Page;
 
 
 class Sheet
@@ -55,19 +55,19 @@ public:
     explicit Sheet(int count, int sheetNum);
     virtual ~Sheet();
 
-    ProjectPage *page(int index) { return mPages[index]; }
-    const ProjectPage *page(int index) const { return mPages.at(index); }
-    void setPage(int index, ProjectPage *page);
+    Page *page(int index) { return mPages[index]; }
+    const Page *page(int index) const { return mPages.at(index); }
+    void setPage(int index, Page *page);
 
     int count() const { return mPages.count(); }
-    int indexOfPage(const ProjectPage *page, int from = 0) const;
+    int indexOfPage(const Page *page, int from = 0) const;
 
     Rotation rotation() const { return mRotation; }
     void setRotation(Rotation rotation);
 
     int sheetNum() const { return mSheetNum; }
 private:
-    QVector<ProjectPage*> mPages;
+    QVector<Page*> mPages;
     int mSheetNum;
     Hints mHints;
     Rotation mRotation;
@@ -76,7 +76,7 @@ private:
 class SheetList: public QList<Sheet*>
 {
 public:
-    int indexOfPage(const ProjectPage *page, int from = 0) const;
+    int indexOfPage(const Page *page, int from = 0) const;
     int indexOfPage(int pageNum, int from = 0) const;
 };
 

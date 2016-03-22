@@ -50,14 +50,14 @@ public:
     QString mFileName;
     qint64 mStartPos;
     qint64 mEndPos;
-    QList<ProjectPage*> mPages;
+    QList<Page*> mPages;
     QString mTitle;
     Job::State mState;
     QString mErrorString;
     bool mAutoRemove;
 
     static int lockUnlockFile(const QString &file, int lock);
-    ProjectPage *takePage(ProjectPage *page);
+    Page *takePage(Page *page);
 };
 
 
@@ -98,14 +98,14 @@ JobData::JobData(const QString &fileName, qint64 startPos, qint64 endPos, const 
                         continue;
                     }
 
-                    mPages << new ProjectPage(inputFile, p);
+                    mPages << new Page(inputFile, p);
                 }
 
             }
             else
             {
                 for (int i=0; i< pageCount; ++i)
-                    mPages << new ProjectPage(inputFile, i);
+                    mPages << new Page(inputFile, i);
             }
 
             mState = Job::JobNotReady;
@@ -161,12 +161,12 @@ int JobData::lockUnlockFile(const QString &file, int lock)
 /************************************************
 
  ************************************************/
-ProjectPage *JobData::takePage(ProjectPage *page)
+Page *JobData::takePage(Page *page)
 {
     int n = mPages.indexOf(page);
     if (n>-1)
     {
-        ProjectPage *page = mPages.takeAt(n);
+        Page *page = mPages.takeAt(n);
         return page;
     }
     else
@@ -251,7 +251,7 @@ int Job::pageCount() const
 /************************************************
 
  ************************************************/
-ProjectPage *Job::page(int index) const
+Page *Job::page(int index) const
 {
     return mData->mPages[index];
 }
@@ -263,7 +263,7 @@ ProjectPage *Job::page(int index) const
 int Job::visiblePageCount() const
 {
     int res =0;
-    foreach (ProjectPage *p, mData->mPages)
+    foreach (Page *p, mData->mPages)
     {
         if (p->visible())
             res++;
@@ -276,9 +276,9 @@ int Job::visiblePageCount() const
 /************************************************
 
  ************************************************/
-ProjectPage *Job::firstVisiblePage() const
+Page *Job::firstVisiblePage() const
 {
-    foreach (ProjectPage *page, mData->mPages)
+    foreach (Page *page, mData->mPages)
     {
         if (page->visible())
             return page;
@@ -291,16 +291,16 @@ ProjectPage *Job::firstVisiblePage() const
 /************************************************
 
  ************************************************/
-int Job::indexOfPage(const ProjectPage *page, int from) const
+int Job::indexOfPage(const Page *page, int from) const
 {
-    return mData->mPages.indexOf(const_cast<ProjectPage*>(page), from);
+    return mData->mPages.indexOf(const_cast<Page*>(page), from);
 }
 
 
 /************************************************
  *
  * ***********************************************/
-void Job::insertPage(int before, ProjectPage *page)
+void Job::insertPage(int before, Page *page)
 {
     mData->mPages.insert(before, page);
     project->update();
@@ -310,7 +310,7 @@ void Job::insertPage(int before, ProjectPage *page)
 /************************************************
 
  ************************************************/
-void Job::addPage(ProjectPage *page)
+void Job::addPage(Page *page)
 {
     mData->mPages.append(page);
     project->update();
@@ -320,9 +320,9 @@ void Job::addPage(ProjectPage *page)
 /************************************************
  *
  * ***********************************************/
-void Job::removePage(ProjectPage *page)
+void Job::removePage(Page *page)
 {
-    ProjectPage *p = mData->takePage(page);
+    Page *p = mData->takePage(page);
     project->update();
     delete p;
 }
@@ -331,11 +331,11 @@ void Job::removePage(ProjectPage *page)
 /************************************************
 
  ************************************************/
-void Job::removePages(const QList<ProjectPage*> pages)
+void Job::removePages(const QList<Page*> pages)
 {
-    foreach (ProjectPage *page, pages)
+    foreach (Page *page, pages)
     {
-        ProjectPage *p = mData->takePage(page);
+        Page *p = mData->takePage(page);
         delete p;
     }
 
@@ -346,12 +346,12 @@ void Job::removePages(const QList<ProjectPage*> pages)
 /************************************************
 
  ************************************************/
-ProjectPage *Job::takePage(ProjectPage *page)
+Page *Job::takePage(Page *page)
 {
     int n = mData->mPages.indexOf(page);
     if (n>-1)
     {
-        ProjectPage *page = mData->mPages.takeAt(n);
+        Page *page = mData->mPages.takeAt(n);
 
         project->update();
         return page;
@@ -441,7 +441,7 @@ void Job::setAutoRemove(bool value)
  * ***********************************************/
 void Job::insertBlankPage(int before)
 {
-    insertPage(before, new ProjectPage());
+    insertPage(before, new Page());
 }
 
 
@@ -453,7 +453,7 @@ Job Job::clone()
     Job res = *this;
     res.mData.detach();
     for (int i=0; i< mData->mPages.count(); ++i)
-        res.mData->mPages[i] = new ProjectPage(mData->mPages.at(i));
+        res.mData->mPages[i] = new Page(mData->mPages.at(i));
 
     return res;
 }
@@ -481,7 +481,7 @@ JobList::JobList(const QList<Job> &other):
 /************************************************
 
  ************************************************/
-int JobList::indexOfProjectPage(const ProjectPage * page, int from) const
+int JobList::indexOfPage(const Page * page, int from) const
 {
     if (!page)
         return -1;
