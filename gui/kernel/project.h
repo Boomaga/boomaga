@@ -27,12 +27,10 @@
 #ifndef PROJECT_H
 #define PROJECT_H
 
-#include "page.h"
 #include "job.h"
 #include "printer.h"
 #include "inputfile.h"
 #include "../pdfmerger/pdfmergeripc.h"
-
 
 #include <QObject>
 #include <QList>
@@ -82,6 +80,45 @@ private:
     void addDictItem(QByteArray &out, const QString &key, const QDateTime &value) const;
 };
 
+class ProjectPage
+{
+public:
+    explicit ProjectPage();
+    explicit ProjectPage(const ProjectPage *other);
+    explicit ProjectPage(const InputFile &inputFile, int pageNum);
+    virtual ~ProjectPage();
+
+    InputFile inputFile() const { return mInputFile; }
+    int pageNum() const { return mPageNum; }
+
+    virtual QRectF rect() const;
+    Rotation pdfRotation() const;
+    Rotation manualRotation() const { return mManualRotation; }
+    void setManualRotation(Rotation value) { mManualRotation = value; }
+
+    PdfPageInfo pdfInfo() const { return mPdfInfo; }
+    void setPdfInfo(const PdfPageInfo &value) { mPdfInfo = value; }
+
+    bool visible() const { return mVisible;}
+    void setVisible(bool value);
+    void hide() { setVisible(false); }
+    void show() { setVisible(true); }
+
+    bool isBlankPage() const;
+
+    bool isStartSubBooklet() const { return mStartSubBooklet; }
+    void setStartSubBooklet(bool value);
+
+private:
+    InputFile mInputFile;
+    int mPageNum;
+    bool mVisible;
+    PdfPageInfo mPdfInfo;
+    Rotation mManualRotation;
+    bool mStartSubBooklet;
+};
+
+
 
 class Project : public QObject
 {
@@ -105,8 +142,8 @@ public:
     const JobList *jobs() const { return &mJobs; }
 
     int pageCount() const { return mPages.count(); }
-    Page *page(int index) const { return mPages.at(index); }
-    QList<Page*> pages() const { return mPages; }
+    ProjectPage *page(int index) const { return mPages.at(index); }
+    QList<ProjectPage*> pages() const { return mPages; }
 
     int sheetCount() const { return mSheetCount; }
     QList<Sheet*> selectSheets(PagesType pages = AllPages, PagesOrder order = ForwardOrder) const;
@@ -153,7 +190,7 @@ signals:
     void tmpFileRenamed(const QString mTmpFileName);
 
 protected:
-    Rotation calcRotation(const QList<Page *> &pages, const Layout *layout) const;
+    Rotation calcRotation(const QList<ProjectPage *> &pages, const Layout *layout) const;
 
 private slots:
     void tmpFileMerged();
@@ -164,7 +201,7 @@ private:
     ~Project();
 
     const Layout *mLayout;
-    QList<Page*> mPages;
+    QList<ProjectPage*> mPages;
     JobList mJobs;
 
     int mSheetCount;

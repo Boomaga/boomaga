@@ -30,36 +30,36 @@
 #include <QAction>
 #include "kernel/job.h"
 class Sheet;
-class Page;
+class ProjectPage;
 
 class PageAction: public QAction
 {
     Q_OBJECT
 public:
-    explicit PageAction(Sheet *sheet, Page *page, QObject* parent):
+    explicit PageAction(Sheet *sheet, ProjectPage *page, QObject* parent):
         QAction(parent),
         mSheet(sheet),
         mPage(page)
     {}
 
-    PageAction(const QString &text, Sheet *sheet, Page *page, QObject* parent):
+    PageAction(const QString &text, Sheet *sheet, ProjectPage *page, QObject* parent):
         QAction(text, parent),
         mSheet(sheet),
         mPage(page)
     {}
 
-    PageAction(const QIcon &icon, const QString &text, Sheet *sheet, Page *page, QObject* parent):
+    PageAction(const QIcon &icon, const QString &text, Sheet *sheet, ProjectPage *page, QObject* parent):
         QAction(icon, text, parent),
         mSheet(sheet),
         mPage(page)
     {}
 
     Sheet *sheet() const { return mSheet; }
-    Page *page() const { return mPage; }
+    ProjectPage *page() const { return mPage; }
 
 private:
     Sheet *mSheet;
-    Page *mPage;
+    ProjectPage *mPage;
 };
 
 

@@ -277,7 +277,7 @@ void ProjectFile::load(const QString &fileName, const QString &options)
                             if (spec.isblank())
                                 job.insertBlankPage(i);
 
-                            Page *page = job.page(i);
+                            ProjectPage *page = job.page(i);
 
                             if (spec.isHidden())
                                 page->setVisible(false);
@@ -364,7 +364,7 @@ void ProjectFile::save(const QString &fileName)
         QStringList pages;
         for (int p=0; p<job.pageCount(); ++p)
         {
-            const Page *page = job.page(p);
+            const ProjectPage *page = job.page(p);
             pages << PageSpec(page->pageNum(),
                               page->visible() == false,
                               page->manualRotation(),

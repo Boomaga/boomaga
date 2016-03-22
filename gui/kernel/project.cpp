@@ -45,6 +45,106 @@
 
 #define META_SIZE 4 * 1024
 
+/************************************************
+
+ ************************************************/
+ProjectPage::ProjectPage():
+    mPageNum(-1),
+    mVisible(true),
+    mManualRotation(NoRotate),
+    mStartSubBooklet(false)
+{
+
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+ProjectPage::ProjectPage(const ProjectPage *other):
+    mInputFile(other->mInputFile),
+    mPageNum(other->mPageNum),
+    mVisible(other->mVisible),
+    mPdfInfo(other->mPdfInfo),
+    mManualRotation(other->mManualRotation),
+    mStartSubBooklet(other->mStartSubBooklet)
+{
+
+}
+
+/************************************************
+ *
+ ************************************************/
+ProjectPage::ProjectPage(const InputFile &inputFile, int pageNum):
+    mInputFile(inputFile),
+    mPageNum(pageNum),
+    mVisible(true),
+    mManualRotation(NoRotate),
+    mStartSubBooklet(false)
+{
+}
+
+
+/************************************************
+
+ ************************************************/
+ProjectPage::~ProjectPage()
+{
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+QRectF ProjectPage::rect() const
+{
+    if (mPdfInfo.cropBox.isValid())
+        return mPdfInfo.cropBox;
+    else
+        return project->printer()->paperRect();
+}
+
+
+/************************************************
+
+ ************************************************/
+Rotation ProjectPage::pdfRotation() const
+{
+    int r = mPdfInfo.rotate % 360;
+
+    if (r == 90)    return Rotate90;
+    if (r == 180)   return Rotate180;
+    if (r == 270)   return Rotate270;
+    else            return NoRotate;
+}
+
+
+/************************************************
+
+ ************************************************/
+void ProjectPage::setVisible(bool value)
+{
+    mVisible = value;
+}
+
+
+/************************************************
+
+ ************************************************/
+bool ProjectPage::isBlankPage() const
+{
+    return mPageNum < 0;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void ProjectPage::setStartSubBooklet(bool value)
+{
+    mStartSubBooklet = value;
+}
+
 
 /************************************************
 
@@ -169,7 +269,7 @@ void Project::tmpFileMerged()
     {
         for (int p=0; p<job.pageCount(); ++p)
         {
-            Page *page = job.page(p);
+            ProjectPage *page = job.page(p);
             page->setPdfInfo(tmpPdf->pageInfo(job.inputFile(), page->pageNum()));
         }
 
@@ -229,9 +329,9 @@ void Project::update()
 /************************************************
  *
  * ***********************************************/
-Rotation Project::calcRotation(const QList<Page *> &pages, const Layout *layout) const
+Rotation Project::calcRotation(const QList<ProjectPage *> &pages, const Layout *layout) const
 {
-    foreach (const Page *page, pages)
+    foreach (const ProjectPage *page, pages)
     {
         if (page)
         {

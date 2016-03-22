@@ -56,7 +56,7 @@ public:
     virtual void fillSheets(QList<Sheet*> *sheets) const = 0;
     virtual void fillPreviewSheets(QList<Sheet*> *sheets) const;
 
-    virtual Rotation calcPageRotation(const Page *page, Rotation sheetRotation) const = 0;
+    virtual Rotation calcPageRotation(const ProjectPage *page, Rotation sheetRotation) const = 0;
     virtual TransformSpec transformSpec(const Sheet *sheet, int pageNumOnSheet, Rotation sheetRotation) const = 0;
 
     virtual Rotation rotation() const = 0;
@@ -88,7 +88,7 @@ public:
 
 protected:
     void doFillSheets(QList<Sheet*> *sheets, bool forPreview) const;
-    virtual Rotation calcPageRotation(const Page *page, Rotation sheetRotation) const;
+    virtual Rotation calcPageRotation(const ProjectPage *page, Rotation sheetRotation) const;
     virtual PagePosition calcPagePosition(int pageNumOnSheet, Rotation sheetRotation) const;
     virtual Rotation calcSheetRotation(int sheetNum, Rotation projectRotation, DuplexType printerType, bool doubleSided) const;
 
@@ -118,7 +118,7 @@ protected:
         bool    manualEnd;
     };
 
-    QList<BookletInfo> split(const QList<Page*> &pages) const;
+    QList<BookletInfo> split(const QList<ProjectPage*> &pages) const;
     virtual Rotation calcSheetRotation(int sheetNum, Rotation projectRotation, DuplexType printerType, bool doubleSided) const;
 
 private:

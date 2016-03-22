@@ -285,7 +285,7 @@ void TmpPdfFile::writeSheets(QIODevice *out, const QList<Sheet *> &sheets) const
         *out << "/XObject << ";
         for (int i=0; i< sheet->count(); ++i)
         {
-            const Page *page = sheet->page(i);
+            const ProjectPage *page = sheet->page(i);
             if (page && page->pdfInfo().objNum)
             {
                 *out << "/Im" << i << " " << page->pdfInfo().objNum <<  " 0 R ";
@@ -407,7 +407,7 @@ void TmpPdfFile::getPageStream(QString *out, const Sheet *sheet) const
 
     for(int i=0; i<sheet->count(); ++i)
     {
-        const Page *page = sheet->page(i);
+        const ProjectPage *page = sheet->page(i);
 
         if (page)
         {

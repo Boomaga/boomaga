@@ -324,7 +324,7 @@ void TestBoomaga::test_ProjectRotation()
     QString pagesDef =  dataTag.section(";", 1);
 
     Layout *layout = createLayout(layoutName);
-    QList<Page*> pages = createPages(pagesDef);
+    QList<ProjectPage*> pages = createPages(pagesDef);
 
     Rotation result = project->calcRotation(pages, layout);
     QCOMPARE((int)result, (int)expected);
@@ -404,14 +404,14 @@ Rotation TestBoomaga::StrToRotation(const QString &str)
 /************************************************
 
  ************************************************/
-QList<Page *> TestBoomaga::createPages(const QString &definition)
+QList<ProjectPage *> TestBoomaga::createPages(const QString &definition)
 {
     QString def = definition.trimmed();
     if (def.startsWith('['))
         def = def.mid(1, def.length()-2);
 
     QStringList items = def.split(',', QString::SkipEmptyParts);
-    QList<Page *> res;
+    QList<ProjectPage *> res;
     for (int i=0; i<items.count(); ++i)
     {
         PdfPageInfo pdfInfo;
@@ -439,7 +439,7 @@ QList<Page *> TestBoomaga::createPages(const QString &definition)
                 FAIL(QString("Unknown orientation '%1'").arg(s).toLocal8Bit());
             }
 
-            Page *page = new Page();
+            ProjectPage *page = new ProjectPage();
             page->setPdfInfo(pdfInfo);
 
             res << page;
@@ -459,7 +459,7 @@ QList<Page *> TestBoomaga::createPages(const QString &definition)
  * ***********************************************/
 Sheet *TestBoomaga::createSheet(const QString &definition)
 {
-    QList<Page *> pages = createPages(definition);
+    QList<ProjectPage *> pages = createPages(definition);
 
     Sheet *sheet = new Sheet(pages.count(), 0);
     for(int i=0; i< pages.count(); ++i)
@@ -483,7 +483,7 @@ Sheet *TestBoomaga::createSheet(int pagePerSheet, int pageRotation, QRectF media
         pdfInfo.cropBox = cropBox;
         pdfInfo.mediaBox = mediaBox;
 
-        Page *page = new Page();
+        ProjectPage *page = new ProjectPage();
         page->setPdfInfo(pdfInfo);
 
         sheet->setPage(i, page);

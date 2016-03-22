@@ -515,7 +515,7 @@ void MainWindow::switchPrinterProfile()
  ************************************************/
 void MainWindow::switchToJob(const Job &job)
 {
-    Page *page = job.firstVisiblePage();
+    ProjectPage *page = job.firstVisiblePage();
     for (int i=0; i<project->previewSheetCount(); ++i)
     {
         const Sheet *sheet = project->previewSheet(i);
@@ -805,7 +805,7 @@ void MainWindow::showPreviewContextMenu(int pageNum)
 {
     int sheetNum = ui->preview->currentSheet();
     Sheet *sheet = 0;
-    Page *page = 0;
+    ProjectPage *page = 0;
     Job job;
 
     if (sheetNum > -1)
@@ -816,7 +816,7 @@ void MainWindow::showPreviewContextMenu(int pageNum)
 
     if (page)
     {
-        int n = project->jobs()->indexOfPage(page);
+        int n = project->jobs()->indexOfProjectPage(page);
         if (n<0)
             return;
 
@@ -925,7 +925,7 @@ void MainWindow::showPreviewContextMenu(int pageNum)
 
         for(int p=0; p<job.pageCount(); ++p)
         {
-            Page *page = job.page(p);
+            ProjectPage *page = job.page(p);
             if (!page->visible())
             {
                 PageAction *act;
@@ -1000,7 +1000,7 @@ void MainWindow::deletePage()
 
     if (act->page()->isBlankPage())
     {
-        int n = project->jobs()->indexOfPage(act->page());
+        int n = project->jobs()->indexOfProjectPage(act->page());
         if (n<0)
             return;
 
@@ -1040,16 +1040,16 @@ void MainWindow::deletePagesEnd()
     if (!act || !act->page())
         return;
 
-    int n = project->jobs()->indexOfPage(act->page());
+    int n = project->jobs()->indexOfProjectPage(act->page());
     if (n<0)
         return;
 
     Job job = project->jobs()->value(n);
 
-    QList<Page*> deleted;
+    QList<ProjectPage*> deleted;
     for (int p=job.pageCount()-1; p>=job.indexOfPage(act->page()); --p)
     {
-        Page *page = job.page(p);
+        ProjectPage *page = job.page(p);
 
         if (page->isBlankPage())
             deleted << page;
@@ -1070,7 +1070,7 @@ void MainWindow::insertBlankPageBefore()
     if (!act || !act->page())
         return;
 
-    int j = project->jobs()->indexOfPage(act->page());
+    int j = project->jobs()->indexOfProjectPage(act->page());
     if (j<0)
         return;
 
@@ -1089,7 +1089,7 @@ void MainWindow::insertBlankPageAfter()
     if (!act || !act->page())
         return;
 
-    int j = project->jobs()->indexOfPage(act->page());
+    int j = project->jobs()->indexOfProjectPage(act->page());
     if (j<0)
         return;
 
@@ -1132,7 +1132,7 @@ void MainWindow::rotateJobLeft()
     Job job = act->job();
     for (int i=0; i< job.pageCount(); ++i)
     {
-        Page *page = job.page(i);
+        ProjectPage *page = job.page(i);
         page->setManualRotation(page->manualRotation() - Rotate90);
     }
     project->update();
@@ -1151,7 +1151,7 @@ void MainWindow::rotateJobRight()
     Job job = act->job();
     for (int i=0; i< job.pageCount(); ++i)
     {
-        Page *page = job.page(i);
+        ProjectPage *page = job.page(i);
         page->setManualRotation(page->manualRotation() + Rotate90);
     }
     project->update();
@@ -1167,7 +1167,7 @@ void MainWindow::rotatePageLeft()
     if (!act || !act->page())
         return;
 
-    Page *page = act->page();
+    ProjectPage *page = act->page();
     page->setManualRotation(page->manualRotation() - Rotate90);
     project->update();
 }
@@ -1182,7 +1182,7 @@ void MainWindow::rotatePageRight()
     if (!act || !act->page())
         return;
 
-    Page *page = act->page();
+    ProjectPage *page = act->page();
     page->setManualRotation(page->manualRotation() + Rotate90);
     project->update();
 }

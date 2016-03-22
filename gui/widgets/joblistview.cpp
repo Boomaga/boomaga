@@ -101,11 +101,11 @@ void JobListView::setSheetNum(int sheetNum)
 
     int left = -1;
     for (int i=0; left<0 && i<sheet->count(); ++i)
-        left = project->jobs()->indexOfPage(sheet->page(i));
+        left = project->jobs()->indexOfProjectPage(sheet->page(i));
 
     int right = -1;
     for (int i=sheet->count()-1; right<0 && i>=0; --i)
-        right = project->jobs()->indexOfPage(sheet->page(i));
+        right = project->jobs()->indexOfProjectPage(sheet->page(i));
 
     if (left <= curJob && curJob <= right)
     {

@@ -154,7 +154,7 @@ void LayoutNUp::doFillSheets(QList<Sheet *> *sheets, bool forPreview) const
         {
             if (i<project->pageCount())
             {
-                Page *page = project->page(i);
+                ProjectPage *page = project->page(i);
                 sheet->setPage(j, page);
             }
             ++i;
@@ -195,7 +195,7 @@ TransformSpec LayoutNUp::transformSpec(const Sheet *sheet, int pageNumOnSheet, R
     TransformSpec spec;
     QSizeF pageSize;
     {
-        const Page *page = sheet->page(pageNumOnSheet);
+        const ProjectPage *page = sheet->page(pageNumOnSheet);
         spec.rotation = calcPageRotation(page, sheetRotation);
         if (page)
         {
@@ -246,7 +246,7 @@ Rotation LayoutNUp::rotation() const
 /************************************************
 
  ************************************************/
-Rotation LayoutNUp::calcPageRotation(const Page *page, Rotation sheetRotation) const
+Rotation LayoutNUp::calcPageRotation(const ProjectPage *page, Rotation sheetRotation) const
 {
     if (!page)
         return this->rotation();
@@ -413,7 +413,7 @@ void LayoutBooklet::fillSheetsForBook(int bookStart, int bookLength, QList<Sheet
         int n = (cnt - 1) - i;
         if (n < bookLength)
         {
-            Page *page = project->page(n + bookStart);
+            ProjectPage *page = project->page(n + bookStart);
             sheet->setPage(0, page);
         }
 
@@ -421,7 +421,7 @@ void LayoutBooklet::fillSheetsForBook(int bookStart, int bookLength, QList<Sheet
         n = i;
         if (n < bookLength)
         {
-            Page *page = project->page(n + bookStart);
+            ProjectPage *page = project->page(n + bookStart);
             sheet->setPage(1, page);
         }
 
@@ -438,14 +438,14 @@ void LayoutBooklet::fillSheetsForBook(int bookStart, int bookLength, QList<Sheet
         n = i + 1;
         if (n < bookLength)
         {
-            Page *page = project->page(n + bookStart);
+            ProjectPage *page = project->page(n + bookStart);
             sheet->setPage(0, page);
         }
 
         n = (cnt - 1) - (i + 1);
         if (n < bookLength)
         {
-            Page *page = project->page(n + bookStart);
+            ProjectPage *page = project->page(n + bookStart);
             sheet->setPage(1, page);
         }
     }
@@ -514,7 +514,7 @@ void LayoutBooklet::fillPreviewSheetsForBook(int bookStart, int bookLength, QLis
         {
             if (i < bookLength)
             {
-                Page *page = project->page(i + bookStart);
+                ProjectPage *page = project->page(i + bookStart);
                 sheet->setPage(0, page);
             }
         }
@@ -523,7 +523,7 @@ void LayoutBooklet::fillPreviewSheetsForBook(int bookStart, int bookLength, QLis
         {
             if (i +1 < bookLength)
             {
-                Page *page = project->page(i + 1 + bookStart);
+                ProjectPage *page = project->page(i + 1 + bookStart);
                 sheet->setPage(1, page);
             }
         }
@@ -534,7 +534,7 @@ void LayoutBooklet::fillPreviewSheetsForBook(int bookStart, int bookLength, QLis
 /************************************************
  *
  ************************************************/
-QList<LayoutBooklet::BookletInfo> LayoutBooklet::split(const QList<Page *> &pages) const
+QList<LayoutBooklet::BookletInfo> LayoutBooklet::split(const QList<ProjectPage *> &pages) const
 {
     QList<BookletInfo> res;
     int pagePerBook = settings->value(Settings::SubBookletSize).toInt() * 4;

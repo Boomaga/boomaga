@@ -55,7 +55,7 @@ Sheet::~Sheet()
 /************************************************
 
  ************************************************/
-void Sheet::setPage(int index, Page *page)
+void Sheet::setPage(int index, ProjectPage *page)
 {
     mPages[index] = page;
 }
@@ -64,9 +64,9 @@ void Sheet::setPage(int index, Page *page)
 /************************************************
 
  ************************************************/
-int Sheet::indexOfPage(const Page *page, int from) const
+int Sheet::indexOfPage(const ProjectPage *page, int from) const
 {
-    return mPages.indexOf(const_cast<Page*>(page), from);
+    return mPages.indexOf(const_cast<ProjectPage*>(page), from);
 }
 
 
@@ -103,7 +103,7 @@ void Sheet::setHint(Sheet::Hint hint, bool enable)
 /************************************************
 
  ************************************************/
-int SheetList::indexOfPage(const Page *page, int from) const
+int SheetList::indexOfPage(const ProjectPage *page, int from) const
 {
     for (int i=from; i<count(); ++i)
     {
@@ -136,7 +136,7 @@ QDebug operator<<(QDebug dbg, const Sheet &sheet)
                 << "  pages: " << sheet.count() << "\n";
     for (int i=0; i<sheet.count(); ++i)
     {
-        const Page *page = sheet.page(i);
+        const ProjectPage *page = sheet.page(i);
         if (page)
         {
             dbg.space() << "   * " << i << "---------\n"

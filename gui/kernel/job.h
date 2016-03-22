@@ -34,7 +34,7 @@
 
 #include <QExplicitlySharedDataPointer>
 
-class Page;
+class ProjectPage;
 class QIODevice;
 class PDFDoc;
 class JobData;
@@ -60,17 +60,17 @@ public:
     bool operator==(const Job& other) const;
 
     int pageCount() const;
-    Page *page(int index) const;
+    ProjectPage *page(int index) const;
     int visiblePageCount() const;
-    Page *firstVisiblePage() const;
+    ProjectPage *firstVisiblePage() const;
 
-    int indexOfPage(const Page *page, int from = 0) const;
-    void insertPage(int before, Page *page);
-    void addPage(Page *page);
-    void removePage(Page *page);
-    void removePages(const QList<Page*> pages);
+    int indexOfPage(const ProjectPage *page, int from = 0) const;
+    void insertPage(int before, ProjectPage *page);
+    void addPage(ProjectPage *page);
+    void removePage(ProjectPage *page);
+    void removePages(const QList<ProjectPage*> pages);
 
-    Page *takePage(Page *page);
+    ProjectPage *takePage(ProjectPage *page);
 
     QString title(bool human = true) const;
     void setTitle(const QString &title);
@@ -96,7 +96,7 @@ public:
     JobList();
     JobList(const QList<Job> & other);
 
-    int indexOfPage(const Page *page, int from = 0) const;
+    int indexOfProjectPage(const ProjectPage *page, int from = 0) const;
 };
 
 #endif // JOB_H

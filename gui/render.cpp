@@ -317,7 +317,7 @@ void Render::startRenderPage(RenderWorker *worker, int pageNum)
         return;
 
     Sheet *sheet = project->previewSheets().at(sheetNum);
-    Page *page = project->page(pageNum);
+    ProjectPage *page = project->page(pageNum);
 
     int pageOnSheet = -1;
     for (int i = 0; i<sheet->count(); ++i)
