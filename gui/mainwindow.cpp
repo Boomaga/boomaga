@@ -950,42 +950,42 @@ void MainWindow::showPreviewContextMenu(int pageNum)
  ************************************************/
 void MainWindow::showJobViewContextMenu(Job job)
 {
-    QMenu *menu = new QMenu(this);
+    QMenu menu;
 
     JobAction *act;
 
-    act = new JobAction(tr("Rename job"), job, menu);
-    menu->addAction(act);
+    act = new JobAction(tr("Rename job"), job, &menu);
+    menu.addAction(act);
     connect(act, SIGNAL(triggered()),
             this, SLOT(renameJob()));
 
 
-    act = new JobAction(Icon::icon(Icon::RotateLeft), tr("Rotate job to the left"), job, menu);
-    menu->addAction(act);
+    act = new JobAction(Icon::icon(Icon::RotateLeft), tr("Rotate job to the left"), job, &menu);
+    menu.addAction(act);
     connect(act, SIGNAL(triggered()),
             this, SLOT(rotateJobLeft()));
 
-    act = new JobAction(Icon::icon(Icon::RotateRight), tr("Rotate job to the right"), job, menu);
-    menu->addAction(act);
+    act = new JobAction(Icon::icon(Icon::RotateRight), tr("Rotate job to the right"), job, &menu);
+    menu.addAction(act);
     connect(act, SIGNAL(triggered()),
             this, SLOT(rotateJobRight()));
 
 
-    menu->addSeparator();
+    menu.addSeparator();
 
-    act = new JobAction(tr("Clone job..."), job, menu);
-    menu->addAction(act);
+    act = new JobAction(tr("Clone job..."), job, &menu);
+    menu.addAction(act);
     connect(act, SIGNAL(triggered()),
             this, SLOT(cloneJob()));
 
-    menu->addSeparator();
+    menu.addSeparator();
 
-    act = new JobAction(tr("Delete job"), job, menu);
-    menu->addAction(act);
+    act = new JobAction(tr("Delete job"), job, &menu);
+    menu.addAction(act);
     connect(act, SIGNAL(triggered()),
             this, SLOT(deleteJob()));
 
-    menu->popup(QCursor::pos());
+    menu.exec(QCursor::pos());
 }
 
 
