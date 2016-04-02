@@ -36,6 +36,7 @@ set(HEADERS
     kernel/layout.h
     render.h
     kernel/project.h
+    kernel/projectpage.h
     kernel/printer.h
     boomagatypes.h
     mainwindow.h
@@ -69,6 +70,7 @@ set(SOURCES
     kernel/layout.cpp
     render.cpp
     kernel/project.cpp
+    kernel/projectpage.cpp
     kernel/printer.cpp
     boomagatypes.cpp
     mainwindow.cpp
@@ -95,6 +97,7 @@ set(SOURCES
 
 set (MOCS
     kernel/project.h
+    kernel/projectpage.h
     kernel/tmppdffile.h
     render.h
 

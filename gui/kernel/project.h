@@ -29,8 +29,7 @@
 
 #include "job.h"
 #include "printer.h"
-#include "inputfile.h"
-#include "../pdfmerger/pdfmergeripc.h"
+#include "projectpage.h"
 
 #include <QObject>
 #include <QList>
@@ -79,45 +78,6 @@ private:
     void addDictItem(QByteArray &out, const QString &key, const QString &value) const;
     void addDictItem(QByteArray &out, const QString &key, const QDateTime &value) const;
 };
-
-class ProjectPage
-{
-public:
-    explicit ProjectPage();
-    explicit ProjectPage(const ProjectPage *other);
-    explicit ProjectPage(const InputFile &inputFile, int pageNum);
-    virtual ~ProjectPage();
-
-    InputFile inputFile() const { return mInputFile; }
-    int pageNum() const { return mPageNum; }
-
-    virtual QRectF rect() const;
-    Rotation pdfRotation() const;
-    Rotation manualRotation() const { return mManualRotation; }
-    void setManualRotation(Rotation value) { mManualRotation = value; }
-
-    PdfPageInfo pdfInfo() const { return mPdfInfo; }
-    void setPdfInfo(const PdfPageInfo &value) { mPdfInfo = value; }
-
-    bool visible() const { return mVisible;}
-    void setVisible(bool value);
-    void hide() { setVisible(false); }
-    void show() { setVisible(true); }
-
-    bool isBlankPage() const;
-
-    bool isStartSubBooklet() const { return mStartSubBooklet; }
-    void setStartSubBooklet(bool value);
-
-private:
-    InputFile mInputFile;
-    int mPageNum;
-    bool mVisible;
-    PdfPageInfo mPdfInfo;
-    Rotation mManualRotation;
-    bool mStartSubBooklet;
-};
-
 
 
 class Project : public QObject
