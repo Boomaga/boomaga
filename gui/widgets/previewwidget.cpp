@@ -47,7 +47,6 @@
  ************************************************/
 PreviewWidget::PreviewWidget(QWidget *parent) :
     QFrame(parent),
-    mSheetNum(-1),
     mDisplayedSheetNum(-1),
     mScaleFactor(0),
     mWheelDelta(0)
@@ -75,6 +74,7 @@ PreviewWidget::PreviewWidget(QWidget *parent) :
  ************************************************/
 PreviewWidget::~PreviewWidget()
 {
+    delete mRender;
 }
 
 
@@ -83,10 +83,10 @@ PreviewWidget::~PreviewWidget()
  * ***********************************************/
 QRectF PreviewWidget::pageRect(int pageNum) const
 {
-    if (mSheetNum < 0 || !mScaleFactor)
+    Sheet *sheet = project->currentSheet();
+    if (!sheet || !mScaleFactor)
         return QRectF();
 
-    Sheet * sheet = project->previewSheet(mSheetNum);
     TransformSpec spec = project->layout()->transformSpec(sheet, pageNum, project->rotation());
 
     QSize size = QSize(spec.rect.width()  * mScaleFactor,
@@ -99,7 +99,7 @@ QRectF PreviewWidget::pageRect(int pageNum) const
     if (isLandscape(project->rotation()))
     {
         rect.moveRight(mDrawRect.right() - spec.rect.top()  * mScaleFactor);
-        rect.moveTop( mDrawRect.top()  + spec.rect.left() * mScaleFactor);
+        rect.moveTop(  mDrawRect.top()   + spec.rect.left() * mScaleFactor);
     }
     else
     {
@@ -113,7 +113,6 @@ QRectF PreviewWidget::pageRect(int pageNum) const
             rect.adjust(-MARGIN_BOOKLET, 0, -MARGIN_BOOKLET, 0);
         else
             rect.adjust( MARGIN_BOOKLET, 0,  MARGIN_BOOKLET, 0);
-
     }
 
     return rect;
@@ -125,10 +124,10 @@ QRectF PreviewWidget::pageRect(int pageNum) const
  * ***********************************************/
 int PreviewWidget::pageAt(const QPoint &point) const
 {
-    if (mSheetNum < 0)
+    Sheet * sheet = project->currentSheet();
+    if (!sheet)
         return -1;
 
-    Sheet * sheet = project->previewSheet(mSheetNum);
     for (int i=0; i<sheet->count(); ++i)
     {
         if (pageRect(i).contains(point))
@@ -357,14 +356,19 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
 
 //#define DEBUG_CLICK_RECT
 #ifdef DEBUG_CLICK_RECT
+    Sheet *sheet = project->currentSheet();
+    if (sheet)
     {
+        ProjectPage *curPage = project->currentPage();
         painter.save();
-        Sheet *sheet = project->previewSheet(mSheetNum);
         for (int i=0; i< sheet->count(); ++i)
         {
             QPen pen = painter.pen();
             pen.setStyle(Qt::DotLine);
-            pen.setColor(Qt::red);
+            if (sheet->page(i) == curPage)
+                pen.setColor(Qt::red);
+            else
+                pen.setColor(QColor(142, 188, 226));
             painter.setPen(pen);
             painter.drawRect(this->pageRect(i));
             painter.drawText(this->pageRect(i).translated(10, 10), QString("%1").arg(i));
@@ -376,59 +380,20 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
 
 
 /************************************************
-
- ************************************************/
-void PreviewWidget::setCurrentSheet(int sheetNum)
-{
-    if (project->previewSheetCount())
-    {
-        mRender->cancelSheet(mSheetNum);
-        mSheetNum = qBound(0, sheetNum, project->previewSheetCount()-1);
-        mRender->renderSheet(mSheetNum);
-    }
-    else
-    {
-        mSheetNum = -1;
-        mImage = QImage();
-    }
-
-    emit changed(mSheetNum);
-    update();
-}
-
-
-/************************************************
  *
  ************************************************/
 void PreviewWidget::sheetImageReady(QImage image, int sheetNum)
 {
-    if (sheetNum >= qMin(mDisplayedSheetNum, mSheetNum) &&
-        sheetNum <= qMax(mDisplayedSheetNum, mSheetNum))
+    int curSheet = project->currentSheetNum();
+    if (sheetNum >= qMin(mDisplayedSheetNum, curSheet) &&
+        sheetNum <= qMax(mDisplayedSheetNum, curSheet))
     {
         mImage = image;
         mDisplayedSheetNum = sheetNum;
-        mHints = project->previewSheet(mSheetNum)->hints();
-        emit changed(mSheetNum);
+        mHints = mRequests.value(sheetNum);
         update();
+        emit changed();
     }
-}
-
-
-/************************************************
-
- ************************************************/
-void PreviewWidget::nextSheet()
-{
-    setCurrentSheet(mSheetNum + 1);
-}
-
-
-/************************************************
-
- ************************************************/
-void PreviewWidget::prevSheet()
-{
-    setCurrentSheet(mSheetNum - 1);
 }
 
 
@@ -437,7 +402,17 @@ void PreviewWidget::prevSheet()
  ************************************************/
 void PreviewWidget::refresh()
 {
-    setCurrentSheet(mSheetNum);
+    Sheet *sheet = project->currentSheet();
+    if (!sheet)
+    {
+        mImage = QImage();
+        update();
+        return;
+    }
+
+
+    mRequests.insert(sheet->sheetNum(), sheet->hints());
+    mRender->renderSheet(sheet->sheetNum());
 }
 
 
@@ -457,7 +432,7 @@ void PreviewWidget::wheelEvent(QWheelEvent *event)
     if (pages)
     {
         mWheelDelta = 0;
-        setCurrentSheet(mSheetNum + pages);
+        project->setCurrentSheet(project->currentSheetNum() + pages);
     }
 }
 
@@ -473,27 +448,27 @@ void PreviewWidget::keyPressEvent(QKeyEvent *event)
         {
 
         case Qt::Key_Home:
-            setCurrentSheet(0);
+            project->setCurrentSheet(0);
             break;
 
         case Qt::Key_End:
-            setCurrentSheet(project->previewSheetCount()-1);
+            project->setCurrentSheet(project->previewSheetCount()-1);
             break;
 
         case Qt::Key_PageUp:
-            setCurrentSheet(mSheetNum - 10);
+            project->setCurrentSheet(project->currentSheetNum() - 10);
             break;
 
         case Qt::Key_PageDown:
-            setCurrentSheet(mSheetNum + 10);
+            project->setCurrentSheet(project->currentSheetNum() + 10);
             break;
 
         case Qt::Key_Up:
-            setCurrentSheet(mSheetNum - 1);
+            project->setCurrentSheet(project->currentSheetNum() - 1);
             break;
 
         case Qt::Key_Down:
-            setCurrentSheet(mSheetNum + 1);
+            project->setCurrentSheet(project->currentSheetNum() + 1);
             break;
 
         }
@@ -503,8 +478,38 @@ void PreviewWidget::keyPressEvent(QKeyEvent *event)
 
 /************************************************
  *
- * ***********************************************/
+ ************************************************/
 void PreviewWidget::contextMenuEvent(QContextMenuEvent *event)
 {
-    emit contextMenuRequested(pageAt(event->pos()));
+    Sheet *sheet = project->currentSheet();
+    if (!sheet)
+        return;
+
+    int n = pageAt(event->pos());
+    if (n < 0)
+        emit contextMenuRequested(sheet, 0);
+    else
+        emit contextMenuRequested(sheet, sheet->page(n));
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void PreviewWidget::mouseReleaseEvent(QMouseEvent *event)
+{
+    Sheet *sheet = project->currentSheet();
+
+    if (!sheet)
+        return;
+
+    int n = pageAt(event->pos());
+    if (n<0)
+        return;
+
+    ProjectPage *page = sheet->page(n);
+    if (!page)
+        return;
+
+    project->setCurrentPage(page);
 }

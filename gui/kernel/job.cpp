@@ -453,7 +453,7 @@ Job Job::clone()
     Job res = *this;
     res.mData.detach();
     for (int i=0; i< mData->mPages.count(); ++i)
-        res.mData->mPages[i] = new ProjectPage(mData->mPages.at(i));
+        res.mData->mPages[i] = mData->mPages.at(i)->clone();
 
     return res;
 }

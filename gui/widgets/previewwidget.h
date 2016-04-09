@@ -40,26 +40,22 @@ public:
     explicit PreviewWidget(QWidget *parent = 0);
     ~PreviewWidget();
     
-    int currentSheet() const { return mSheetNum; }
     QRectF pageRect(int pageNum) const;
     int pageAt(const QPoint &point) const;
 
 public slots:
-    void setCurrentSheet(int sheetNum);
-    void nextSheet();
-    void prevSheet();
     void refresh();
 
 signals:
-    void changed(int sheetNum);
-    void contextMenuRequested(int pageNum);
+    void changed();
+    void contextMenuRequested(Sheet *sheet, ProjectPage *page);
 
 protected:
     void paintEvent(QPaintEvent *event);
     void wheelEvent(QWheelEvent *event);
     void keyPressEvent(QKeyEvent *event);
     void contextMenuEvent(QContextMenuEvent *event);
-
+    void mouseReleaseEvent(QMouseEvent *event);
 
 private slots:
     void sheetImageReady(QImage image, int sheetNum);
@@ -67,10 +63,10 @@ private slots:
 private:
     QImage mImage;
     QRect mDrawRect;
-    int mSheetNum;
     int mDisplayedSheetNum;
     double mScaleFactor;
     Sheet::Hints mHints;
+    QHash<int, Sheet::Hints> mRequests;
     Render *mRender;
     int mWheelDelta;
 

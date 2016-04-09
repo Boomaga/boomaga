@@ -66,6 +66,8 @@ public:
     void setRotation(Rotation rotation);
 
     int sheetNum() const { return mSheetNum; }
+    ProjectPage *firstVisiblePage() const;
+
 private:
     QVector<ProjectPage*> mPages;
     int mSheetNum;

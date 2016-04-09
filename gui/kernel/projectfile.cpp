@@ -365,7 +365,7 @@ void ProjectFile::save(const QString &fileName)
         for (int p=0; p<job.pageCount(); ++p)
         {
             const ProjectPage *page = job.page(p);
-            pages << PageSpec(page->pageNum(),
+            pages << PageSpec(page->jobPageNum(),
                               page->visible() == false,
                               page->manualRotation(),
                               page->isStartSubBooklet()

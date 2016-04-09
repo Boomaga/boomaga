@@ -38,6 +38,7 @@ class Project;
 class Printer;
 class QMessageBox;
 class ExportToPDFPrinter;
+class Sheet;
 
 namespace Ui {
 class MainWindow;
@@ -55,8 +56,6 @@ private slots:
     void switchLayout();
     void switchPrinterProfile();
 
-    void switchToJob(const Job &job);
-
     bool print(uint count = 1);
     void printAndClose(uint count = 1);
     void printWithOptions();
@@ -70,7 +69,7 @@ private slots:
 
     void updateProgressBar(int value, int all);
 
-    void showPreviewContextMenu(int pageNum);
+    void showPreviewContextMenu(Sheet *sheet, ProjectPage *page);
     void showJobViewContextMenu(Job job);
     void deletePage();
     void undoDeletePage();

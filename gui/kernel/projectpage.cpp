@@ -32,7 +32,9 @@
  ************************************************/
 ProjectPage::ProjectPage(QObject *parent):
     QObject(parent),
+    mJobPageNum(-1),
     mPageNum(-1),
+    mSheet(0),
     mVisible(true),
     mManualRotation(NoRotate),
     mStartSubBooklet(false)
@@ -43,26 +45,13 @@ ProjectPage::ProjectPage(QObject *parent):
 
 /************************************************
  *
- * ***********************************************/
-ProjectPage::ProjectPage(const ProjectPage *other, QObject *parent):
-    QObject(parent),
-    mInputFile(other->mInputFile),
-    mPageNum(other->mPageNum),
-    mVisible(other->mVisible),
-    mPdfInfo(other->mPdfInfo),
-    mManualRotation(other->mManualRotation),
-    mStartSubBooklet(other->mStartSubBooklet)
-{
-
-}
-
-/************************************************
- *
  ************************************************/
-ProjectPage::ProjectPage(const InputFile &inputFile, int pageNum, QObject *parent):
+ProjectPage::ProjectPage(const InputFile &inputFile, int jobPageNum, QObject *parent):
     QObject(parent),
     mInputFile(inputFile),
-    mPageNum(pageNum),
+    mJobPageNum(jobPageNum),
+    mPageNum(-1),
+    mSheet(0),
     mVisible(true),
     mManualRotation(NoRotate),
     mStartSubBooklet(false)
@@ -75,7 +64,6 @@ ProjectPage::ProjectPage(const InputFile &inputFile, int pageNum, QObject *paren
  ************************************************/
 ProjectPage::~ProjectPage()
 {
-    qDebug() << Q_FUNC_INFO << this;
 }
 
 
@@ -119,7 +107,7 @@ void ProjectPage::setVisible(bool value)
  ************************************************/
 bool ProjectPage::isBlankPage() const
 {
-    return mPageNum < 0;
+    return mJobPageNum < 0;
 }
 
 
@@ -129,5 +117,21 @@ bool ProjectPage::isBlankPage() const
 void ProjectPage::setStartSubBooklet(bool value)
 {
     mStartSubBooklet = value;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+ProjectPage *ProjectPage::clone(QObject *parent)
+{
+    ProjectPage *res = new ProjectPage(parent);
+    res->mInputFile = mInputFile;
+    res->mJobPageNum = mJobPageNum;
+    res->mPdfInfo = mPdfInfo;
+    res->setVisible(mVisible);
+    res->setManualRotation(mManualRotation);
+    res->setStartSubBooklet(mStartSubBooklet);
+    return res;
 }
 

@@ -80,6 +80,21 @@ void Sheet::setRotation(Rotation rotation)
 
 
 /************************************************
+ *
+ ************************************************/
+ProjectPage *Sheet::firstVisiblePage() const
+{
+    foreach (ProjectPage *page, mPages)
+    {
+        if (page)
+            return page;
+    }
+
+    return 0;
+}
+
+
+/************************************************
 
  ************************************************/
 void Sheet::setHints(Sheet::Hints value)
@@ -140,7 +155,7 @@ QDebug operator<<(QDebug dbg, const Sheet &sheet)
         if (page)
         {
             dbg.space() << "   * " << i << "---------\n"
-                        << "       pageNum:"        << page->pageNum() << "\n"
+                        << "       jobPageNum:"     << page->jobPageNum() << "\n"
                         << "       blankPage:"      << page->isBlankPage() << "\n"
                         << "       visible:"        << page->visible() << "\n"
                         << "       startBooklet:"   << page->isStartSubBooklet() << "\n"

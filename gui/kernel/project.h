@@ -35,6 +35,7 @@
 #include <QList>
 #include <QStringList>
 #include <QImage>
+#include <QPointer>
 
 class Job;
 class TmpPdfFile;
@@ -133,8 +134,28 @@ public:
 
     Rotation rotation() const { return mRotation; }
 
+public:
+    ProjectPage *currentPage() const { return mCurrentPage; }
+    int currentPageNum() const;
+
 public slots:
-    bool error(const QString &message);
+    void setCurrentPage(ProjectPage *page);
+    void setCurrentPage(int pageNum);
+    void prevPage();
+    void nextPage();
+
+public:
+    Sheet *currentSheet() const;
+    int currentSheetNum() const;
+
+public slots:
+    void setCurrentSheet(int sheetNum);
+    void prevSheet();
+    void nextSheet();
+
+
+public slots:
+    bool error(const QString &message) const;
 
     void addJob(Job job);
     void addJobs(JobList jobs);
@@ -144,10 +165,15 @@ public slots:
     void setDoubleSided(bool value);
     void update();
 
+
 signals:
     void changed();
     void progress(int progr, int all) const;
     void tmpFileRenamed(const QString mTmpFileName);
+    void currentPageChanged(ProjectPage *page);
+    void currentPageChanged(int page);
+    void currentSheetChanged(Sheet *sheet);
+    void currentSheetChanged(int sheet);
 
 protected:
     Rotation calcRotation(const QList<ProjectPage *> &pages, const Layout *layout) const;
@@ -162,6 +188,8 @@ private:
 
     const Layout *mLayout;
     QList<ProjectPage*> mPages;
+    QPointer<ProjectPage> mCurrentPage;
+    Sheet *mCurrentSheet;
     JobList mJobs;
 
     int mSheetCount;

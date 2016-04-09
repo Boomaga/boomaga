@@ -33,17 +33,21 @@
 #include "boomagatypes.h"
 #include "../pdfmerger/pdfmergeripc.h"
 
+class Sheet;
+
 class ProjectPage : public QObject
 {
     Q_OBJECT
+    friend class Project;
 public:
     explicit ProjectPage(QObject *parent = 0);
-    explicit ProjectPage(const ProjectPage *other, QObject *parent = 0);
-    explicit ProjectPage(const InputFile &inputFile, int pageNum, QObject *parent = 0);
+    explicit ProjectPage(const InputFile &inputFile, int jobPageNum, QObject *parent = 0);
     virtual ~ProjectPage();
 
     InputFile inputFile() const { return mInputFile; }
+    int jobPageNum() const { return mJobPageNum; }
     int pageNum() const { return mPageNum; }
+    Sheet *sheet() const { return mSheet; }
 
     virtual QRectF rect() const;
     Rotation pdfRotation() const;
@@ -62,10 +66,18 @@ public:
 
     bool isStartSubBooklet() const { return mStartSubBooklet; }
     void setStartSubBooklet(bool value);
+    ProjectPage *clone(QObject *parent = 0);
+
+protected:
+    void setPageNum(int pageNum) { mPageNum = pageNum; }
+    void setSheet(Sheet *sheet) { mSheet = sheet; }
 
 private:
+    Q_DISABLE_COPY(ProjectPage)
     InputFile mInputFile;
+    int mJobPageNum;
     int mPageNum;
+    Sheet *mSheet;
     bool mVisible;
     PdfPageInfo mPdfInfo;
     Rotation mManualRotation;
