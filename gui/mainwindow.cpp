@@ -1275,6 +1275,9 @@ void MainWindow::saveAs(const QString &fileName)
 
         if (file.isEmpty())
             return;
+
+        if (QFileInfo(file).suffix().toLower() != "boo")
+            file += ".boo";
     }
 
     mSaveFile = file;
