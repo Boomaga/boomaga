@@ -34,6 +34,10 @@
 #include <QBuffer>
 #include <QAbstractItemModel>
 
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
+#include <QTextDocument>
+#endif
+
 /************************************************
  *
  ************************************************/
@@ -59,7 +63,11 @@ QList<PagesListView::ItemInfo> JobListView::getPages() const
         page.title = job.title() + "\n      " + tr("%1 pages").arg(job.visiblePageCount());
         page.page = job.visiblePageCount() ? pageNum : -1;
         page.toolTip = QString("<b>%1</b><p><font size=-1><i>%2</i></font>")
-                .arg(job.title())
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
+                .arg(Qt::escape(job.title()))
+#else
+                .arg(job.title().toHtmlEscaped())
+#endif
                 .arg(tr("%1 pages").arg(job.visiblePageCount()));
 
         res << page;
