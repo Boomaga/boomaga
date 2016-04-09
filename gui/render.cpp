@@ -29,6 +29,7 @@
 #include <poppler/cpp/poppler-page.h>
 #include <QDebug>
 #include <QFile>
+#include <QFileInfo>
 
 #include "kernel/project.h"
 #include "kernel/layout.h"
@@ -83,9 +84,11 @@ RenderWorker::RenderWorker(const QString &fileName, int resolution):
     QObject(),
     mSheetNum(0),
     mResolution(resolution),
-    mBussy(false)
+    mBussy(false),
+    mPopplerDoc(0)
 {
-    mPopplerDoc = poppler::document::load_from_file(fileName.toLocal8Bit().data());
+    if (QFileInfo(fileName).exists())
+        mPopplerDoc = poppler::document::load_from_file(fileName.toLocal8Bit().data());
 }
 
 
@@ -103,6 +106,9 @@ RenderWorker::~RenderWorker()
  ************************************************/
 QImage RenderWorker::renderSheet(int sheetNum)
 {
+    if (!mPopplerDoc)
+        return QImage();
+
     mBussy = true;
     QImage img = doRenderSheet(mPopplerDoc, sheetNum, mResolution);
     emit sheetReady(img, sheetNum);
@@ -116,6 +122,9 @@ QImage RenderWorker::renderSheet(int sheetNum)
  ************************************************/
 QImage RenderWorker::renderPage(int sheetNum, const QRectF pageRect, int pageNum)
 {
+    if (!mPopplerDoc)
+        return QImage();
+
     mBussy = true;
     QImage img = doRenderSheet(mPopplerDoc, sheetNum, mResolution);
 
