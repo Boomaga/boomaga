@@ -55,5 +55,15 @@ BoomagaDbus::~BoomagaDbus()
  ************************************************/
 void BoomagaDbus::add(const QString &file, const QString &title, bool autoRemove, const QString &options, uint count)
 {
-    project->load(file, title, options, autoRemove, count);
+    QStringList files;
+    for (uint i=0; i<count; ++i)
+        files << file;
+
+    JobList jobs = project->load(files, options);
+    foreach (Job job, jobs)
+    {
+        job.setTitle(title);
+        job.setAutoRemove(autoRemove);
+    }
+
 }

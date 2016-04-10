@@ -833,54 +833,33 @@ void MetaData::addDictItem(QByteArray &out, const QString &key, const QDateTime 
 /************************************************
 
  ************************************************/
-void Project::load(const QString &fileName, const QString &title, const QString &options, bool autoRemove, uint count)
+JobList Project::load(const QString &fileName, const QString &options)
 {
-    load(QStringList() << fileName, QStringList() << title, options, autoRemove, count);
+    return load(QStringList() << fileName, options);
 }
 
 
 /************************************************
 
  ************************************************/
-void Project::load(const QStringList &fileNames, const QString &options, bool autoRemove, uint count)
-{
-    load(fileNames, QStringList(), options, autoRemove, count);
-}
-
-
-/************************************************
-
- ************************************************/
-void Project::load(const QStringList &fileNames, const QStringList &titles, const QString &options, bool autoRemove, uint count)
+JobList Project::load(const QStringList &fileNames, const QString &options)
 {
     stopMerging();
     QStringList errors;
 
     JobList jobs;
-    for (uint i=0; i<count; ++i)
+    foreach(QString fileName, fileNames)
     {
-        foreach(QString fileName, fileNames)
+        ProjectFile file;
+        try
         {
-            ProjectFile file;
-            try
-            {
-                file.load(fileName, options);
-                for(int i=0; i<file.jobs().count(); ++i)
-                {
-                    Job job = file.jobs().at(i);
-                    job.setAutoRemove(autoRemove);
-                    if (i<titles.count())
-                        job.setTitle(titles.at(i));
-
-                    jobs << job;
-                }
-
-                project->setMetadata(file.metaData());
-            }
-            catch (const QString &err)
-            {
-                errors << err;
-            }
+            file.load(fileName, options);
+            jobs << file.jobs();
+            project->setMetadata(file.metaData());
+        }
+        catch (const QString &err)
+        {
+            errors << err;
         }
     }
 
@@ -890,6 +869,7 @@ void Project::load(const QStringList &fileNames, const QStringList &titles, cons
     if (!errors.isEmpty())
         error(errors.join("\n\n"));
 
+    return jobs;
 }
 
 

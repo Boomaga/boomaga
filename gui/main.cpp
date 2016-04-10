@@ -199,7 +199,14 @@ int main(int argc, char *argv[])
     mainWindow.show();
     application.processEvents();
 
-    project->load(files, titles, "", autoRemove);
+    JobList jobs = project->load(files, "");
+    for (int i=0; i<jobs.count(); ++i)
+    {
+        if (i<titles.count())
+            jobs[i].setTitle(titles.at(i));
+
+        jobs[i].setAutoRemove(autoRemove);
+    }
 
     return application.exec();
 }
