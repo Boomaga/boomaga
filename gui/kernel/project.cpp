@@ -893,7 +893,7 @@ JobList Project::load(const QStringList &fileNames, const QString &options)
                 errors << job.errorString();
 
             if (job.state() != Job::JobError)
-                jobs << Job(fileName, opts.pages());
+                jobs << job;
         }
 
 

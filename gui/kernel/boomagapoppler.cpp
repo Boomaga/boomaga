@@ -195,6 +195,7 @@ QString BoomagaPDFDoc::getMetaInfo(const char *tag)
         Dict *dict = docInfo.getDict();
         Object obj;
         dict->lookup((char*)tag, &obj);
+
         if (obj.isString())
         {
             GooString *s = obj.getString();
@@ -202,7 +203,7 @@ QString BoomagaPDFDoc::getMetaInfo(const char *tag)
                 s->getChar(0) == '\xFE' &&
                 s->getChar(1) == '\xFF')
             {
-                result = QString::fromUtf16((ushort*)s->getCString());
+                result = QString::fromUtf16((ushort*)s->getCString(), s->getLength() / 2);
             }
             else
             {
