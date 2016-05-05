@@ -850,16 +850,73 @@ JobList Project::load(const QStringList &fileNames, const QString &options)
     JobList jobs;
     foreach(QString fileName, fileNames)
     {
-        ProjectFile file;
-        try
+
+        QFileInfo fi(fileName);
+
+        if (!fi.filePath().isEmpty())
         {
-            file.load(fileName, options);
-            jobs << file.jobs();
-            project->setMetadata(file.metaData());
+            if (!fi.exists())
+            {
+                errors << tr("I can't open file \"%1\" (No such file or directory)")
+                          .arg(fi.filePath());
+                continue;
+            }
+
+            if (!fi.isReadable())
+            {
+                errors << tr("I can't open file \"%1\" (Access denied)")
+                          .arg(fi.filePath());
+                continue;
+            }
         }
-        catch (const QString &err)
+
+
+        QFile file(fileName);
+        if(!file.open(QFile::ReadOnly))
         {
-            errors << err;
+            errors << tr("I can't open file \"%1\"").arg(fileName) + "\n" + file.errorString();
+            continue;
+        }
+
+
+        file.seek(0);
+        QByteArray mark = file.read(30);
+        file.close();
+
+        // Read PDF ..................................
+        if (mark.startsWith("%PDF-"))
+        {
+            BackendOptions opts = BackendOptions(options);
+            Job job = Job(fileName, opts.pages());
+
+            if (!job.errorString().isEmpty())
+                errors << job.errorString();
+
+            if (job.state() != Job::JobError)
+                jobs << Job(fileName, opts.pages());
+        }
+
+
+        // Read BOO ..................................
+        else if (mark.startsWith("\x1B%-12345X@PJL BOOMAGA_PROGECT"))
+        {
+            try
+            {
+                ProjectFile file;
+                file.load(fileName);
+                jobs << file.jobs();
+                project->setMetadata(file.metaData());
+            }
+            catch (const QString &err)
+            {
+                errors << err;
+            }
+        }
+
+        // Unknown format ............................
+        else
+        {
+            errors << tr("I can't read file \"%1\" because is either not a supported file type or because the file has been damaged.").arg(file.fileName());
         }
     }
 

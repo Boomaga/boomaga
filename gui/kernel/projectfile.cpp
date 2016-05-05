@@ -145,24 +145,9 @@ ProjectFile::~ProjectFile()
 /************************************************
 
  ************************************************/
-void ProjectFile::load(const QString &fileName, const QString &options)
+void ProjectFile::load(const QString &fileName)
 {
-    BackendOptions opts = BackendOptions(options);
-
     mJobs.clear();
-    QFileInfo fi(fileName);
-
-    if (!fi.filePath().isEmpty())
-    {
-        if (!fi.exists())
-            throw tr("I can't open file \"%1\" (No such file or directory)")
-                              .arg(fi.filePath());
-
-        if (!fi.isReadable())
-            throw tr("I can't open file \"%1\" (Access denied)")
-                              .arg(fi.filePath());
-    }
-
 
     QFile file(fileName);
     if(!file.open(QFile::ReadOnly))
@@ -171,145 +156,124 @@ void ProjectFile::load(const QString &fileName, const QString &options)
     }
 
     file.seek(0);
-    QByteArray mark = file.readLine();
 
+    QString metaAuthor;
+    QString metaTitle;
+    QString metaSubject;
+    QString metaKeywords;
 
-    if (mark.startsWith("%PDF-"))
+    QString title;
+    QList<PageSpec> pagesSpec;
+
+    while (!file.atEnd())
     {
-        // Read PDF ..................................
-        file.close();
-        mJobs << Job(fileName, opts.pages());
-        return;
-        // Read PDF ..................................
-    }
-    else if (mark.startsWith("\x1B%-12345X@PJL BOOMAGA_PROGECT"))
-    {
-        // Read project file .........................
-        QString metaAuthor;
-        QString metaTitle;
-        QString metaSubject;
-        QString metaKeywords;
+        QString line = QString::fromUtf8(file.readLine()).trimmed();
 
-        QString title;
-        QList<PageSpec> pagesSpec;
-
-        while (!file.atEnd())
+        if (line.startsWith("@PJL"))
         {
-            QString line = QString::fromUtf8(file.readLine()).trimmed();
+            QString command = line.section(' ', 1, 1, QString::SectionSkipEmpty).toUpper();
 
-            if (line.startsWith("@PJL"))
+
+            // Boomaga commands ................................
+            if (command == "BOOMAGA")
             {
-                QString command = line.section(' ', 1, 1, QString::SectionSkipEmpty).toUpper();
+                QString subCommand = line.section(' ', 2, -1, QString::SectionSkipEmpty)
+                        .section('=', 0, 0, QString::SectionSkipEmpty)
+                        .trimmed()
+                        .toUpper();
+
+                QString value = line.section('=', 1,-1, QString::SectionSkipEmpty).trimmed();
+                if (value.startsWith('"') || value.startsWith('\''))
+                    value = value.mid(1, value.length()-2);
 
 
-                // Boomaga commands ................................
-                if (command == "BOOMAGA")
-                {
-                    QString subCommand = line.section(' ', 2, -1, QString::SectionSkipEmpty)
-                                                    .section('=', 0, 0, QString::SectionSkipEmpty)
-                                                    .trimmed()
-                                                    .toUpper();
+                if (subCommand == "META_AUTHOR")
+                    metaAuthor = value;
 
-                    QString value = line.section('=', 1,-1, QString::SectionSkipEmpty).trimmed();
-                    if (value.startsWith('"') || value.startsWith('\''))
-                        value = value.mid(1, value.length()-2);
+                else if (subCommand == "META_TITLE")
+                    metaTitle = value;
 
+                else if (subCommand == "META_SUBJECT")
+                    metaSubject = value;
 
-                    if (subCommand == "META_AUTHOR")
-                        metaAuthor = value;
-
-                    else if (subCommand == "META_TITLE")
-                        metaTitle = value;
-
-                    else if (subCommand == "META_SUBJECT")
-                        metaSubject = value;
-
-                    else if (subCommand == "META_KEYWORDS")
-                        metaKeywords = value;
+                else if (subCommand == "META_KEYWORDS")
+                    metaKeywords = value;
 
 
 
-                    else if (subCommand == "JOB_TITLE")
-                        title = value;
+                else if (subCommand == "JOB_TITLE")
+                    title = value;
 
-                    else if (subCommand == "JOB_PAGES")
-                        pagesSpec = PageSpec::readPagesSpec(value);
+                else if (subCommand == "JOB_PAGES")
+                    pagesSpec = PageSpec::readPagesSpec(value);
 
-                    else
-                        qWarning() << QString("Unknown command '%1' in the line '%2'").arg(subCommand).arg(line);
+                else
+                    qWarning() << QString("Unknown command '%1' in the line '%2'").arg(subCommand).arg(line);
 
-                }
-                // Boomaga commands ................................
-
-
-                // PDF stream ......................................
-                else if (command == "ENTER")
-                {
-                    QString subCommand = line.section(' ', 2, -1, QString::SectionSkipEmpty).remove(' ').toUpper();
-
-                    if (subCommand == "LANGUAGE=PDF")
-                    {
-                        qint64 startPos = file.pos();
-                        qint64 endPos = 0;
-                        while (!file.atEnd())
-                        {
-                            QByteArray buf = file.readLine();
-                            if (buf.startsWith("\x1B%-12345X@PJL"))
-                                break;
-
-                            endPos = file.pos() - 1;
-
-                        }
-
-                        QList<int> pages;
-                        foreach(PageSpec spec, pagesSpec)
-                        {
-                            if (!spec.isblank())
-                                pages << spec.pageNum();
-                        }
-
-                        Job job(fileName, pages, startPos, endPos);
-                        job.setTitle(title);
-
-                        for (int i=0; i<pagesSpec.count(); ++i)
-                        {
-                            PageSpec spec = pagesSpec.at(i);
-                            if (spec.isblank())
-                                job.insertBlankPage(i);
-
-                            ProjectPage *page = job.page(i);
-
-                            if (spec.isHidden())
-                                page->setVisible(false);
-
-                            if (spec.isStartBooklet())
-                                page->setStartSubBooklet(true);
-
-                            page->setManualRotation(spec.rotation());
-                        }
-
-
-                        mJobs << job;
-                        title = "";
-                        pagesSpec.clear();
-                    }
-                }
-                // PDF stream ......................................
             }
+            // Boomaga commands ................................
+
+
+            // PDF stream ......................................
+            else if (command == "ENTER")
+            {
+                QString subCommand = line.section(' ', 2, -1, QString::SectionSkipEmpty).remove(' ').toUpper();
+
+                if (subCommand == "LANGUAGE=PDF")
+                {
+                    qint64 startPos = file.pos();
+                    qint64 endPos = 0;
+                    while (!file.atEnd())
+                    {
+                        QByteArray buf = file.readLine();
+                        if (buf.startsWith("\x1B%-12345X@PJL"))
+                            break;
+
+                        endPos = file.pos() - 1;
+
+                    }
+
+                    QList<int> pages;
+                    foreach(PageSpec spec, pagesSpec)
+                    {
+                        if (!spec.isblank())
+                            pages << spec.pageNum();
+                    }
+
+                    Job job(fileName, pages, startPos, endPos);
+                    job.setTitle(title);
+
+                    for (int i=0; i<pagesSpec.count(); ++i)
+                    {
+                        PageSpec spec = pagesSpec.at(i);
+                        if (spec.isblank())
+                            job.insertBlankPage(i);
+
+                        ProjectPage *page = job.page(i);
+
+                        if (spec.isHidden())
+                            page->setVisible(false);
+
+                        if (spec.isStartBooklet())
+                            page->setStartSubBooklet(true);
+
+                        page->setManualRotation(spec.rotation());
+                    }
+
+                    mJobs << job;
+                    title = "";
+                    pagesSpec.clear();
+                }
+            }
+            // PDF stream ......................................
         }
-        file.close();
-
-        mMetaData.setAuthor(metaAuthor);
-        mMetaData.setTitle(metaTitle);
-        mMetaData.setSubject(metaSubject);
-        mMetaData.setKeywords(metaKeywords);
-
-        // Read project file .........................
     }
-    else
-    {
-        throw tr("I can't read file \"%1\" because is either not a supported file type or because the file has been damaged.").arg(file.fileName());
-    }
+    file.close();
+
+    mMetaData.setAuthor(metaAuthor);
+    mMetaData.setTitle(metaTitle);
+    mMetaData.setSubject(metaSubject);
+    mMetaData.setKeywords(metaKeywords);
 }
 
 
