@@ -30,8 +30,33 @@
 
 #include <QFrame>
 #include "kernel/sheet.h"
+#include <QHash>
 
 class Render;
+
+class RenderCache: public QObject
+{
+    Q_OBJECT
+public:
+    RenderCache(double resolution, int threadCount = 8, QObject *parent = 0);
+    ~RenderCache();
+    QString fileName() const;
+
+public slots:
+    void setFileName(const QString &fileName);
+    void renderSheet(int sheetNum);
+    void cancelSheet(int sheetNum);
+
+signals:
+    void sheetReady(QImage img, int sheetNum);
+
+private slots:
+    void onSheetReady(QImage img, int sheetNum);
+
+private:
+    QHash<int, QImage> mItems;
+    Render *mRender;
+};
 
 class PreviewWidget : public QFrame
 {
@@ -67,7 +92,7 @@ private:
     double mScaleFactor;
     Sheet::Hints mHints;
     QHash<int, Sheet::Hints> mRequests;
-    Render *mRender;
+    RenderCache *mRender;
     int mWheelDelta;
 
     void drawShadow(QPainter &painter, QRectF rect);

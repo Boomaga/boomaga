@@ -41,6 +41,107 @@
 #define MARGIN_BOOKLET  4
 #define RESOLUTIN       150
 
+#define CACHE_PRE       10
+#define CACHE_POST      20
+
+
+
+/************************************************
+ *
+ ************************************************/
+RenderCache::RenderCache(double resolution, int threadCount, QObject *parent):
+    QObject(parent),
+    mRender(new Render(resolution, threadCount, this))
+{
+    connect(mRender, SIGNAL(sheetReady(QImage,int)),
+            this, SLOT(onSheetReady(QImage,int)));
+}
+
+
+/************************************************
+ *
+ ************************************************/
+RenderCache::~RenderCache()
+{
+
+}
+
+
+/************************************************
+ *
+ ************************************************/
+QString RenderCache::fileName() const
+{
+    return mRender->fileName();
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void RenderCache::setFileName(const QString &fileName)
+{
+    mRender->setFileName(fileName);
+    mItems.clear();
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void RenderCache::renderSheet(int sheetNum)
+{
+    if (mItems.contains(sheetNum))
+        emit sheetReady(mItems.value(sheetNum), sheetNum);
+    else
+        mRender->renderSheet(sheetNum);
+
+    int start = qMax(0, sheetNum - CACHE_PRE);
+    int end = qMin(project->previewSheetCount()-1, sheetNum + CACHE_POST);
+
+    for (int i=start; i<sheetNum; ++i)
+    {
+        if (!mItems.contains(i))
+            mRender->renderSheet(i);
+    }
+
+    for (int i=sheetNum+1; i<=end; ++i)
+    {
+        if (!mItems.contains(i))
+            mRender->renderSheet(i);
+    }
+
+    // Remove old values ........................
+    QHash<int, QImage>::iterator it = mItems.begin();
+    while (it != mItems.end())
+    {
+        if (it.key() < start || it.key() > end)
+            it = mItems.erase(it);
+        else
+            ++it;
+    }
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void RenderCache::cancelSheet(int sheetNum)
+{
+    mRender->cancelSheet(sheetNum);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void RenderCache::onSheetReady(QImage img, int sheetNum)
+{
+    mItems.insert(sheetNum, img);
+    emit sheetReady(img, sheetNum);
+}
+
+
 
 /************************************************
 
@@ -59,7 +160,7 @@ PreviewWidget::PreviewWidget(QWidget *parent) :
     connect(project, SIGNAL(changed()),
             this, SLOT(refresh()));
 
-    mRender = new Render(RESOLUTIN, 8, this);
+    mRender = new RenderCache(RESOLUTIN, 8, this);
 
     connect(project, SIGNAL(tmpFileRenamed(QString)),
             mRender, SLOT(setFileName(QString)));
