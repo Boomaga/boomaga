@@ -95,6 +95,21 @@ ProjectPage *Sheet::firstVisiblePage() const
 
 
 /************************************************
+ *
+ ************************************************/
+ProjectPage *Sheet::lastVisiblePage() const
+{
+    for (int i=mPages.count()-1; i>=0; --i)
+    {
+        if (mPages.at(i))
+            return mPages.at(i);
+    }
+
+    return 0;
+}
+
+
+/************************************************
 
  ************************************************/
 void Sheet::setHints(Sheet::Hints value)
@@ -155,10 +170,11 @@ QDebug operator<<(QDebug dbg, const Sheet &sheet)
         if (page)
         {
             dbg.space() << "   * " << i << "---------\n"
-                        << "       jobPageNum:"     << page->jobPageNum() << "\n"
-                        << "       blankPage:"      << page->isBlankPage() << "\n"
-                        << "       visible:"        << page->visible() << "\n"
-                        << "       startBooklet:"   << page->isStartSubBooklet() << "\n"
+                        << "       jobPageNum:"             << page->jobPageNum() << "\n"
+                        << "       blankPage:"              << page->isBlankPage() << "\n"
+                        << "       visible:"                << page->visible() << "\n"
+                        << "       manual startBooklet:"    << page->isManualStartSubBooklet() << "\n"
+                        << "       auto startBooklet:"      << page->isAutoStartSubBooklet() << "\n"
                         << "\n";
         }
         else

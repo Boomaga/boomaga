@@ -32,6 +32,7 @@
 #include <QString>
 #include <QStringList>
 #include <QList>
+#include <QTemporaryFile>
 
 #define protected public
 #include "../kernel/layout.h"
@@ -39,7 +40,8 @@
 #include "../kernel/sheet.h"
 #include "../kernel/projectfile.h"
 #include "../boomagatypes.h"
-
+#include "../kernel/projectpage.h"
+#include "../settings.h"
 
 #define COMPARE(actual, expected) \
     do {\
@@ -59,7 +61,15 @@ do {\
  * ***********************************************/
 TestBoomaga::TestBoomaga(QObject *parent)
 {
+}
 
+void TestBoomaga::initTestCase()
+{
+    QTemporaryFile *tmpFile = new QTemporaryFile(this);
+    if (!tmpFile->open())
+        QFAIL("Can't create temporary file");
+
+    Settings::setFileName(tmpFile->fileName());
 }
 
 
@@ -996,6 +1006,67 @@ void TestBoomaga::test_SheetRotation_data()
     QTest::newRow("booklet Auto    0") << " 0 180   0 180";
     QTest::newRow("booklet Auto   90") << "90 270  90 270";
 
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void TestBoomaga::test_BooklesSplit()
+{
+    settings->setValue(Settings::SubBookletsEnabled, true);
+    settings->setValue(Settings::SubBookletSize, 2);
+
+    QStringList tags = QString(QTest::currentDataTag()).split(":", QString::SkipEmptyParts);
+    QString pageSpec = tags.count() > 2 ? tags.at(2): "";
+
+    QList<ProjectPage*> pages;
+    foreach (QString spec, pageSpec.split(" ", QString::SkipEmptyParts))
+    {
+        ProjectPage *page = new ProjectPage();
+        page->setManualStartSubBooklet(spec.contains("M"));
+        //qDebug() << spec << spec.contains("M") << ;
+        pages << page;
+    }
+
+    LayoutNUp *layout = createLayout(tags.at(0));
+    layout->updatePages(pages);
+
+    QFETCH(QString, expected);
+    expected = expected.simplified();
+    QString result;
+
+    for(int i=0; i< pages.count(); ++i)
+    {
+        if (pages.at(i)->isStartSubBooklet())
+            result += QString(" %1").arg(i+1);
+    }
+    result = result.simplified();
+
+    QCOMPARE(result, expected);
+
+
+    qDeleteAll(pages);
+}
+
+/************************************************
+ *
+ * ***********************************************/
+void TestBoomaga::test_BooklesSplit_data()
+{
+    QTest::addColumn<QString>("expected");
+    //QTest::newRow("booklet: 4 pps:") << "";
+    QTest::newRow("booklet: 4 pps: 1") << "1";
+
+    QTest::newRow("booklet: 4 pps: 1 2 3 4 5 6 7") << "1";
+    QTest::newRow("booklet: 4 pps: 1 2 3 4 5 6 7 8") << "1";
+    QTest::newRow("booklet: 4 pps: 1 2 3 4 5 6 7 8   9 10") << "1 9";
+    QTest::newRow("booklet: 4 pps: 1 2 3 4 5 6 7 8   9 10 11 12 13 14 15 16") << "1 9";
+    QTest::newRow("booklet: 4 pps: 1 2 3 4 5 6 7 8   9 10 11 12 13 14 15 16  17") << "1 9 17";
+
+    QTest::newRow("booklet: 4 pps: 1 2M 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18") << "1 2 10 18";
+    QTest::newRow("booklet: 4 pps: 1 2M 3 4 5 6M 7 8 9 10 11 12 13 14 15 16 17 18") << "1 2 6 14";
+    QTest::newRow("booklet: 4 pps: 1 2M 3 4 5 6 7 8 9 10M 11 12 13 14 15 16 17 18") << "1 2 10 18";
 }
 
 

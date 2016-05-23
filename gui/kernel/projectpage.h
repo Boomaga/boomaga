@@ -64,8 +64,13 @@ public:
 
     bool isBlankPage() const;
 
-    bool isStartSubBooklet() const { return mStartSubBooklet; }
-    void setStartSubBooklet(bool value);
+    bool isStartSubBooklet() const { return mManualStartSubBooklet || mAutoStartSubBooklet; }
+    bool isManualStartSubBooklet() const { return mManualStartSubBooklet; }
+    void setManualStartSubBooklet(bool value);
+    bool isAutoStartSubBooklet() const { return mAutoStartSubBooklet; }
+    void setAutoStartSubBooklet(bool value);
+
+
     ProjectPage *clone(QObject *parent = 0);
 
 protected:
@@ -81,7 +86,8 @@ private:
     bool mVisible;
     PdfPageInfo mPdfInfo;
     Rotation mManualRotation;
-    bool mStartSubBooklet;
+    bool mManualStartSubBooklet;
+    bool mAutoStartSubBooklet;
 };
 
 #endif // PROJECTPAGE_H

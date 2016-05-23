@@ -143,40 +143,98 @@
          </widget>
         </item>
         <item>
-         <widget class="QGroupBox" name="jobsBox">
-          <property name="title">
-           <string>Jobs</string>
+         <widget class="QTabWidget" name="pagesViewTab">
+          <property name="tabPosition">
+           <enum>QTabWidget::North</enum>
           </property>
-          <layout class="QVBoxLayout" name="verticalLayout_5">
-           <property name="bottomMargin">
-            <number>0</number>
-           </property>
-           <item>
-            <widget class="JobListView" name="jobsView">
-             <property name="sizePolicy">
-              <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
-               <horstretch>0</horstretch>
-               <verstretch>0</verstretch>
-              </sizepolicy>
-             </property>
-             <property name="acceptDrops">
-              <bool>true</bool>
-             </property>
-             <property name="dragEnabled">
-              <bool>true</bool>
-             </property>
-             <property name="dragDropMode">
-              <enum>QAbstractItemView::InternalMove</enum>
-             </property>
-             <property name="defaultDropAction">
-              <enum>Qt::MoveAction</enum>
-             </property>
-             <property name="alternatingRowColors">
-              <bool>true</bool>
-             </property>
-            </widget>
-           </item>
-          </layout>
+          <property name="currentIndex">
+           <number>0</number>
+          </property>
+          <property name="documentMode">
+           <bool>false</bool>
+          </property>
+          <widget class="QWidget" name="jobs">
+           <attribute name="title">
+            <string>Jobs</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="margin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="JobListView" name="jobsView">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="acceptDrops">
+               <bool>true</bool>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::NoFrame</enum>
+              </property>
+              <property name="dragEnabled">
+               <bool>true</bool>
+              </property>
+              <property name="dragDropMode">
+               <enum>QAbstractItemView::InternalMove</enum>
+              </property>
+              <property name="defaultDropAction">
+               <enum>Qt::MoveAction</enum>
+              </property>
+              <property name="alternatingRowColors">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
+          <widget class="QWidget" name="subbooklets">
+           <attribute name="title">
+            <string>Sub-booklets</string>
+           </attribute>
+           <layout class="QVBoxLayout" name="verticalLayout_5">
+            <property name="spacing">
+             <number>0</number>
+            </property>
+            <property name="margin">
+             <number>0</number>
+            </property>
+            <item>
+             <widget class="SubBookletView" name="subBookletView">
+              <property name="sizePolicy">
+               <sizepolicy hsizetype="Expanding" vsizetype="MinimumExpanding">
+                <horstretch>0</horstretch>
+                <verstretch>0</verstretch>
+               </sizepolicy>
+              </property>
+              <property name="acceptDrops">
+               <bool>true</bool>
+              </property>
+              <property name="frameShape">
+               <enum>QFrame::NoFrame</enum>
+              </property>
+              <property name="dragEnabled">
+               <bool>true</bool>
+              </property>
+              <property name="dragDropMode">
+               <enum>QAbstractItemView::InternalMove</enum>
+              </property>
+              <property name="defaultDropAction">
+               <enum>Qt::MoveAction</enum>
+              </property>
+              <property name="alternatingRowColors">
+               <bool>true</bool>
+              </property>
+             </widget>
+            </item>
+           </layout>
+          </widget>
          </widget>
         </item>
        </layout>
@@ -200,6 +258,14 @@
    </layout>
   </widget>
   <widget class="QMenuBar" name="menubar">
+   <property name="geometry">
+    <rect>
+     <x>0</x>
+     <y>0</y>
+     <width>1188</width>
+     <height>23</height>
+    </rect>
+   </property>
    <widget class="QMenu" name="menuFile">
     <property name="title">
      <string>&amp;File</string>
@@ -366,6 +432,11 @@
    <class>JobListView</class>
    <extends>QListWidget</extends>
    <header location="global">widgets/joblistview.h</header>
+  </customwidget>
+  <customwidget>
+   <class>SubBookletView</class>
+   <extends>QListWidget</extends>
+   <header location="global">widgets/subbookletview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

@@ -255,7 +255,7 @@ void ProjectFile::load(const QString &fileName)
                             page->setVisible(false);
 
                         if (spec.isStartBooklet())
-                            page->setStartSubBooklet(true);
+                            page->setManualStartSubBooklet(true);
 
                         page->setManualRotation(spec.rotation());
                     }
@@ -332,7 +332,7 @@ void ProjectFile::save(const QString &fileName)
             pages << PageSpec(page->jobPageNum(),
                               page->visible() == false,
                               page->manualRotation(),
-                              page->isStartSubBooklet()
+                              page->isManualStartSubBooklet()
                              ).asString();
         }
 

@@ -34,6 +34,7 @@
 #include <QDebug>
 #include <QPainter>
 #include <QBuffer>
+#include <limits>
 
 #include "boomagatypes.h"
 
@@ -94,6 +95,16 @@ void PagesListView::setIconSize(int size)
 /************************************************
  *
  ************************************************/
+int PagesListView::itemPageCount(int row) const
+{
+    int end = row + 1 < count() ? item(row + 1)->data(PAGE_NUM_ROLE).toInt() - 1 : project->pageCount() -1;
+    return end - item(row)->data(PAGE_NUM_ROLE).toInt();
+}
+
+
+/************************************************
+ *
+ ************************************************/
 void PagesListView::updateItems()
 {
     QList<ItemInfo> pages = getPages();
@@ -116,6 +127,57 @@ void PagesListView::updateItems()
     }
     setCurrentRow(cur);
     setUpdatesEnabled(true);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void PagesListView::setSheetNum(int sheetNum)
+{
+    if (count() < 1)
+        return;
+
+    if (sheetNum < 0)
+    {
+        setCurrentRow(0);
+        return;
+    }
+
+    Sheet *sheet = project->previewSheet(sheetNum);
+
+    int sheetFirstPage = (sheet->firstVisiblePage()) ? sheet->firstVisiblePage()->pageNum() : -1;
+    int sheetLastPage  = (sheet->lastVisiblePage())  ? sheet->lastVisiblePage()->pageNum()  : -1;
+
+    if (sheetFirstPage < 0 || sheetLastPage < 0)
+    {
+        setCurrentRow(-1);
+        return;
+    }
+
+    int left = -1;
+    int right = -1;
+    for (int i=0; (left<0 || right<0) && i<count(); ++i)
+    {
+        int itemFirstPage = item(i)->data(PAGE_NUM_ROLE).toInt();
+        int itemLastPage = (i<count()-1) ? item(i+1)->data(PAGE_NUM_ROLE).toInt()-1 : project->pageCount()-1;
+
+        if (itemFirstPage <= sheetFirstPage && itemLastPage >= sheetFirstPage)
+            left = i;
+
+        if (itemFirstPage <= sheetLastPage && itemLastPage >= sheetLastPage)
+            right = i;
+    }
+
+    int curRow = qMax(0, currentRow());
+    if (left <= curRow && curRow <= right)
+    {
+        if (currentRow() != curRow)
+            setCurrentRow(curRow);
+        return;
+    }
+
+    setCurrentRow(left);
 }
 
 
@@ -242,6 +304,21 @@ void PagesListView::dropEvent(QDropEvent *e)
 
     QListWidget::dropEvent(e);
     emit itemMoved(from, to);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+int PagesListView::indexOfPage(int pageNum) const
+{
+    for (int i=0; i<this->count(); ++i)
+    {
+        if (this->item(i)->data(PAGE_NUM_ROLE) == pageNum)
+            return i;
+
+    }
+    return -1;
 }
 
 

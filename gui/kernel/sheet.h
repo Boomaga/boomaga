@@ -67,6 +67,7 @@ public:
 
     int sheetNum() const { return mSheetNum; }
     ProjectPage *firstVisiblePage() const;
+    ProjectPage *lastVisiblePage() const;
 
 private:
     QVector<ProjectPage*> mPages;

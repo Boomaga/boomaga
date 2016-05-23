@@ -59,6 +59,7 @@ set(HEADERS
     widgets/layoutradiobutton.h
     widgets/printerscombobox.h
     widgets/previewwidget.h
+    widgets/subbookletview.h
 )
 
 set(SOURCES
@@ -93,6 +94,7 @@ set(SOURCES
     widgets/layoutradiobutton.cpp
     widgets/printerscombobox.cpp
     widgets/previewwidget.cpp
+    widgets/subbookletview.cpp
 )
 
 set (MOCS
@@ -117,6 +119,7 @@ set (MOCS
     widgets/layoutradiobutton.h
     widgets/printerscombobox.h
     widgets/previewwidget.h
+    widgets/subbookletview.h
 )
 
 set(LIBRARIES

@@ -34,15 +34,11 @@
 #include <QDropEvent>
 
 #include "pagelistview.h"
-
 class JobListView: public PagesListView
 {
     Q_OBJECT
 public:
     explicit JobListView(QWidget *parent = 0);
-
-public slots:
-    void setSheetNum(int sheetNum);
 
 signals:
     void contextMenuRequested(Job job);

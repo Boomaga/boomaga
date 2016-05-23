@@ -137,6 +137,9 @@ MainWindow::MainWindow(QWidget *parent):
     connect(ui->jobsView, SIGNAL(sheetSelected(int)),
             project, SLOT(setCurrentSheet(int)));
 
+    connect(ui->subBookletView, SIGNAL(sheetSelected(int)),
+            project, SLOT(setCurrentSheet(int)));
+
     connect(ui->printersCombo, SIGNAL(activated(int)),
             this, SLOT(switchPrinterProfile()));
 
@@ -265,6 +268,7 @@ void MainWindow::loadSettings()
     restoreGeometry(settings->value(Settings::MainWindow_Geometry).toByteArray());
     restoreState(settings->value(Settings::MainWindow_State).toByteArray());
     ui->optionsPanel->setGeometry(0, 0, settings->value(Settings::MainWindow_SplitterPos, 0).toInt(), 0);
+    ui->pagesViewTab->setCurrentIndex(settings->value(Settings::MainWindow_PageListTab).toInt());
 
     Printer *currentPrinter = Printer::printerByName(settings->value(Settings::Printer).toString());
     if (!currentPrinter)
@@ -294,6 +298,7 @@ void MainWindow::loadSettings()
 
     project->setDoubleSided(settings->value(Settings::DoubleSided).toBool());
     ui->jobsView->setIconSize(settings->value(Settings::MainWindow_PageListIconSize).toInt());
+    ui->subBookletView->setIconSize(settings->value(Settings::MainWindow_PageListIconSize).toInt());
 }
 
 
@@ -305,6 +310,7 @@ void MainWindow::saveSettings()
     settings->setValue(Settings::MainWindow_Geometry, saveGeometry());
     settings->setValue(Settings::MainWindow_State, saveState());
     settings->setValue(Settings::MainWindow_SplitterPos, ui->optionsPanel->width());
+    settings->setValue(Settings::MainWindow_PageListTab, ui->pagesViewTab->currentIndex());
 
     Printer *printer = ui->printersCombo->currentPrinter();
     if (printer)
@@ -317,6 +323,7 @@ void MainWindow::saveSettings()
         project->printer()->saveSettings();
 
     settings->setValue(Settings::MainWindow_PageListIconSize, ui->jobsView->iconSize());
+    settings->setValue(Settings::MainWindow_PageListIconSize, ui->subBookletView->iconSize());
     settings->sync();
 }
 
@@ -414,6 +421,7 @@ void MainWindow::initStatusBar()
 void MainWindow::updateWidgets()
 {
     ui->jobsView->setSheetNum(project->currentSheetNum());
+    ui->subBookletView->setSheetNum(project->currentSheetNum());
 
     foreach (LayoutRadioButton* btn, this->findChildren<LayoutRadioButton*>())
     {
@@ -805,7 +813,7 @@ void MainWindow::showPreviewContextMenu(Sheet *sheet, ProjectPage *page)
     // New subbooklet ................................
     if (page && (page != project->page(0)))
     {
-        if (!page->isStartSubBooklet())
+        if (!page->isManualStartSubBooklet())
         {
             PageAction *act = new PageAction(tr("Start new booklet from this page"), sheet, page, menu);
             connect(act, SIGNAL(triggered()),
@@ -1174,7 +1182,7 @@ void MainWindow::startBooklet()
     if (!act || !act->page())
         return;
 
-    act->page()->setStartSubBooklet(true);
+    act->page()->setManualStartSubBooklet(true);
     project->update();
 
     int sheetNum = project->previewSheets().indexOfPage(act->page());
@@ -1192,7 +1200,7 @@ void MainWindow::dontStartBooklet()
     if (!act || !act->page())
         return;
 
-    act->page()->setStartSubBooklet(false);
+    act->page()->setManualStartSubBooklet(false);
     project->update();
 
     int sheetNum = project->previewSheets().indexOfPage(act->page());
@@ -1248,6 +1256,7 @@ void MainWindow::deleteJob()
         project->removeJob(index);
 
     ui->jobsView->updateItems();
+    ui->subBookletView->updateItems();
 }
 
 

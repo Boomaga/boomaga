@@ -255,6 +255,7 @@ void Project::update()
 
     if (!mPages.isEmpty())
     {
+        mLayout->updatePages(mPages);
         mSheetCount = mLayout->calcSheetCount();
 
         mLayout->fillPreviewSheets(&mPreviewSheets);

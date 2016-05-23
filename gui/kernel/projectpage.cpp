@@ -37,7 +37,8 @@ ProjectPage::ProjectPage(QObject *parent):
     mSheet(0),
     mVisible(true),
     mManualRotation(NoRotate),
-    mStartSubBooklet(false)
+    mManualStartSubBooklet(false),
+    mAutoStartSubBooklet(false)
 {
 
 }
@@ -54,7 +55,8 @@ ProjectPage::ProjectPage(const InputFile &inputFile, int jobPageNum, QObject *pa
     mSheet(0),
     mVisible(true),
     mManualRotation(NoRotate),
-    mStartSubBooklet(false)
+    mManualStartSubBooklet(false),
+    mAutoStartSubBooklet(false)
 {
 }
 
@@ -114,9 +116,18 @@ bool ProjectPage::isBlankPage() const
 /************************************************
  *
  ************************************************/
-void ProjectPage::setStartSubBooklet(bool value)
+void ProjectPage::setManualStartSubBooklet(bool value)
 {
-    mStartSubBooklet = value;
+    mManualStartSubBooklet = value;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void ProjectPage::setAutoStartSubBooklet(bool value)
+{
+    mAutoStartSubBooklet = value;
 }
 
 
@@ -131,7 +142,7 @@ ProjectPage *ProjectPage::clone(QObject *parent)
     res->mPdfInfo = mPdfInfo;
     res->setVisible(mVisible);
     res->setManualRotation(mManualRotation);
-    res->setStartSubBooklet(mStartSubBooklet);
+    res->setManualStartSubBooklet(mManualStartSubBooklet);
     return res;
 }
 
