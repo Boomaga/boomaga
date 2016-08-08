@@ -52,6 +52,10 @@
     "</tr></table>" \
     "</html>"
 
+#define STYLE_SHEET \
+    "background-color: white; "\
+    "padding: 4px;"
+
 
 /************************************************
  *
@@ -71,6 +75,8 @@ PagesListView::PagesListView(QWidget *parent):
             this, SLOT(updateItems()));
 
     setIconSize(64);
+
+    setStyleSheet(STYLE_SHEET);
 }
 
 
