@@ -21,7 +21,8 @@ QList<PagesListView::ItemInfo> SubBookletView::getPages() const
         return res;
 
     QList<int> pages;
-    for (int i=0; i<project->pageCount(); ++i)
+    pages << 0;
+    for (int i=1; i<project->pageCount(); ++i)
     {
         if (project->page(i)->isStartSubBooklet())
             pages << i;
