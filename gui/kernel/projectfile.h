@@ -38,7 +38,7 @@ class QFile;
 class BackendOptions
 {
 public:
-    BackendOptions(const QString &options);
+    explicit BackendOptions(const QString &options);
 
     QList<int> pages() const { return mPages; }
 

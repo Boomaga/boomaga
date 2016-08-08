@@ -168,7 +168,7 @@ public slots:
 signals:
     void changed();
     void progress(int progr, int all) const;
-    void tmpFileRenamed(const QString mTmpFileName);
+    void tmpFileRenamed(const QString &mTmpFileName);
     void currentPageChanged(ProjectPage *page);
     void currentPageChanged(int page);
     void currentSheetChanged(Sheet *sheet);

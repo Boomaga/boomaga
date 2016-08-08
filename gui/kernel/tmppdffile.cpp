@@ -111,6 +111,7 @@ TmpPdfFile::~TmpPdfFile()
  ************************************************/
 void TmpPdfFile::merge()
 {
+    delete mMerger;
     mMerger = new QProcess(this);
 
     connect(mMerger, SIGNAL(finished(int)),

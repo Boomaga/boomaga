@@ -1047,6 +1047,7 @@ void TestBoomaga::test_BooklesSplit()
 
 
     qDeleteAll(pages);
+    delete layout;
 }
 
 /************************************************

@@ -58,7 +58,7 @@ class InputFileList: public QList<InputFile>
 {
 public:
     InputFileList() : QList<InputFile>() {}
-    InputFileList(const QList<InputFile> &other) : QList<InputFile>(other) {}
+    explicit InputFileList(const QList<InputFile> &other) : QList<InputFile>(other) {}
 };
 
 #endif // INPUTFILE_H

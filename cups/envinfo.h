@@ -34,7 +34,7 @@ class EnvInfo
 {
 public:
     EnvInfo() {}
-    EnvInfo(const QString &procDir);
+    explicit EnvInfo(const QString &procDir);
     EnvInfo(const EnvInfo &other);
 
     static EnvInfo find(const QString &xDisplay);

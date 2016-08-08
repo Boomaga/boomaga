@@ -169,7 +169,7 @@ QStyleOptionMenuItem PrintersComboBoxDelegate::getStyleOption(const QStyleOption
 class PrintersComboBoxItem: public QStandardItem
 {
 public:
-    PrintersComboBoxItem(const QString &text):
+    explicit PrintersComboBoxItem(const QString &text):
         QStandardItem(text),
         mPrinter(0),
         mProfile(0)
