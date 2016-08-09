@@ -24,41 +24,29 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#ifndef INPUTFILE_H
-#define INPUTFILE_H
+#ifndef JOBLISTVIEW_H
+#define JOBLISTVIEW_H
 
-#include <QString>
-#include <QVector>
+#include <QListWidget>
+#include <QContextMenuEvent>
+#include <QMouseEvent>
+#include <kernel/job.h>
+#include <QDropEvent>
 
-class InputFile
+#include "pagelistview.h"
+class JobListView: public PagesListView
 {
+    Q_OBJECT
 public:
-    InputFile();
-    InputFile(const QString &fileName, qint64 startPos=0, qint64 endPos=0);
-    InputFile(const InputFile &other);
-    InputFile &operator=(const InputFile &other);
-    ~InputFile();
+    explicit JobListView(QWidget *parent = 0);
 
-    bool operator==(const InputFile &other) const;
-    inline bool operator!=(const InputFile &other) const { return !operator==(other); }
+signals:
+    void contextMenuRequested(Job job);
 
-    QString fileName() const { return mFileName; }
-
-    qint64 startPos() const { return mStartPos; }
-    qint64 endPos() const { return  mEndPos; }
-    qint64 length() const { return mEndPos - mStartPos; }
-
-private:
-    QString mFileName;
-    qint64 mStartPos;
-    qint64 mEndPos;
+protected:
+    QList<ItemInfo> getPages() const;
+    void contextMenuEvent(QContextMenuEvent *e);
 };
 
-class InputFileList: public QList<InputFile>
-{
-public:
-    InputFileList() : QList<InputFile>() {}
-    explicit InputFileList(const QList<InputFile> &other) : QList<InputFile>(other) {}
-};
 
-#endif // INPUTFILE_H
+#endif // JOBLISTVIEW_H

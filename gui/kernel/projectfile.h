@@ -38,7 +38,7 @@ class QFile;
 class BackendOptions
 {
 public:
-    BackendOptions(const QString &options);
+    explicit BackendOptions(const QString &options);
 
     QList<int> pages() const { return mPages; }
 
@@ -91,7 +91,7 @@ public:
     explicit ProjectFile(QObject *parent = 0);
     virtual ~ProjectFile();
 
-    void load(const QString &fileName, const QString &options = "");
+    void load(const QString &fileName);
     void save(const QString &fileName);
 
     JobList jobs() const { return mJobs; }

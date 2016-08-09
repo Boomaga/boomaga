@@ -453,7 +453,7 @@ Job Job::clone()
     Job res = *this;
     res.mData.detach();
     for (int i=0; i< mData->mPages.count(); ++i)
-        res.mData->mPages[i] = new ProjectPage(mData->mPages.at(i));
+        res.mData->mPages[i] = mData->mPages.at(i)->clone();
 
     return res;
 }
@@ -483,6 +483,9 @@ JobList::JobList(const QList<Job> &other):
  ************************************************/
 int JobList::indexOfProjectPage(const ProjectPage * page, int from) const
 {
+    if (!page)
+        return -1;
+
     for(int i=from; i<this->count(); ++i)
     {
         if (at(i).indexOfPage(page) > -1)

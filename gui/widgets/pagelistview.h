@@ -24,51 +24,56 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#ifndef PREVIEWWIDGET_H
-#define PREVIEWWIDGET_H
+#ifndef PAGELISTVIEW_H
+#define PAGELISTVIEW_H
 
+#include <QListWidget>
+#include <kernel/job.h>
 
-#include <QFrame>
-#include "kernel/sheet.h"
+class Render;
 
-class PreviewWidget : public QFrame
+class PagesListView: public QListWidget
 {
-    Q_OBJECT
+     Q_OBJECT
 public:
-    explicit PreviewWidget(QWidget *parent = 0);
-    ~PreviewWidget();
-    
-    int currentSheet() const { return mSheetNum; }
-    QRectF pageRect(int pageNum) const;
-    int pageAt(const QPoint &point) const;
+    explicit PagesListView(QWidget *parent = 0);
+    virtual ~PagesListView();
+    void setIconSize(int size);
+    int iconSize() const { return mIconSize;  }
+    int itemPageCount(int row) const;
 
 public slots:
-    void setCurrentSheet(int sheetNum);
-    void nextSheet();
-    void prevSheet();
-    void refresh();
+    void updateItems();
+    void setSheetNum(int sheetNum);
 
 signals:
-    void changed(int sheetNum);
-    void contextMenuRequested(int pageNum);
+    void pageSelected(int pageNum);
+    void sheetSelected(int sheetNum);
+    void itemMoved(int from, int to);
 
 protected:
-    void paintEvent(QPaintEvent *event);
-    void wheelEvent(QWheelEvent *event);
-    void keyPressEvent(QKeyEvent *event);
-    void contextMenuEvent(QContextMenuEvent *event);
+    struct ItemInfo {
+        QString title;
+        int page;
+        QString toolTip;
+    };
+    virtual QList<ItemInfo> getPages() const = 0;
+    void mouseReleaseEvent(QMouseEvent *e);
+    void wheelEvent(QWheelEvent *e);
+    void dropEvent(QDropEvent *e);
+
+    int indexOfPage(int pageNum) const;
 
 private slots:
-    void sheetImageChanged(int sheetNum);
+    void previewRedy(QImage image, int pageNum);
 
 private:
-    QImage mImage;
-    QRect mDrawRect;
-    int mSheetNum;
-    double mScaleFactor;
-    Sheet::Hints mHints;
+    Render *mRender;
+    QImage mEmptyImage;
 
-    void drawShadow(QPainter &painter, QRectF rect);
+    QIcon createIcon(const QImage &image) const;
+    int mIconSize;
 };
 
-#endif // PREVIEWWIDGET_H
+
+#endif // PAGELISTVIEW_H

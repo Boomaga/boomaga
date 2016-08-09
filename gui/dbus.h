@@ -39,6 +39,9 @@ public:
 
 public slots:
     void add(const QString &file, const QString &title,bool autoRemove = false, const QString &options = "", uint count = 1);
+
+private slots:
+    void doAdd(const QString &file, const QString &title,bool autoRemove, const QString &options, uint count);
 };
 
 

@@ -60,6 +60,7 @@ void Layout::fillPreviewSheets(QList<Sheet *> *sheets) const
 }
 
 
+
 /************************************************
 
  ************************************************/
@@ -240,6 +241,18 @@ Rotation LayoutNUp::rotation() const
         return Rotate90;
     else
         return NoRotate;
+}
+
+
+/************************************************
+
+ ************************************************/
+void LayoutNUp::updatePages(QList<ProjectPage *> pages) const
+{
+    foreach(ProjectPage *page, pages)
+        page->setAutoStartSubBooklet(false);
+
+    pages.first()->setAutoStartSubBooklet(false);
 }
 
 
@@ -476,6 +489,37 @@ void LayoutBooklet::fillPreviewSheets(QList<Sheet *> *sheets) const
 
 
 /************************************************
+
+ ************************************************/
+void LayoutBooklet::updatePages(QList<ProjectPage *> pages) const
+{
+    if (!settings->value(Settings::SubBookletsEnabled).toBool())
+    {
+        foreach (ProjectPage *page, pages)
+            page->setAutoStartSubBooklet(false);
+
+    }
+    else
+    {
+
+        int pagePerBook = settings->value(Settings::SubBookletSize).toInt() * 4;
+
+        int n = pagePerBook;
+        foreach (ProjectPage *page, pages)
+        {
+            if (page->isManualStartSubBooklet())
+                n = pagePerBook;
+
+            page->setAutoStartSubBooklet(!(n % pagePerBook));
+            n--;
+        }
+    }
+
+    pages.first()->setAutoStartSubBooklet(true);
+}
+
+
+/************************************************
   : - - +-----+  +-----------+
   :     |     |  |     :     |
   : -1  |  0  |  |  1  :  2  |
@@ -537,32 +581,19 @@ void LayoutBooklet::fillPreviewSheetsForBook(int bookStart, int bookLength, QLis
 QList<LayoutBooklet::BookletInfo> LayoutBooklet::split(const QList<ProjectPage *> &pages) const
 {
     QList<BookletInfo> res;
-    int pagePerBook = settings->value(Settings::SubBookletSize).toInt() * 4;
-    if (!settings->value(Settings::SubBookletsEnabled).toBool())
-        pagePerBook = -99999;
-
-    int start = 0;
-    int manualStart = false;
-    int cnt = pages.count();
-
-    for (int i=0; i<=cnt; ++i)
+    int end = pages.count()-1;
+    for (int i=pages.count()-1; i>=0; i--)
     {
-        if (i == cnt ||
-            i - start == pagePerBook ||
-            pages.at(i)->isStartSubBooklet())
+        const ProjectPage *page = pages.at(i);
+        if (page->isStartSubBooklet())
         {
             BookletInfo booklet;
-            booklet.start = start;
-            booklet.end = i -1;
-            booklet.manualStart = manualStart;
-            booklet.manualEnd = (i < cnt && pages.at(i)->isStartSubBooklet());
-            res << booklet;
-
-            start = i;
-            manualStart = booklet.manualEnd;
+            booklet.start = i;
+            booklet.end = end;
+            res.prepend(booklet);
+            end = i-1;
         }
     }
-
     return res;
 }
 

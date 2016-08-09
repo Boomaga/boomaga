@@ -1,7 +1,8 @@
 /* BEGIN_COMMON_COPYRIGHT_HEADER
  * (c)LGPL2+
  *
- * Copyright: 2012-2013 Boomaga team https://github.com/Boomaga
+ *
+ * Copyright: 2012-2016 Boomaga team https://github.com/Boomaga
  * Authors:
  *   Alexander Sokoloff <sokoloff.a@gmail.com>
  *
@@ -22,39 +23,29 @@
  *
  * END_COMMON_COPYRIGHT_HEADER */
 
-#ifndef ABOUTDIALOG_H
-#define ABOUTDIALOG_H
 
-#include <QDialog>
+#ifndef LAYOUTRADIOBUTTON_H
+#define LAYOUTRADIOBUTTON_H
 
-/**
- * @brief displays a simple about dialog
- */
+#include <QRadioButton>
+class Layout;
 
-#include "ui_aboutdialog.h"
-
-namespace Ui {
-class AboutDialog;
-}
-
-class AboutDialog: public QDialog
+class LayoutRadioButton : public QRadioButton
 {
     Q_OBJECT
 public:
-    explicit AboutDialog(QWidget *parent = 0);
-    ~AboutDialog();
+    explicit LayoutRadioButton(QWidget *parent=0);
+    explicit LayoutRadioButton(const QString &text, QWidget *parent=0);
 
+
+    Layout *layout() const { return mLayout; }
+    void setLayout(Layout *value) { mLayout = value; }
+signals:
+    
+public slots:
+    
 private:
-    Ui::AboutDialog *ui;
-    static AboutDialog *mInstance;
-
-    QString titleText() const;
-    QString aboutText() const;
-    QString authorsText() const;
-    QString thanksText() const;
-    QString translationsText() const;
-
+    Layout *mLayout;
 };
 
-
-#endif // ABOUTDIALOG_H
+#endif // LAYOUTRADIOBUTTON_H

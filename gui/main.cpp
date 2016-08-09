@@ -97,7 +97,11 @@ int printError(const QString &msg)
  ************************************************/
 void readEnvFile()
 {
-    QFile envFile(QDir::homePath() + "/.cache/boomaga.env");
+    QString cacheDir = getenv("XDG_CACHE_HOME");
+    if (cacheDir.isEmpty())
+        cacheDir = QDir::homePath() + QLatin1String("/.cache");
+
+    QFile envFile(cacheDir + "/boomaga.env");
     if (envFile.exists())
     {
         envFile.open(QFile::ReadOnly);
@@ -195,7 +199,14 @@ int main(int argc, char *argv[])
     mainWindow.show();
     application.processEvents();
 
-    project->load(files, titles, "", autoRemove);
+    JobList jobs = project->load(files, "");
+    for (int i=0; i<jobs.count(); ++i)
+    {
+        if (i<titles.count())
+            jobs[i].setTitle(titles.at(i));
+
+        jobs[i].setAutoRemove(autoRemove);
+    }
 
     return application.exec();
 }

@@ -34,18 +34,17 @@ set(HEADERS
     kernel/job.h
     kernel/tmppdffile.h
     kernel/layout.h
-    kernel/render.h
+    render.h
     kernel/project.h
+    kernel/projectpage.h
     kernel/printer.h
     boomagatypes.h
     mainwindow.h
     actions.h
     settings.h
-    widgets.h
     dbus.h
     icon.h
     printersettings/printersettings.h
-    previewwidget.h
     aboutdialog/aboutdialog.h
     translations/translatorsinfo/translatorsinfo.h
     export/exporttopdf.h
@@ -55,6 +54,12 @@ set(HEADERS
     pdfmerger/pdfmergeripc.h
     configdialog/configdialog.h
     printdialog/printdialog.h
+    widgets/pagelistview.h
+    widgets/joblistview.h
+    widgets/layoutradiobutton.h
+    widgets/printerscombobox.h
+    widgets/previewwidget.h
+    widgets/subbookletview.h
 )
 
 set(SOURCES
@@ -64,18 +69,17 @@ set(SOURCES
     kernel/job.cpp
     kernel/tmppdffile.cpp
     kernel/layout.cpp
-    kernel/render.cpp
+    render.cpp
     kernel/project.cpp
+    kernel/projectpage.cpp
     kernel/printer.cpp
     boomagatypes.cpp
     mainwindow.cpp
     actions.cpp
     settings.cpp
-    widgets.cpp
     dbus.cpp
     icon.cpp
     printersettings/printersettings.cpp
-    previewwidget.cpp
     aboutdialog/aboutdialog.cpp
     translations/translatorsinfo/translatorsinfo.cpp
     export/exporttopdf.cpp
@@ -85,26 +89,37 @@ set(SOURCES
     pdfmerger/pdfmergeripc.cpp
     configdialog/configdialog.cpp
     printdialog/printdialog.cpp
+    widgets/pagelistview.cpp
+    widgets/joblistview.cpp
+    widgets/layoutradiobutton.cpp
+    widgets/printerscombobox.cpp
+    widgets/previewwidget.cpp
+    widgets/subbookletview.cpp
 )
 
 set (MOCS
     kernel/project.h
+    kernel/projectpage.h
     kernel/tmppdffile.h
-    kernel/render.h
+    render.h
 
     settings.h
     mainwindow.h
     actions.h
-    widgets.h
     dbus.h
     printersettings/printersettings.h
-    previewwidget.h
     aboutdialog/aboutdialog.h
     export/exporttopdf.h
     kernel/projectfile.h
     pdfmerger/pdfmergeripc.h
     configdialog/configdialog.h
     printdialog/printdialog.h
+    widgets/pagelistview.h
+    widgets/joblistview.h
+    widgets/layoutradiobutton.h
+    widgets/printerscombobox.h
+    widgets/previewwidget.h
+    widgets/subbookletview.h
 )
 
 set(LIBRARIES
@@ -164,22 +179,23 @@ if((USE_QT4 AND USE_QT5) OR
     endif()
 endif()
 
-SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
-find_package(Cups REQUIRED QUIET)
-find_package(snappy REQUIRED QUIET)
-find_package(Poppler REQUIRED QUIET)
-
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_CURRENT_SOURCE_DIR}/third-party
-    ${CMAKE_CURRENT_SOURCE_DIR}/third-party/libspectre
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
-    ${CUPS_INCLUDE_DIR}
-    ${SNAPPY_INCLUDE_DIRS}
-    ${POPPLER_INCLUDE_DIRS}
-    ${POPPLERCPP_INCLUDE_DIRS}
 )
+
+
+SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+find_package(Cups REQUIRED QUIET)
+include_directories(${CUPS_INCLUDE_DIR})
+set(LIBRARIES ${LIBRARIES} ${CUPS_LIBRARIES})
+
+find_package(Poppler REQUIRED QUIET)
+include_directories(${POPPLER_INCLUDE_DIRS} ${POPPLERCPP_INCLUDE_DIRS})
+set(LIBRARIES ${LIBRARIES} ${POPPLER_LIBRARIES})
+set(LIBRARIES ${LIBRARIES} ${POPPLERCPP_LIBRARIES})
+
 
 include(translations/translatorsinfo/CMakeLists.txt)
 get_translatorsinfo_qrc(translatorsinfo_qrc)
@@ -224,10 +240,6 @@ else()
 
 endif()
 set(LIBRARIES ${LIBRARIES} ${QT_LIBRARIES})
-set(LIBRARIES ${LIBRARIES} ${CUPS_LIBRARIES})
-set(LIBRARIES ${LIBRARIES} ${SNAPPY_LIBRARIES})
-set(LIBRARIES ${LIBRARIES} ${POPPLER_LIBRARIES})
-set(LIBRARIES ${LIBRARIES} ${POPPLERCPP_LIBRARIES})
 
 add_executable(${INSTANCE_NAME} ${HEADERS} ${SOURCES} ${MOC_SOURCES} ${QM_FILES} ${QRC_SOURCES} ${UI_HEADERS} ${QRC_CXX_SOURCES})
 target_link_libraries(${INSTANCE_NAME} ${LIBRARIES})
@@ -236,9 +248,9 @@ target_link_libraries(${INSTANCE_NAME} ${LIBRARIES})
 if(BUILD_TESTS STREQUAL "Yes")
     add_subdirectory(tests)
 else()
-    message(STATUS "")
-    message(STATUS "For building tests use -DBUILD_TESTS=Yes option.")
-    message(STATUS "")
+    statusMessage(" ")
+    statusMessage("For building tests use -DBUILD_TESTS=Yes option.")
+    statusMessage(" ")
 endif()
 
 
@@ -262,9 +274,3 @@ install(FILES   ${CMAKE_CURRENT_BINARY_DIR}/boomaga.desktop DESTINATION "share/a
 install(FILES   misc/boomaga.xml        DESTINATION "share/mime/packages")
 
 add_subdirectory(pdfmerger)
-
-if(USE_QT4)
-    message(STATUS "Use Qt4, for building with Qt5 use -DUSE_QT5=Yes option.")
-else()
-    message(STATUS "Use Qt5, for building with Qt4 use -DUSE_QT4=Yes option.")
-endif()

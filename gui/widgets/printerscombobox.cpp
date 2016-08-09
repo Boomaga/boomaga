@@ -2,7 +2,7 @@
  * (c)LGPL2+
  *
  *
- * Copyright: 2012-2013 Boomaga team https://github.com/Boomaga
+ * Copyright: 2012-2016 Boomaga team https://github.com/Boomaga
  * Authors:
  *   Alexander Sokoloff <sokoloff.a@gmail.com>
  *
@@ -24,18 +24,14 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#include "widgets.h"
-#include "settings.h"
+#include "printerscombobox.h"
 #include "kernel/printer.h"
-#include "kernel/inputfile.h"
-#include "kernel/job.h"
-#include "kernel/sheet.h"
-
-#include <QMenu>
-#include <QMouseEvent>
 #include <QStandardItem>
 #include <QDebug>
 
+#define PRINTER_ITEM_TEXT_ROLE      Qt::UserRole + 1
+#define PRINTER_ITEM_PRINTER_ROLE   Qt::UserRole + 2
+#define PRINTER_ITEM_PROFILE_ROLE   Qt::UserRole + 3
 
 #define CUSTOM_PROFILE_DELEGATE
 #ifdef CUSTOM_PROFILE_DELEGATE
@@ -43,34 +39,6 @@
 #include <QPen>
 #include <QPainter>
 #include <QApplication>
-#endif
-#define PRINTER_ITEM_TEXT_ROLE      Qt::UserRole + 1
-#define PRINTER_ITEM_PRINTER_ROLE   Qt::UserRole + 2
-#define PRINTER_ITEM_PROFILE_ROLE   Qt::UserRole + 3
-
-
-/************************************************
-
- ************************************************/
-LayoutRadioButton::LayoutRadioButton(QWidget *parent):
-    QRadioButton(parent),
-    mLayout(0)
-{
-
-}
-
-
-/************************************************
-
- ************************************************/
-LayoutRadioButton::LayoutRadioButton(const QString &text, QWidget *parent):
-    QRadioButton(text, parent),
-    mLayout(0)
-{
-}
-
-
-#ifdef CUSTOM_PROFILE_DELEGATE
 
 class PrintersComboBoxDelegate: public QStyledItemDelegate
 {
@@ -201,7 +169,7 @@ QStyleOptionMenuItem PrintersComboBoxDelegate::getStyleOption(const QStyleOption
 class PrintersComboBoxItem: public QStandardItem
 {
 public:
-    PrintersComboBoxItem(const QString &text):
+    explicit PrintersComboBoxItem(const QString &text):
         QStandardItem(text),
         mPrinter(0),
         mProfile(0)
@@ -388,169 +356,6 @@ int PrintersComboBox::findFirstProfile() const
             return i;
     }
     return -1;
-}
-
-
-/************************************************
-
- ************************************************/
-JobsListView::JobsListView(QWidget *parent):
-    QListWidget(parent)
-{
-    setContextMenuPolicy(Qt::CustomContextMenu);
-    connect(this, SIGNAL(customContextMenuRequested(QPoint)),
-            this, SLOT(showContextMenu(QPoint)));
-
-    connect(this->model(), SIGNAL(layoutChanged()),
-            this, SLOT(layoutChanged()));
-
-    connect(project, SIGNAL(changed()),
-            this, SLOT(updateItems()));
-
-    updateItems();
-}
-
-
-/************************************************
- *
- * ***********************************************/
-Job JobsListView::currentJob() const
-{
-    if (currentItem())
-    {
-        int n = currentItem()->data(Qt::UserRole).toInt();
-        if (n < project->jobs()->count())
-            return project->jobs()->at(n);
-    }
-
-    return Job();
-}
-
-
-/************************************************
-
- ************************************************/
-void JobsListView::setSheetNum(int sheetNum)
-{
-    if (count() < 1)
-        return;
-
-    if (sheetNum < 0)
-    {
-        item(0)->setSelected(true);
-        return;
-    }
-
-    Sheet *sheet = project->previewSheet(sheetNum);
-    Job job = currentJob();
-
-    if (job.state() != Job::JobEmpty)
-    {
-        for (int i=0; i<sheet->count(); ++i)
-        {
-            ProjectPage *page = sheet->page(i);
-            if (!page)
-                continue;
-
-            if (job.indexOfPage(page) > -1)
-                return;
-        }
-    }
-
-
-    for (int i=0; i<sheet->count(); ++i)
-    {
-        ProjectPage *page = sheet->page(i);
-        if (!page)
-            continue;
-
-        for(int j=0; j<project->jobs()->count(); ++j)
-        {
-            Job job = project->jobs()->at(j);
-
-            if (job.indexOfPage(page) > -1)
-            {
-                setCurrentItem(item(j));
-                return;
-            }
-        }
-    }
-
-    this->clearSelection();
-}
-
-
-/************************************************
-
- ************************************************/
-void JobsListView::updateItems()
-{
-    this->setUpdatesEnabled(false);
-    clear();
-    for (int i=0; i<project->jobs()->count(); ++i)
-    {
-        QListWidgetItem *item = new QListWidgetItem(this);
-        item->setData(Qt::UserRole, i);
-        Job job = project->jobs()->at(i);
-
-        item->setText(tr("( %1 pages )").arg(job.visiblePageCount()) + " " + job.title());
-
-        addItem(item);
-    }
-    this->setUpdatesEnabled(true);
-}
-
-
-/************************************************
-
- ************************************************/
-void JobsListView::showContextMenu(const QPoint &pos)
-{
-    QListWidgetItem *item = itemAt(pos);
-    if (!item)
-        return;
-
-    bool ok;
-    int n = item->data(Qt::UserRole).toInt(&ok);
-    if (ok && n>-1 && n<project->jobs()->count())
-        emit contextMenuRequested(project->jobs()->at(n));
-}
-
-
-/************************************************
-
- ************************************************/
-void JobsListView::mouseReleaseEvent(QMouseEvent *event)
-{
-    if (event->button() == Qt::LeftButton)
-    {
-        QListWidgetItem *item = this->itemAt(event->pos());
-        if (item)
-        {
-            setCurrentItem(item);
-            int n = item->data(Qt::UserRole).toInt();
-            if (n < project->jobs()->count())
-            {
-                emit jobSelected(project->jobs()->at(n));
-            }
-        }
-    }
-
-    QListWidget::mouseReleaseEvent(event);
-}
-
-
-/************************************************
-
- ************************************************/
-void JobsListView::layoutChanged()
-{
-    for (int i=0; i<count()-1; ++i)
-    {
-        int from = item(i)->data(Qt::UserRole).toInt();
-        if (from != i)
-            project->moveJob(from, i);
-    }
 }
 
 

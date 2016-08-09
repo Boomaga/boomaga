@@ -2,7 +2,7 @@
  * (c)LGPL2+
  *
  *
- * Copyright: 2012-2013 Boomaga team https://github.com/Boomaga
+ * Copyright: 2012-2016 Boomaga team https://github.com/Boomaga
  * Authors:
  *   Alexander Sokoloff <sokoloff.a@gmail.com>
  *
@@ -28,37 +28,8 @@
 #define INPUTFILE_H
 
 #include <QString>
-#include <QVector>
+#include <QStringList>
 
-class InputFile
-{
-public:
-    InputFile();
-    InputFile(const QString &fileName, qint64 startPos=0, qint64 endPos=0);
-    InputFile(const InputFile &other);
-    InputFile &operator=(const InputFile &other);
-    ~InputFile();
-
-    bool operator==(const InputFile &other) const;
-    inline bool operator!=(const InputFile &other) const { return !operator==(other); }
-
-    QString fileName() const { return mFileName; }
-
-    qint64 startPos() const { return mStartPos; }
-    qint64 endPos() const { return  mEndPos; }
-    qint64 length() const { return mEndPos - mStartPos; }
-
-private:
-    QString mFileName;
-    qint64 mStartPos;
-    qint64 mEndPos;
-};
-
-class InputFileList: public QList<InputFile>
-{
-public:
-    InputFileList() : QList<InputFile>() {}
-    explicit InputFileList(const QList<InputFile> &other) : QList<InputFile>(other) {}
-};
+QStringList createJobFiles(const QString &jobId, const QString &outDir);
 
 #endif // INPUTFILE_H

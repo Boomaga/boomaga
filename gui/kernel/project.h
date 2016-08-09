@@ -29,13 +29,13 @@
 
 #include "job.h"
 #include "printer.h"
-#include "inputfile.h"
-#include "../pdfmerger/pdfmergeripc.h"
+#include "projectpage.h"
 
 #include <QObject>
 #include <QList>
 #include <QStringList>
 #include <QImage>
+#include <QPointer>
 
 class Job;
 class TmpPdfFile;
@@ -80,45 +80,6 @@ private:
     void addDictItem(QByteArray &out, const QString &key, const QDateTime &value) const;
 };
 
-class ProjectPage
-{
-public:
-    explicit ProjectPage();
-    explicit ProjectPage(const ProjectPage *other);
-    explicit ProjectPage(const InputFile &inputFile, int pageNum);
-    virtual ~ProjectPage();
-
-    InputFile inputFile() const { return mInputFile; }
-    int pageNum() const { return mPageNum; }
-
-    virtual QRectF rect() const;
-    Rotation pdfRotation() const;
-    Rotation manualRotation() const { return mManualRotation; }
-    void setManualRotation(Rotation value) { mManualRotation = value; }
-
-    PdfPageInfo pdfInfo() const { return mPdfInfo; }
-    void setPdfInfo(const PdfPageInfo &value) { mPdfInfo = value; }
-
-    bool visible() const { return mVisible;}
-    void setVisible(bool value);
-    void hide() { setVisible(false); }
-    void show() { setVisible(true); }
-
-    bool isBlankPage();
-
-    bool isStartSubBooklet() const { return mStartSubBooklet; }
-    void setStartSubBooklet(bool value);
-
-private:
-    InputFile mInputFile;
-    int mPageNum;
-    bool mVisible;
-    PdfPageInfo mPdfInfo;
-    Rotation mManualRotation;
-    bool mStartSubBooklet;
-};
-
-
 
 class Project : public QObject
 {
@@ -161,22 +122,39 @@ public:
     Printer *printer() const { return mPrinter; }
     void setPrinterProfile(Printer *printer, int profile, bool update = true);
 
-    QImage sheetImage(int sheetNum) const;
-
     MetaData metaData() const { return mMetaData; }
     void setMetadata(const MetaData &value) { mMetaData = value; }
 
     void free();
 
     void save(const QString &fileName);
-    void load(const QString &fileName, const QString &title = "", const QString &options = "", bool autoRemove = false, uint count = 1);
-    void load(const QStringList &fileNames, const QString &options = "", bool autoRemove = false, uint count = 1);
-    void load(const QStringList &fileNames, const QStringList &titles, const QString &options = "", bool autoRemove = false, uint count = 1);
+    JobList load(const QString &fileName, const QString &options = "");
+    JobList load(const QStringList &fileNames, const QString &options = "");
 
     Rotation rotation() const { return mRotation; }
 
+public:
+    ProjectPage *currentPage() const { return mCurrentPage; }
+    int currentPageNum() const;
+
 public slots:
-    bool error(const QString &message);
+    void setCurrentPage(ProjectPage *page);
+    void setCurrentPage(int pageNum);
+    void prevPage();
+    void nextPage();
+
+public:
+    Sheet *currentSheet() const;
+    int currentSheetNum() const;
+
+public slots:
+    void setCurrentSheet(int sheetNum);
+    void prevSheet();
+    void nextSheet();
+
+
+public slots:
+    bool error(const QString &message) const;
 
     void addJob(Job job);
     void addJobs(JobList jobs);
@@ -186,10 +164,15 @@ public slots:
     void setDoubleSided(bool value);
     void update();
 
+
 signals:
     void changed();
     void progress(int progr, int all) const;
-    void sheetImageChanged(int sheetNum);
+    void tmpFileRenamed(const QString &mTmpFileName);
+    void currentPageChanged(ProjectPage *page);
+    void currentPageChanged(int page);
+    void currentSheetChanged(Sheet *sheet);
+    void currentSheetChanged(int sheet);
 
 protected:
     Rotation calcRotation(const QList<ProjectPage *> &pages, const Layout *layout) const;
@@ -204,6 +187,8 @@ private:
 
     const Layout *mLayout;
     QList<ProjectPage*> mPages;
+    QPointer<ProjectPage> mCurrentPage;
+    Sheet *mCurrentSheet;
     JobList mJobs;
 
     int mSheetCount;

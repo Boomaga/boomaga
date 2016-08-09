@@ -61,6 +61,8 @@ public:
 
     virtual Rotation rotation() const = 0;
 
+    virtual void updatePages(QList<ProjectPage*> pages) const = 0;
+
 protected:
     struct PagePosition
     {
@@ -86,6 +88,8 @@ public:
     TransformSpec transformSpec(const Sheet *sheet, int pageNumOnSheet, Rotation sheetRotation) const;
     virtual Rotation rotation() const;
 
+    virtual void updatePages(QList<ProjectPage*> pages) const;
+
 protected:
     void doFillSheets(QList<Sheet*> *sheets, bool forPreview) const;
     virtual Rotation calcPageRotation(const ProjectPage *page, Rotation sheetRotation) const;
@@ -109,13 +113,13 @@ public:
     void fillSheets(QList<Sheet*> *sheets) const;
     void fillPreviewSheets(QList<Sheet*> *sheets) const;
 
+    virtual void updatePages(QList<ProjectPage*> pages) const;
+
 protected:
     struct BookletInfo
     {
         int     start;
         int     end;
-        bool    manualStart;
-        bool    manualEnd;
     };
 
     QList<BookletInfo> split(const QList<ProjectPage*> &pages) const;

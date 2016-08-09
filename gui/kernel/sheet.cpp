@@ -80,6 +80,36 @@ void Sheet::setRotation(Rotation rotation)
 
 
 /************************************************
+ *
+ ************************************************/
+ProjectPage *Sheet::firstVisiblePage() const
+{
+    foreach (ProjectPage *page, mPages)
+    {
+        if (page)
+            return page;
+    }
+
+    return 0;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+ProjectPage *Sheet::lastVisiblePage() const
+{
+    for (int i=mPages.count()-1; i>=0; --i)
+    {
+        if (mPages.at(i))
+            return mPages.at(i);
+    }
+
+    return 0;
+}
+
+
+/************************************************
 
  ************************************************/
 void Sheet::setHints(Sheet::Hints value)
@@ -118,3 +148,42 @@ int SheetList::indexOfPage(const ProjectPage *page, int from) const
     return -1;
 }
 
+/************************************************
+ *
+ ************************************************/
+int  SheetList::indexOfPage(int pageNum, int from) const
+{
+    return indexOfPage(project->page(pageNum), from);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+QDebug operator<<(QDebug dbg, const Sheet &sheet)
+{
+    dbg.space() << "{ Sheet: " << sheet.sheetNum() << "\n"
+                << "  pages: " << sheet.count() << "\n";
+    for (int i=0; i<sheet.count(); ++i)
+    {
+        const ProjectPage *page = sheet.page(i);
+        if (page)
+        {
+            dbg.space() << "   * " << i << "---------\n"
+                        << "       jobPageNum:"             << page->jobPageNum() << "\n"
+                        << "       blankPage:"              << page->isBlankPage() << "\n"
+                        << "       visible:"                << page->visible() << "\n"
+                        << "       manual startBooklet:"    << page->isManualStartSubBooklet() << "\n"
+                        << "       auto startBooklet:"      << page->isAutoStartSubBooklet() << "\n"
+                        << "\n";
+        }
+        else
+        {
+            dbg.space() << "   * " << i << "---------\n"
+                        << "       NULL\n"
+                        << "\n";
+        }
+    }
+    dbg.space() << " }";
+    return dbg;
+}

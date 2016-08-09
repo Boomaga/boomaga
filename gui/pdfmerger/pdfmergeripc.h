@@ -79,7 +79,7 @@ class PdfMergerIPCWriter: public QObject
 {
     Q_OBJECT
 public:
-    PdfMergerIPCWriter(QObject *parent = 0);
+    explicit PdfMergerIPCWriter(QObject *parent = 0);
     ~PdfMergerIPCWriter();
 
     void writeAllPagesCount(int pageCount);

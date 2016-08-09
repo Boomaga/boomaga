@@ -23,6 +23,7 @@
  *
  * END_COMMON_COPYRIGHT_HEADER */
 
+
 #include "kernel/project.h"
 #include "settings.h"
 #include "job.h"
@@ -42,108 +43,29 @@
 #include <QMessageBox>
 #include <QDateTime>
 
-
 #define META_SIZE 4 * 1024
 
-/************************************************
-
- ************************************************/
-ProjectPage::ProjectPage():
-    mPageNum(-1),
-    mVisible(true),
-    mManualRotation(NoRotate),
-    mStartSubBooklet(false)
+class ProjectStatte
 {
+public:
+    explicit ProjectStatte(const Project *p):
+        mProject(p),
+        mCurrentPage(p->currentPage()),
+        mCurrentSheet(p->currentSheet())
+    {
+    }
 
-}
+    const ProjectPage *currentPage() const { return mCurrentPage; }
+    const Sheet *currentSheet() const { return mCurrentSheet; }
 
+    bool currentPageChanged() const { return mCurrentPage != mProject->currentPage(); }
+    bool currentSheetChanged() const { return mCurrentSheet != mProject->currentSheet(); }
 
-/************************************************
- *
- * ***********************************************/
-ProjectPage::ProjectPage(const ProjectPage *other):
-    mInputFile(other->mInputFile),
-    mPageNum(other->mPageNum),
-    mVisible(other->mVisible),
-    mPdfInfo(other->mPdfInfo),
-    mManualRotation(other->mManualRotation),
-    mStartSubBooklet(other->mStartSubBooklet)
-{
-
-}
-
-/************************************************
- *
- ************************************************/
-ProjectPage::ProjectPage(const InputFile &inputFile, int pageNum):
-    mInputFile(inputFile),
-    mPageNum(pageNum),
-    mVisible(true),
-    mManualRotation(NoRotate),
-    mStartSubBooklet(false)
-{
-}
-
-
-/************************************************
-
- ************************************************/
-ProjectPage::~ProjectPage()
-{
-}
-
-
-/************************************************
- *
- * ***********************************************/
-QRectF ProjectPage::rect() const
-{
-    if (mPdfInfo.cropBox.isValid())
-        return mPdfInfo.cropBox;
-    else
-        return project->printer()->paperRect();
-}
-
-
-/************************************************
-
- ************************************************/
-Rotation ProjectPage::pdfRotation() const
-{
-    int r = mPdfInfo.rotate % 360;
-
-    if (r == 90)    return Rotate90;
-    if (r == 180)   return Rotate180;
-    if (r == 270)   return Rotate270;
-    else            return NoRotate;
-}
-
-
-/************************************************
-
- ************************************************/
-void ProjectPage::setVisible(bool value)
-{
-    mVisible = value;
-}
-
-
-/************************************************
-
- ************************************************/
-bool ProjectPage::isBlankPage()
-{
-    return mPageNum < 0;
-}
-
-
-/************************************************
- *
- ************************************************/
-void ProjectPage::setStartSubBooklet(bool value)
-{
-    mStartSubBooklet = value;
-}
+private:
+    const Project *mProject;
+    const ProjectPage *mCurrentPage;
+    const Sheet *mCurrentSheet;
+};
 
 
 /************************************************
@@ -152,6 +74,8 @@ void ProjectPage::setStartSubBooklet(bool value)
 Project::Project(QObject *parent) :
     QObject(parent),
     mLayout(0),
+    mCurrentPage(0),
+    mCurrentSheet(0),
     mSheetCount(0),
     mTmpFile(0),
     mLastTmpFile(0),
@@ -270,16 +194,13 @@ void Project::tmpFileMerged()
         for (int p=0; p<job.pageCount(); ++p)
         {
             ProjectPage *page = job.page(p);
-            page->setPdfInfo(tmpPdf->pageInfo(job.inputFile(), page->pageNum()));
+            page->setPdfInfo(tmpPdf->pageInfo(job.inputFile(), page->jobPageNum()));
         }
 
     }
 
     delete mTmpFile;
     mTmpFile = mLastTmpFile;
-    connect(mTmpFile, SIGNAL(imageChanged(int)),
-            this, SIGNAL(sheetImageChanged(int)));
-
     mLastTmpFile = 0;
 
     if (mMetaData.title().isEmpty() && !mJobs.isEmpty())
@@ -296,33 +217,238 @@ void Project::tmpFileMerged()
  ************************************************/
 void Project::update()
 {
+    ProjectStatte state(this);
+    ProjectPage *curPage = 0;
+
     mPages.clear();
     foreach(const Job &job, mJobs)
     {
         for (int p=0; p<job.pageCount(); ++p)
         {
-            if (job.page(p)->visible())
-                mPages << job.page(p);
+            ProjectPage *page = job.page(p);
+            if (page->visible())
+            {
+                page->setPageNum(mPages.count());
+                mPages << page;
+                if (page == mCurrentPage)
+                    curPage = page;
+            }
         }
     }
     mRotation = calcRotation(mPages, mLayout);
+
+    if (!mPages.isEmpty())
+    {
+        mCurrentPage = curPage ? curPage : mPages.first();
+    }
+    else
+    {
+        mCurrentPage = 0;
+    }
+
 
     mSheetCount = 0;
 
     qDeleteAll(mPreviewSheets);
     mPreviewSheets.clear();
+    bool emitTmpFileRenamed = false;
 
     if (!mPages.isEmpty())
     {
+        mLayout->updatePages(mPages);
         mSheetCount = mLayout->calcSheetCount();
 
         mLayout->fillPreviewSheets(&mPreviewSheets);
 
         if (mTmpFile)
+        {
             mTmpFile->updateSheets(mPreviewSheets);
+            emitTmpFileRenamed = true;
+        }
+    }
+
+    foreach (Sheet *s, mPreviewSheets)
+    {
+        for (int i=0; i<s->count(); ++i)
+        {
+            if (s->page(i))
+                s->page(i)->setSheet(s);
+
+        }
+    }
+
+    if (mCurrentPage)
+        mCurrentSheet = mCurrentPage->sheet();
+    else
+        mCurrentSheet = 0;
+
+    if (emitTmpFileRenamed)
+        emit tmpFileRenamed(mTmpFile->fileName());
+
+    if (state.currentSheetChanged())
+    {
+        emit currentSheetChanged(currentSheet());
+        emit currentSheetChanged(currentSheetNum());
+    }
+
+    if (state.currentPageChanged() || state.currentSheetChanged())
+    {
+        emit currentPageChanged(currentPage());
+        emit currentPageChanged(currentPageNum());
     }
 
     emit changed();
+}
+
+
+/************************************************
+ *
+ ************************************************/
+int Project::currentPageNum() const
+{
+    if (mCurrentPage)
+        return mCurrentPage->pageNum();
+
+    return -1;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Project::setCurrentPage(ProjectPage *page)
+{  
+    if (page == mCurrentPage)
+        return;
+
+    if (mPreviewSheets.empty())
+        return;
+
+    ProjectStatte state(this);
+
+    if (page)
+    {
+        mCurrentPage = page;
+        mCurrentSheet = page->sheet();
+    }
+    else
+    {
+        mCurrentPage = 0;
+        mCurrentSheet = 0;
+    }
+
+    if (state.currentSheetChanged())
+    {
+        emit currentSheetChanged(currentSheet());
+        emit currentSheetChanged(currentSheetNum());
+    }
+
+    if (state.currentPageChanged() || state.currentSheetChanged())
+    {
+        emit currentPageChanged(currentPage());
+        emit currentPageChanged(currentPageNum());
+    }
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Project::setCurrentPage(int pageNum)
+{
+    if (mPages.empty())
+        return;
+
+    pageNum = qBound(0, pageNum, pageCount()-1);
+    setCurrentPage(mPages.at(pageNum));
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Project::prevPage()
+{
+    setCurrentPage(mCurrentPage - 1);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Project::nextPage()
+{
+    setCurrentPage(mCurrentPage + 1);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+Sheet *Project::currentSheet() const
+{
+    return mCurrentSheet;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+int Project::currentSheetNum() const
+{
+    if (mCurrentSheet)
+        return mCurrentSheet->sheetNum();
+
+    return -1;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Project::setCurrentSheet(int sheetNum)
+{
+    if (sheetNum == currentSheetNum())
+        return;
+
+    if (mPreviewSheets.empty())
+        return;
+
+    ProjectStatte state(this);
+
+    sheetNum = qBound(0, sheetNum, mPreviewSheets.count()-1);
+    mCurrentSheet = mPreviewSheets.at(sheetNum);
+    mCurrentPage = mCurrentSheet->firstVisiblePage();
+
+    if (state.currentSheetChanged())
+    {
+        emit currentSheetChanged(currentSheet());
+        emit currentSheetChanged(currentSheetNum());
+    }
+
+    if (state.currentPageChanged() || state.currentSheetChanged())
+    {
+        emit currentPageChanged(currentPage());
+        emit currentPageChanged(currentPageNum());
+    }
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Project::prevSheet()
+{
+    setCurrentSheet(currentSheetNum() -1 );
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Project::nextSheet()
+{
+    setCurrentSheet(currentSheetNum() + 1 );
 }
 
 
@@ -372,7 +498,7 @@ void Project::tmpFileProgress(int progr, int all) const
 /************************************************
 
  ************************************************/
-bool Project::error(const QString &message)
+bool Project::error(const QString &message) const
 {
     QMessageBox::critical(0, tr("Boomaga", "Error message title"), message);
     qWarning() << message;
@@ -524,22 +650,6 @@ Project *Project::instance()
         inst = new Project();
 
     return inst;
-}
-
-
-/************************************************
-
- ************************************************/
-QImage Project::sheetImage(int sheetNum) const
-{
-    if (mTmpFile)
-        return mTmpFile->image(sheetNum);
-    else
-    {
-        QImage img(1, 1, QImage::Format_ARGB32);
-        img.fill(Qt::white);
-        return img;
-    }
 }
 
 
@@ -724,54 +834,90 @@ void MetaData::addDictItem(QByteArray &out, const QString &key, const QDateTime 
 /************************************************
 
  ************************************************/
-void Project::load(const QString &fileName, const QString &title, const QString &options, bool autoRemove, uint count)
+JobList Project::load(const QString &fileName, const QString &options)
 {
-    load(QStringList() << fileName, QStringList() << title, options, autoRemove, count);
+    return load(QStringList() << fileName, options);
 }
 
 
 /************************************************
 
  ************************************************/
-void Project::load(const QStringList &fileNames, const QString &options, bool autoRemove, uint count)
-{
-    load(fileNames, QStringList(), options, autoRemove, count);
-}
-
-
-/************************************************
-
- ************************************************/
-void Project::load(const QStringList &fileNames, const QStringList &titles, const QString &options, bool autoRemove, uint count)
+JobList Project::load(const QStringList &fileNames, const QString &options)
 {
     stopMerging();
     QStringList errors;
 
     JobList jobs;
-    for (uint i=0; i<count; ++i)
+    foreach(QString fileName, fileNames)
     {
-        foreach(QString fileName, fileNames)
+
+        QFileInfo fi(fileName);
+
+        if (!fi.filePath().isEmpty())
         {
-            ProjectFile file;
+            if (!fi.exists())
+            {
+                errors << tr("I can't open file \"%1\" (No such file or directory)")
+                          .arg(fi.filePath());
+                continue;
+            }
+
+            if (!fi.isReadable())
+            {
+                errors << tr("I can't open file \"%1\" (Access denied)")
+                          .arg(fi.filePath());
+                continue;
+            }
+        }
+
+
+        QFile file(fileName);
+        if(!file.open(QFile::ReadOnly))
+        {
+            errors << tr("I can't open file \"%1\"").arg(fileName) + "\n" + file.errorString();
+            continue;
+        }
+
+
+        file.seek(0);
+        QByteArray mark = file.read(30);
+        file.close();
+
+        // Read PDF ..................................
+        if (mark.startsWith("%PDF-"))
+        {
+            BackendOptions opts = BackendOptions(options);
+            Job job = Job(fileName, opts.pages());
+
+            if (!job.errorString().isEmpty())
+                errors << job.errorString();
+
+            if (job.state() != Job::JobError)
+                jobs << job;
+        }
+
+
+        // Read BOO ..................................
+        else if (mark.startsWith("\x1B%-12345X@PJL BOOMAGA_PROGECT"))
+        {
             try
             {
-                file.load(fileName, options);
-                for(int i=0; i<file.jobs().count(); ++i)
-                {
-                    Job job = file.jobs().at(i);
-                    job.setAutoRemove(autoRemove);
-                    if (i<titles.count())
-                        job.setTitle(titles.at(i));
-
-                    jobs << job;
-                }
-
+                ProjectFile file;
+                file.load(fileName);
+                jobs << file.jobs();
                 project->setMetadata(file.metaData());
             }
             catch (const QString &err)
             {
                 errors << err;
             }
+        }
+
+        // Unknown format ............................
+        else
+        {
+            errors << tr("I can't read file \"%1\" because is either not a supported file type or because the file has been damaged.").arg(file.fileName());
         }
     }
 
@@ -781,6 +927,7 @@ void Project::load(const QStringList &fileNames, const QStringList &titles, cons
     if (!errors.isEmpty())
         error(errors.join("\n\n"));
 
+    return jobs;
 }
 
 

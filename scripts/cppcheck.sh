@@ -1,2 +1,2 @@
 #!/bin/sh
-cppcheck -q  --enable=performance,portability,warning,style --library=qt ..
+cppcheck --force -q  --enable=performance,portability,warning,style --library=qt ..

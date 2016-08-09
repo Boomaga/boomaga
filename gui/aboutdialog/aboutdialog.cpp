@@ -74,6 +74,15 @@ AboutDialog::AboutDialog(QWidget *parent) :
 /************************************************
 
  ************************************************/
+AboutDialog::~AboutDialog()
+{
+    delete ui;
+}
+
+
+/************************************************
+
+ ************************************************/
 QString AboutDialog::titleText() const
 {
     return QString("<div class=name>%1</div><div class=ver>%2</div>").arg(

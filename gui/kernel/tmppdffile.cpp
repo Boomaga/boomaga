@@ -42,7 +42,6 @@
 #include "render.h"
 
 
-
 /************************************************
 
  ************************************************/
@@ -84,8 +83,7 @@ QString TmpPdfFile::genFileName()
 TmpPdfFile::TmpPdfFile(const JobList &jobs, QObject *parent):
     QObject(parent),
     mMerger(0),
-    mValid(false),
-    mRender(0)
+    mValid(false)
 {
     mOrigFileSize = 0;
     mOrigXrefPos = 0;
@@ -103,7 +101,6 @@ TmpPdfFile::TmpPdfFile(const JobList &jobs, QObject *parent):
  ************************************************/
 TmpPdfFile::~TmpPdfFile()
 {
-    delete mRender;
     delete mMerger;
     QFile::remove(mFileName);
 }
@@ -114,6 +111,7 @@ TmpPdfFile::~TmpPdfFile()
  ************************************************/
 void TmpPdfFile::merge()
 {
+    delete mMerger;
     mMerger = new QProcess(this);
 
     connect(mMerger, SIGNAL(finished(int)),
@@ -178,12 +176,6 @@ void TmpPdfFile::merge()
  ************************************************/
 void TmpPdfFile::updateSheets(QList<Sheet *> &sheets)
 {
-    if (mRender)
-    {
-        delete mRender;
-        mRender = 0;
-    }
-
     if (mValid)
     {
         QFile file(mFileName);
@@ -199,11 +191,6 @@ void TmpPdfFile::updateSheets(QList<Sheet *> &sheets)
 
         file.resize(file.pos());
         file.close();
-
-        mRender = new Render(mFileName);
-        connect(mRender, SIGNAL(imageChanged(int)),
-                this, SIGNAL(imageChanged(int)));
-        mRender->start();
    }
 }
 
@@ -542,24 +529,9 @@ void TmpPdfFile::ipcXRefInfo(qint64 xrefPos, qint32 freeNum)
 
 
 /************************************************
-
- ************************************************/
-QImage TmpPdfFile::image(int sheetNum) const
-{
-    if (mRender)
-        return mRender->image(sheetNum);
-    else
-        return QImage();
-}
-
-
-/************************************************
  *
  * ***********************************************/
 PdfPageInfo TmpPdfFile::pageInfo(InputFile file, int pageNum)
 {
     return mPagesInfo.value(QString("%1:%2").arg(mInputFiles.indexOf(file)).arg(pageNum));
 }
-
-
-

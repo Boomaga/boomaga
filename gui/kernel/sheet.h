@@ -30,6 +30,7 @@
 #include <QtGlobal>
 #include <QVector>
 #include <QRectF>
+#include <QDebug>
 #include "boomagatypes.h"
 
 class ProjectPage;
@@ -64,6 +65,10 @@ public:
     Rotation rotation() const { return mRotation; }
     void setRotation(Rotation rotation);
 
+    int sheetNum() const { return mSheetNum; }
+    ProjectPage *firstVisiblePage() const;
+    ProjectPage *lastVisiblePage() const;
+
 private:
     QVector<ProjectPage*> mPages;
     int mSheetNum;
@@ -75,8 +80,10 @@ class SheetList: public QList<Sheet*>
 {
 public:
     int indexOfPage(const ProjectPage *page, int from = 0) const;
+    int indexOfPage(int pageNum, int from = 0) const;
 };
 
-
 Q_DECLARE_OPERATORS_FOR_FLAGS(Sheet::Hints)
+
+QDebug operator<<(QDebug dbg, const Sheet &sheet);
 #endif // SHEET_H

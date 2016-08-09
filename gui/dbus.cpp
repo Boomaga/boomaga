@@ -55,5 +55,30 @@ BoomagaDbus::~BoomagaDbus()
  ************************************************/
 void BoomagaDbus::add(const QString &file, const QString &title, bool autoRemove, const QString &options, uint count)
 {
-    project->load(file, title, options, autoRemove, count);
+    QMetaObject::invokeMethod(this,
+                              "doAdd",
+                              Qt::QueuedConnection,
+                              Q_ARG(QString, file),
+                              Q_ARG(QString, title),
+                              Q_ARG(bool, autoRemove),
+                              Q_ARG(QString, options),
+                              Q_ARG(uint, count));
+}
+
+
+/************************************************
+
+ ************************************************/
+void BoomagaDbus::doAdd(const QString &file, const QString &title, bool autoRemove, const QString &options, uint count)
+{
+    QStringList files;
+    for (uint i=0; i<count; ++i)
+        files << file;
+
+    JobList jobs = project->load(files, options);
+    foreach (Job job, jobs)
+    {
+        job.setTitle(title);
+        job.setAutoRemove(autoRemove);
+    }
 }

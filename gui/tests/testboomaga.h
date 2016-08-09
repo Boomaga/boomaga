@@ -46,6 +46,7 @@ public:
     explicit TestBoomaga(QObject *parent = 0);
 
 private slots:
+    void initTestCase();
     void test_RotationType();
 
     void test_ProjectRotation();
@@ -65,6 +66,9 @@ private slots:
 
     void test_SheetRotation();
     void test_SheetRotation_data();
+
+    void test_BooklesSplit();
+    void test_BooklesSplit_data();
 private:
     LayoutNUp *createLayout(const QString &name);
     QList<ProjectPage*> createPages(const QString &definition);

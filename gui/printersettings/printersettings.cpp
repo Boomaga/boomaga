@@ -42,7 +42,8 @@ class ProfileItem: public QListWidgetItem
 public:
     explicit ProfileItem(const PrinterProfile &profile):
         QListWidgetItem(),
-        mProfile(profile)
+        mProfile(profile),
+        mIsCurrent(false)
     {
         setFlags(flags() | Qt::ItemIsEditable);
         setText(profile.name());

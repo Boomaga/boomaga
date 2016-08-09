@@ -1,7 +1,8 @@
 /* BEGIN_COMMON_COPYRIGHT_HEADER
  * (c)LGPL2+
  *
- * Copyright: 2012-2013 Boomaga team https://github.com/Boomaga
+ *
+ * Copyright: 2012-2016 Boomaga team https://github.com/Boomaga
  * Authors:
  *   Alexander Sokoloff <sokoloff.a@gmail.com>
  *
@@ -22,39 +23,37 @@
  *
  * END_COMMON_COPYRIGHT_HEADER */
 
-#ifndef ABOUTDIALOG_H
-#define ABOUTDIALOG_H
 
-#include <QDialog>
+#ifndef ENVINFO_H
+#define ENVINFO_H
 
-/**
- * @brief displays a simple about dialog
- */
+#include <QString>
+#include <QHash>
 
-#include "ui_aboutdialog.h"
-
-namespace Ui {
-class AboutDialog;
-}
-
-class AboutDialog: public QDialog
+class EnvInfo
 {
-    Q_OBJECT
 public:
-    explicit AboutDialog(QWidget *parent = 0);
-    ~AboutDialog();
+    EnvInfo() {}
+    explicit EnvInfo(const QString &procDir);
+    EnvInfo(const EnvInfo &other);
+
+    static EnvInfo find(const QString &xDisplay);
+
+    const QString exeName() const { return mExeName; }
+    const QString xDisplay() const { return getEnv("DISPLAY"); }
+    const QString dbusAddr() const { return getEnv("DBUS_SESSION_BUS_ADDRESS"); }
+    QString getEnv(const QString &key) const { return mData.value(key); }
+
+    bool isValid() const { return !mExeName.isEmpty(); }
+
+    bool save(const QString &fileName) const;
+
+protected:
+    void setEnv(const QString &key, const QString &getEnv);
 
 private:
-    Ui::AboutDialog *ui;
-    static AboutDialog *mInstance;
-
-    QString titleText() const;
-    QString aboutText() const;
-    QString authorsText() const;
-    QString thanksText() const;
-    QString translationsText() const;
-
+    QHash<QString, QString> mData;
+    QString mExeName;
 };
 
-
-#endif // ABOUTDIALOG_H
+#endif // ENVINFO_H

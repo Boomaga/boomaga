@@ -37,7 +37,6 @@ class QProcess;
 class Sheet;
 class Job;
 class JobList;
-class Render;
 
 #include "job.h"
 
@@ -61,14 +60,11 @@ public:
 
     bool isValid() const { return mValid; }
 
-    QImage image(int sheetNum) const;
-
     PdfPageInfo pageInfo(InputFile file, int pageNum);
 
 signals:
     void merged();
     void progress(int progress, int all) const;
-    void imageChanged(int sheetNum);
 
 private slots:
     void mergerFinished(int exitCode);
@@ -91,7 +87,6 @@ private:
     qint64 mOrigXrefPos;
     QProcess *mMerger;
     bool mValid;
-    Render *mRender;
 };
 
 

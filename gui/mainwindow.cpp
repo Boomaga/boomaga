@@ -134,8 +134,11 @@ MainWindow::MainWindow(QWidget *parent):
     connect(ui->doubleSidedCbx, SIGNAL(clicked(bool)),
             project, SLOT(setDoubleSided(bool)));
 
-    connect(ui->jobsView, SIGNAL(jobSelected(Job)),
-            this, SLOT(switchToJob(Job)));
+    connect(ui->jobsView, SIGNAL(sheetSelected(int)),
+            project, SLOT(setCurrentSheet(int)));
+
+    connect(ui->subBookletView, SIGNAL(sheetSelected(int)),
+            project, SLOT(setCurrentSheet(int)));
 
     connect(ui->printersCombo, SIGNAL(activated(int)),
             this, SLOT(switchPrinterProfile()));
@@ -143,20 +146,24 @@ MainWindow::MainWindow(QWidget *parent):
     connect(project, SIGNAL(changed()),
             this, SLOT(updateWidgets()));
 
+    connect(project, SIGNAL(currentPageChanged(int)),
+            this, SLOT(updateWidgets()));
+
+
+    connect(project, SIGNAL(changed()),
+            ui->preview, SLOT(refresh()));
+
+    connect(project, SIGNAL(currentPageChanged(int)),
+            ui->preview, SLOT(refresh()));
+
     connect(ui->printerConfigBtn, SIGNAL(clicked()),
             this, SLOT(showPrinterSettingsDialog()));
 
     connect(project, SIGNAL(progress(int,int)),
             this, SLOT(updateProgressBar(int, int)), Qt::QueuedConnection);
 
-    connect(ui->preview, SIGNAL(changed(int)),
-            this, SLOT(updateWidgets()));
-
-    connect(ui->preview, SIGNAL(changed(int)),
-            ui->jobsView, SLOT(setSheetNum(int)));
-
-    connect(ui->preview, SIGNAL(contextMenuRequested(int)),
-            this, SLOT(showPreviewContextMenu(int)));
+    connect(ui->preview, SIGNAL(contextMenuRequested(Sheet*,ProjectPage*)),
+            this, SLOT(showPreviewContextMenu(Sheet*,ProjectPage*)));
 
     connect(ui->jobsView, SIGNAL(contextMenuRequested(Job)),
             this, SLOT(showJobViewContextMenu(Job)));
@@ -260,6 +267,8 @@ void MainWindow::loadSettings()
 {
     restoreGeometry(settings->value(Settings::MainWindow_Geometry).toByteArray());
     restoreState(settings->value(Settings::MainWindow_State).toByteArray());
+    ui->optionsPanel->setGeometry(0, 0, settings->value(Settings::MainWindow_SplitterPos, 0).toInt(), 0);
+    ui->pagesViewTab->setCurrentIndex(settings->value(Settings::MainWindow_PageListTab).toInt());
 
     Printer *currentPrinter = Printer::printerByName(settings->value(Settings::Printer).toString());
     if (!currentPrinter)
@@ -288,6 +297,8 @@ void MainWindow::loadSettings()
         project->setLayout(mAvailableLayouts.at(0));
 
     project->setDoubleSided(settings->value(Settings::DoubleSided).toBool());
+    ui->jobsView->setIconSize(settings->value(Settings::MainWindow_PageListIconSize).toInt());
+    ui->subBookletView->setIconSize(settings->value(Settings::MainWindow_PageListIconSize).toInt());
 }
 
 
@@ -298,6 +309,8 @@ void MainWindow::saveSettings()
 {
     settings->setValue(Settings::MainWindow_Geometry, saveGeometry());
     settings->setValue(Settings::MainWindow_State, saveState());
+    settings->setValue(Settings::MainWindow_SplitterPos, ui->optionsPanel->width());
+    settings->setValue(Settings::MainWindow_PageListTab, ui->pagesViewTab->currentIndex());
 
     Printer *printer = ui->printersCombo->currentPrinter();
     if (printer)
@@ -309,6 +322,8 @@ void MainWindow::saveSettings()
     if (project->printer() != Printer::nullPrinter())
         project->printer()->saveSettings();
 
+    settings->setValue(Settings::MainWindow_PageListIconSize, ui->jobsView->iconSize());
+    settings->setValue(Settings::MainWindow_PageListIconSize, ui->subBookletView->iconSize());
     settings->sync();
 }
 
@@ -334,7 +349,6 @@ void MainWindow::initActions()
     connect(act, SIGNAL(triggered()),
             this, SLOT(printWithOptions()));
 
-
     act = ui->actionExit;
     connect(act, SIGNAL(triggered()),
             this, SLOT(close()));
@@ -342,12 +356,12 @@ void MainWindow::initActions()
     act = ui->actionPreviousSheet;
     act->setIcon(Icon::icon(Icon::Previous));
     connect(act, SIGNAL(triggered()),
-            ui->preview, SLOT(prevSheet()));
+            project, SLOT(prevSheet()));
 
     act = ui->actionNextSheet;
     act->setIcon(Icon::icon(Icon::Next));
     connect(act, SIGNAL(triggered()),
-            ui->preview, SLOT(nextSheet()));
+            project, SLOT(nextSheet()));
 
     act = ui->actionOpen;
     act->setIcon(Icon::icon(Icon::Open));
@@ -406,6 +420,9 @@ void MainWindow::initStatusBar()
  ************************************************/
 void MainWindow::updateWidgets()
 {
+    ui->jobsView->setSheetNum(project->currentSheetNum());
+    ui->subBookletView->setSheetNum(project->currentSheetNum());
+
     foreach (LayoutRadioButton* btn, this->findChildren<LayoutRadioButton*>())
     {
         btn->setChecked(btn->layout() == project->layout());
@@ -414,8 +431,8 @@ void MainWindow::updateWidgets()
     ui->actionPrint->setEnabled(project->pageCount() > 0);
     ui->actionPrintAndClose->setEnabled(ui->actionPrint->isEnabled());
 
-    ui->actionPreviousSheet->setEnabled(ui->preview->currentSheet() > 0);
-    ui->actionNextSheet->setEnabled(ui->preview->currentSheet() < project->previewSheetCount() - 1);
+    ui->actionPreviousSheet->setEnabled(project->currentSheetNum() > 0);
+    ui->actionNextSheet->setEnabled(project->currentSheetNum() < project->previewSheetCount() - 1);
 
     ui->actionSave->setEnabled(project->pageCount() > 0);
     ui->actionSaveAs->setEnabled(ui->actionSave->isEnabled());
@@ -445,7 +462,7 @@ void MainWindow::updateWidgets()
                                    " ( " + sheetsTmpl.arg(sheetsCount) + " )");
 
         mStatusBarCurrentSheetLabel.setText(tr("Sheet %1 of %2", "Status bar")
-                                .arg(ui->preview->currentSheet() + 1)
+                                .arg(project->currentSheetNum() + 1)
                                 .arg(project->previewSheetCount()));
     }
     else
@@ -503,25 +520,6 @@ void MainWindow::switchPrinterProfile()
 {
     project->setPrinterProfile(ui->printersCombo->currentPrinter(),
                                ui->printersCombo->currentProfile());
-}
-
-
-/************************************************
-
- ************************************************/
-void MainWindow::switchToJob(const Job &job)
-{
-    ProjectPage *page = job.firstVisiblePage();
-    for (int i=0; i<project->previewSheetCount(); ++i)
-    {
-        const Sheet *sheet = project->previewSheet(i);
-
-        if (sheet->indexOfPage(page) > -1)
-        {
-            ui->preview->setCurrentSheet(i);
-            return;
-        }
-    }
 }
 
 
@@ -797,18 +795,9 @@ void MainWindow::updateProgressBar(int value, int all)
 /************************************************
  *
  * ***********************************************/
-void MainWindow::showPreviewContextMenu(int pageNum)
+void MainWindow::showPreviewContextMenu(Sheet *sheet, ProjectPage *page)
 {
-    int sheetNum = ui->preview->currentSheet();
-    Sheet *sheet = 0;
-    ProjectPage *page = 0;
     Job job;
-
-    if (sheetNum > -1)
-    {
-        sheet = project->previewSheet(sheetNum);
-        page = (pageNum < 0) ? 0 : sheet->page(pageNum);
-    }
 
     if (page)
     {
@@ -824,7 +813,7 @@ void MainWindow::showPreviewContextMenu(int pageNum)
     // New subbooklet ................................
     if (page && (page != project->page(0)))
     {
-        if (!page->isStartSubBooklet())
+        if (!page->isManualStartSubBooklet())
         {
             PageAction *act = new PageAction(tr("Start new booklet from this page"), sheet, page, menu);
             connect(act, SIGNAL(triggered()),
@@ -946,42 +935,66 @@ void MainWindow::showPreviewContextMenu(int pageNum)
  ************************************************/
 void MainWindow::showJobViewContextMenu(Job job)
 {
-    QMenu *menu = new QMenu(this);
+    QMenu menu;
 
     JobAction *act;
 
-    act = new JobAction(tr("Rename job"), job, menu);
-    menu->addAction(act);
+    act = new JobAction(tr("Rename job"), job, &menu);
+    menu.addAction(act);
     connect(act, SIGNAL(triggered()),
             this, SLOT(renameJob()));
 
 
-    act = new JobAction(Icon::icon(Icon::RotateLeft), tr("Rotate job to the left"), job, menu);
-    menu->addAction(act);
+    act = new JobAction(Icon::icon(Icon::RotateLeft), tr("Rotate job to the left"), job, &menu);
+    menu.addAction(act);
     connect(act, SIGNAL(triggered()),
             this, SLOT(rotateJobLeft()));
 
-    act = new JobAction(Icon::icon(Icon::RotateRight), tr("Rotate job to the right"), job, menu);
-    menu->addAction(act);
+    act = new JobAction(Icon::icon(Icon::RotateRight), tr("Rotate job to the right"), job, &menu);
+    menu.addAction(act);
     connect(act, SIGNAL(triggered()),
             this, SLOT(rotateJobRight()));
 
 
-    menu->addSeparator();
+    menu.addSeparator();
 
-    act = new JobAction(tr("Clone job..."), job, menu);
-    menu->addAction(act);
+    act = new JobAction(tr("Clone job..."), job, &menu);
+    menu.addAction(act);
     connect(act, SIGNAL(triggered()),
             this, SLOT(cloneJob()));
 
-    menu->addSeparator();
+    menu.addSeparator();
 
-    act = new JobAction(tr("Delete job"), job, menu);
-    menu->addAction(act);
+    // Undo delete ...................................
+    QMenu *undelMenu = menu.addMenu(tr("Undo delete page"));
+    undelMenu->setEnabled(false);
+
+    for(int p=0; p<job.pageCount(); ++p)
+    {
+        ProjectPage *page = job.page(p);
+        if (!page->visible())
+        {
+            PageAction *act;
+            act = new PageAction(tr("Page %1", "'Undo deletion' menu item").arg(p+1), 0, page, &menu);
+            connect(act, SIGNAL(triggered()),
+                    this, SLOT(undoDeletePage()));
+
+            undelMenu->addAction(act);
+        }
+    }
+    undelMenu->setEnabled(undelMenu->isEnabled() || !undelMenu->isEmpty());
+
+    // ...............................................
+
+
+    menu.addSeparator();
+
+    act = new JobAction(tr("Delete job"), job, &menu);
+    menu.addAction(act);
     connect(act, SIGNAL(triggered()),
             this, SLOT(deleteJob()));
 
-    menu->popup(QCursor::pos());
+    menu.exec(QCursor::pos());
 }
 
 
@@ -1193,12 +1206,12 @@ void MainWindow::startBooklet()
     if (!act || !act->page())
         return;
 
-    act->page()->setStartSubBooklet(true);
+    act->page()->setManualStartSubBooklet(true);
     project->update();
 
     int sheetNum = project->previewSheets().indexOfPage(act->page());
     if (sheetNum > -1)
-        ui->preview->setCurrentSheet(sheetNum);
+        project->setCurrentSheet(sheetNum);
 }
 
 
@@ -1210,13 +1223,13 @@ void MainWindow::dontStartBooklet()
     PageAction *act = qobject_cast<PageAction*>(sender());
     if (!act || !act->page())
         return;
-    qDebug() << "";
-    act->page()->setStartSubBooklet(false);
+
+    act->page()->setManualStartSubBooklet(false);
     project->update();
 
     int sheetNum = project->previewSheets().indexOfPage(act->page());
     if (sheetNum > -1)
-        ui->preview->setCurrentSheet(sheetNum);
+        project->setCurrentSheet(sheetNum);
 }
 
 
@@ -1267,6 +1280,7 @@ void MainWindow::deleteJob()
         project->removeJob(index);
 
     ui->jobsView->updateItems();
+    ui->subBookletView->updateItems();
 }
 
 
@@ -1294,6 +1308,9 @@ void MainWindow::saveAs(const QString &fileName)
 
         if (file.isEmpty())
             return;
+
+        if (QFileInfo(file).suffix().toLower() != "boo")
+            file += ".boo";
     }
 
     mSaveFile = file;

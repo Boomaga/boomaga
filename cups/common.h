@@ -1,7 +1,8 @@
 /* BEGIN_COMMON_COPYRIGHT_HEADER
  * (c)LGPL2+
  *
- * Copyright: 2012-2013 Boomaga team https://github.com/Boomaga
+ *
+ * Copyright: 2012-2016 Boomaga team https://github.com/Boomaga
  * Authors:
  *   Alexander Sokoloff <sokoloff.a@gmail.com>
  *
@@ -22,39 +23,24 @@
  *
  * END_COMMON_COPYRIGHT_HEADER */
 
-#ifndef ABOUTDIALOG_H
-#define ABOUTDIALOG_H
 
-#include <QDialog>
+#ifndef COMMON_H
+#define COMMON_H
 
-/**
- * @brief displays a simple about dialog
- */
+#include <QString>
 
-#include "ui_aboutdialog.h"
+void debug(const QString &message);
+void info(const QString &message);
+void warning(const QString &message);
+void error(const QString &message);
 
-namespace Ui {
-class AboutDialog;
-}
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
+void messageOutput(QtMsgType type, const char *message);
+#else
+void messageOutput(QtMsgType type, const QMessageLogContext &context, const QString &message);
+#endif
 
-class AboutDialog: public QDialog
-{
-    Q_OBJECT
-public:
-    explicit AboutDialog(QWidget *parent = 0);
-    ~AboutDialog();
+#define CUPS_BACKEND_OK 0
+#define CUPS_BACKEND_FAILED 1
 
-private:
-    Ui::AboutDialog *ui;
-    static AboutDialog *mInstance;
-
-    QString titleText() const;
-    QString aboutText() const;
-    QString authorsText() const;
-    QString thanksText() const;
-    QString translationsText() const;
-
-};
-
-
-#endif // ABOUTDIALOG_H
+#endif // COMMON_H
