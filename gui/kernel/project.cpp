@@ -917,7 +917,7 @@ JobList Project::load(const QStringList &fileNames, const QString &options)
         // Unknown format ............................
         else
         {
-            errors << tr("I can't read file \"%1\" because is either not a supported file type or because the file has been damaged.").arg(file.fileName());
+            errors << tr("I can't read file \"%1\" either because it's not a supported file type, or because the file has been damaged.").arg(file.fileName());
         }
     }
 
