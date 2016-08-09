@@ -965,6 +965,30 @@ void MainWindow::showJobViewContextMenu(Job job)
 
     menu.addSeparator();
 
+    // Undo delete ...................................
+    QMenu *undelMenu = menu.addMenu(tr("Undo delete page"));
+    undelMenu->setEnabled(false);
+
+    for(int p=0; p<job.pageCount(); ++p)
+    {
+        ProjectPage *page = job.page(p);
+        if (!page->visible())
+        {
+            PageAction *act;
+            act = new PageAction(tr("Page %1", "'Undo deletion' menu item").arg(p+1), 0, page, &menu);
+            connect(act, SIGNAL(triggered()),
+                    this, SLOT(undoDeletePage()));
+
+            undelMenu->addAction(act);
+        }
+    }
+    undelMenu->setEnabled(undelMenu->isEnabled() || !undelMenu->isEmpty());
+
+    // ...............................................
+
+
+    menu.addSeparator();
+
     act = new JobAction(tr("Delete job"), job, &menu);
     menu.addAction(act);
     connect(act, SIGNAL(triggered()),
