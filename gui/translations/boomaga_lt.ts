@@ -31,7 +31,7 @@
     </message>
     <message>
         <source>Copyright: %1-%2 %3</source>
-        <translation>Autorinės Teisės: %1-%2 %3</translation>
+        <translation>Autorių Teisės: %1-%2 %3</translation>
     </message>
     <message>
         <source>Homepage: %1</source>
@@ -43,7 +43,7 @@
     </message>
     <message>
         <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on Github.</source>
-        <translation>Boomaga yra sukurta &lt;a %1&gt;Boomaga Komandos ir talkininkų&lt;/a&gt; sistemoje Github.</translation>
+        <translation>Boomaga yra sukurta &lt;a %1&gt;Boomaga komandos ir talkininkų&lt;/a&gt; sistemoje Github.</translation>
     </message>
     <message>
         <source>If you are interested in working with our development team, &lt;a %1&gt;join us&lt;/a&gt;.</source>
@@ -115,10 +115,6 @@
         <source>Title:</source>
         <translation>Pavadinimas:</translation>
     </message>
-    <message utf8="true">
-        <source> The document’s title.</source>
-        <translation>Dokumento pavadinimas.</translation>
-    </message>
     <message>
         <source>Subject:</source>
         <translation>Tema:</translation>
@@ -155,10 +151,10 @@ Ar tikrai norite pakeisti šį failą?</translation>
     </message>
 </context>
 <context>
-    <name>JobsListView</name>
+    <name>JobListView</name>
     <message>
-        <source>( %1 pages )</source>
-        <translation>( %1 puslapių )</translation>
+        <source>%1 pages</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -231,7 +227,7 @@ Ar tikrai norite pakeisti šį failą?</translation>
     </message>
     <message>
         <source>Print and Close</source>
-        <translation>Spausdinti ir Uždaryti</translation>
+        <translation>Spausdinti ir užverti</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
@@ -321,11 +317,11 @@ Ar tikrai norite pakeisti šį failą?</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation>Išsaugoti</translation>
+        <translation>Įrašyti</translation>
     </message>
     <message>
         <source>Save project</source>
-        <translation>Išsaugoti projektą</translation>
+        <translation>Įrašyti projektą</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
@@ -333,11 +329,11 @@ Ar tikrai norite pakeisti šį failą?</translation>
     </message>
     <message>
         <source>Save as...</source>
-        <translation>Išsaugoti kaip...</translation>
+        <translation>Įrašyti kaip...</translation>
     </message>
     <message>
         <source>Save project under a new name</source>
-        <translation>Išsaugoti projektą nauju pavadinimu</translation>
+        <translation>Įrašyti projektą nauju pavadinimu</translation>
     </message>
     <message>
         <source>Ctrl+Shift+S</source>
@@ -345,11 +341,11 @@ Ar tikrai norite pakeisti šį failą?</translation>
     </message>
     <message>
         <source>Open...</source>
-        <translation>Atidaryti...</translation>
+        <translation>Atverti...</translation>
     </message>
     <message>
         <source>Open an existing project</source>
-        <translation>Atidaryti egzistuojantį projektą</translation>
+        <translation>Atverti egzistuojantį projektą</translation>
     </message>
     <message>
         <source>Ctrl+O</source>
@@ -366,7 +362,7 @@ Ar tikrai norite pakeisti šį failą?</translation>
     </message>
     <message>
         <source>Project saved successfully.</source>
-        <translation>Projektas sėkmingai išsaugotas.</translation>
+        <translation>Projektas sėkmingai įrašytas.</translation>
     </message>
     <message>
         <source>All supported files (*.pdf *.boo);;Boomaga files (*.boo);;PDF files (*.pdf);;All files (*.*)</source>
@@ -460,6 +456,14 @@ Ar tikrai norite pakeisti šį failą?</translation>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
+    <message>
+        <source>Sub-booklets</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Undo delete page</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>PrintDialog</name>
@@ -540,7 +544,7 @@ Ar tikrai norite pakeisti šį failą?</translation>
     </message>
     <message>
         <source>Reset to default</source>
-        <translation>Atstatyti numatytasias reikšmes</translation>
+        <translation>Atstatyti numatytąsias reikšmes</translation>
     </message>
     <message>
         <source>Profile %1</source>
@@ -559,28 +563,32 @@ Ar tikrai norite pakeisti šį failą?</translation>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Negaliu įrašyti į failą &apos;%1&apos;</translation>
     </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot;</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>I can&apos;t read file &quot;%1&quot; because is either not a supported file type or because the file has been damaged.</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>ProjectFile</name>
     <message>
-        <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
-        <translation>Negaliu atidaryti failo &quot;%1&quot; (Nėra tokio failo ar katalogo)</translation>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
-        <translation>Negaliu atidaryti failo &quot;%1&quot; (Prieiga nesuteikta)</translation>
-    </message>
-    <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Negaliu atidaryti failo &quot;%1&quot;</translation>
+        <translation>Negaliu atverti failo &quot;%1&quot;</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Negaliu įrašyti į failą &apos;%1&apos;</translation>
-    </message>
-    <message>
-        <source>I can&apos;t read file &quot;%1&quot; because is either not a supported file type or because the file has been damaged.</source>
-        <translation>Negaliu perskaityti failo &quot;%1&quot;, nes arba jis yra nepalaikomo failų tipo, arba failas yra pažeistas.</translation>
     </message>
 </context>
 <context>
@@ -595,7 +603,7 @@ Ar tikrai norite pakeisti šį failą?</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Negaliu atidaryti failo &quot;%1&quot;</translation>
+        <translation>Negaliu atverti failo &quot;%1&quot;</translation>
     </message>
     <message>
         <source>Print to file (PDF)</source>
@@ -624,6 +632,17 @@ Ar tikrai norite pakeisti šį failą?</translation>
     <message>
         <source>~/Untitled.pdf</source>
         <translation>~/Bevardis.pdf</translation>
+    </message>
+</context>
+<context>
+    <name>SubBookletView</name>
+    <message>
+        <source>Sub-booklet %1</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1 pages</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>

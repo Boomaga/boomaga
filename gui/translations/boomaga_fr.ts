@@ -115,10 +115,6 @@
         <source>Title:</source>
         <translation>Titre :</translation>
     </message>
-    <message utf8="true">
-        <source> The document’s title.</source>
-        <translation>Le titre du document.</translation>
-    </message>
     <message>
         <source>Subject:</source>
         <translation>Objet :</translation>
@@ -155,10 +151,10 @@ Are you sure you want to overwrite it?</source>
     </message>
 </context>
 <context>
-    <name>JobsListView</name>
+    <name>JobListView</name>
     <message>
-        <source>( %1 pages )</source>
-        <translation>( %1 pages )</translation>
+        <source>%1 pages</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -460,6 +456,14 @@ Are you sure you want to overwrite it?</source>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Maj+P</translation>
     </message>
+    <message>
+        <source>Sub-booklets</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Undo delete page</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>PrintDialog</name>
@@ -559,17 +563,25 @@ Are you sure you want to overwrite it?</source>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Je ne peux pas écrire le fichier « %1 »</translation>
     </message>
-</context>
-<context>
-    <name>ProjectFile</name>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
-        <translation>Je ne peux pas ouvrir le fichier « %1 » (fichier ou répertoire inexistant)</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
-        <translation>Je ne peux pas ouvrir le fichier « %1 » (accès refusé)</translation>
+        <translation type="unfinished"/>
     </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot;</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>I can&apos;t read file &quot;%1&quot; because is either not a supported file type or because the file has been damaged.</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>ProjectFile</name>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
         <translation>Je ne peux pas ouvrir le fichier « %1 »</translation>
@@ -577,10 +589,6 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Je ne peux pas écrire le fichier « %1 »</translation>
-    </message>
-    <message>
-        <source>I can&apos;t read file &quot;%1&quot; because is either not a supported file type or because the file has been damaged.</source>
-        <translation>Je ne peux pas lire le fichier « %1 » car il n&apos;est pas pris en charge ou car le fichier est endommagé.</translation>
     </message>
 </context>
 <context>
@@ -624,6 +632,17 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>~/Untitled.pdf</source>
         <translation>~/Sansnom.pdf</translation>
+    </message>
+</context>
+<context>
+    <name>SubBookletView</name>
+    <message>
+        <source>Sub-booklet %1</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1 pages</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>

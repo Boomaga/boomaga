@@ -115,10 +115,6 @@
         <source>Title:</source>
         <translation>Titel:</translation>
     </message>
-    <message utf8="true">
-        <source> The document’s title.</source>
-        <translation>Der Titel des Dokuments.</translation>
-    </message>
     <message>
         <source>Subject:</source>
         <translation>Betreff:</translation>
@@ -155,10 +151,10 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
 </context>
 <context>
-    <name>JobsListView</name>
+    <name>JobListView</name>
     <message>
-        <source>( %1 pages )</source>
-        <translation>( %1 Seiten )</translation>
+        <source>%1 pages</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -460,6 +456,14 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
         <source>Ctrl+Shift+P</source>
         <translation>Strg+Umschalt+P</translation>
     </message>
+    <message>
+        <source>Sub-booklets</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Undo delete page</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>PrintDialog</name>
@@ -559,17 +563,25 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Datei &apos;%1&apos; konnte nicht geschrieben werden</translation>
     </message>
-</context>
-<context>
-    <name>ProjectFile</name>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
-        <translation>Ich kann die Datei &quot;%1&quot; nicht öffnen (keine solche Datei oder Verzeichnis)</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
-        <translation>Ich kann die Datei &quot;%1&quot; nicht öffnen (Zugriff verweigert)</translation>
+        <translation type="unfinished"/>
     </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot;</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>I can&apos;t read file &quot;%1&quot; because is either not a supported file type or because the file has been damaged.</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>ProjectFile</name>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
         <translation>Ich kann die Datei &quot;%1&quot; nicht öffnen</translation>
@@ -577,10 +589,6 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Ich kann nicht in die Datei &apos;%1&apos; schreiben</translation>
-    </message>
-    <message>
-        <source>I can&apos;t read file &quot;%1&quot; because is either not a supported file type or because the file has been damaged.</source>
-        <translation>Ich kann die Datei &quot;%1&quot; nicht lesen, weil ihr Dateityp entweder nicht unterstützt wird oder die Datei beschädigt ist.</translation>
     </message>
 </context>
 <context>
@@ -624,6 +632,17 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     <message>
         <source>~/Untitled.pdf</source>
         <translation>~/Unbenannt.pdf</translation>
+    </message>
+</context>
+<context>
+    <name>SubBookletView</name>
+    <message>
+        <source>Sub-booklet %1</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1 pages</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>

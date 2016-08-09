@@ -115,10 +115,6 @@
         <source>Title:</source>
         <translation type="unfinished"/>
     </message>
-    <message utf8="true">
-        <source> The document’s title.</source>
-        <translation type="unfinished"/>
-    </message>
     <message>
         <source>Subject:</source>
         <translation type="unfinished"/>
@@ -154,10 +150,10 @@ Are you sure you want to overwrite it?</source>
     </message>
 </context>
 <context>
-    <name>JobsListView</name>
+    <name>JobListView</name>
     <message>
-        <source>( %1 pages )</source>
-        <translation>( %1 sahifalar )</translation>
+        <source>%1 pages</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -459,6 +455,14 @@ Are you sure you want to overwrite it?</source>
         <source>Ctrl+Shift+P</source>
         <translation type="unfinished"/>
     </message>
+    <message>
+        <source>Sub-booklets</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Undo delete page</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>PrintDialog</name>
@@ -558,9 +562,6 @@ Are you sure you want to overwrite it?</source>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation type="unfinished"/>
     </message>
-</context>
-<context>
-    <name>ProjectFile</name>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
         <translation type="unfinished"/>
@@ -574,11 +575,18 @@ Are you sure you want to overwrite it?</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <source>I can&apos;t write to file &apos;%1&apos;</source>
+        <source>I can&apos;t read file &quot;%1&quot; because is either not a supported file type or because the file has been damaged.</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>ProjectFile</name>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot;</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <source>I can&apos;t read file &quot;%1&quot; because is either not a supported file type or because the file has been damaged.</source>
+        <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -622,6 +630,17 @@ Are you sure you want to overwrite it?</source>
     <name>Settings</name>
     <message>
         <source>~/Untitled.pdf</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>SubBookletView</name>
+    <message>
+        <source>Sub-booklet %1</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1 pages</source>
         <translation type="unfinished"/>
     </message>
 </context>

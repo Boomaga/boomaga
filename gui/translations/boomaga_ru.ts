@@ -115,10 +115,6 @@
         <source>Title:</source>
         <translation>Заголовок:</translation>
     </message>
-    <message utf8="true">
-        <source> The document’s title.</source>
-        <translation>Заголовок документа.</translation>
-    </message>
     <message>
         <source>Subject:</source>
         <translation>Тема:</translation>
@@ -155,10 +151,10 @@ Are you sure you want to overwrite it?</source>
     </message>
 </context>
 <context>
-    <name>JobsListView</name>
+    <name>JobListView</name>
     <message>
-        <source>( %1 pages )</source>
-        <translation>( %1 стр.) </translation>
+        <source>%1 pages</source>
+        <translation>%1 страниц</translation>
     </message>
 </context>
 <context>
@@ -460,6 +456,14 @@ Are you sure you want to overwrite it?</source>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
+    <message>
+        <source>Sub-booklets</source>
+        <translation>Тетради</translation>
+    </message>
+    <message>
+        <source>Undo delete page</source>
+        <translation>Отменить удаление страниц</translation>
+    </message>
 </context>
 <context>
     <name>PrintDialog</name>
@@ -559,9 +563,6 @@ Are you sure you want to overwrite it?</source>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Не получилось записать файл: &quot;%1&quot;</translation>
     </message>
-</context>
-<context>
-    <name>ProjectFile</name>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
         <translation>Не получилось открыть файл: &quot;%1&quot; (Нет такого файла или директории)</translation>
@@ -575,12 +576,19 @@ Are you sure you want to overwrite it?</source>
         <translation>Не получилось открыть файл: &quot;%1&quot;</translation>
     </message>
     <message>
-        <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation>Не получилось записать файл: &quot;%1&quot;</translation>
-    </message>
-    <message>
         <source>I can&apos;t read file &quot;%1&quot; because is either not a supported file type or because the file has been damaged.</source>
         <translation>Не получилось прочитать файл: &quot;%1&quot;, файл испорчен или файлы такого типа не поддерживаются.</translation>
+    </message>
+</context>
+<context>
+    <name>ProjectFile</name>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot;</source>
+        <translation>Не получилось открыть файл: &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>I can&apos;t write to file &apos;%1&apos;</source>
+        <translation>Не получилось записать файл: &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
@@ -624,6 +632,17 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>~/Untitled.pdf</source>
         <translation>~/Безимянный.pdf</translation>
+    </message>
+</context>
+<context>
+    <name>SubBookletView</name>
+    <message>
+        <source>Sub-booklet %1</source>
+        <translation>Тетрадь %1</translation>
+    </message>
+    <message>
+        <source>%1 pages</source>
+        <translation>%1 страниц</translation>
     </message>
 </context>
 <context>

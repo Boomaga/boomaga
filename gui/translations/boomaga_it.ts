@@ -115,10 +115,6 @@
         <source>Title:</source>
         <translation>Titolo:</translation>
     </message>
-    <message utf8="true">
-        <source> The document’s title.</source>
-        <translation>Il titolo del documento.</translation>
-    </message>
     <message>
         <source>Subject:</source>
         <translation>Oggetto:</translation>
@@ -155,10 +151,10 @@ Sei sicuro di volerlo sovracrivere?</translation>
     </message>
 </context>
 <context>
-    <name>JobsListView</name>
+    <name>JobListView</name>
     <message>
-        <source>( %1 pages )</source>
-        <translation>( %1 pagine )</translation>
+        <source>%1 pages</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -460,6 +456,14 @@ Sei sicuro di volerlo sovracrivere?</translation>
         <source>Ctrl+Shift+P</source>
         <translation>Ctrl+Shift+P</translation>
     </message>
+    <message>
+        <source>Sub-booklets</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Undo delete page</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>PrintDialog</name>
@@ -559,17 +563,25 @@ Sei sicuro di volerlo sovracrivere?</translation>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Non riesco a scrivere sul file &apos;%1&apos;</translation>
     </message>
-</context>
-<context>
-    <name>ProjectFile</name>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
-        <translation>Non posso aprire il file &quot;%1&quot; (File o cartella non esistenti)</translation>
+        <translation type="unfinished"/>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
-        <translation>Non posso aprire il file &quot;%1&quot; (Accesso negato)</translation>
+        <translation type="unfinished"/>
     </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot;</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>I can&apos;t read file &quot;%1&quot; because is either not a supported file type or because the file has been damaged.</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>ProjectFile</name>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
         <translation>Non posso aprire il file &quot;%1&quot;</translation>
@@ -577,10 +589,6 @@ Sei sicuro di volerlo sovracrivere?</translation>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Non posso scrivere nel file &apos;%1&apos;</translation>
-    </message>
-    <message>
-        <source>I can&apos;t read file &quot;%1&quot; because is either not a supported file type or because the file has been damaged.</source>
-        <translation>Non posso leggere il file &quot;%1&quot; perché è un tipo di file non supportato oppure il file è stato danneggiato.</translation>
     </message>
 </context>
 <context>
@@ -624,6 +632,17 @@ Sei sicuro di volerlo sovracrivere?</translation>
     <message>
         <source>~/Untitled.pdf</source>
         <translation>~/Senza titolo.pdf</translation>
+    </message>
+</context>
+<context>
+    <name>SubBookletView</name>
+    <message>
+        <source>Sub-booklet %1</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1 pages</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>

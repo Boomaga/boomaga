@@ -1,152 +1,153 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="pl_PL" version="2.0">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="ro" version="2.0">
 <context>
     <name>AboutDialog</name>
     <message>
         <source> About Boomaga</source>
-        <translation>O programie Boomaga</translation>
+        <translation>Despre Boomaga</translation>
     </message>
     <message>
         <source>About</source>
-        <translation>O programie</translation>
+        <translation>Despre</translation>
     </message>
     <message>
         <source>Authors</source>
-        <translation>Autorzy</translation>
+        <translation>Autori</translation>
     </message>
     <message>
         <source>Thanks</source>
-        <translation>Podziękowania</translation>
+        <translation>Mulțumiri</translation>
     </message>
     <message>
         <source>Translations</source>
-        <translation>Tłumaczenia</translation>
+        <translation>Traduceri</translation>
     </message>
     <message>
         <source>Version: %1</source>
-        <translation>Wersja: %1</translation>
+        <translation>Versiunea: %1</translation>
     </message>
     <message>
         <source>Boomaga provides a virtual printer for CUPS. This can be used for print preview or for print booklets.</source>
-        <translation type="unfinished"/>
+        <translation>Boomaga oferă o imprimantă virtuală pentru CUPS. Aceasta poate fi utilizată pentru previzualizarea sau imprimarea broșurilor</translation>
     </message>
     <message>
         <source>Copyright: %1-%2 %3</source>
-        <translation type="unfinished"/>
+        <translation>Drepturi de autor: %1-%2 %3</translation>
     </message>
     <message>
         <source>Homepage: %1</source>
-        <translation type="unfinished"/>
+        <translation>Pagina de start: %1</translation>
     </message>
     <message>
         <source>License: %1</source>
-        <translation type="unfinished"/>
+        <translation>Licența: %1</translation>
     </message>
     <message>
         <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on Github.</source>
-        <translation type="unfinished"/>
+        <translation>Boomaga este dezvoltat de către &lt;a %1&gt;Echipa Boomaga și contribuitori &lt;/a&gt; pe Github</translation>
     </message>
     <message>
         <source>If you are interested in working with our development team, &lt;a %1&gt;join us&lt;/a&gt;.</source>
-        <translation type="unfinished"/>
+        <translation>Dacă ești interesat să conlucrezi cu echipa noastră de dezvoltare, &lt;a %1&gt; alătură-te nouă &lt;/a&gt;/</translation>
     </message>
     <message>
         <source>Special thanks to:</source>
-        <translation type="unfinished"/>
+        <translation>Mulțumiri speciale către:</translation>
     </message>
     <message>
         <source>If you want to help translate, we will be glad to see you in our translation team on &lt;a %1&gt;Transifex server&lt;/a&gt;.</source>
-        <translation type="unfinished"/>
+        <translation>Dacă doriți să ne ajutați cu traducerile, noi vom fi bucuroși să vă vedem în cadrul echipei noastre de traduceri pe &lt;a %1&gt;serverul Transifex&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
     <name>ConfigDialog</name>
     <message>
         <source>Preferences</source>
-        <translation type="unfinished"/>
+        <translation>Preferințe</translation>
     </message>
     <message>
         <source>Divide your long booklets into smaller sub-booklets for printing.</source>
-        <translation type="unfinished"/>
+        <translation>Divizează broșurile mari în sub-broșuri mai mici pentru imprimare.</translation>
     </message>
     <message>
         <source>Print as sub-booklets</source>
-        <translation type="unfinished"/>
+        <translation>Printează ca sub-broșuri</translation>
     </message>
     <message>
         <source>Maximum number of sheets in your sub-booklet.</source>
-        <translation type="unfinished"/>
+        <translation>Numărul maxim de pagini în sub-broșura ta.</translation>
     </message>
     <message>
         <source>Sheets per sub-booklet:</source>
-        <translation type="unfinished"/>
+        <translation>Pagini per sub-broșură:</translation>
     </message>
 </context>
 <context>
     <name>ExportToPdf</name>
     <message>
         <source>Print to PDF</source>
-        <translation type="unfinished"/>
+        <translation>Imprimează ca PDF</translation>
     </message>
     <message>
         <source>File name</source>
-        <translation type="unfinished"/>
+        <translation>Numele fișierului</translation>
     </message>
     <message>
         <source>Output file:</source>
-        <translation type="unfinished"/>
+        <translation>Fișierul de ieșire</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"/>
+        <translation>...</translation>
     </message>
     <message>
         <source>Meta info</source>
-        <translation type="unfinished"/>
+        <translation>Meta-informații</translation>
     </message>
     <message>
         <source>Author:</source>
-        <translation type="unfinished"/>
+        <translation>Autor:</translation>
     </message>
     <message>
         <source> The name of the person who created the document.</source>
-        <translation type="unfinished"/>
+        <translation>Numele persoanei care a creat documentul.</translation>
     </message>
     <message>
         <source>Title:</source>
-        <translation type="unfinished"/>
+        <translation>Titlul:</translation>
     </message>
     <message>
         <source>Subject:</source>
-        <translation type="unfinished"/>
+        <translation>Subiect:</translation>
     </message>
     <message>
         <source> The subject of the document.</source>
-        <translation type="unfinished"/>
+        <translation>Subiectul documentului.</translation>
     </message>
     <message>
         <source> Keywords associated with the document.</source>
-        <translation type="unfinished"/>
+        <translation>Cuvintele-cheie asociate documentului.</translation>
     </message>
     <message>
         <source>Keywords:</source>
-        <translation type="unfinished"/>
+        <translation>Cuvinte-cheie:</translation>
     </message>
     <message>
         <source>PDF files (*.pdf);;All files (*.*)</source>
-        <translation type="unfinished"/>
+        <translation>Fișiere PDF (*.pdf);;Toate fișierele(*.*)</translation>
     </message>
     <message>
         <source>Overwrite file?</source>
-        <translation type="unfinished"/>
+        <translation>Suprascrie fișierul?</translation>
     </message>
     <message>
         <source>A file named &quot;%1&quot; already exists.
 Are you sure you want to overwrite it?</source>
-        <translation type="unfinished"/>
+        <translation>Un fișier numit &quot;%1&quot; deja există.
+Sunteți siguri că doriți să-l suprascrieți?</translation>
     </message>
     <message>
         <source> The document&apos;s title.</source>
-        <translation type="unfinished"/>
+        <translation>Titlul documentului.</translation>
     </message>
 </context>
 <context>
@@ -160,300 +161,300 @@ Are you sure you want to overwrite it?</source>
     <name>MainWindow</name>
     <message>
         <source>&amp;File</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Fișier</translation>
     </message>
     <message>
         <source>&amp;Preferences</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Preferințe</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished"/>
+        <translation>Ajutor</translation>
     </message>
     <message>
         <source>Options</source>
-        <translation type="unfinished"/>
+        <translation>Opțiuni</translation>
     </message>
     <message>
         <source>Layout</source>
-        <translation type="unfinished"/>
+        <translation>Amplasare</translation>
     </message>
     <message>
         <source>1 up</source>
-        <translation type="unfinished"/>
+        <translation>1 sus</translation>
     </message>
     <message>
         <source>2 up</source>
-        <translation type="unfinished"/>
+        <translation>2 sus</translation>
     </message>
     <message>
         <source>Booklet</source>
-        <translation type="unfinished"/>
+        <translation>Broșură</translation>
     </message>
     <message>
         <source>Print on both sides of a sheet.</source>
         <comment>MainForm::Double-sided checkbox tooltip</comment>
-        <translation type="unfinished"/>
+        <translation>Imprimează pe ambele părți ale foii.</translation>
     </message>
     <message>
         <source>Double-sided</source>
         <comment>MainForm::Double-sided checkbox</comment>
-        <translation type="unfinished"/>
+        <translation>Cu două fețe</translation>
     </message>
     <message>
         <source>Jobs</source>
-        <translation type="unfinished"/>
+        <translation>Sarcini</translation>
     </message>
     <message>
         <source>Printer</source>
-        <translation type="unfinished"/>
+        <translation>Imprimantă</translation>
     </message>
     <message>
         <source>Configure...</source>
-        <translation type="unfinished"/>
+        <translation>Configurează...</translation>
     </message>
     <message>
         <source>Toolbar</source>
-        <translation type="unfinished"/>
+        <translation>Bara de instrumente</translation>
     </message>
     <message>
         <source>&amp;Print</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Imprimă</translation>
     </message>
     <message>
         <source>E&amp;xit</source>
-        <translation type="unfinished"/>
+        <translation>I&amp;eși</translation>
     </message>
     <message>
         <source>Print and Close</source>
-        <translation type="unfinished"/>
+        <translation>Imprimează și închide</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <source>Next sheet</source>
-        <translation type="unfinished"/>
+        <translation>Foaia următoare</translation>
     </message>
     <message>
         <source>Previous sheet</source>
-        <translation type="unfinished"/>
+        <translation>Foaia precedentă</translation>
     </message>
     <message>
         <source>About Boomaga</source>
-        <translation type="unfinished"/>
+        <translation>Despre Boomaga</translation>
     </message>
     <message>
         <source>Boomaga</source>
-        <translation type="unfinished"/>
+        <translation>Boomaga</translation>
     </message>
     <message>
         <source>%v of %m</source>
         <comment>Format for QProgressBar (http://qt-project.org/doc/qt-4.8/qprogressbar.html#format-prop)</comment>
-        <translation type="unfinished"/>
+        <translation>%v din %m</translation>
     </message>
     <message>
         <source>Print the all pages on %1.</source>
-        <translation type="unfinished"/>
+        <translation>Imprimează toate paginile pe %1.</translation>
     </message>
     <message>
         <source>Print the odd pages on %1.&lt;p&gt;When finished, turn the pages, insert them into the printer&lt;br&gt;and click the Continue button.</source>
-        <translation type="unfinished"/>
+        <translation>Imprimează paginile impare pe %1.&lt;p&gt;După terminare, întoarceți foile, introduceți-le în imprimantă&lt;br&gt;și abăsați pe butonul Continuare</translation>
     </message>
     <message>
         <source>Print the even pages on %1.</source>
-        <translation type="unfinished"/>
+        <translation>Imprimează paginile pare pe %1.</translation>
     </message>
     <message>
         <source>Continue</source>
-        <translation type="unfinished"/>
+        <translation>Continuare</translation>
     </message>
     <message>
         <source>%1 pages</source>
         <comment>Status bar</comment>
-        <translation type="unfinished"/>
+        <translation>%1 pagini</translation>
     </message>
     <message>
         <source>%1 page</source>
         <comment>Status bar</comment>
-        <translation type="unfinished"/>
+        <translation>pagina %1</translation>
     </message>
     <message>
         <source>%1 sheets</source>
         <comment>Status bar</comment>
-        <translation type="unfinished"/>
+        <translation>%1 foi</translation>
     </message>
     <message>
         <source>%1 sheet</source>
         <comment>Status bar</comment>
-        <translation type="unfinished"/>
+        <translation>foaia %1</translation>
     </message>
     <message>
         <source>Sheet %1 of %2</source>
         <comment>Status bar</comment>
-        <translation type="unfinished"/>
+        <translation>foaia %1 din %2</translation>
     </message>
     <message>
         <source>Insert blank page after this page</source>
-        <translation type="unfinished"/>
+        <translation>Introduce o pagină albă după pagina curentă</translation>
     </message>
     <message>
         <source>Delete this page</source>
-        <translation type="unfinished"/>
+        <translation>Șterge această pagină</translation>
     </message>
     <message>
         <source>Undo delete</source>
-        <translation type="unfinished"/>
+        <translation>Anulează ștergerea</translation>
     </message>
     <message>
         <source>Insert blank page before this page</source>
-        <translation type="unfinished"/>
+        <translation>Introdu o pagină albă înainte de pagina curentă</translation>
     </message>
     <message>
         <source>Delete pages until the end of the job.</source>
-        <translation type="unfinished"/>
+        <translation>Șterge paginile până la sfârșitul sarcinii.</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished"/>
+        <translation>Salvează</translation>
     </message>
     <message>
         <source>Save project</source>
-        <translation type="unfinished"/>
+        <translation>Salvează proiect</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
         <source>Save as...</source>
-        <translation type="unfinished"/>
+        <translation>Salvează ca...</translation>
     </message>
     <message>
         <source>Save project under a new name</source>
-        <translation type="unfinished"/>
+        <translation>Salvează proiectul cu nume nou</translation>
     </message>
     <message>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
         <source>Open...</source>
-        <translation type="unfinished"/>
+        <translation>Deschide...</translation>
     </message>
     <message>
         <source>Open an existing project</source>
-        <translation type="unfinished"/>
+        <translation>Deschide un proiect existent</translation>
     </message>
     <message>
         <source>Ctrl+O</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+O</translation>
     </message>
     <message>
         <source>Page %1</source>
         <comment>'Undo deletion' menu item</comment>
-        <translation type="unfinished"/>
+        <translation>Pagina %1</translation>
     </message>
     <message>
         <source>Boomaga files (*.boo);;All files (*.*)</source>
-        <translation type="unfinished"/>
+        <translation>Fișierele Boomaga (*.boo);;Toate fișierele (*.*)</translation>
     </message>
     <message>
         <source>Project saved successfully.</source>
-        <translation type="unfinished"/>
+        <translation>Proiectul a fost salvat cu succes</translation>
     </message>
     <message>
         <source>All supported files (*.pdf *.boo);;Boomaga files (*.boo);;PDF files (*.pdf);;All files (*.*)</source>
-        <translation type="unfinished"/>
+        <translation>Toate fișierele suportate (*.pdf *.boo);;Fișierele Boomaga (*.boo);;Fișierele PDF (*.pdf);;Toate fișierele (*.*)</translation>
     </message>
     <message>
         <source>4 up horizontal</source>
-        <translation type="unfinished"/>
+        <translation>4 în sus pe orizontală</translation>
     </message>
     <message>
         <source>4 up vertical</source>
-        <translation type="unfinished"/>
+        <translation>4 în sus pe verticală</translation>
     </message>
     <message>
         <source>8 up horizontal</source>
-        <translation type="unfinished"/>
+        <translation>8 în sus pe orizontală</translation>
     </message>
     <message>
         <source>8 up vertical</source>
-        <translation type="unfinished"/>
+        <translation>8 în sus pe verticală</translation>
     </message>
     <message>
         <source>Start new booklet from this page</source>
-        <translation type="unfinished"/>
+        <translation>Începe broșură nouă de la această pagină</translation>
     </message>
     <message>
         <source>Don&apos;t start new booklet from this page</source>
-        <translation type="unfinished"/>
+        <translation>Nu începe broșură nouă de la acceastă pagină</translation>
     </message>
     <message>
         <source>Rotate page to the left</source>
-        <translation type="unfinished"/>
+        <translation>Rotește pagina spre stânga</translation>
     </message>
     <message>
         <source>Rotate page to the right</source>
-        <translation type="unfinished"/>
+        <translation>Rotește pagina spre dreapta</translation>
     </message>
     <message>
         <source>Rename job</source>
-        <translation type="unfinished"/>
+        <translation>Redenumește sarcina</translation>
     </message>
     <message>
         <source>Rotate job to the left</source>
-        <translation type="unfinished"/>
+        <translation>Rotește sarcina spre stânga</translation>
     </message>
     <message>
         <source>Rotate job to the right</source>
-        <translation type="unfinished"/>
+        <translation>Rotește sarcina spre dreapta</translation>
     </message>
     <message>
         <source>Delete job</source>
-        <translation type="unfinished"/>
+        <translation>Șterge sarcina</translation>
     </message>
     <message>
         <source>Job title:</source>
-        <translation type="unfinished"/>
+        <translation>Titlul sarcinii:</translation>
     </message>
     <message>
         <source>&amp;Export...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Exportă...</translation>
     </message>
     <message>
         <source>Export the project to PDF</source>
-        <translation type="unfinished"/>
+        <translation>Exportă proiectul în PDF</translation>
     </message>
     <message>
         <source>Ctrl+E</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+E</translation>
     </message>
     <message>
         <source>Clone job...</source>
-        <translation type="unfinished"/>
+        <translation>Clonează sarcină...</translation>
     </message>
     <message>
         <source>Clone job</source>
-        <translation type="unfinished"/>
+        <translation>Clonează sarcină</translation>
     </message>
     <message>
         <source>Number of copies:</source>
-        <translation type="unfinished"/>
+        <translation>Numărul de copii:</translation>
     </message>
     <message>
         <source>Print with options...</source>
-        <translation type="unfinished"/>
+        <translation>Imprimă cu opțiuni...</translation>
     </message>
     <message>
         <source>Select number of copies before printing.</source>
-        <translation type="unfinished"/>
+        <translation>Selectează numărul de copii înainte de a imprima.</translation>
     </message>
     <message>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
         <source>Sub-booklets</source>
@@ -468,87 +469,87 @@ Are you sure you want to overwrite it?</source>
     <name>PrintDialog</name>
     <message>
         <source>Print document</source>
-        <translation type="unfinished"/>
+        <translation>Imprimă document</translation>
     </message>
     <message>
         <source>Number of copies:</source>
-        <translation type="unfinished"/>
+        <translation>Numărul de copii:</translation>
     </message>
 </context>
 <context>
     <name>PrinterSettings</name>
     <message>
         <source>Margins (mm)</source>
-        <translation type="unfinished"/>
+        <translation>Margini (mm)</translation>
     </message>
     <message>
         <source>Right:</source>
-        <translation type="unfinished"/>
+        <translation>Dreapta:</translation>
     </message>
     <message>
         <source>Bottom:</source>
-        <translation type="unfinished"/>
+        <translation>Subsol:</translation>
     </message>
     <message>
         <source>Internal:</source>
-        <translation type="unfinished"/>
+        <translation>Intern:</translation>
     </message>
     <message>
         <source>Left:</source>
-        <translation type="unfinished"/>
+        <translation>Stânga:</translation>
     </message>
     <message>
         <source>Top:</source>
-        <translation type="unfinished"/>
+        <translation>Antet:</translation>
     </message>
     <message>
         <source>Duplex:</source>
-        <translation type="unfinished"/>
+        <translation>Duplex:</translation>
     </message>
     <message>
         <source>Draw border</source>
-        <translation type="unfinished"/>
+        <translation>Desenează chenarul</translation>
     </message>
     <message>
         <source>Print in reverse order</source>
-        <translation type="unfinished"/>
+        <translation>Imprimă în ordine inversă</translation>
     </message>
     <message>
         <source>Printer has duplexer</source>
-        <translation type="unfinished"/>
+        <translation>Imprimanta are duplexor</translation>
     </message>
     <message>
         <source>Manual with reverse (suitable for most printers)</source>
-        <translation type="unfinished"/>
+        <translation>Manuală cu întoarcere (corespunde majorității imprimantelor)</translation>
     </message>
     <message>
         <source>Manual without reverse</source>
-        <translation type="unfinished"/>
+        <translation>Manuală fără întoarcere</translation>
     </message>
     <message>
         <source>Preferences of &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Preferințele &quot;%1&quot; </translation>
     </message>
     <message>
         <source>Profiles</source>
-        <translation type="unfinished"/>
+        <translation>Profiluri</translation>
     </message>
     <message>
         <source>+</source>
-        <translation type="unfinished"/>
+        <translation>+</translation>
     </message>
     <message>
         <source>-</source>
-        <translation type="unfinished"/>
+        <translation>-</translation>
     </message>
     <message>
         <source>Reset to default</source>
-        <translation type="unfinished"/>
+        <translation>Resetează la setările implicite</translation>
     </message>
     <message>
         <source>Profile %1</source>
         <comment>Defaul name for created printer profile in the Printer Settings diaog</comment>
-        <translation type="unfinished"/>
+        <translation>Profilul %1</translation>
     </message>
 </context>
 <context>
@@ -556,11 +557,11 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>Boomaga</source>
         <comment>Error message title</comment>
-        <translation type="unfinished"/>
+        <translation>Boomaga</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Nu pot scrie fișierul &apos;%1&apos; </translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
@@ -583,54 +584,54 @@ Are you sure you want to overwrite it?</source>
     <name>ProjectFile</name>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Nu pot deschide fișierul &quot;%1&quot;</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Nu pot scrie spre fișierul &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <source>PDF file &quot;%1&quot; is damaged.</source>
-        <translation type="unfinished"/>
+        <translation>Fișierul PDF %1 este deteriorat.</translation>
     </message>
     <message>
         <source>PDF file &quot;%1&quot; is encripted.</source>
-        <translation type="unfinished"/>
+        <translation>Fișierul PDF %1 este criptat.</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Nu pot deschide fișierul &quot;%1&quot;</translation>
     </message>
     <message>
         <source>Print to file (PDF)</source>
-        <translation type="unfinished"/>
+        <translation>Imprimează în fișier (PDF)</translation>
     </message>
     <message>
         <source>I can&apos;t read from file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Nu pot citi din fișierul &apos;%1&apos;</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Nu pot scrie spre fișierul &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Untitled</source>
-        <translation type="unfinished"/>
+        <translation>Fără nume</translation>
     </message>
     <message>
         <source>Default</source>
         <comment>Printer profile default name</comment>
-        <translation type="unfinished"/>
+        <translation>Implicit</translation>
     </message>
 </context>
 <context>
     <name>Settings</name>
     <message>
         <source>~/Untitled.pdf</source>
-        <translation type="unfinished"/>
+        <translation>~/Fără_nume.pdf</translation>
     </message>
 </context>
 <context>
@@ -648,20 +649,21 @@ Are you sure you want to overwrite it?</source>
     <name>TmpPdfFile</name>
     <message>
         <source>I can&apos;t create temporary file &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Nu pot crea fișierul temporar &quot;%1&quot;</translation>
     </message>
     <message>
         <source>Something is wrong. I can't find boomagamerger program.
 Please reinstall me.</source>
-        <translation type="unfinished"/>
+        <translation>Ceva e greșit. Nu pot găsi programul boomagamerger.
+Reinstalați-mă.</translation>
     </message>
     <message>
         <source>I can&apos;t read file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Nu pot citi fișierul &apos;%1&apos;</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Nu pot scrie spre fișierul &apos;%1&apos;</translation>
     </message>
 </context>
 </TS>
