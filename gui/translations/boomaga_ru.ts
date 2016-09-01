@@ -576,7 +576,7 @@ Are you sure you want to overwrite it?</source>
         <translation>Не получилось открыть файл: &quot;%1&quot;</translation>
     </message>
     <message>
-        <source>I can&apos;t read file &quot;%1&quot; because is either not a supported file type or because the file has been damaged.</source>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
         <translation>Не получилось прочитать файл: &quot;%1&quot;, файл испорчен или файлы такого типа не поддерживаются.</translation>
     </message>
 </context>

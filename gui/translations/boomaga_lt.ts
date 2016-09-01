@@ -154,7 +154,7 @@ Ar tikrai norite pakeisti šį failą?</translation>
     <name>JobListView</name>
     <message>
         <source>%1 pages</source>
-        <translation type="unfinished"/>
+        <translation>%1 puslapių</translation>
     </message>
 </context>
 <context>
@@ -458,11 +458,11 @@ Ar tikrai norite pakeisti šį failą?</translation>
     </message>
     <message>
         <source>Sub-booklets</source>
-        <translation type="unfinished"/>
+        <translation>Brošiūrėlės</translation>
     </message>
     <message>
         <source>Undo delete page</source>
-        <translation type="unfinished"/>
+        <translation>Atšaukti puslapio ištrynimą</translation>
     </message>
 </context>
 <context>
@@ -565,19 +565,19 @@ Ar tikrai norite pakeisti šį failą?</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
-        <translation type="unfinished"/>
+        <translation>Negaliu atverti failo &quot;%1&quot; (Nėra tokio failo ar katalogo)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
-        <translation type="unfinished"/>
+        <translation>Negaliu atverti failo &quot;%1&quot; (Prieiga negalima)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Negaliu atverti failo &quot;%1&quot;</translation>
     </message>
     <message>
-        <source>I can&apos;t read file &quot;%1&quot; because is either not a supported file type or because the file has been damaged.</source>
-        <translation type="unfinished"/>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
+        <translation>Negaliu perskaityti failo &quot;%1&quot;, nes arba jis yra nepalaikomo failo tipo, arba jis yra pažeistas.</translation>
     </message>
 </context>
 <context>
@@ -638,11 +638,11 @@ Ar tikrai norite pakeisti šį failą?</translation>
     <name>SubBookletView</name>
     <message>
         <source>Sub-booklet %1</source>
-        <translation type="unfinished"/>
+        <translation>Brošiūrėlė %1</translation>
     </message>
     <message>
         <source>%1 pages</source>
-        <translation type="unfinished"/>
+        <translation>%1 puslapių</translation>
     </message>
 </context>
 <context>

@@ -154,7 +154,7 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     <name>JobListView</name>
     <message>
         <source>%1 pages</source>
-        <translation type="unfinished"/>
+        <translation>%1 Seiten</translation>
     </message>
 </context>
 <context>
@@ -458,11 +458,11 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
     <message>
         <source>Sub-booklets</source>
-        <translation type="unfinished"/>
+        <translation>Broschüre aufteilen (sub-booklets)</translation>
     </message>
     <message>
         <source>Undo delete page</source>
-        <translation type="unfinished"/>
+        <translation>Seite rückgängig löschen</translation>
     </message>
 </context>
 <context>
@@ -565,19 +565,19 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
-        <translation type="unfinished"/>
+        <translation>Ich kann die Datei &quot;%1&quot; nicht öffnen (keine solche Datei oder Verzeichnis)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
-        <translation type="unfinished"/>
+        <translation>Ich kann die Datei &quot;%1&quot; nicht öffnen (Zugriff verweigert)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Ich kann die Datei &quot;%1&quot; nicht öffnen</translation>
     </message>
     <message>
-        <source>I can&apos;t read file &quot;%1&quot; because is either not a supported file type or because the file has been damaged.</source>
-        <translation type="unfinished"/>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
+        <translation>Ich kann die Datei &quot;%1&quot; nicht lesen, weil ihr Dateityp entweder nicht unterstützt wird oder die Datei beschädigt wurde.</translation>
     </message>
 </context>
 <context>
@@ -638,11 +638,11 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     <name>SubBookletView</name>
     <message>
         <source>Sub-booklet %1</source>
-        <translation type="unfinished"/>
+        <translation>Aufgeteilte Broschüre (sub-booklet) %1</translation>
     </message>
     <message>
         <source>%1 pages</source>
-        <translation type="unfinished"/>
+        <translation>%1 Seiten</translation>
     </message>
 </context>
 <context>

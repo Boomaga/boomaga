@@ -154,7 +154,7 @@ Are you sure you want to overwrite it?</source>
     <name>JobListView</name>
     <message>
         <source>%1 pages</source>
-        <translation type="unfinished"/>
+        <translation>%1 pages</translation>
     </message>
 </context>
 <context>
@@ -458,11 +458,11 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Sub-booklets</source>
-        <translation type="unfinished"/>
+        <translation>Sous-livrets</translation>
     </message>
     <message>
         <source>Undo delete page</source>
-        <translation type="unfinished"/>
+        <translation>Annuler la suppression de page</translation>
     </message>
 </context>
 <context>
@@ -565,19 +565,19 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
-        <translation type="unfinished"/>
+        <translation>Je ne peux pas ouvrir le fichier « %1 » (fichier ou répertoire inexistant)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
-        <translation type="unfinished"/>
+        <translation>Je ne peux pas ouvrir le fichier « %1 » (accès refusé)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Je ne peux pas ouvrir le fichier « %1 »</translation>
     </message>
     <message>
-        <source>I can&apos;t read file &quot;%1&quot; because is either not a supported file type or because the file has been damaged.</source>
-        <translation type="unfinished"/>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
+        <translation>Je ne peux pas lire le fichier « %1 ». Soit ce n&apos;est pas un type de fichier pris en charge, soit le fichier est endommagé.</translation>
     </message>
 </context>
 <context>
@@ -638,11 +638,11 @@ Are you sure you want to overwrite it?</source>
     <name>SubBookletView</name>
     <message>
         <source>Sub-booklet %1</source>
-        <translation type="unfinished"/>
+        <translation>Sous-livret %1</translation>
     </message>
     <message>
         <source>%1 pages</source>
-        <translation type="unfinished"/>
+        <translation>%1 pages</translation>
     </message>
 </context>
 <context>

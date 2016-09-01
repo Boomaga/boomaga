@@ -154,7 +154,7 @@ Sei sicuro di volerlo sovracrivere?</translation>
     <name>JobListView</name>
     <message>
         <source>%1 pages</source>
-        <translation type="unfinished"/>
+        <translation>%1 pagine</translation>
     </message>
 </context>
 <context>
@@ -458,11 +458,11 @@ Sei sicuro di volerlo sovracrivere?</translation>
     </message>
     <message>
         <source>Sub-booklets</source>
-        <translation type="unfinished"/>
+        <translation>Sotto-fascicoli</translation>
     </message>
     <message>
         <source>Undo delete page</source>
-        <translation type="unfinished"/>
+        <translation>Annulla eliminazione pagina</translation>
     </message>
 </context>
 <context>
@@ -565,19 +565,19 @@ Sei sicuro di volerlo sovracrivere?</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
-        <translation type="unfinished"/>
+        <translation>Non posso aprire il file &quot;%1&quot; (File o cartella non esistenti)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
-        <translation type="unfinished"/>
+        <translation>Non posso aprire il file &quot;%1&quot; (Accesso negato)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Non posso aprire il file &quot;%1&quot;</translation>
     </message>
     <message>
-        <source>I can&apos;t read file &quot;%1&quot; because is either not a supported file type or because the file has been damaged.</source>
-        <translation type="unfinished"/>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
+        <translation>Non posso leggere il file &quot;%1&quot; perché è un tipo di file non supportato, oppure il file è stato danneggiato.</translation>
     </message>
 </context>
 <context>
@@ -638,11 +638,11 @@ Sei sicuro di volerlo sovracrivere?</translation>
     <name>SubBookletView</name>
     <message>
         <source>Sub-booklet %1</source>
-        <translation type="unfinished"/>
+        <translation>Sotto-fascicolo %1</translation>
     </message>
     <message>
         <source>%1 pages</source>
-        <translation type="unfinished"/>
+        <translation>%1 pagine</translation>
     </message>
 </context>
 <context>

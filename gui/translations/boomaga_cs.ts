@@ -154,7 +154,7 @@ Jste si jistý, že jej chcete přepsat?</translation>
     <name>JobListView</name>
     <message>
         <source>%1 pages</source>
-        <translation type="unfinished"/>
+        <translation>%1 stran</translation>
     </message>
 </context>
 <context>
@@ -458,11 +458,11 @@ Jste si jistý, že jej chcete přepsat?</translation>
     </message>
     <message>
         <source>Sub-booklets</source>
-        <translation type="unfinished"/>
+        <translation>Dílčí knížečky</translation>
     </message>
     <message>
         <source>Undo delete page</source>
-        <translation type="unfinished"/>
+        <translation>Zpět smazání strany</translation>
     </message>
 </context>
 <context>
@@ -565,19 +565,19 @@ Jste si jistý, že jej chcete přepsat?</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
-        <translation type="unfinished"/>
+        <translation>Nelze otevřít soubor &quot;%1&quot; (žádný takový soubor nebo adresář)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
-        <translation type="unfinished"/>
+        <translation>Nelze otevřít soubor &quot;%1&quot; (přístup odepřen)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Nelze otevřít soubor &quot;%1&quot;</translation>
     </message>
     <message>
-        <source>I can&apos;t read file &quot;%1&quot; because is either not a supported file type or because the file has been damaged.</source>
-        <translation type="unfinished"/>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
+        <translation>Nelze přečíst soubor &quot;%1&quot;, protože buď tento není podporovaným souborovým typem, nebo protože soubor byl poškozen.</translation>
     </message>
 </context>
 <context>
@@ -638,11 +638,11 @@ Jste si jistý, že jej chcete přepsat?</translation>
     <name>SubBookletView</name>
     <message>
         <source>Sub-booklet %1</source>
-        <translation type="unfinished"/>
+        <translation>Dílčí knížečka %1</translation>
     </message>
     <message>
         <source>%1 pages</source>
-        <translation type="unfinished"/>
+        <translation>%1 stran</translation>
     </message>
 </context>
 <context>
