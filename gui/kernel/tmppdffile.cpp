@@ -80,10 +80,11 @@ QString TmpPdfFile::genFileName()
 /************************************************
 
  ************************************************/
-TmpPdfFile::TmpPdfFile(const JobList &jobs, QObject *parent):
+TmpPdfFile::TmpPdfFile(const JobList &jobs, bool grayscale, QObject *parent):
     QObject(parent),
     mMerger(0),
-    mValid(false)
+    mValid(false),
+    mGrayscale(grayscale)
 {
     mOrigFileSize = 0;
     mOrigXrefPos = 0;
@@ -103,6 +104,10 @@ TmpPdfFile::~TmpPdfFile()
 {
     delete mMerger;
     QFile::remove(mFileName);
+    foreach (QString tmpFileName, mTmpFileNames)
+    {
+        QFile::remove(tmpFileName);
+    }
 }
 
 
@@ -135,9 +140,18 @@ void TmpPdfFile::merge()
     QStringList args;
     foreach (const InputFile file, mInputFiles)
     {
-        args << file.fileName();
-        args << QString("%1").arg(file.startPos());
-        args << QString("%1").arg(file.endPos());
+        // If print in grayscale, convert the input to a grayscale tmp file and feed that tmp file to the merger
+        InputFile grayscaleFile;
+        if (mGrayscale)
+        {
+            QString tmpGrayscaleFileName = createTmpGrayscaleFile(file.fileName());
+            grayscaleFile = InputFile(tmpGrayscaleFileName);
+        }
+
+        const InputFile &f = mGrayscale ? grayscaleFile : file;
+        args << f.fileName();
+        args << QString("%1").arg(f.startPos());
+        args << QString("%1").arg(f.endPos());
     }
 
     args << mFileName;
@@ -534,4 +548,40 @@ void TmpPdfFile::ipcXRefInfo(qint64 xrefPos, qint32 freeNum)
 PdfPageInfo TmpPdfFile::pageInfo(InputFile file, int pageNum)
 {
     return mPagesInfo.value(QString("%1:%2").arg(mInputFiles.indexOf(file)).arg(pageNum));
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+QString TmpPdfFile::createTmpGrayscaleFile(QString fromFileName)
+{
+    QString outFileName = genFileName();
+    mTmpFileNames << outFileName;
+
+    QStringList args;
+    args << "-sDEVICE=pdfwrite";    // Write to PDF
+    args << "-sProcessColorModel=DeviceGray";    // Write to PDF
+    args << "-sColorConversionStrategy=Gray";    // Write to PDF
+    args << "-o" << outFileName;
+    args << "-f" << fromFileName;
+
+    QProcess proc;
+    proc.start("gs", args);
+    proc.waitForStarted();
+    proc.waitForFinished(-1);
+
+    if (proc.exitStatus() == 0 && proc.exitCode() == 0)
+    {
+//            qDebug() << "Convert to grayscale successful";
+    }
+    else
+    {
+        QString msg = QString::fromLocal8Bit(proc.readAllStandardError());
+        project->error(QString("Convert to grayscale: gs exit with code %1: %2")
+              .arg(proc.exitCode())
+              .arg(msg));
+    }
+
+    return outFileName;
 }
