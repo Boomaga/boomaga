@@ -84,7 +84,7 @@ RenderWorker::RenderWorker(const QString &fileName, int resolution):
     QObject(),
     mSheetNum(0),
     mResolution(resolution),
-    mBussy(false),
+    mBusy(false),
     mPopplerDoc(0)
 {
     if (QFileInfo(fileName).exists())
@@ -109,10 +109,10 @@ QImage RenderWorker::renderSheet(int sheetNum)
     if (!mPopplerDoc)
         return QImage();
 
-    mBussy = true;
+    mBusy = true;
     QImage img = doRenderSheet(mPopplerDoc, sheetNum, mResolution);
     emit sheetReady(img, sheetNum);
-    mBussy = false;
+    mBusy = false;
     return img;
 }
 
@@ -125,7 +125,7 @@ QImage RenderWorker::renderPage(int sheetNum, const QRectF pageRect, int pageNum
     if (!mPopplerDoc)
         return QImage();
 
-    mBussy = true;
+    mBusy = true;
     QImage img = doRenderSheet(mPopplerDoc, sheetNum, mResolution);
 
     QSizeF printerSize =  project->printer()->paperRect().size();
@@ -157,7 +157,7 @@ QImage RenderWorker::renderPage(int sheetNum, const QRectF pageRect, int pageNum
     img = img.copy(rect);
 
     emit pageReady(img, pageNum);
-    mBussy = false;
+    mBusy = false;
     return img;
 }
 
@@ -235,7 +235,7 @@ void Render::renderSheet(int sheetNum)
 {
     foreach (RenderWorker *worker, mWorkers)
     {
-        if (!worker->isBussy())
+        if (!worker->isBusy())
         {
             startRenderSheet(worker, sheetNum);
             return;
@@ -255,7 +255,7 @@ void Render::renderPage(int pageNum)
 {
     foreach (RenderWorker *worker, mWorkers)
     {
-        if (!worker->isBussy())
+        if (!worker->isBusy())
         {
             startRenderPage(worker, pageNum);
             return;

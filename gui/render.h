@@ -45,7 +45,7 @@ public:
     explicit RenderWorker(const QString &fileName, int resolution);
     virtual ~RenderWorker();
 
-    bool isBussy() const { return mBussy; }
+    bool isBusy() const { return mBusy; }
     QThread *thread() { return &mThread; }
 
 public slots:
@@ -59,7 +59,7 @@ signals:
 private:
     int mSheetNum;
     int mResolution;
-    bool mBussy;
+    bool mBusy;
     QThread mThread;
     poppler::document *mPopplerDoc;
 };

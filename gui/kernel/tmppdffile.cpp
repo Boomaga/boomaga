@@ -256,15 +256,15 @@ void TmpPdfFile::writeSheets(QIODevice *out, const QList<Sheet *> &sheets) const
     qint32 num = pagesNum + 1;
     foreach(const Sheet *sheet, sheets)
     {
-        int pegeNum      = num;
+        int pageNum      = num;
         int resourcesNum = num + 1;
         int contentsNum  = num + 2;
         num += 3;
 
 
         // Page ............................
-        xref.insert(pegeNum, out->pos());
-        *out << pegeNum << " 0 obj\n";
+        xref.insert(pageNum, out->pos());
+        *out << pageNum << " 0 obj\n";
         *out << "<<\n";
         *out << "/Type /Page\n";
         *out << "/Contents "  << contentsNum  << " 0 R\n";
@@ -275,7 +275,7 @@ void TmpPdfFile::writeSheets(QIODevice *out, const QList<Sheet *> &sheets) const
         *out << ">>\n";
         *out << "endobj\n";
 
-        pagesKids << QString("%1 0 R").arg(pegeNum);
+        pagesKids << QString("%1 0 R").arg(pageNum);
         //..................................
 
 
