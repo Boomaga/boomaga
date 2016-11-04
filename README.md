@@ -21,8 +21,8 @@ Boomaga makes it possible to:
 
 Boomaga is an open source project distributed under the GPLv2 license (some files are distributed
 under the LGPLv2+ license). It would be more convenient to install the program from the package for your
-distribution; you can access the list of the packages at [our site](https://github.com/Boomaga/boomaga). You can also build the program from the sources; you can download the sources of the latest stable version here. 
-The version for developers is available on our page at [github](https://github.com/Boomaga/boomaga).
+distribution; you can access the list of the packages at [our site](https://github.com/Boomaga/boomaga); installation guide for Ubuntu-based distros is avabilable [here](https://github.com/Boomaga/boomaga/wiki/How-to-Install-Boomaga-in-LinuxMint-or-Ubuntu). You can also build the program from the sources; you can download the sources of the latest stable version [here](https://github.com/Boomaga/boomaga/archive/master.zip). 
+The version for developers is available on our page at [GitHub](https://github.com/Boomaga/boomaga).
 
 Address your preferences and error messages to our [Issue tracker](https://github.com/Boomaga/boomaga/issues).
 
@@ -66,7 +66,7 @@ A document printed out with Boomaga gets into CUPS. CUPS creates a PostScript fi
 to the backend. In this instance this is a backend for Boomaga. The backend seeks out an active session
 for the user who sends the document for getting printed. Via the D-Bus, it subsequently triggers the GUI
 part of Boomaga (unless it already runs) and communicates to it the name of the PostScript file. GUI
-scans the PostScript file and displays its content. Used for this purpose is the GHostScript library.
+scans the PostScript file and displays its content. Used for this purpose is the Ghostscript library.
 
 Nothing works!
 ==============
@@ -79,9 +79,9 @@ discovered bugs to [Issue tracker](https://github.com/Boomaga/boomaga/issues), o
 Installation
 ===========
 
-One simple solution is to install the program from the packets for your distribution kit. Access the list of packets at our site.
+One simple solution is to install the program from the package manager of your distribution. Installation guide for Ubuntu-based distros is avabilable [here](https://github.com/Boomaga/boomaga/wiki/How-to-Install-Boomaga-in-LinuxMint-or-Ubuntu).
 
-Should you wish to build the program from the sources, please refer to INSTALL.txt for more information.
+Should you wish to build the program from the sources, please refer to [INSTALL.txt](INSTALL.txt) for more information.
 
 
 Installing the printer
@@ -90,8 +90,8 @@ Installing the printer
 Once the program has been installed, it’s time to add the virtual printer. Please note that this has to be
 done only once. You don’t have to install the printer over again when updating the program.
 
-The best solution is to use the _scripts/installPrinter.sh_ from sources tree– just run it.
+The best solution is to use the `scripts/installPrinter.sh` from sources tree– just run it.
 
 If you wish to install the printer on your own, select "_Local Printers: Boomaga (Virtual boomaga printer)_" in the "create printer" dialogue and indicate the type, "_Generic Virtual boomaga printer_" or, if you can’t access the previous, select the "_build/cups/boomaga.ppd_" PPD file.
 
-For more information, see https://github.com/Boomaga/boomaga/wiki/Instalation page.
+For more information, see https://github.com/Boomaga/boomaga/wiki/Instalation-from-sources#installing-the-printer page.
