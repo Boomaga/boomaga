@@ -45,10 +45,10 @@
 
 #define META_SIZE 4 * 1024
 
-class ProjectStatte
+class ProjectState
 {
 public:
-    explicit ProjectStatte(const Project *p):
+    explicit ProjectState(const Project *p):
         mProject(p),
         mCurrentPage(p->currentPage()),
         mCurrentSheet(p->currentSheet())
@@ -217,7 +217,7 @@ void Project::tmpFileMerged()
  ************************************************/
 void Project::update()
 {
-    ProjectStatte state(this);
+    ProjectState state(this);
     ProjectPage *curPage = 0;
 
     mPages.clear();
@@ -324,7 +324,7 @@ void Project::setCurrentPage(ProjectPage *page)
     if (mPreviewSheets.empty())
         return;
 
-    ProjectStatte state(this);
+    ProjectState state(this);
 
     if (page)
     {
@@ -414,7 +414,7 @@ void Project::setCurrentSheet(int sheetNum)
     if (mPreviewSheets.empty())
         return;
 
-    ProjectStatte state(this);
+    ProjectState state(this);
 
     sheetNum = qBound(0, sheetNum, mPreviewSheets.count()-1);
     mCurrentSheet = mPreviewSheets.at(sheetNum);
