@@ -31,6 +31,7 @@
 #include <QString>
 #include <QTextStream>
 #include <QRectF>
+#include <QList>
 
 class QProcess;
 
@@ -38,15 +39,14 @@ class PdfPageInfo
 {
 public:
     PdfPageInfo():
-        objNum(-1),
         rotate(0)
     {
     }
 
-    uint    objNum;
-    QRectF  mediaBox;
-    QRectF  cropBox;
-    int    rotate;
+    QList<uint> xObjNums;
+    QRectF      mediaBox;
+    QRectF      cropBox;
+    int         rotate;
 };
 
 

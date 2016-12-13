@@ -487,13 +487,10 @@ bool PdfMerger::run(const QString &outFileName)
         numOffset = mXRef.getNumObjects() + 1;
     }
 
-    int xformStartNum = mXRef.getNumObjects();
     //*mStream  << "\n% XObjects **************************************\n\n";
     for (int i=0; i<mOrigPages.count(); ++i)
     {
-        PdfMergerPageInfo *pageInfo = mOrigPages[i];
-        pageInfo->objNum = xformStartNum + i;
-        writePageAsXObject(pageInfo);
+        writePageAsXObject(mOrigPages[i]);
         if (i % 2)
             ipc.writeProgressStatus((pagesCnt + i ) / 2);
     }
@@ -548,14 +545,17 @@ bool PdfMerger::run(const QString &outFileName)
     OC                  -
     Name                -
  ************************************************/
-bool PdfMerger::writePageAsXObject(PdfMergerPageInfo *pageInfo)
+void PdfMerger::writeStreamAsXObject(PdfMergerPageInfo *pageInfo, Stream *stream)
 {
-    mXRef.add(pageInfo->objNum, 0, mStream->getPos(), true);
-    *mStream << pageInfo->objNum << " 0 obj\n";
-    *mStream << "<<\n";
-    Dict *pageDict = pageInfo->page.getDict();
+    uint num = mXRef.getNumObjects();
+    pageInfo->xObjNums << mXRef.getNumObjects();
+    mXRef.add(num, 0, mStream->getPos(), true);
+    *mStream << num << " 0 obj\n";
 
+
+    Dict *pageDict = pageInfo->page.getDict();
     // Copy dict from the page object ...........
+    *mStream << "<<\n";
     *mStream << "/Type /XObject\n";
     *mStream << "/Subtype /Form\n";
     *mStream << "/FormType 1\n";
@@ -566,36 +566,6 @@ bool PdfMerger::writePageAsXObject(PdfMergerPageInfo *pageInfo)
     writeDictValue(pageDict, "PieceInfo",     pageInfo->numOffset);
     writeDictValue(pageDict, "LastModified",  pageInfo->numOffset);
     writeDictValue(pageDict, "StructParents", pageInfo->numOffset);
-    // ..........................................
-
-
-    Stream *stream = 0;
-
-    if (pageInfo->stream.isStream())
-    {
-        stream = pageInfo->stream.getStream();
-    }
-    else if (pageInfo->stream.isArray())
-    {
-        Array *array = pageInfo->stream.getArray();
-        if (array->getLength() == 1)
-        {
-            Object o;
-            array->get(0, &o);
-            if (o.isStream())
-                stream = o.getStream();
-            else
-                warning("Page content is array with incorrect item type:\n" + pageInfo->dump() + "\n");
-        }
-        else
-        {
-            warning("Page content is array with incorrect length:\n" +pageInfo->dump() + "\n");
-        }
-    }
-    else
-    {
-        warning("Page has incorrect content type:\n" + pageInfo->dump() + "\n");
-    }
 
 
     if (stream)
@@ -622,13 +592,45 @@ bool PdfMerger::writePageAsXObject(PdfMergerPageInfo *pageInfo)
     {
         *mStream << "/Length 0\n";
         *mStream << " >>\n";
-
         *mStream << "stream\n";
         *mStream << "endstream\n";
     }
 
     *mStream << "endobj\n";
-    return true;
+}
+
+
+/************************************************
+
+ ************************************************/
+bool PdfMerger::writePageAsXObject(PdfMergerPageInfo *pageInfo)
+{
+    if (pageInfo->stream.isStream())
+    {
+        writeStreamAsXObject(pageInfo, pageInfo->stream.getStream());
+        return true;
+    }
+
+    if (pageInfo->stream.isArray())
+    {
+        Array *array = pageInfo->stream.getArray();
+        for (int i=0; i < array->getLength(); ++i)
+        {
+            Object o;
+            array->get(i, &o);
+            if (!o.isStream())
+            {
+                warning("Page content is array with incorrect item type:\n" + pageInfo->dump() + "\n");
+                return false;
+            }
+
+            writeStreamAsXObject(pageInfo, o.getStream());
+        }
+        return true;
+    }
+
+    warning("Page has incorrect content type:\n" + pageInfo->dump() + "\n");
+    return false;
 }
 
 

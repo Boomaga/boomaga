@@ -62,6 +62,8 @@ private:
     Guint  mNextFreeNum;
     qint64 mXrefPos;
     bool writePageAsXObject(PdfMergerPageInfo *pageInfo);
+    void writeStreamAsXObject(PdfMergerPageInfo *pageInfo, Stream *stream);
+    void copyStream(Stream *stream, PdfMergerPageInfo *pageInfo);
     bool writeDictValue(Dict *dict, const char *key, Guint numOffset);
     QString getDocumentMetaInfo(PDFDoc *doc, const char *tag);
 };

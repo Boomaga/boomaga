@@ -125,7 +125,9 @@ void PdfMergerIPCReader::mergerOutputReady()
         else if (data.at(0) == "P")
         {
             PdfPageInfo info;
-            info.objNum = data.at(3).toInt();
+            foreach(QString s, data.at(3).split('_', QString::SkipEmptyParts))
+                info.xObjNums << s.toInt();
+
             info.cropBox = strToRect(data.at(4));
             info.mediaBox = strToRect(data.at(5));
             info.rotate = data.at(6).toInt();
@@ -222,10 +224,19 @@ void PdfMergerIPCWriter::writeAllPagesCount(int pageCount)
  * ***********************************************/
 void PdfMergerIPCWriter::writePageInfo(int fileNum, int pageNum, const PdfPageInfo &pageInfo)
 {
+    QString objNums;
+    foreach(uint n, pageInfo.xObjNums)
+    {
+        if (objNums.isEmpty())
+            objNums += QString("%1").arg(n);
+        else
+            objNums += QString("_%1").arg(n);
+    }
+
     mStdOut << "P:"
             << fileNum << ':'
             << pageNum << ':'
-            << pageInfo.objNum  << ':'
+            << objNums  << ':'
             << rectToString(pageInfo.cropBox)  << ':'
             << rectToString(pageInfo.mediaBox) << ':'
             << pageInfo.rotate << "\n";
