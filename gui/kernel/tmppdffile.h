@@ -78,7 +78,7 @@ private:
 
     static QString genFileName();
 
-    QString createTmpGrayscaleFile(QString fileName);
+    //QString createTmpGrayscaleFile(QString fileName);
 
     QList<InputFile> mInputFiles;
     QHash<QString, PdfPageInfo> mPagesInfo;
@@ -94,5 +94,6 @@ private:
     bool mGrayscale;
 };
 
+QString genTmpFileName();
 
 #endif // TMPPDFFILE_H
