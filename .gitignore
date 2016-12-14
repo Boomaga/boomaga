@@ -16,3 +16,5 @@ ui_*.h
 CMakeLists.txt.user*
 /build
 /clang_check
+*.pro.user
+*.pro.user.*
