@@ -137,6 +137,17 @@ public:
     ProjectPage *currentPage() const { return mCurrentPage; }
     int currentPageNum() const;
 
+    void deletePage(ProjectPage *page);
+    void undoDeletePage(ProjectPage *page);
+
+    void deletePagesEnd(ProjectPage *page);
+    void insertBlankPageBefore(ProjectPage *page);
+    void insertBlankPageAfter(ProjectPage *page);
+
+    ProjectPage *prevVisiblePage(ProjectPage *current) const;
+    ProjectPage *nextVisiblePage(ProjectPage *current) const;
+
+
 public slots:
     void setCurrentPage(ProjectPage *page);
     void setCurrentPage(int pageNum);

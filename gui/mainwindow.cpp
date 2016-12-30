@@ -1007,19 +1007,7 @@ void MainWindow::deletePage()
     if (!act || !act->page())
         return;
 
-    if (act->page()->isBlankPage())
-    {
-        int n = project->jobs()->indexOfProjectPage(act->page());
-        if (n<0)
-            return;
-
-        project->jobs()->value(n).removePage(act->page());
-    }
-    else
-    {
-        act->page()->hide();
-    }
-    project->update();
+    project->deletePage(act->page());
 }
 
 
@@ -1032,11 +1020,7 @@ void MainWindow::undoDeletePage()
     if (!act || !act->page())
         return;
 
-    if (!act->page()->visible())
-    {
-        act->page()->show();
-        project->update();
-    }
+    project->undoDeletePage(act->page());
 }
 
 
@@ -1049,24 +1033,7 @@ void MainWindow::deletePagesEnd()
     if (!act || !act->page())
         return;
 
-    int n = project->jobs()->indexOfProjectPage(act->page());
-    if (n<0)
-        return;
-
-    Job job = project->jobs()->value(n);
-
-    QList<ProjectPage*> deleted;
-    for (int p=job.pageCount()-1; p>=job.indexOfPage(act->page()); --p)
-    {
-        ProjectPage *page = job.page(p);
-
-        if (page->isBlankPage())
-            deleted << page;
-        else
-            page->hide();
-    }
-
-    job.removePages(deleted);
+    project->deletePagesEnd(act->page());
 }
 
 
@@ -1079,13 +1046,7 @@ void MainWindow::insertBlankPageBefore()
     if (!act || !act->page())
         return;
 
-    int j = project->jobs()->indexOfProjectPage(act->page());
-    if (j<0)
-        return;
-
-    Job job = project->jobs()->value(j);
-    int n = job.indexOfPage(act->page());
-    job.insertBlankPage(n);
+    project->insertBlankPageBefore(act->page());
 }
 
 
@@ -1098,13 +1059,7 @@ void MainWindow::insertBlankPageAfter()
     if (!act || !act->page())
         return;
 
-    int j = project->jobs()->indexOfProjectPage(act->page());
-    if (j<0)
-        return;
-
-    Job job = project->jobs()->value(j);
-    int n = job.indexOfPage(act->page());
-    job.insertBlankPage(n+1);
+    project->insertBlankPageAfter(act->page());
 }
 
 
