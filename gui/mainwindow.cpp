@@ -134,11 +134,11 @@ MainWindow::MainWindow(QWidget *parent):
     connect(ui->doubleSidedCbx, SIGNAL(clicked(bool)),
             project, SLOT(setDoubleSided(bool)));
 
-    connect(ui->jobsView, SIGNAL(sheetSelected(int)),
-            project, SLOT(setCurrentSheet(int)));
+    connect(ui->jobsView, SIGNAL(pageSelected(int)),
+            project, SLOT(setCurrentPage(int)));
 
-    connect(ui->subBookletView, SIGNAL(sheetSelected(int)),
-            project, SLOT(setCurrentSheet(int)));
+    connect(ui->subBookletView, SIGNAL(pageSelected(int)),
+            project, SLOT(setCurrentPage(int)));
 
     connect(ui->printersCombo, SIGNAL(activated(int)),
             this, SLOT(switchPrinterProfile()));
