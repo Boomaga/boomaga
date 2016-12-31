@@ -64,6 +64,7 @@ MainWindow::MainWindow(QWidget *parent):
     ui(new Ui::MainWindow)
 {
     ui->setupUi(this);
+    this->setContextMenuPolicy(Qt::NoContextMenu);
 
     setWindowIcon(Icon::icon(Icon::ApplicationIcon));
     setWindowTitle(tr("Boomaga"));
