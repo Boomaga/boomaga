@@ -45,7 +45,7 @@ class TmpPdfFile: public QObject
     Q_OBJECT
     friend class PdfMerger;
 public:
-    explicit TmpPdfFile(const JobList &jobs, QObject *parent = 0);
+    explicit TmpPdfFile(const JobList &jobs, bool grayscale = false, QObject *parent = 0);
     virtual ~TmpPdfFile();
 
     void merge();
@@ -78,6 +78,8 @@ private:
 
     static QString genFileName();
 
+    QString createTmpGrayscaleFile(QString fileName);
+
     QList<InputFile> mInputFiles;
     QHash<QString, PdfPageInfo> mPagesInfo;
 
@@ -87,6 +89,9 @@ private:
     qint64 mOrigXrefPos;
     QProcess *mMerger;
     bool mValid;
+
+    QList<QString> mTmpFileNames;
+    bool mGrayscale;
 };
 
 

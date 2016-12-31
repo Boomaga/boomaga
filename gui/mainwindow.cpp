@@ -134,6 +134,9 @@ MainWindow::MainWindow(QWidget *parent):
     connect(ui->doubleSidedCbx, SIGNAL(clicked(bool)),
             project, SLOT(setDoubleSided(bool)));
 
+    connect(ui->grayscaleCbx, SIGNAL(clicked(bool)),
+            project, SLOT(setGrayscale(bool)));
+
     connect(ui->jobsView, SIGNAL(sheetSelected(int)),
             project, SLOT(setCurrentSheet(int)));
 

@@ -173,6 +173,7 @@ public slots:
     void moveJob(int from, int to);
     void setLayout(const Layout *layout);
     void setDoubleSided(bool value);
+    void setGrayscale(bool value);
     void update();
 
 
@@ -210,6 +211,7 @@ private:
     Printer mNullPrinter;
     Printer *mPrinter;
     bool mDoubleSided;
+    bool mGrayscale;
 
     MetaData mMetaData;
     Rotation mRotation;

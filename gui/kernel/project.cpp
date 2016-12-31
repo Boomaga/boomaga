@@ -82,6 +82,7 @@ Project::Project(QObject *parent) :
     mNullPrinter("Fake"),
     mPrinter(&mNullPrinter),
     mDoubleSided(true),
+    mGrayscale(false),
     mRotation(NoRotate)
 {
 }
@@ -111,7 +112,7 @@ void Project::free()
  ************************************************/
 TmpPdfFile *Project::createTmpPdfFile()
 {
-    TmpPdfFile *res = new TmpPdfFile(mJobs, this);
+    TmpPdfFile *res = new TmpPdfFile(mJobs, mGrayscale, this);
 
     connect(res, SIGNAL(progress(int,int)),
             this, SLOT(tmpFileProgress(int,int)));
@@ -766,6 +767,19 @@ void Project::setDoubleSided(bool value)
 {
     mDoubleSided = value;
     emit changed();
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Project::setGrayscale(bool value)
+{
+    mGrayscale = value;
+    update();
+
+    mLastTmpFile = createTmpPdfFile();
+    mLastTmpFile->merge();
 }
 
 
