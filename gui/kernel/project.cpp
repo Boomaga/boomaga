@@ -317,6 +317,158 @@ int Project::currentPageNum() const
 /************************************************
  *
  ************************************************/
+void Project::deletePage(ProjectPage *page)
+{
+    // Now the current will be the next visible page.
+    // If we delete the last page, the current to be previous.
+    ProjectPage *nextCurPage = nextVisiblePage(page);
+    if (!nextCurPage)
+        nextCurPage = prevVisiblePage(page);
+
+
+    if (page->isBlankPage())
+    {
+        int n = mJobs.indexOfProjectPage(page);
+        if (n<0)
+            return;
+
+        mJobs.value(n).removePage(page);
+    }
+    else
+    {
+        page->hide();
+    }
+
+
+    mCurrentPage = nextCurPage;
+    update();
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Project::undoDeletePage(ProjectPage *page)
+{
+    if (page->visible())
+        return;
+
+    page->show();
+    mCurrentPage = page;
+    update();
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Project::deletePagesEnd(ProjectPage *page)
+{
+    int n = jobs()->indexOfProjectPage(page);
+    if (n<0)
+        return;
+
+    Job job = jobs()->value(n);
+
+    // Now the current will be the next visible page.
+    // If we delete the last page, the current to be previous.
+    ProjectPage *nextCurPage = nextVisiblePage(job.page(job.pageCount()-1));
+    if (!nextCurPage)
+        nextCurPage = prevVisiblePage(page);
+
+
+    QList<ProjectPage*> deleted;
+    for (int i = job.indexOfPage(page); i < job.pageCount(); ++i)
+    {
+        ProjectPage *p = job.page(i);
+        if (p->isBlankPage())
+            deleted << p;
+        else
+            p->hide();
+    }
+
+    job.removePages(deleted);
+    mCurrentPage = nextCurPage;
+    update();
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Project::insertBlankPageBefore(ProjectPage *page)
+{
+    int j = jobs()->indexOfProjectPage(page);
+    if (j<0)
+        return;
+
+    Job job = jobs()->value(j);
+    job.insertBlankPage(job.indexOfPage(page));
+
+    // Remain on the current page. Perhaps this is not intuitive behavior, need tests.
+    mCurrentPage = page;
+    this->update();
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Project::insertBlankPageAfter(ProjectPage *page)
+{
+    int j = jobs()->indexOfProjectPage(page);
+    if (j<0)
+        return;
+
+    Job job = jobs()->value(j);
+    job.insertBlankPage(job.indexOfPage(page) + 1);
+
+    // Remain on the current page. Perhaps this is not intuitive behavior, need tests.
+    mCurrentPage = page;
+    this->update();
+}
+
+
+/************************************************
+ *
+ ************************************************/
+ProjectPage *Project::prevVisiblePage(ProjectPage *current) const
+{
+    int n = mPages.indexOf(current) - 1;
+
+    for (; n > -1; n--)
+    {
+        if (mPages.at(n)->visible())
+            return mPages.at(n);
+    }
+
+    return NULL;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+ProjectPage *Project::nextVisiblePage(ProjectPage *current) const
+{
+    int n = mPages.indexOf(current) + 1;
+    if (n == 0)
+        return NULL;
+
+    for (; n < mPages.size(); n++)
+    {
+        if (mPages.at(n)->visible())
+            return mPages.at(n);
+    }
+
+    return NULL;
+
+}
+
+
+/************************************************
+ *
+ ************************************************/
 void Project::setCurrentPage(ProjectPage *page)
 {  
     if (page == mCurrentPage)

@@ -244,29 +244,58 @@ int PreviewWidget::pageAt(const QPoint &point) const
  ************************************************/
 void PreviewWidget::drawShadow(QPainter &painter, QRectF rect)
 {
+    // Shadow width
+    int width = qBound(4, int(qMax(rect.height(), rect.width())) / 100, 7);
+
     painter.save();
-    painter.setClipRect(rect.adjusted(0, 0, 3, 3));
+    painter.setClipRect(rect.adjusted(0, 0, width, width));
 
-    QPen pen= painter.pen();
-    QColor color = this->palette().color(QPalette::Background);
+    QColor lightColor = this->palette().color(QPalette::Background);
+    QColor darkColor  = lightColor.darker(160);
 
-    rect.adjust(1, 1, 0, 0);
-    pen.setColor(color.darker(130));
-    painter.setPen(pen);
-    painter.drawLine(rect.topRight(), rect.bottomRight());
-    painter.drawLine(rect.bottomLeft(), rect.bottomRight());
+    QRectF shadowRect = rect.adjusted(0, 0, width, width);
+    QLinearGradient lg;
+    lg.setColorAt(0.0, darkColor);
+    lg.setColorAt(1.0, lightColor);
 
-    rect.adjust(1, 1, 1, 1);
-    pen.setColor(color.darker(120));
-    painter.setPen(pen);
-    painter.drawLine(rect.topRight(), rect.bottomRight());
-    painter.drawLine(rect.bottomLeft(), rect.bottomRight());
 
-    rect.adjust(1, 1, 1, 1);
-    pen.setColor(color.darker(110));
-    painter.setPen(pen);
-    painter.drawLine(rect.topRight(), rect.bottomRight());
-    painter.drawLine(rect.bottomLeft(), rect.bottomRight());
+    QRadialGradient rg;
+    rg.setColorAt(0, darkColor);
+    rg.setColorAt(1, lightColor);
+    rg.setRadius(width);
+
+
+    // Right
+    lg.setStart(QPointF(rect.right(), rect.center().y()));
+    lg.setFinalStop(QPointF(shadowRect.right(), rect.center().y()));
+    painter.fillRect(rect.right(), rect.top() + width, width, rect.height() - width, lg);
+
+    // Bottom
+    lg.setStart(rect.center().x(),  rect.bottom());
+    lg.setFinalStop(rect.center().x(), rect.bottom() + width);
+    painter.fillRect(rect.left() + width, rect.bottom(), rect.width() - width, width, lg);
+
+    //TopRight
+    QPointF p;
+    p = rect.bottomRight();
+    rg.setCenter(p);
+    rg.setFocalPoint(p);
+    painter.fillRect(rect.right(), rect.bottom(), width, width, rg);
+
+    // BottomRight
+    p = rect.topRight();
+    p.ry() += width;
+    rg.setCenter(p);
+    rg.setFocalPoint(p);
+    painter.fillRect(rect.right(), rect.top(), width, width, rg);
+
+    //BottomLeft
+    p = rect.bottomLeft();
+    p.rx() += width;
+    rg.setCenter(p);
+    rg.setFocalPoint(p);
+    painter.fillRect(rect.left(), rect.bottom(), width, width, rg);
+
 
     painter.restore();
 }
@@ -455,26 +484,46 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
 
     mDrawRect.moveCenter(center);
 
-//#define DEBUG_CLICK_RECT
-#ifdef DEBUG_CLICK_RECT
+    // Draw current page rect ...................
     Sheet *sheet = project->currentSheet();
     if (sheet)
     {
         ProjectPage *curPage = project->currentPage();
-        painter.save();
-        for (int i=0; i< sheet->count(); ++i)
+        if (curPage)
         {
+            painter.save();
             QPen pen = painter.pen();
-            pen.setStyle(Qt::DotLine);
-            if (sheet->page(i) == curPage)
-                pen.setColor(Qt::red);
-            else
-                pen.setColor(QColor(142, 188, 226));
+            pen.setStyle(Qt::DashLine);
+            //pen.setColor(QColor(142, 188, 226, 128));
+            pen.setColor(QColor(105, 101, 98, 70));
             painter.setPen(pen);
-            painter.drawRect(this->pageRect(i));
-            painter.drawText(this->pageRect(i).translated(10, 10), QString("%1").arg(i));
+            painter.drawRect(this->pageRect(sheet->indexOfPage(curPage)));
+            painter.restore();
         }
-        painter.restore();
+    }
+
+//#define DEBUG_CLICK_RECT
+#ifdef DEBUG_CLICK_RECT
+    {
+        Sheet *sheet = project->currentSheet();
+        if (sheet)
+        {
+            ProjectPage *curPage = project->currentPage();
+            painter.save();
+            for (int i=0; i< sheet->count(); ++i)
+            {
+                QPen pen = painter.pen();
+                pen.setStyle(Qt::DotLine);
+                if (sheet->page(i) == curPage)
+                    pen.setColor(Qt::red);
+                else
+                    pen.setColor(QColor(142, 188, 226));
+                painter.setPen(pen);
+                painter.drawRect(this->pageRect(i));
+                painter.drawText(this->pageRect(i).translated(10, 10), QString("%1").arg(i));
+            }
+            painter.restore();
+        }
     }
 #endif
 }
@@ -599,7 +648,7 @@ void PreviewWidget::contextMenuEvent(QContextMenuEvent *event)
 /************************************************
  *
  ************************************************/
-void PreviewWidget::mouseReleaseEvent(QMouseEvent *event)
+void PreviewWidget::mousePressEvent(QMouseEvent *event)
 {
     Sheet *sheet = project->currentSheet();
 

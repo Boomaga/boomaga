@@ -25,7 +25,7 @@
 
 
 #include "job.h"
-#include "project.h"
+#include "projectpage.h"
 #include "boomagapoppler.h"
 
 #include <QDebug>
@@ -303,7 +303,6 @@ int Job::indexOfPage(const ProjectPage *page, int from) const
 void Job::insertPage(int before, ProjectPage *page)
 {
     mData->mPages.insert(before, page);
-    project->update();
 }
 
 
@@ -313,7 +312,6 @@ void Job::insertPage(int before, ProjectPage *page)
 void Job::addPage(ProjectPage *page)
 {
     mData->mPages.append(page);
-    project->update();
 }
 
 
@@ -323,7 +321,6 @@ void Job::addPage(ProjectPage *page)
 void Job::removePage(ProjectPage *page)
 {
     ProjectPage *p = mData->takePage(page);
-    project->update();
     delete p;
 }
 
@@ -338,8 +335,6 @@ void Job::removePages(const QList<ProjectPage*> pages)
         ProjectPage *p = mData->takePage(page);
         delete p;
     }
-
-    project->update();
 }
 
 
@@ -352,8 +347,6 @@ ProjectPage *Job::takePage(ProjectPage *page)
     if (n>-1)
     {
         ProjectPage *page = mData->mPages.takeAt(n);
-
-        project->update();
         return page;
     }
     else
@@ -439,9 +432,11 @@ void Job::setAutoRemove(bool value)
 /************************************************
  *
  * ***********************************************/
-void Job::insertBlankPage(int before)
+ProjectPage *Job::insertBlankPage(int before)
 {
-    insertPage(before, new ProjectPage());
+    ProjectPage *page = new ProjectPage();
+    insertPage(before, page);
+    return page;
 }
 
 

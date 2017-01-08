@@ -66,6 +66,7 @@ public:
 
     int indexOfPage(const ProjectPage *page, int from = 0) const;
     void insertPage(int before, ProjectPage *page);
+
     void addPage(ProjectPage *page);
     void removePage(ProjectPage *page);
     void removePages(const QList<ProjectPage*> pages);
@@ -82,7 +83,7 @@ public:
 
     bool autoRemove() const;
     void setAutoRemove(bool value);
-    void insertBlankPage(int before);
+    ProjectPage *insertBlankPage(int before);
 
     Job clone();
 private:

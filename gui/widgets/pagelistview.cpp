@@ -53,8 +53,12 @@
     "</html>"
 
 #define STYLE_SHEET \
-    "background-color: white; "\
-    "padding: 4px;"
+    "QListView::item{" \
+        "margin: 4px;" \
+    "} " \
+    "QToolTip {" \
+    "opacity: 254; "\
+    "}"
 
 
 /************************************************
