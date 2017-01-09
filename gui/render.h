@@ -102,5 +102,6 @@ private:
 
 };
 
+QImage toGrayscale(const QImage &srcImage);
 
 #endif // RENDER_H

@@ -161,6 +161,26 @@ void initFromCups(const QString &printerName, QString *deviceUri, PrinterProfile
             duplex = duplex || ppdIsMarked(ppd, "KD03Duplex", "DuplexNoTumble");
             duplex = duplex || ppdIsMarked(ppd, "KD03Duplex", "DuplexTumble");
 
+
+            // Grayscale options ..........................
+            QStringList cases;
+            cases << "ColorModel"       << "Gray";
+            cases << "HPColorMode"      << "grayscale";
+            cases << "BRMonoColor"      << "Mono";
+            cases << "CNIJSGrayScale"   << "1";
+            cases << "HPColorAsGray"    << "True";
+
+
+            for (int i=0; i<cases.count(); i+=2)
+            {
+                ppd_option_t *option  = ppdFindOption(ppd, cases[i].toLatin1().data());
+                if (option && ppdFindChoice(option, cases[i+1].toLatin1().data()))
+                {
+                     profile->setGrayscaleOption(QString("%1=%2").arg(cases[i], cases[i+1]));
+                     break;
+                }
+            }
+
             ppdClose(ppd);
         }
         QFile::remove(ppdFile);
@@ -373,6 +393,15 @@ void PrinterProfile::setPaperSize(const QSizeF &paperSize, Unit unit)
 {
     mPaperSize.setWidth( fromUnit(paperSize.width(),  unit));
     mPaperSize.setHeight(fromUnit(paperSize.height(), unit));
+}
+
+
+/************************************************
+
+ ************************************************/
+void PrinterProfile::setGrayscaleOption(const QString &value)
+{
+    mGrayscaleOption = value;
 }
 
 
@@ -609,6 +638,9 @@ bool Printer::print(const QList<Sheet *> &sheets, const QString &jobName, bool d
     args << "-r";                                 // The print files should be deleted after printing them
     if (duplexType() == DuplexAuto && !duplex)
         args << "-o sides=one-sided";             // Turn off duplex printing
+
+    if (project->grayscale() && !mCupsProfile.grayscaleOption().isEmpty())
+            args << "-o " + mCupsProfile.grayscaleOption();
 
     args << file.toLocal8Bit();
 

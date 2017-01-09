@@ -38,7 +38,6 @@ set(HEADERS
     kernel/project.h
     kernel/projectpage.h
     kernel/printer.h
-    kernel/grayscaleconverter.h
     boomagatypes.h
     mainwindow.h
     actions.h
@@ -74,7 +73,6 @@ set(SOURCES
     kernel/project.cpp
     kernel/projectpage.cpp
     kernel/printer.cpp
-    kernel/grayscaleconverter.cpp
     boomagatypes.cpp
     mainwindow.cpp
     actions.cpp
@@ -103,7 +101,6 @@ set (MOCS
     kernel/project.h
     kernel/projectpage.h
     kernel/tmppdffile.h
-    kernel/grayscaleconverter.h
     render.h
 
     settings.h

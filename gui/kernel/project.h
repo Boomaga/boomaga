@@ -157,6 +157,7 @@ public slots:
 public:
     Sheet *currentSheet() const;
     int currentSheetNum() const;
+    bool grayscale() const { return mGrayscale; }
 
 public slots:
     void setCurrentSheet(int sheetNum);

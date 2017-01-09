@@ -40,6 +40,7 @@ public:
         Layout,
         Printer,
         DoubleSided,
+        Grayscale,
 
         SaveDir,
         SubBookletsEnabled,

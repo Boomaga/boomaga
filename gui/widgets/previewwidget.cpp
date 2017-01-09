@@ -150,7 +150,8 @@ PreviewWidget::PreviewWidget(QWidget *parent) :
     QFrame(parent),
     mDisplayedSheetNum(-1),
     mScaleFactor(0),
-    mWheelDelta(0)
+    mWheelDelta(0),
+    mGrayscale(false)
 {
     QPalette pal(palette());
     pal.setColor(QPalette::Background, QColor(105, 101, 98));
@@ -421,6 +422,8 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
 
 
     QImage img = mImage.scaled(mDrawRect.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
+    if (mGrayscale)
+        img = toGrayscale(img);
 
     // Draw .....................................
     QPainter painter(this);
@@ -563,6 +566,17 @@ void PreviewWidget::refresh()
 
     mRequests.insert(sheet->sheetNum(), sheet->hints());
     mRender->renderSheet(sheet->sheetNum());
+}
+
+
+/************************************************
+
+ ************************************************/
+void PreviewWidget::setGrayscale(bool value)
+{
+    mGrayscale = value;
+    update();
+    emit changed();
 }
 
 

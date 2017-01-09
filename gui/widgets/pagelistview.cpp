@@ -349,6 +349,8 @@ QIcon PagesListView::createIcon(const QImage &image) const
     else
     {
         img = image.scaled(MAX_ICON_SIZE, MAX_ICON_SIZE, Qt::KeepAspectRatio, Qt::SmoothTransformation);
+        if (project->grayscale())
+            img = toGrayscale(img);
     }
 
     QPainter painter(&img);

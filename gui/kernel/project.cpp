@@ -112,7 +112,7 @@ void Project::free()
  ************************************************/
 TmpPdfFile *Project::createTmpPdfFile()
 {
-    TmpPdfFile *res = new TmpPdfFile(mJobs, mGrayscale, this);
+    TmpPdfFile *res = new TmpPdfFile(mJobs, this);
 
     connect(res, SIGNAL(progress(int,int)),
             this, SLOT(tmpFileProgress(int,int)));
@@ -776,10 +776,7 @@ void Project::setDoubleSided(bool value)
 void Project::setGrayscale(bool value)
 {
     mGrayscale = value;
-    update();
-
-    mLastTmpFile = createTmpPdfFile();
-    mLastTmpFile->merge();
+    emit changed();
 }
 
 
@@ -801,7 +798,6 @@ void Project::setPrinterProfile(Printer *printer, int profile, bool update)
     if (update)
     {
         this->update();
-        emit changed();
     }
 }
 
