@@ -107,6 +107,8 @@ QString Settings::keyToString(Settings::Key key) const
 
     // Printer ******************************
     case Printer_CurrentProfile:        return "CurrentProfile";
+    case Printer_CopiesNum:             return "Printer/CopiesNum";
+    case Printer_CollateCopies:         return "Printer/CollateCopies";
 
     // PrinterProfile ***********************
     case PrinterProfile_Name:           return "Name";

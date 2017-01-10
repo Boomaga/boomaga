@@ -142,7 +142,7 @@ public:
     bool isShowProgressDialog() const { return mShowProgressDialog; }
 
 
-    virtual bool print(const QList<Sheet*> &sheets, const QString &jobName, bool duplex, int numCopies = 1) const;
+    virtual bool print(const QList<Sheet*> &sheets, const QString &jobName, bool duplex, int numCopies, bool collate) const;
 
     QString deviceUri() const { return mDeviceUri; }
 

@@ -44,8 +44,16 @@ public:
     int copies() const;
     void setCopies(int value);
 
+    bool collate() const;
+    void setCollate(bool value);
+
+public slots:
+    void done(int res);
+
 private slots:
     void CopiesEditValueChanged(int value);
+    void loadSettings();
+    void saveSettings();
 
 private:
     Ui::PrintDialog *ui;

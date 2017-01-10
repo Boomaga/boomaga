@@ -545,7 +545,7 @@ QMessageBox *MainWindow::showPrintDialog(const QString &text)
 /************************************************
 
  ************************************************/
-bool MainWindow::print(uint count)
+bool MainWindow::print(uint count, bool collate)
 {
     struct Keeper
     {
@@ -637,7 +637,7 @@ bool MainWindow::print(uint count)
              }
 
 
-             res = project->printer()->print(keeper.sheets_1, "", false, count);
+             res = project->printer()->print(keeper.sheets_1, "", false, count, collate);
              if (!res)
              {
                  delete(infoDialog);
@@ -686,7 +686,7 @@ bool MainWindow::print(uint count)
              if (showDialog)
                 infoDialog = showPrintDialog(tr("Print the even pages on %1.").arg(project->printer()->name()));
 
-             res = project->printer()->print(keeper.sheets_2, "", false, count);
+             res = project->printer()->print(keeper.sheets_2, "", false, count, collate);
              if (!res)
              {
                  delete(infoDialog);
@@ -720,7 +720,7 @@ bool MainWindow::print(uint count)
             }
         }
 
-        res = project->printer()->print(keeper.sheets_1, "", project->doubleSided(), count);
+        res = project->printer()->print(keeper.sheets_1, "", project->doubleSided(), count, collate);
         if (!res)
         {
             delete(infoDialog);
@@ -740,9 +740,9 @@ bool MainWindow::print(uint count)
 /************************************************
 
  ************************************************/
-void MainWindow::printAndClose(uint count)
+void MainWindow::printAndClose(uint count, bool collate)
 {
-    if (print(count))
+    if (print(count, collate))
         QTimer::singleShot(200, this, SLOT(close()));
 }
 
@@ -755,7 +755,7 @@ void MainWindow::printWithOptions()
     PrintDialog dialog;
     if (dialog.exec())
     {
-        print(dialog.copies());
+        print(dialog.copies(), dialog.collate());
     }
 }
 

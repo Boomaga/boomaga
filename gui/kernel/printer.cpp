@@ -579,7 +579,7 @@ QRectF Printer::pageRect(Unit unit) const
 /************************************************
 
  ************************************************/
-bool Printer::print(const QList<Sheet *> &sheets, const QString &jobName, bool duplex, int numCopies) const
+bool Printer::print(const QList<Sheet *> &sheets, const QString &jobName, bool duplex, int numCopies, bool collate) const
 {
 //#define DEBUG_PRINT
 #ifdef DEBUG_PRINT
@@ -609,6 +609,9 @@ bool Printer::print(const QList<Sheet *> &sheets, const QString &jobName, bool d
     args << "-r";                                 // The print files should be deleted after printing them
     if (duplexType() == DuplexAuto && !duplex)
         args << "-o sides=one-sided";             // Turn off duplex printing
+
+    if (collate)
+        args << "-o Collate=True";                // Use the -o Collate=True option to get collated copies
 
     args << file.toLocal8Bit();
 

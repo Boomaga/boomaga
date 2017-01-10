@@ -56,8 +56,8 @@ private slots:
     void switchLayout();
     void switchPrinterProfile();
 
-    bool print(uint count = 1);
-    void printAndClose(uint count = 1);
+    bool print(uint count = 1, bool collate = true);
+    void printAndClose(uint count = 1, bool collate = true);
     void printWithOptions();
 
     void updateWidgets();

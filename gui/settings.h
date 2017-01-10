@@ -47,6 +47,8 @@ public:
 
         // Printer ******************************
         Printer_CurrentProfile,
+        Printer_CopiesNum,
+        Printer_CollateCopies,
 
         // PrinterProfile ******************************
         PrinterProfile_Name,

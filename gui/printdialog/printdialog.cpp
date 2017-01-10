@@ -44,6 +44,7 @@ PrintDialog::PrintDialog(QWidget *parent) :
             this, SLOT(CopiesEditValueChanged(int)));
 
     restoreGeometry(settings->value(Settings::PrinterDialog_Geometry).toByteArray());
+    loadSettings();
 }
 
 
@@ -54,6 +55,24 @@ PrintDialog::~PrintDialog()
 {
     settings->setValue(Settings::PrinterDialog_Geometry, saveGeometry());
     delete ui;
+}
+
+/************************************************
+
+ ************************************************/
+void PrintDialog::loadSettings()
+{
+    ui->copiesEdit->setValue(settings->value(Settings::Printer_CopiesNum, 1).toInt());
+    ui->collateCheckBox->setChecked(settings->value(Settings::Printer_CollateCopies, true).toBool());
+}
+
+/************************************************
+
+ ************************************************/
+void PrintDialog::saveSettings()
+{
+    settings->setValue(Settings::Printer_CopiesNum, ui->copiesEdit->value());
+    settings->setValue(Settings::Printer_CollateCopies, ui->collateCheckBox->isChecked());
 }
 
 
@@ -79,7 +98,38 @@ void PrintDialog::setCopies(int value)
 /************************************************
 
  ************************************************/
+bool PrintDialog::collate() const
+{
+    return ui->collateCheckBox->isChecked();
+}
+
+
+/************************************************
+
+ ************************************************/
+void PrintDialog::setCollate(bool value)
+{
+    ui->collateCheckBox->setChecked(value);
+}
+
+
+/************************************************
+
+ ************************************************/
+void PrintDialog::done(int res)
+{
+    if (res)
+        saveSettings();
+
+    QDialog::done(res);
+}
+
+
+/************************************************
+
+ ************************************************/
 void PrintDialog::CopiesEditValueChanged(int value)
 {
     mCopiesSave = value;
 }
+
