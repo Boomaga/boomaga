@@ -168,7 +168,8 @@ void initFromCups(const QString &printerName, QString *deviceUri, PrinterProfile
             cases << "HPColorMode"      << "grayscale";
             cases << "BRMonoColor"      << "Mono";
             cases << "CNIJSGrayScale"   << "1";
-            cases << "HPColorAsGray"    << "True";
+            cases << "HPColorAsGray"    << "True";      // HP
+            cases << "XRColorMode"      << "Black";     // Xerox
 
 
             for (int i=0; i<cases.count(); i+=2)
