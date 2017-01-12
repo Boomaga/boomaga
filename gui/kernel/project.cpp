@@ -82,6 +82,7 @@ Project::Project(QObject *parent) :
     mNullPrinter("Fake"),
     mPrinter(&mNullPrinter),
     mDoubleSided(true),
+    mGrayscale(false),
     mRotation(NoRotate)
 {
 }
@@ -770,6 +771,16 @@ void Project::setDoubleSided(bool value)
 
 
 /************************************************
+ *
+ ************************************************/
+void Project::setGrayscale(bool value)
+{
+    mGrayscale = value;
+    emit changed();
+}
+
+
+/************************************************
 
  ************************************************/
 void Project::setPrinterProfile(Printer *printer, int profile, bool update)
@@ -787,7 +798,6 @@ void Project::setPrinterProfile(Printer *printer, int profile, bool update)
     if (update)
     {
         this->update();
-        emit changed();
     }
 }
 

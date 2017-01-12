@@ -74,6 +74,9 @@ public:
     QSizeF paperSize(Unit unit) const;
     void setPaperSize(const QSizeF & paperSize, Unit unit);
 
+    QString grayscaleOption() const { return mGrayscaleOption; }
+    void setGrayscaleOption(const QString &value);
+
     void readSettings();
     void saveSettings() const;
 
@@ -88,7 +91,7 @@ private:
     bool mDrawBorder;
     bool mReverseOrder;
     QSizeF mPaperSize;
-
+    QString mGrayscaleOption;
 };
 
 

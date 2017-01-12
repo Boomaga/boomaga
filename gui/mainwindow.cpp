@@ -109,7 +109,7 @@ MainWindow::MainWindow(QWidget *parent):
     loadSettings();
     switchPrinterProfile();
     updateWidgets();
-    updateWidgets();
+    //updateWidgets();
 
     connect(ui->layout1UpBtn,     SIGNAL(clicked(bool)),
             this, SLOT(switchLayout()));
@@ -134,6 +134,12 @@ MainWindow::MainWindow(QWidget *parent):
 
     connect(ui->doubleSidedCbx, SIGNAL(clicked(bool)),
             project, SLOT(setDoubleSided(bool)));
+
+    connect(ui->grayscaleCbx, SIGNAL(clicked(bool)),
+            project, SLOT(setGrayscale(bool)));
+
+    connect(ui->grayscaleCbx, SIGNAL(clicked(bool)),
+            ui->preview, SLOT(setGrayscale(bool)));
 
     connect(ui->jobsView, SIGNAL(pageSelected(int)),
             project, SLOT(setCurrentPage(int)));
@@ -286,6 +292,11 @@ void MainWindow::loadSettings()
     if (ui->printersCombo->currentIndex() < 1)
         ui->printersCombo->setCurrentIndex(ui->printersCombo->findFirstProfile());
 
+    project->setGrayscale(settings->value(Settings::Grayscale).toBool());
+    ui->preview->setGrayscale(project->grayscale());
+    ui->grayscaleCbx->setChecked(project->grayscale());
+
+
     QString layoutId = settings->value(Settings::Layout).toString();
 
     foreach(Layout *layout, mAvailableLayouts)
@@ -298,6 +309,7 @@ void MainWindow::loadSettings()
         project->setLayout(mAvailableLayouts.at(0));
 
     project->setDoubleSided(settings->value(Settings::DoubleSided).toBool());
+
     ui->jobsView->setIconSize(settings->value(Settings::MainWindow_PageListIconSize).toInt());
     ui->subBookletView->setIconSize(settings->value(Settings::MainWindow_PageListIconSize).toInt());
 }
@@ -319,6 +331,9 @@ void MainWindow::saveSettings()
 
     settings->setValue(Settings::Layout, project->layout()->id());
     settings->setValue(Settings::DoubleSided, project->doubleSided());
+
+    settings->setValue(Settings::Grayscale, project->grayscale());
+
 
     if (project->printer() != Printer::nullPrinter())
         project->printer()->saveSettings();

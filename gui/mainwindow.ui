@@ -139,6 +139,16 @@
              </property>
             </widget>
            </item>
+           <item>
+            <widget class="QCheckBox" name="grayscaleCbx">
+             <property name="toolTip">
+              <string comment="MainForm::Grayscale checkbox tooltip">Print in grayscale</string>
+             </property>
+             <property name="text">
+              <string comment="MainForm::Grayscale checkbox">Grayscale</string>
+             </property>
+            </widget>
+           </item>
           </layout>
          </widget>
         </item>
@@ -263,7 +273,7 @@
      <x>0</x>
      <y>0</y>
      <width>1188</width>
-     <height>23</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
