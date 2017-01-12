@@ -44,7 +44,7 @@ public:
 
 public slots:
     void updateItems();
-    void setSheetNum(int sheetNum);
+    void setPageNum(int pageNum);
 
 signals:
     void pageSelected(int pageNum);

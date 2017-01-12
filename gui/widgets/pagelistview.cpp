@@ -117,6 +117,7 @@ int PagesListView::itemPageCount(int row) const
  ************************************************/
 void PagesListView::updateItems()
 {
+
     QList<ItemInfo> pages = getPages();
     int cur = currentRow();
 
@@ -160,53 +161,29 @@ void PagesListView::updateItems()
 /************************************************
  *
  ************************************************/
-void PagesListView::setSheetNum(int sheetNum)
+void PagesListView::setPageNum(int pageNum)
 {
     if (count() < 1)
         return;
 
-    if (sheetNum < 0)
+    if (pageNum < 0)
     {
         setCurrentRow(0);
         return;
     }
 
-    Sheet *sheet = project->previewSheet(sheetNum);
-
-    int sheetFirstPage = (sheet->firstVisiblePage()) ? sheet->firstVisiblePage()->pageNum() : -1;
-    int sheetLastPage  = (sheet->lastVisiblePage())  ? sheet->lastVisiblePage()->pageNum()  : -1;
-
-    if (sheetFirstPage < 0 || sheetLastPage < 0)
+    for (int i=count()-1; i>-1; --i)
     {
-        setCurrentRow(-1);
-        return;
+        int p = item(i)->data(PAGE_NUM_ROLE).toInt();
+        if (p <= pageNum)
+        {
+            setCurrentRow(i);
+            return;
+        }
     }
 
-    int left = -1;
-    int right = -1;
-    for (int i=0; (left<0 || right<0) && i<count(); ++i)
-    {
-        int itemFirstPage = item(i)->data(PAGE_NUM_ROLE).toInt();
-        int itemLastPage = (i<count()-1) ? item(i+1)->data(PAGE_NUM_ROLE).toInt()-1 : project->pageCount()-1;
-
-        if (itemFirstPage <= sheetFirstPage && itemLastPage >= sheetFirstPage)
-            left = i;
-
-        if (itemFirstPage <= sheetLastPage && itemLastPage >= sheetLastPage)
-            right = i;
-    }
-
-    int curRow = qMax(0, currentRow());
-    if (left <= curRow && curRow <= right)
-    {
-        if (currentRow() != curRow)
-            setCurrentRow(curRow);
-        return;
-    }
-
-    setCurrentRow(left);
+    setCurrentRow(0);
 }
-
 
 /************************************************
  *
