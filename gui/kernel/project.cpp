@@ -403,10 +403,7 @@ void Project::insertBlankPageBefore(ProjectPage *page)
         return;
 
     Job job = jobs()->value(j);
-    job.insertBlankPage(job.indexOfPage(page));
-
-    // Remain on the current page. Perhaps this is not intuitive behavior, need tests.
-    mCurrentPage = page;
+    mCurrentPage = job.insertBlankPage(job.indexOfPage(page));
     this->update();
 }
 
@@ -421,10 +418,7 @@ void Project::insertBlankPageAfter(ProjectPage *page)
         return;
 
     Job job = jobs()->value(j);
-    job.insertBlankPage(job.indexOfPage(page) + 1);
-
-    // Remain on the current page. Perhaps this is not intuitive behavior, need tests.
-    mCurrentPage = page;
+    mCurrentPage = job.insertBlankPage(job.indexOfPage(page) + 1);
     this->update();
 }
 
