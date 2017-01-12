@@ -163,6 +163,12 @@ MainWindow::MainWindow(QWidget *parent):
     connect(project, SIGNAL(currentPageChanged(int)),
             ui->preview, SLOT(refresh()));
 
+    connect(project, SIGNAL(currentPageChanged(int)),
+            ui->jobsView, SLOT(setPageNum(int)));
+
+    connect(project, SIGNAL(currentPageChanged(int)),
+            ui->subBookletView, SLOT(setPageNum(int)));
+
     connect(ui->printerConfigBtn, SIGNAL(clicked()),
             this, SLOT(showPrinterSettingsDialog()));
 
@@ -436,9 +442,6 @@ void MainWindow::initStatusBar()
  ************************************************/
 void MainWindow::updateWidgets()
 {
-    ui->jobsView->setSheetNum(project->currentSheetNum());
-    ui->subBookletView->setSheetNum(project->currentSheetNum());
-
     foreach (LayoutRadioButton* btn, this->findChildren<LayoutRadioButton*>())
     {
         btn->setChecked(btn->layout() == project->layout());
@@ -472,14 +475,15 @@ void MainWindow::updateWidgets()
                           ceil(project->sheetCount() / 2.0) :
                           project->sheetCount();
 
-        QString pagesTmpl = (project->pageCount() > 1) ? tr("%1 pages", "Status bar") : tr("%1 page", "Status bar");
+        QString pagesTmpl = tr("page %1 of %2", "Status bar");
         QString sheetsTmpl = (sheetsCount > 1) ? tr("%1 sheets", "Status bar") : tr("%1 sheet", "Status bar");
-        mStatusBarSheetsLabel.setText(pagesTmpl.arg(project->pageCount()) +
+        mStatusBarSheetsLabel.setText(pagesTmpl.arg(project->currentPageNum() + 1).arg(project->pageCount()) +
                                    " ( " + sheetsTmpl.arg(sheetsCount) + " )");
 
         mStatusBarCurrentSheetLabel.setText(tr("Sheet %1 of %2", "Status bar")
                                 .arg(project->currentSheetNum() + 1)
                                 .arg(project->previewSheetCount()));
+
     }
     else
     {
