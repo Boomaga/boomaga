@@ -118,13 +118,29 @@ int PagesListView::itemPageCount(int row) const
 void PagesListView::updateItems()
 {
     QList<ItemInfo> pages = getPages();
-
     int cur = currentRow();
-    setUpdatesEnabled(false);
-    clear();
 
-    foreach (ItemInfo page, pages)
+    setUpdatesEnabled(false);
+    while(this->count() > pages.count())
     {
+        delete takeItem(this->count()-1);
+    }
+
+    for (int i=0; i<count(); ++i)
+    {
+        ItemInfo page = pages.at(i);
+        QListWidgetItem *item = this->item(i);
+        item->setText(page.title);
+        item->setData(PAGE_NUM_ROLE, page.page);
+        item->setData(TOOLTIP_TEMPLATE_ROLE, page.toolTip);
+
+        if (page.page > -1)
+            mRender->renderPage(page.page);
+    }
+
+    while(this->count() < pages.count())
+    {
+        ItemInfo page = pages.at(this->count());
         QListWidgetItem *item = new QListWidgetItem(this);
         item->setText(page.title);
         item->setData(PAGE_NUM_ROLE, page.page);
@@ -135,6 +151,7 @@ void PagesListView::updateItems()
         if (page.page > -1)
             mRender->renderPage(page.page);
     }
+
     setCurrentRow(cur);
     setUpdatesEnabled(true);
 }
