@@ -63,6 +63,9 @@ public:
 
     virtual void updatePages(QList<ProjectPage*> pages) const = 0;
 
+    virtual int pagePerSheet() const = 0;
+    virtual int previewPageNum(int sheetNum) const = 0;
+
 protected:
     struct PagePosition
     {
@@ -89,6 +92,8 @@ public:
     virtual Rotation rotation() const;
 
     virtual void updatePages(QList<ProjectPage*> pages) const;
+    virtual int pagePerSheet() const { return mPageCountHoriz * mPageCountVert; }
+    virtual int previewPageNum(int sheetNum) const;
 
 protected:
     void doFillSheets(QList<Sheet*> *sheets, bool forPreview) const;
@@ -125,6 +130,7 @@ protected:
     QList<BookletInfo> split(const QList<ProjectPage*> &pages) const;
     virtual Rotation calcSheetRotation(int sheetNum, Rotation projectRotation, DuplexType printerType, bool doubleSided) const;
 
+    virtual int previewPageNum(int sheetNum) const;
 private:
     void fillSheetsForBook(int bookStart, int bookLength, QList<Sheet *> *sheets) const;
     void fillPreviewSheetsForBook(int bookStart, int bookLength, QList<Sheet *> *sheets) const;

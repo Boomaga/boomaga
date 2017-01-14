@@ -137,6 +137,10 @@ public:
     ProjectPage *currentPage() const { return mCurrentPage; }
     int currentPageNum() const;
 
+    int previewPageNum(int pageNum) const;
+    int previewPageCount() const;
+    int currentPreviewPage() const;
+
     void deletePage(ProjectPage *page);
     void undoDeletePage(ProjectPage *page);
 

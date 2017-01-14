@@ -259,6 +259,15 @@ void LayoutNUp::updatePages(QList<ProjectPage *> pages) const
 /************************************************
 
  ************************************************/
+int LayoutNUp::previewPageNum(int sheetNum) const
+{
+    return sheetNum * pagePerSheet();
+}
+
+
+/************************************************
+
+ ************************************************/
 Rotation LayoutNUp::calcPageRotation(const ProjectPage *page, Rotation sheetRotation) const
 {
     if (!page)
@@ -618,4 +627,13 @@ Rotation LayoutBooklet::calcSheetRotation(int sheetNum, Rotation projectRotation
     {
         return projectRotation;
     }
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+int LayoutBooklet::previewPageNum(int sheetNum) const
+{
+    return sheetNum * 2 -1;
 }

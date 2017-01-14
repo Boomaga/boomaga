@@ -163,12 +163,6 @@ MainWindow::MainWindow(QWidget *parent):
     connect(project, SIGNAL(currentPageChanged(int)),
             ui->preview, SLOT(refresh()));
 
-    connect(project, SIGNAL(currentPageChanged(int)),
-            ui->jobsView, SLOT(setPageNum(int)));
-
-    connect(project, SIGNAL(currentPageChanged(int)),
-            ui->subBookletView, SLOT(setPageNum(int)));
-
     connect(ui->printerConfigBtn, SIGNAL(clicked()),
             this, SLOT(showPrinterSettingsDialog()));
 

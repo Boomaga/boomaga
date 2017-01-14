@@ -41,6 +41,7 @@
 #define RESOLUTIN 30
 #define PAGE_NUM_ROLE           Qt::UserRole + 1
 #define TOOLTIP_TEMPLATE_ROLE   Qt::UserRole + 2
+#define PREVIEWPAGE_NUM_ROLE    Qt::UserRole + 3
 
 #define MIN_ICON_SIZE 32
 #define MAX_ICON_SIZE 200
@@ -78,6 +79,9 @@ PagesListView::PagesListView(QWidget *parent):
     connect(project, SIGNAL(changed()),
             this, SLOT(updateItems()));
 
+    connect(project, SIGNAL(currentPageChanged(int)),
+            this, SLOT(switchPageNum()));
+
     setIconSize(64);
 
     setStyleSheet(STYLE_SHEET);
@@ -105,16 +109,6 @@ void PagesListView::setIconSize(int size)
 /************************************************
  *
  ************************************************/
-int PagesListView::itemPageCount(int row) const
-{
-    int end = row + 1 < count() ? item(row + 1)->data(PAGE_NUM_ROLE).toInt() - 1 : project->pageCount() -1;
-    return end - item(row)->data(PAGE_NUM_ROLE).toInt();
-}
-
-
-/************************************************
- *
- ************************************************/
 void PagesListView::updateItems()
 {
 
@@ -133,10 +127,13 @@ void PagesListView::updateItems()
         QListWidgetItem *item = this->item(i);
         item->setText(page.title);
         item->setData(PAGE_NUM_ROLE, page.page);
+        item->setData(PREVIEWPAGE_NUM_ROLE, project->previewPageNum(page.page));
         item->setData(TOOLTIP_TEMPLATE_ROLE, page.toolTip);
 
         if (page.page > -1)
             mRender->renderPage(page.page);
+        else
+            item->setIcon(createIcon(QImage()));
     }
 
     while(this->count() < pages.count())
@@ -145,7 +142,9 @@ void PagesListView::updateItems()
         QListWidgetItem *item = new QListWidgetItem(this);
         item->setText(page.title);
         item->setData(PAGE_NUM_ROLE, page.page);
+        item->setData(PREVIEWPAGE_NUM_ROLE, project->previewPageNum(page.page));
         item->setData(TOOLTIP_TEMPLATE_ROLE, page.toolTip);
+
         item->setIcon(createIcon(QImage()));
         addItem(item);
 
@@ -161,10 +160,12 @@ void PagesListView::updateItems()
 /************************************************
  *
  ************************************************/
-void PagesListView::setPageNum(int pageNum)
+void PagesListView::switchPageNum()
 {
     if (count() < 1)
         return;
+
+    int pageNum = project->currentPreviewPage();
 
     if (pageNum < 0)
     {
@@ -174,8 +175,7 @@ void PagesListView::setPageNum(int pageNum)
 
     for (int i=count()-1; i>-1; --i)
     {
-        int p = item(i)->data(PAGE_NUM_ROLE).toInt();
-        if (p <= pageNum)
+        if (item(i)->data(PREVIEWPAGE_NUM_ROLE).toInt() <= pageNum)
         {
             setCurrentRow(i);
             return;

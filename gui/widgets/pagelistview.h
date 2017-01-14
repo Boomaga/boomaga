@@ -40,11 +40,10 @@ public:
     virtual ~PagesListView();
     void setIconSize(int size);
     int iconSize() const { return mIconSize;  }
-    int itemPageCount(int row) const;
 
 public slots:
     void updateItems();
-    void setPageNum(int pageNum);
+
 
 signals:
     void pageSelected(int pageNum);
@@ -66,6 +65,7 @@ protected:
 
 private slots:
     void previewRedy(QImage image, int pageNum);
+    void switchPageNum();
 
 private:
     Render *mRender;

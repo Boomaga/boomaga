@@ -283,6 +283,9 @@ void Project::update()
     else
         mCurrentSheet = 0;
 
+
+
+
     if (emitTmpFileRenamed)
         emit tmpFileRenamed(mTmpFile->fileName());
 
@@ -311,6 +314,44 @@ int Project::currentPageNum() const
         return mCurrentPage->pageNum();
 
     return -1;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+int Project::previewPageCount() const
+{
+    return mSheetCount * mLayout->pagePerSheet();
+}
+
+
+/************************************************
+ *
+ ************************************************/
+int Project::previewPageNum(int pageNum) const
+{
+    if (pageNum < 0)
+        return -1;
+
+    const ProjectPage *page = mPages.at(pageNum);
+    return mLayout->previewPageNum(page->sheet()->sheetNum()) + page->sheet()->indexOfPage(page);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+int Project::currentPreviewPage() const
+{
+    if (!mCurrentSheet)
+        return 0;
+
+    if (!mCurrentPage)
+        return mLayout->previewPageNum(mCurrentSheet->sheetNum());
+
+
+    return mLayout->previewPageNum(mCurrentSheet->sheetNum()) + mCurrentSheet->indexOfPage(mCurrentPage);
 }
 
 
