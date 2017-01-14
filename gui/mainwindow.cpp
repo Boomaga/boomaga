@@ -109,7 +109,6 @@ MainWindow::MainWindow(QWidget *parent):
     loadSettings();
     switchPrinterProfile();
     updateWidgets();
-    //updateWidgets();
 
     connect(ui->layout1UpBtn,     SIGNAL(clicked(bool)),
             this, SLOT(switchLayout()));
@@ -469,11 +468,24 @@ void MainWindow::updateWidgets()
                           ceil(project->sheetCount() / 2.0) :
                           project->sheetCount();
 
-        QString pagesTmpl = tr("page %1 of %2", "Status bar");
-        QString sheetsTmpl = (sheetsCount > 1) ? tr("%1 sheets", "Status bar") : tr("%1 sheet", "Status bar");
-        mStatusBarSheetsLabel.setText(pagesTmpl.arg(project->currentPageNum() + 1).arg(project->pageCount()) +
-                                   " ( " + sheetsTmpl.arg(sheetsCount) + " )");
 
+        QString pagesStr;
+        if (project->currentPage())
+        {
+            pagesStr = tr("Page %1 of %2", "Status bar")
+                    .arg(project->currentPageNum() + 1)
+                    .arg(project->pageCount());
+        }
+        else
+        {
+            pagesStr = ((project->pageCount() > 1) ? tr("%1 pages", "Status bar") : tr("%1 page", "Status bar"))
+                    .arg(project->pageCount());
+        }
+
+        QString sheetsStr = ((sheetsCount > 1) ? tr("%1 sheets", "Status bar") : tr("%1 sheet", "Status bar"))
+                    .arg(sheetsCount);
+
+        mStatusBarSheetsLabel.setText(pagesStr + " ( " + sheetsStr + " )");
         mStatusBarCurrentSheetLabel.setText(tr("Sheet %1 of %2", "Status bar")
                                 .arg(project->currentSheetNum() + 1)
                                 .arg(project->previewSheetCount()));
