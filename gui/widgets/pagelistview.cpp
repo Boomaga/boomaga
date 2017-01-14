@@ -113,7 +113,6 @@ void PagesListView::updateItems()
 {
 
     QList<ItemInfo> pages = getPages();
-    int cur = currentRow();
 
     setUpdatesEnabled(false);
     while(this->count() > pages.count())
@@ -152,7 +151,7 @@ void PagesListView::updateItems()
             mRender->renderPage(page.page);
     }
 
-    setCurrentRow(cur);
+    switchPageNum();
     setUpdatesEnabled(true);
 }
 
