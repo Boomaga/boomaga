@@ -172,10 +172,6 @@ Are you sure you want to overwrite it?</source>
         <translation>Aide</translation>
     </message>
     <message>
-        <source>Options</source>
-        <translation>Options</translation>
-    </message>
-    <message>
         <source>Layout</source>
         <translation>Mise en page</translation>
     </message>
@@ -464,6 +460,21 @@ Are you sure you want to overwrite it?</source>
         <source>Undo delete page</source>
         <translation>Annuler la suppression de page</translation>
     </message>
+    <message>
+        <source>Print in grayscale</source>
+        <comment>MainForm::Grayscale checkbox tooltip</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Grayscale</source>
+        <comment>MainForm::Grayscale checkbox</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Page %1 of %2</source>
+        <comment>Status bar</comment>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>PrintDialog</name>
@@ -474,6 +485,10 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>Number of copies:</source>
         <translation>Nombre de copies :</translation>
+    </message>
+    <message>
+        <source>Collate copies:</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>

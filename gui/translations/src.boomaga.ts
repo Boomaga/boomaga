@@ -461,6 +461,21 @@ Are you sure you want to overwrite it?</source>
         <source>Undo delete page</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Print in grayscale</source>
+        <comment>MainForm::Grayscale checkbox tooltip</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Grayscale</source>
+        <comment>MainForm::Grayscale checkbox</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Page %1 of %2</source>
+        <comment>Status bar</comment>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>PrintDialog</name>
@@ -470,6 +485,10 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Number of copies:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Collate copies:</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

@@ -172,10 +172,6 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
         <translation>Hilfe</translation>
     </message>
     <message>
-        <source>Options</source>
-        <translation>Optionen</translation>
-    </message>
-    <message>
         <source>Layout</source>
         <translation>Gestaltung (Layout)</translation>
     </message>
@@ -464,6 +460,21 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
         <source>Undo delete page</source>
         <translation>Seite rückgängig löschen</translation>
     </message>
+    <message>
+        <source>Print in grayscale</source>
+        <comment>MainForm::Grayscale checkbox tooltip</comment>
+        <translation>In Graustufen drucken</translation>
+    </message>
+    <message>
+        <source>Grayscale</source>
+        <comment>MainForm::Grayscale checkbox</comment>
+        <translation>Graustufen</translation>
+    </message>
+    <message>
+        <source>Page %1 of %2</source>
+        <comment>Status bar</comment>
+        <translation>Seite %1 von %2</translation>
+    </message>
 </context>
 <context>
     <name>PrintDialog</name>
@@ -474,6 +485,10 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     <message>
         <source>Number of copies:</source>
         <translation>Anzahl der Kopien:</translation>
+    </message>
+    <message>
+        <source>Collate copies:</source>
+        <translation>Kopien sortieren:</translation>
     </message>
 </context>
 <context>

@@ -172,10 +172,6 @@ Jste si jistý, že jej chcete přepsat?</translation>
         <translation>Nápověda</translation>
     </message>
     <message>
-        <source>Options</source>
-        <translation>Volby</translation>
-    </message>
-    <message>
         <source>Layout</source>
         <translation>Rozvržení</translation>
     </message>
@@ -464,6 +460,21 @@ Jste si jistý, že jej chcete přepsat?</translation>
         <source>Undo delete page</source>
         <translation>Zpět smazání strany</translation>
     </message>
+    <message>
+        <source>Print in grayscale</source>
+        <comment>MainForm::Grayscale checkbox tooltip</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Grayscale</source>
+        <comment>MainForm::Grayscale checkbox</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Page %1 of %2</source>
+        <comment>Status bar</comment>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>PrintDialog</name>
@@ -474,6 +485,10 @@ Jste si jistý, že jej chcete přepsat?</translation>
     <message>
         <source>Number of copies:</source>
         <translation>Počet kopií:</translation>
+    </message>
+    <message>
+        <source>Collate copies:</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>

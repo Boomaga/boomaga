@@ -1,0 +1,20 @@
+[Desktop Entry]
+Exec=boomaga %U
+Icon=boomaga
+Terminal=false
+Type=Application
+StartupNotify=true
+Categories=Qt;Office;
+MimeType=application/x-boomaga-boo;
+
+Name=Boomaga
+GenericName=Virtual printer
+Comment=Virtual printer for viewing and editing a document before printing.
+
+
+
+# Translations
+Comment[hu_HU]=Virtuális nyomtató a dokumentumok nyomtatás előtti átnézésére és szerkesztésére.
+GenericName[hu_HU]=Virtuális nyomtató
+Name[hu_HU]=Boomaga
+Icon[hu_HU]=boomaga

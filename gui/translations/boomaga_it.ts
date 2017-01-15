@@ -172,10 +172,6 @@ Sei sicuro di volerlo sovracrivere?</translation>
         <translation>Aiuto</translation>
     </message>
     <message>
-        <source>Options</source>
-        <translation>Opzioni</translation>
-    </message>
-    <message>
         <source>Layout</source>
         <translation>Disposizione</translation>
     </message>
@@ -464,6 +460,21 @@ Sei sicuro di volerlo sovracrivere?</translation>
         <source>Undo delete page</source>
         <translation>Annulla eliminazione pagina</translation>
     </message>
+    <message>
+        <source>Print in grayscale</source>
+        <comment>MainForm::Grayscale checkbox tooltip</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Grayscale</source>
+        <comment>MainForm::Grayscale checkbox</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Page %1 of %2</source>
+        <comment>Status bar</comment>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>PrintDialog</name>
@@ -474,6 +485,10 @@ Sei sicuro di volerlo sovracrivere?</translation>
     <message>
         <source>Number of copies:</source>
         <translation>Numero di copie:</translation>
+    </message>
+    <message>
+        <source>Collate copies:</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>

@@ -27,7 +27,7 @@
     </message>
     <message>
         <source>Boomaga provides a virtual printer for CUPS. This can be used for print preview or for print booklets.</source>
-        <translation>Boomaga это виртуальный принтер для CUPS. Программа можно  использовать для предпросмотра или для печати буклетов.</translation>
+        <translation>Boomaga это виртуальный принтер для CUPS. Программу можно использовать для предпросмотра или печати буклетов.</translation>
     </message>
     <message>
         <source>Copyright: %1-%2 %3</source>
@@ -43,7 +43,7 @@
     </message>
     <message>
         <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on Github.</source>
-        <translation>Boomaga разрабатывается &lt;a %1&gt;командой Boomaga и помощниками &lt;/a&gt; на Github.</translation>
+        <translation>Boomaga разрабатывается &lt;a %1&gt;командой Boomaga и помощниками&lt;/a&gt; на Github.</translation>
     </message>
     <message>
         <source>If you are interested in working with our development team, &lt;a %1&gt;join us&lt;/a&gt;.</source>
@@ -101,7 +101,7 @@
     </message>
     <message>
         <source>Meta info</source>
-        <translation>Мета информация</translation>
+        <translation>Метаинформация</translation>
     </message>
     <message>
         <source>Author:</source>
@@ -137,7 +137,7 @@
     </message>
     <message>
         <source>Overwrite file?</source>
-        <translation>Переписать файл?</translation>
+        <translation>Перезаписать файл?</translation>
     </message>
     <message>
         <source>A file named &quot;%1&quot; already exists.
@@ -170,10 +170,6 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>Help</source>
         <translation>Помощь</translation>
-    </message>
-    <message>
-        <source>Options</source>
-        <translation>Опции</translation>
     </message>
     <message>
         <source>Layout</source>
@@ -215,7 +211,7 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Toolbar</source>
-        <translation>тулбар</translation>
+        <translation>Панель инструментов</translation>
     </message>
     <message>
         <source>&amp;Print</source>
@@ -464,6 +460,21 @@ Are you sure you want to overwrite it?</source>
         <source>Undo delete page</source>
         <translation>Отменить удаление страниц</translation>
     </message>
+    <message>
+        <source>Print in grayscale</source>
+        <comment>MainForm::Grayscale checkbox tooltip</comment>
+        <translation>Печать в оттенках серого</translation>
+    </message>
+    <message>
+        <source>Grayscale</source>
+        <comment>MainForm::Grayscale checkbox</comment>
+        <translation>Оттенки серого</translation>
+    </message>
+    <message>
+        <source>Page %1 of %2</source>
+        <comment>Status bar</comment>
+        <translation>Стр. %1 из %2</translation>
+    </message>
 </context>
 <context>
     <name>PrintDialog</name>
@@ -474,6 +485,10 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>Number of copies:</source>
         <translation>Количество копий:</translation>
+    </message>
+    <message>
+        <source>Collate copies:</source>
+        <translation>Разобрать по копиям:</translation>
     </message>
 </context>
 <context>
@@ -524,7 +539,7 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Manual without reverse</source>
-        <translation>Вручную без изменениея порядка</translation>
+        <translation>Вручную без изменения порядка</translation>
     </message>
     <message>
         <source>Preferences of &quot;%1&quot;</source>
@@ -595,7 +610,7 @@ Are you sure you want to overwrite it?</source>
     <name>QObject</name>
     <message>
         <source>PDF file &quot;%1&quot; is damaged.</source>
-        <translation>Похоже, PDF файл &quot;%1&quot; нездоров.</translation>
+        <translation>PDF файл &quot;%1&quot; поврежден.</translation>
     </message>
     <message>
         <source>PDF file &quot;%1&quot; is encripted.</source>
@@ -631,7 +646,7 @@ Are you sure you want to overwrite it?</source>
     <name>Settings</name>
     <message>
         <source>~/Untitled.pdf</source>
-        <translation>~/Безимянный.pdf</translation>
+        <translation>~/Безымянный.pdf</translation>
     </message>
 </context>
 <context>
@@ -654,7 +669,7 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>Something is wrong. I can't find boomagamerger program.
 Please reinstall me.</source>
-        <translation>Шеф, все пропало! Я не могу найти программу с именем boomagamerger. Попробуй переставить меня.</translation>
+        <translation>Шеф, все пропало! Я не могу найти программу с именем boomagamerger. Попробуй переустановить меня.</translation>
     </message>
     <message>
         <source>I can&apos;t read file &apos;%1&apos;</source>

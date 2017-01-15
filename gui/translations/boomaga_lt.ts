@@ -172,10 +172,6 @@ Ar tikrai norite pakeisti šį failą?</translation>
         <translation>Pagalba</translation>
     </message>
     <message>
-        <source>Options</source>
-        <translation>Parinktys</translation>
-    </message>
-    <message>
         <source>Layout</source>
         <translation>Išdėstymas</translation>
     </message>
@@ -464,6 +460,21 @@ Ar tikrai norite pakeisti šį failą?</translation>
         <source>Undo delete page</source>
         <translation>Atšaukti puslapio ištrynimą</translation>
     </message>
+    <message>
+        <source>Print in grayscale</source>
+        <comment>MainForm::Grayscale checkbox tooltip</comment>
+        <translation>Spausdinti pilkio pustoniais</translation>
+    </message>
+    <message>
+        <source>Grayscale</source>
+        <comment>MainForm::Grayscale checkbox</comment>
+        <translation>Pilkio pustoniai</translation>
+    </message>
+    <message>
+        <source>Page %1 of %2</source>
+        <comment>Status bar</comment>
+        <translation>Puslapis %1 iš %2</translation>
+    </message>
 </context>
 <context>
     <name>PrintDialog</name>
@@ -474,6 +485,10 @@ Ar tikrai norite pakeisti šį failą?</translation>
     <message>
         <source>Number of copies:</source>
         <translation>Kopijų skaičius:</translation>
+    </message>
+    <message>
+        <source>Collate copies:</source>
+        <translation>Surikiuoti kopijas:</translation>
     </message>
 </context>
 <context>

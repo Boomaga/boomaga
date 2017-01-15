@@ -172,10 +172,6 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
         <translation>Ajutor</translation>
     </message>
     <message>
-        <source>Options</source>
-        <translation>Opțiuni</translation>
-    </message>
-    <message>
         <source>Layout</source>
         <translation>Amplasare</translation>
     </message>
@@ -464,6 +460,21 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
         <source>Undo delete page</source>
         <translation type="unfinished"/>
     </message>
+    <message>
+        <source>Print in grayscale</source>
+        <comment>MainForm::Grayscale checkbox tooltip</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Grayscale</source>
+        <comment>MainForm::Grayscale checkbox</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Page %1 of %2</source>
+        <comment>Status bar</comment>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>PrintDialog</name>
@@ -474,6 +485,10 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
     <message>
         <source>Number of copies:</source>
         <translation>Numărul de copii:</translation>
+    </message>
+    <message>
+        <source>Collate copies:</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
