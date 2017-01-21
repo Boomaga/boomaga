@@ -45,3 +45,10 @@ if(POPPLER_FOUND)
     pkg_search_module(POPPLERCPP REQUIRED QUIET poppler-cpp)
     link_directories(${POPPLERCPP_LIBRARY_DIRS})
 endif()
+
+
+find_file(POPPLER_PRIV_HEADERS "PDFDoc.h" PATHS ${POPPLER_INCLUDE_DIRS} ${POPPLER_INCLUDE_DIR})
+if("${POPPLER_PRIV_HEADERS}" STREQUAL "POPPLER_PRIV_HEADERS-NOTFOUND")
+    message(FATAL_ERROR "Can't find ppoppler private headers")
+endif()
+
