@@ -82,7 +82,6 @@ Project::Project(QObject *parent) :
     mNullPrinter("Fake"),
     mPrinter(&mNullPrinter),
     mDoubleSided(true),
-    mGrayscale(false),
     mRotation(NoRotate)
 {
 }
@@ -801,16 +800,6 @@ void Project::setLayout(const Layout *layout)
 void Project::setDoubleSided(bool value)
 {
     mDoubleSided = value;
-    emit changed();
-}
-
-
-/************************************************
- *
- ************************************************/
-void Project::setGrayscale(bool value)
-{
-    mGrayscale = value;
     emit changed();
 }
 

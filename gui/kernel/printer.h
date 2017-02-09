@@ -71,11 +71,13 @@ public:
     bool reverseOrder() const { return mReverseOrder; }
     void setReverseOrder(bool value);
 
+    ColorMode colorMode() const { return mColorMode; }
+    void setColorMode(ColorMode value);
+
+    bool grayscale() const { return mColorMode == ColorModeGrayscale; }
+
     QSizeF paperSize(Unit unit) const;
     void setPaperSize(const QSizeF & paperSize, Unit unit);
-
-    QString grayscaleOption() const { return mGrayscaleOption; }
-    void setGrayscaleOption(const QString &value);
 
     void readSettings();
     void saveSettings() const;
@@ -91,7 +93,7 @@ private:
     bool mDrawBorder;
     bool mReverseOrder;
     QSizeF mPaperSize;
-    QString mGrayscaleOption;
+    ColorMode mColorMode;
 };
 
 
@@ -141,9 +143,14 @@ public:
     bool reverseOrder() const        { return mCurrentProfile->reverseOrder(); }
     void setReverseOrder(bool value) { mCurrentProfile->setReverseOrder(value); }
 
+    ColorMode colorMode() const { return mCurrentProfile->colorMode(); }
+    void setColorMode(ColorMode value) { mCurrentProfile->setColorMode(value); }
+
+    bool grayscale() const { return mCurrentProfile->grayscale(); }
+    bool isSupportColor() const;
+
     bool canChangeDuplexType() const { return mCanChangeDuplexType; }
     bool isShowProgressDialog() const { return mShowProgressDialog; }
-
 
     virtual bool print(const QList<Sheet*> &sheets, const QString &jobName, bool duplex, int numCopies, bool collate) const;
 
@@ -167,6 +174,8 @@ private:
     int mCurrentProfileIndex;
     PrinterProfile *mCurrentProfile;
     PrinterProfile mCupsProfile;
+    QString mGrayscaleOption;
+    QString mColorOption;
 };
 
 #endif // PRINTER_H

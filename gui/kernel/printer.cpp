@@ -26,35 +26,12 @@
 
 #include "printer.h"
 #include "settings.h"
+#include "cupsprinteroptions.h"
 
 #include <QProcess>
 #include <QSharedData>
-#include <cups/cups.h>
-#include <cups/ppd.h>
-#include <QFileInfo>
 #include <QDebug>
-#include <QTemporaryFile>
 #include <QDir>
-#include <QCoreApplication>
-#include <QFileDialog>
-
-#define CUPS_DEVICE_URI                  "device-uri"
-
-#ifndef CUPS_SIDES
-#  define CUPS_SIDES                     "sides"
-#endif
-
-#ifndef CUPS_SIDES_ONE_SIDED
-#  define CUPS_SIDES_ONE_SIDED           "one-sided"
-#endif
-
-#ifndef CUPS_SIDES_TWO_SIDED_PORTRAIT
-#  define CUPS_SIDES_TWO_SIDED_PORTRAIT  "two-sided-long-edge"
-#endif
-
-#ifndef CUPS_SIDES_TWO_SIDED_LANDSCAPE
-#  define CUPS_SIDES_TWO_SIDED_LANDSCAPE "two-sided-short-edge"
-#endif
 
 
 #define A4_HEIGHT_MM    297
@@ -100,119 +77,6 @@ qreal fromUnit(qreal value, Unit unit)
 }
 
 
-
-/************************************************
-
- ************************************************/
-void initFromCups(const QString &printerName, QString *deviceUri, PrinterProfile *profile)
-{
-    cups_dest_t *dests;
-    int num_dests = cupsGetDests(&dests);
-    cups_dest_t *dest = cupsGetDest(printerName.toLocal8Bit().data(),
-                                    0, num_dests, dests);
-
-    if (!dest)
-        return;
-
-#if 0
-    qDebug() << "**" << mPrinterInfo.printerName() << "*******************";
-    for (int j=0; j<dest->num_options; ++j)
-        qDebug() << "  *" << dest->options[j].name << dest->options[j].value;
-#endif
-
-
-
-    *deviceUri = QString(cupsGetOption(CUPS_DEVICE_URI, dest->num_options, dest->options));
-    QString duplexStr = cupsGetOption(CUPS_SIDES, dest->num_options, dest->options);
-
-    bool duplex = false;
-    duplex = duplex || QString(cupsGetOption(CUPS_SIDES, dest->num_options, dest->options)).toUpper().startsWith("TWO-");
-    duplex = duplex || QString(cupsGetOption("Duplex", dest->num_options, dest->options)).toUpper().startsWith("DUPLEX-");
-    duplex = duplex || QString(cupsGetOption("JCLDuplex", dest->num_options, dest->options)).toUpper().startsWith("DUPLEX-");
-    duplex = duplex || QString(cupsGetOption("EFDuplex", dest->num_options, dest->options)).toUpper().startsWith("DUPLEX-");
-    duplex = duplex || QString(cupsGetOption("KD03Duplex", dest->num_options, dest->options)).toUpper().startsWith("DUPLEX-");
-
-    // Read values from PPD
-    // The returned filename is stored in a static buffer
-    const char * ppdFile = cupsGetPPD(printerName.toLocal8Bit().data());
-    if (ppdFile != 0)
-    {
-        ppd_file_t *ppd = ppdOpenFile(ppdFile);
-        if (ppd)
-        {
-            ppdMarkDefaults(ppd);
-
-            ppd_size_t *size = ppdPageSize(ppd, 0);
-            if (size)
-            {
-                profile->setPaperSize(QSizeF(size->width, size->length), UnitPoint);
-                profile->setLeftMargin(size->left, UnitPoint);
-                profile->setRightMargin(size->width - size->right, UnitPoint);
-                profile->setTopMargin(size->length - size->top, UnitPoint);
-                profile->setBottomMargin(size->bottom, UnitPoint);
-            }
-
-            duplex = duplex || ppdIsMarked(ppd, "Duplex",     "DuplexNoTumble");
-            duplex = duplex || ppdIsMarked(ppd, "Duplex",     "DuplexTumble");
-            duplex = duplex || ppdIsMarked(ppd, "JCLDuplex",  "DuplexNoTumble");
-            duplex = duplex || ppdIsMarked(ppd, "JCLDuplex",  "DuplexTumble");
-            duplex = duplex || ppdIsMarked(ppd, "EFDuplex",   "DuplexNoTumble");
-            duplex = duplex || ppdIsMarked(ppd, "EFDuplex",   "DuplexTumble");
-            duplex = duplex || ppdIsMarked(ppd, "KD03Duplex", "DuplexNoTumble");
-            duplex = duplex || ppdIsMarked(ppd, "KD03Duplex", "DuplexTumble");
-
-
-            // Grayscale options ..........................
-            QStringList cases;
-            cases << "ColorModel"       << "Gray";
-            cases << "HPColorMode"      << "grayscale";
-            cases << "BRMonoColor"      << "Mono";
-            cases << "CNIJSGrayScale"   << "1";
-            cases << "HPColorAsGray"    << "True";      // HP
-            cases << "XRColorMode"      << "Black";     // Xerox
-
-
-            for (int i=0; i<cases.count(); i+=2)
-            {
-                ppd_option_t *option  = ppdFindOption(ppd, cases[i].toLatin1().data());
-                if (option && ppdFindChoice(option, cases[i+1].toLatin1().data()))
-                {
-                     profile->setGrayscaleOption(QString("%1=%2").arg(cases[i], cases[i+1]));
-                     break;
-                }
-            }
-
-            ppdClose(ppd);
-        }
-        QFile::remove(ppdFile);
-    }
-
-    if (duplex)
-        profile->setDuplexType(DuplexAuto);
-
-    bool ok;
-    int n;
-
-    n = QString(cupsGetOption("page-left", dest->num_options, dest->options)).toInt(&ok);
-    if (ok)
-        profile->setLeftMargin(n, UnitPoint);
-
-    n = QString(cupsGetOption("page-right", dest->num_options, dest->options)).toInt(&ok);
-    if (ok)
-        profile->setRightMargin(n, UnitPoint);
-
-    n = QString(cupsGetOption("page-top", dest->num_options, dest->options)).toInt(&ok);
-    if (ok)
-        profile->setTopMargin(n, UnitPoint);
-
-    n = QString(cupsGetOption("page-bottom", dest->num_options, dest->options)).toInt(&ok);
-    if (ok)
-        profile->setBottomMargin(n, UnitPoint);
-
-    cupsFreeDests(num_dests, dests);
-}
-
-
 /************************************************
 
  ************************************************/
@@ -225,7 +89,8 @@ PrinterProfile::PrinterProfile():
     mDuplexType(DuplexManualReverse),
     mDrawBorder(false),
     mReverseOrder(false),
-    mPaperSize(QSizeF(A4_WIDTH_PT, A4_HEIGHT_PT))
+    mPaperSize(QSizeF(A4_WIDTH_PT, A4_HEIGHT_PT)),
+    mColorMode(ColorModeAuto)
 {
 
 }
@@ -378,6 +243,15 @@ void PrinterProfile::setReverseOrder(bool value)
 
 
 /************************************************
+ *
+ ************************************************/
+void PrinterProfile::setColorMode(ColorMode value)
+{
+    mColorMode = value;
+}
+
+
+/************************************************
 
  ************************************************/
 QSizeF PrinterProfile::paperSize(Unit unit) const
@@ -400,15 +274,6 @@ void PrinterProfile::setPaperSize(const QSizeF &paperSize, Unit unit)
 /************************************************
 
  ************************************************/
-void PrinterProfile::setGrayscaleOption(const QString &value)
-{
-    mGrayscaleOption = value;
-}
-
-
-/************************************************
-
- ************************************************/
 void PrinterProfile::readSettings()
 {
     mName           = settings->value(Settings::PrinterProfile_Name,            mName).toString();
@@ -418,11 +283,14 @@ void PrinterProfile::readSettings()
     mBottomMargin   = settings->value(Settings::PrinterProfile_BottomMargin,    mBottomMargin).toDouble();
     mInternalMargin = settings->value(Settings::PrinterProfile_InternalMargin,  mInternalMargin).toDouble();
 
-    QString s = settings->value(Settings::PrinterProfile_DuplexType, duplexTypetoStr(mDuplexType)).toString();
+    QString s = settings->value(Settings::PrinterProfile_DuplexType, duplexTypeToStr(mDuplexType)).toString();
     mDuplexType = strToDuplexType(s);
 
     mDrawBorder     = settings->value(Settings::PrinterProfile_DrawBorder,      mDrawBorder).toBool();
     mReverseOrder   = settings->value(Settings::PrinterProfile_ReverseOrder,    mReverseOrder).toBool();
+
+    s = settings->value(Settings::PrinterProfile_ColorMode, colorModeToStr(mColorMode)).toString();
+    mColorMode      = strToColorMode(s);
 }
 
 
@@ -438,9 +306,10 @@ void PrinterProfile::saveSettings() const
     settings->setValue(Settings::PrinterProfile_BottomMargin,   mBottomMargin);
     settings->setValue(Settings::PrinterProfile_InternalMargin, mInternalMargin);
 
-    settings->setValue(Settings::PrinterProfile_DuplexType,     duplexTypetoStr(mDuplexType));
+    settings->setValue(Settings::PrinterProfile_DuplexType,     duplexTypeToStr(mDuplexType));
     settings->setValue(Settings::PrinterProfile_DrawBorder,     mDrawBorder);
     settings->setValue(Settings::PrinterProfile_ReverseOrder,   mReverseOrder);
+    settings->setValue(Settings::PrinterProfile_ColorMode,      colorModeToStr(mColorMode));
 }
 
 
@@ -454,7 +323,24 @@ Printer::Printer(const QString &printerName):
     mCurrentProfileIndex(-1),
     mCurrentProfile(0)
 {
-    initFromCups(mPrinterName, &mDeviceUri, &mCupsProfile);
+    CupsPrinterOptions cupsOpts(mPrinterName);
+
+    mDeviceUri = cupsOpts.deviceURI();
+    if (!cupsOpts.paperSize().isEmpty())
+    {
+        mCupsProfile.setPaperSize(cupsOpts.paperSize(), UnitPoint);
+        mCupsProfile.setLeftMargin(cupsOpts.leftMargin(), UnitPoint);
+        mCupsProfile.setRightMargin(cupsOpts.rightMargin(), UnitPoint);
+        mCupsProfile.setTopMargin(cupsOpts.topMargin(), UnitPoint);
+        mCupsProfile.setBottomMargin(cupsOpts.bottomMargin(), UnitPoint);
+    }
+
+    if (cupsOpts.duplex())
+        mCupsProfile.setDuplexType(DuplexAuto);
+
+    mGrayscaleOption = cupsOpts.grayScaleOption();
+    mColorOption     = cupsOpts.colorOption();
+
     readSettings();
 }
 
@@ -464,6 +350,7 @@ Printer::Printer(const QString &printerName):
  ************************************************/
 Printer::~Printer()
 {
+
 }
 
 
@@ -609,6 +496,15 @@ QRectF Printer::pageRect(Unit unit) const
 /************************************************
 
  ************************************************/
+bool Printer::isSupportColor() const
+{
+    return !mColorOption.isEmpty();
+}
+
+
+/************************************************
+
+ ************************************************/
 bool Printer::print(const QList<Sheet *> &sheets, const QString &jobName, bool duplex, int numCopies, bool collate) const
 {
 //#define DEBUG_PRINT
@@ -643,8 +539,25 @@ bool Printer::print(const QList<Sheet *> &sheets, const QString &jobName, bool d
     if (collate)
         args << "-o Collate=True";                // Use the -o Collate=True option to get collated copies
 
-    if (project->grayscale() && !mCupsProfile.grayscaleOption().isEmpty())
-            args << "-o " + mCupsProfile.grayscaleOption();
+
+    // Grayscale/color printing .................
+    switch (mCurrentProfile->colorMode())
+    {
+    case ColorModeAuto:
+        break;
+
+    case ColorModeColor:
+        if (!mColorOption.isEmpty())
+            args << "-o " + mColorOption;
+        break;
+
+    case ColorModeGrayscale:
+        if (!mGrayscaleOption.isEmpty())
+            args << "-o " + mGrayscaleOption;
+        break;
+
+    }
+    // Grayscale/color printing .................
 
     args << file.toLocal8Bit();
 
@@ -653,4 +566,6 @@ bool Printer::print(const QList<Sheet *> &sheets, const QString &jobName, bool d
     return true;
 #endif
 }
+
+
 

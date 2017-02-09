@@ -40,7 +40,6 @@ public:
         Layout,
         Printer,
         DoubleSided,
-        Grayscale,
 
         SaveDir,
         SubBookletsEnabled,
@@ -62,6 +61,8 @@ public:
         PrinterProfile_TopMargin,
         PrinterProfile_BottomMargin,
         PrinterProfile_InternalMargin,
+        PrinterProfile_ColorMode,
+
 
         // PrinterSettingsDialog ****************
         PrinterSettingsDialog_Geometry,

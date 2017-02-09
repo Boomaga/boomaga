@@ -134,12 +134,6 @@ MainWindow::MainWindow(QWidget *parent):
     connect(ui->doubleSidedCbx, SIGNAL(clicked(bool)),
             project, SLOT(setDoubleSided(bool)));
 
-    connect(ui->grayscaleCbx, SIGNAL(clicked(bool)),
-            project, SLOT(setGrayscale(bool)));
-
-    connect(ui->grayscaleCbx, SIGNAL(clicked(bool)),
-            ui->preview, SLOT(setGrayscale(bool)));
-
     connect(ui->jobsView, SIGNAL(pageSelected(int)),
             project, SLOT(setCurrentPage(int)));
 
@@ -276,12 +270,20 @@ void MainWindow::loadSettings()
     ui->optionsPanel->setGeometry(0, 0, settings->value(Settings::MainWindow_SplitterPos, 0).toInt(), 0);
     ui->pagesViewTab->setCurrentIndex(settings->value(Settings::MainWindow_PageListTab).toInt());
 
-    Printer *currentPrinter = Printer::printerByName(settings->value(Settings::Printer).toString());
+    QString s = settings->value(Settings::Printer).toString();
+    Printer *currentPrinter = Printer::printerByName(s);
     if (!currentPrinter)
     {
-        QList<Printer*> pl = Printer::availablePrinters();
-        if (!pl.isEmpty())
-            currentPrinter = pl.first();
+        if (mExportPrinter->name() == s)
+        {
+            currentPrinter = mExportPrinter;
+        }
+        else
+        {
+            QList<Printer*> pl = Printer::availablePrinters();
+            if (!pl.isEmpty())
+                currentPrinter = pl.first();
+        }
     }
 
     if (!currentPrinter)
@@ -290,10 +292,6 @@ void MainWindow::loadSettings()
     ui->printersCombo->setCurrentPrinterProfile(currentPrinter->name(), currentPrinter->currentProfile());
     if (ui->printersCombo->currentIndex() < 1)
         ui->printersCombo->setCurrentIndex(ui->printersCombo->findFirstProfile());
-
-    project->setGrayscale(settings->value(Settings::Grayscale).toBool());
-    ui->preview->setGrayscale(project->grayscale());
-    ui->grayscaleCbx->setChecked(project->grayscale());
 
 
     QString layoutId = settings->value(Settings::Layout).toString();
@@ -330,8 +328,6 @@ void MainWindow::saveSettings()
 
     settings->setValue(Settings::Layout, project->layout()->id());
     settings->setValue(Settings::DoubleSided, project->doubleSided());
-
-    settings->setValue(Settings::Grayscale, project->grayscale());
 
 
     if (project->printer() != Printer::nullPrinter())

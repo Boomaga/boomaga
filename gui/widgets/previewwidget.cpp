@@ -150,8 +150,7 @@ PreviewWidget::PreviewWidget(QWidget *parent) :
     QFrame(parent),
     mDisplayedSheetNum(-1),
     mScaleFactor(0),
-    mWheelDelta(0),
-    mGrayscale(false)
+    mWheelDelta(0)
 {
     QPalette pal(palette());
     pal.setColor(QPalette::Background, QColor(105, 101, 98));
@@ -376,6 +375,7 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
 
     QSizeF printerSize =  project->printer()->paperRect().size();
     Rotation rotation = project->rotation();
+    bool grayscale = project->printer()->grayscale();
 
     if (isLandscape(rotation))
         printerSize.transpose();
@@ -422,7 +422,7 @@ void PreviewWidget::paintEvent(QPaintEvent *event)
 
 
     QImage img = mImage.scaled(mDrawRect.size(), Qt::IgnoreAspectRatio, Qt::SmoothTransformation);
-    if (mGrayscale)
+    if (grayscale)
         img = toGrayscale(img);
 
     // Draw .....................................
@@ -568,16 +568,6 @@ void PreviewWidget::refresh()
     mRender->renderSheet(sheet->sheetNum());
 }
 
-
-/************************************************
-
- ************************************************/
-void PreviewWidget::setGrayscale(bool value)
-{
-    mGrayscale = value;
-    update();
-    emit changed();
-}
 
 
 /************************************************

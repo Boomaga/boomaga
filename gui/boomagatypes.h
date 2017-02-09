@@ -40,8 +40,21 @@ enum DuplexType
 
 Q_DECLARE_METATYPE(DuplexType)
 
-QString duplexTypetoStr(DuplexType value);
+QString duplexTypeToStr(DuplexType value);
 DuplexType strToDuplexType(const QString &str);
+
+
+enum ColorMode
+{
+    ColorModeAuto       = 0,
+    ColorModeColor      = 1,
+    ColorModeGrayscale  = 2
+};
+
+Q_DECLARE_METATYPE(ColorMode)
+
+QString colorModeToStr(ColorMode value);
+ColorMode strToColorMode(const QString &str);
 
 
 enum Rotation

@@ -215,6 +215,9 @@ void PagesListView::previewRedy(QImage image, int pageNum)
             }
             else
             {
+                if (project->printer()->grayscale())
+                    image = toGrayscale(image);
+
                 item(i)->setToolTip(QString(TOOLTIP_HTML)
                                 .replace("%IMG%", imageAsText(image))
                                 .arg(toolTip));
@@ -342,7 +345,7 @@ QIcon PagesListView::createIcon(const QImage &image) const
     else
     {
         img = image.scaled(MAX_ICON_SIZE, MAX_ICON_SIZE, Qt::KeepAspectRatio, Qt::SmoothTransformation);
-        if (project->grayscale())
+        if (project->printer()->grayscale())
             img = toGrayscale(img);
     }
 

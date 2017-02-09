@@ -67,11 +67,9 @@ public:
     
     QRectF pageRect(int pageNum) const;
     int pageAt(const QPoint &point) const;
-    bool grayscale() const { return mGrayscale; }
 
 public slots:
     void refresh();
-    void setGrayscale(bool value);
 
 signals:
     void changed();
@@ -96,7 +94,6 @@ private:
     QHash<int, Sheet::Hints> mRequests;
     RenderCache *mRender;
     int mWheelDelta;
-    bool mGrayscale;
 
     void drawShadow(QPainter &painter, QRectF rect);
 };

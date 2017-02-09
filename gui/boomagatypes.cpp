@@ -29,7 +29,7 @@
 /************************************************
 
  ************************************************/
-QString duplexTypetoStr(DuplexType value)
+QString duplexTypeToStr(DuplexType value)
 {
     switch (value)
     {
@@ -52,3 +52,30 @@ DuplexType strToDuplexType(const QString &str)
     return DuplexManualReverse;
 }
 
+
+/************************************************
+
+ ************************************************/
+QString colorModeToStr(ColorMode value)
+{
+    switch (value)
+    {
+    case ColorModeAuto:         return "Auto";
+    case ColorModeGrayscale:    return "Grayscale";
+    case ColorModeColor:        return "Color";
+    }
+    return "";
+}
+
+
+/************************************************
+
+ ************************************************/
+ColorMode strToColorMode(const QString &str)
+{
+    QString s = str.toUpper();
+    if (s == "GRAYSCALE")  return ColorModeGrayscale;
+    if (s == "GRAY")       return ColorModeGrayscale;
+    if (s == "COLOR")      return ColorModeColor;
+    return ColorModeAuto;
+}

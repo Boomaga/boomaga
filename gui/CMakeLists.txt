@@ -38,6 +38,7 @@ set(HEADERS
     kernel/project.h
     kernel/projectpage.h
     kernel/printer.h
+    kernel/cupsprinteroptions.h
     boomagatypes.h
     mainwindow.h
     actions.h
@@ -72,6 +73,7 @@ set(SOURCES
     render.cpp
     kernel/project.cpp
     kernel/projectpage.cpp
+    kernel/cupsprinteroptions.cpp
     kernel/printer.cpp
     boomagatypes.cpp
     mainwindow.cpp

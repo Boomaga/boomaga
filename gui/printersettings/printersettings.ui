@@ -6,8 +6,8 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>526</width>
-    <height>392</height>
+    <width>562</width>
+    <height>439</height>
    </rect>
   </property>
   <layout class="QVBoxLayout" name="verticalLayout_5">
@@ -210,18 +210,17 @@
          <property name="title">
           <string/>
          </property>
+         <property name="flat">
+          <bool>true</bool>
+         </property>
          <layout class="QVBoxLayout" name="verticalLayout_2">
           <property name="topMargin">
            <number>0</number>
           </property>
           <item>
            <layout class="QGridLayout" name="gridLayout">
-            <item row="1" column="1">
-             <widget class="QCheckBox" name="reverseOrderCbx">
-              <property name="text">
-               <string>Print in reverse order</string>
-              </property>
-             </widget>
+            <item row="4" column="1">
+             <widget class="QComboBox" name="colorModeCombo"/>
             </item>
             <item row="0" column="1">
              <widget class="QComboBox" name="duplexTypeComboBox">
@@ -246,10 +245,24 @@
               </property>
              </widget>
             </item>
+            <item row="1" column="1">
+             <widget class="QCheckBox" name="reverseOrderCbx">
+              <property name="text">
+               <string>Print in reverse order</string>
+              </property>
+             </widget>
+            </item>
             <item row="3" column="1">
              <widget class="QCheckBox" name="borderCbx">
               <property name="text">
                <string>Draw border</string>
+              </property>
+             </widget>
+            </item>
+            <item row="4" column="0">
+             <widget class="QLabel" name="colorModeLabel">
+              <property name="text">
+               <string>Color mode:</string>
               </property>
              </widget>
             </item>

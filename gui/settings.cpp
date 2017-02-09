@@ -100,7 +100,6 @@ QString Settings::keyToString(Settings::Key key) const
     case Layout:                        return "Project/Layout";
     case Printer:                       return "Project/Printer";
     case DoubleSided:                   return "Project/DoubleSided";
-    case Grayscale:                     return "Project/Grayscale";
 
     case SaveDir:                       return "Project/SaveDir";
     case SubBookletsEnabled:            return "Project/SubBookletsEnable";
@@ -122,7 +121,7 @@ QString Settings::keyToString(Settings::Key key) const
     case PrinterProfile_TopMargin:      return "TopMargin";
     case PrinterProfile_BottomMargin:   return "BottomMargin";
     case PrinterProfile_InternalMargin: return "InternalMargin";
-
+    case PrinterProfile_ColorMode:      return "ColorMode";
 
     // PrinterSettingsDialog ****************
     case PrinterSettingsDialog_Geometry:return "PrinterSettingsDialog/Geometry";
@@ -154,7 +153,6 @@ void Settings::init()
     setIniCodec("UTF-8");
     setDefaultValue(Layout,   "1up");
     setDefaultValue(DoubleSided, true);
-    setDefaultValue(Grayscale, false);
     setDefaultValue(ExportPDF_FileName, tr("~/Untitled.pdf"));
     setDefaultValue(SaveDir, QDir::homePath());
     setDefaultValue(SubBookletsEnabled, true);

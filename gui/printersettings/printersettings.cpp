@@ -118,6 +118,10 @@ PrinterSettings::PrinterSettings(QWidget *parent) :
     ui->duplexTypeComboBox->addItem(tr("Manual with reverse (suitable for most printers)"), DuplexManualReverse);
     ui->duplexTypeComboBox->addItem(tr("Manual without reverse"), DuplexManual);
 
+    ui->colorModeCombo->addItem(tr("Default"), ColorModeAuto);
+    ui->colorModeCombo->addItem(tr("Force grayscale"), ColorModeGrayscale);
+    ui->colorModeCombo->addItem(tr("Force color"), ColorModeColor);
+
 
     QPalette pal(palette());
     pal.setColor(QPalette::Background, QColor(105, 101, 98));
@@ -242,6 +246,9 @@ void PrinterSettings::updateProfile()
     profile->setDuplexType(static_cast<DuplexType>(v.toInt()));
     profile->setDrawBorder(ui->borderCbx->isChecked());
     profile->setReverseOrder(ui->reverseOrderCbx->isChecked());
+
+    v = ui->colorModeCombo->itemData(ui->colorModeCombo->currentIndex());
+    profile->setColorMode(static_cast<ColorMode>(v.toInt()));
 }
 
 
@@ -262,6 +269,18 @@ void PrinterSettings::updateWidgets()
     ui->bottomMarginSpin->setValue(profile->bottomMargin(mUnit));
     ui->internalMarginSpin->setValue(profile->internalMargin(mUnit));
     ui->delProfileButton->setEnabled(ui->profilesList->count() > 1);
+
+    if (mPrinter->isSupportColor())
+    {
+        ui->colorModeCombo->setEnabled(true);
+        n = ui->colorModeCombo->findData(profile->colorMode());
+        ui->colorModeCombo->setCurrentIndex(n);
+    }
+    else
+    {
+        ui->colorModeCombo->setEnabled(false);
+        ui->colorModeCombo->setCurrentIndex(0);
+    }
 }
 
 
