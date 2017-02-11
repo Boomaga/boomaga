@@ -35,7 +35,6 @@
 #include "printersettings/printersettings.h"
 #include "aboutdialog/aboutdialog.h"
 #include "actions.h"
-#include "export/exporttopdfprinter.h"
 #include "icon.h"
 #include "configdialog/configdialog.h"
 #include "boomagatypes.h"
@@ -71,7 +70,6 @@ MainWindow::MainWindow(QWidget *parent):
 
     setStyleSheet("QListView::item { padding: 2px;}");
 
-    mExportPrinter = new ExportToPDFPrinter();
     fillPrintersCombo();
 
     initStatusBar();
@@ -204,8 +202,6 @@ void MainWindow::fillPrintersCombo()
         combo->addPrinter(printer);
     }
 
-    combo->insertSeparator(99999);
-    combo->addPrinter(mExportPrinter);
 
     int index = combo->findItem(prevPrinter, prevProfile);
 
@@ -274,16 +270,9 @@ void MainWindow::loadSettings()
     Printer *currentPrinter = Printer::printerByName(s);
     if (!currentPrinter)
     {
-        if (mExportPrinter->name() == s)
-        {
-            currentPrinter = mExportPrinter;
-        }
-        else
-        {
-            QList<Printer*> pl = Printer::availablePrinters();
-            if (!pl.isEmpty())
-                currentPrinter = pl.first();
-        }
+        QList<Printer*> pl = Printer::availablePrinters();
+        if (!pl.isEmpty())
+            currentPrinter = pl.first();
     }
 
     if (!currentPrinter)
@@ -1311,10 +1300,26 @@ void MainWindow::saveAs(const QString &fileName)
  * ***********************************************/
 void MainWindow::exportAs()
 {
-    Printer *prevPrinter = project->printer();
-    project->setPrinterProfile(mExportPrinter, mExportPrinter->currentProfile(), false);
-    print();
-    project->setPrinterProfile(prevPrinter, prevPrinter->currentProfile(), false);
+    QString fileName = settings->value(Settings::ExportPDF_FileName).toString();
+
+    ExportToPdf dialog;
+    dialog.setOutFileName(fileName);
+    dialog.setMetaInfo(project->metaData());
+
+    dialog.setModal(true);
+    if (!dialog.exec())
+        return;
+
+    fileName = dialog.outFileName();
+    settings->setValue(Settings::ExportPDF_FileName, fileName);
+
+    if (fileName.startsWith("~"))
+        fileName.replace("~", QDir::homePath());
+
+    project->setMetadata(dialog.metaInfo());
+
+    QList<Sheet*> sheets = project->selectSheets(Project::AllPages, Project::ForwardOrder);
+    project->writeDocument(sheets, fileName);
 }
 
 

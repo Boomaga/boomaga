@@ -111,7 +111,6 @@ private:
 
     QProgressBar mProgressBar;
     QString      mSaveFile;
-    ExportToPDFPrinter *mExportPrinter;
 
     void fillPrintersCombo();
     void initActions();

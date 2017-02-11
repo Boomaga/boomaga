@@ -49,7 +49,6 @@ set(HEADERS
     aboutdialog/aboutdialog.h
     translations/translatorsinfo/translatorsinfo.h
     export/exporttopdf.h
-    export/exporttopdfprinter.h
     kernel/boomagapoppler.h
     kernel/projectfile.h
     pdfmerger/pdfmergeripc.h
@@ -85,7 +84,6 @@ set(SOURCES
     aboutdialog/aboutdialog.cpp
     translations/translatorsinfo/translatorsinfo.cpp
     export/exporttopdf.cpp
-    export/exporttopdfprinter.cpp
     kernel/boomagapoppler.cpp
     kernel/projectfile.cpp
     pdfmerger/pdfmergeripc.cpp
