@@ -110,7 +110,7 @@ CupsPrinterOptions::CupsPrinterOptions(const QString &printerName):
             {
                 mPaperSize    = QSizeF(size->width, size->length);
                 mLeftMargin   = size->left;
-                mRightMargin  = size->width;
+                mRightMargin  = size->width - size->right;
                 mTopMargin    = size->length - size->top;
                 mBottomMargin = size->bottom;
             }
