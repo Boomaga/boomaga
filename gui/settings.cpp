@@ -28,9 +28,18 @@
 #include <QDir>
 #include <QDebug>
 
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
+#include <QDesktopServices>
+#else
+#include <QStandardPaths>
+#endif
+
+
 #define MAINWINDOW_GROUP "MainWindow"
 #define PROJECT_GROUP "Project"
 #define PRINTERS_GROUP "Printer"
+
+
 
 QString Settings::mFileName;
 
@@ -105,6 +114,12 @@ QString Settings::keyToString(Settings::Key key) const
     case SubBookletsEnabled:            return "Project/SubBookletsEnable";
     case SubBookletSize:                return "Project/SubBookletSize";
 
+    case AllowNegativeMargins:          return "Project/AllowNegativeMargins";
+    case AutoSave:                      return "Project/AutoSave";
+    case AutoSaveDir:                   return "Project/AutoSaveDir";
+    case RecentFiles:                   return "Project/RecentFiles";
+
+
     // Printer ******************************
     case Printer_CurrentProfile:        return "CurrentProfile";
     case Printer_CopiesNum:             return "Printer/CopiesNum";
@@ -159,6 +174,18 @@ void Settings::init()
     setDefaultValue(SubBookletSize, 20);
     setDefaultValue(MainWindow_PageListIconSize, 64);
     setDefaultValue(MainWindow_PageListTab, 0);
+
+    setDefaultValue(AllowNegativeMargins, false);
+    setDefaultValue(AutoSave, false);
+
+#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
+    QString dir = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
+#else
+    QString dir = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
+#endif
+    dir.replace(QDir::homePath(), "~");
+    setDefaultValue(AutoSaveDir, QDir(dir).filePath("Boomaga files"));
+
 }
 
 

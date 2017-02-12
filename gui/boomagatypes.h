@@ -116,5 +116,6 @@ T* findExistingForm()
     return 0;
 }
 
+QString safeFileName(const QString &str);
 
 #endif // BOOMAGATYPES_H

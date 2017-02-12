@@ -270,11 +270,19 @@
     <property name="title">
      <string>&amp;File</string>
     </property>
+    <widget class="QMenu" name="menuRecentFiles">
+     <property name="title">
+      <string>Recent files</string>
+     </property>
+     <addaction name="actionFake"/>
+    </widget>
     <addaction name="actionPrintAndClose"/>
     <addaction name="actionPrint"/>
     <addaction name="actionPrintWithOptions"/>
     <addaction name="separator"/>
     <addaction name="actionOpen"/>
+    <addaction name="menuRecentFiles"/>
+    <addaction name="separator"/>
     <addaction name="actionSave"/>
     <addaction name="actionSaveAs"/>
     <addaction name="actionExport"/>
@@ -408,6 +416,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+P</string>
+   </property>
+  </action>
+  <action name="actionFake">
+   <property name="text">
+    <string>fake</string>
    </property>
   </action>
  </widget>

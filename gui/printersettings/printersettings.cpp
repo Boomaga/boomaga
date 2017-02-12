@@ -109,6 +109,15 @@ PrinterSettings::PrinterSettings(QWidget *parent) :
 
     ui->setupUi(this);
 
+    if (settings->value(Settings::AllowNegativeMargins).toBool())
+    {
+        ui->leftMarginSpin->setMinimum(-(ui->leftMarginSpin->maximum()));
+        ui->rightMarginSpin->setMinimum(-(ui->rightMarginSpin->maximum()));
+        ui->topMarginSpin->setMinimum(-(ui->topMarginSpin->maximum()));
+        ui->bottomMarginSpin->setMinimum(-(ui->bottomMarginSpin->maximum()));
+        ui->internalMarginSpin->setMinimum(-(ui->internalMarginSpin->maximum()));
+    }
+
     ui->leftMarginSpin->installEventFilter(this);
     ui->rightMarginSpin->installEventFilter(this);
     ui->topMarginSpin->installEventFilter(this);

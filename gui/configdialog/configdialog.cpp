@@ -111,6 +111,10 @@ void ConfigDialog::loadSettings()
 {
     ui->bookletGroupBox->setChecked(settings->value(Settings::SubBookletsEnabled).toBool());
     ui->bookletSheetsPerPageSpinBox->setValue(settings->value(Settings::SubBookletSize).toInt());
+
+    ui->autoSaveGroupBox->setChecked(settings->value(Settings::AutoSave).toBool());
+    ui->autoSaveDirEdit->setText(settings->value(Settings::AutoSaveDir).toString());
+    ui->negativeMargins->setChecked(settings->value(Settings::AllowNegativeMargins).toBool());
 }
 
 
@@ -119,19 +123,23 @@ void ConfigDialog::loadSettings()
  ************************************************/
 void ConfigDialog::saveSettings()
 {
-    bool changed = false;
+    bool upadateProject = false;
     if (settings->value(Settings::SubBookletsEnabled).toBool() != ui->bookletGroupBox->isChecked())
     {
-        changed = true;
+        upadateProject = true;
         settings->setValue(Settings::SubBookletsEnabled, ui->bookletGroupBox->isChecked());
     }
 
     if (settings->value(Settings::SubBookletSize).toInt() != ui->bookletSheetsPerPageSpinBox->value())
     {
-        changed = true;
+        upadateProject = true;
         settings->setValue(Settings::SubBookletSize, ui->bookletSheetsPerPageSpinBox->value());
     }
 
-    if (changed)
+    settings->setValue(Settings::AutoSave, ui->autoSaveGroupBox->isChecked());
+    settings->setValue(Settings::AutoSaveDir, ui->autoSaveDirEdit->text());
+    settings->setValue(Settings::AllowNegativeMargins, ui->negativeMargins->isChecked());
+
+    if (upadateProject)
         project->update();
 }

@@ -40,6 +40,7 @@
 #include "boomagatypes.h"
 #include "export/exporttopdf.h"
 #include "printdialog/printdialog.h"
+#include "boomagatypes.h"
 
 #include <math.h>
 #include <QRadioButton>
@@ -53,6 +54,8 @@
 #include <QFileDialog>
 #include <QMimeData>
 #include <QInputDialog>
+#include <QDateTime>
+#include <QMenu>
 
 
 /************************************************
@@ -165,6 +168,10 @@ MainWindow::MainWindow(QWidget *parent):
 
     connect(ui->jobsView, SIGNAL(contextMenuRequested(Job)),
             this, SLOT(showJobViewContextMenu(Job)));
+
+
+    connect(ui->menuFile, SIGNAL(aboutToShow()),
+            this, SLOT(fillRecentFiles()));
 
     ui->preview->setFocusPolicy(Qt::StrongFocus);
     ui->preview->setFocus();
@@ -391,6 +398,8 @@ void MainWindow::initActions()
     act = ui->actionAbout;
     connect(act, SIGNAL(triggered()),
             this, SLOT(showAboutDialog()));
+
+
 }
 
 
@@ -572,6 +581,8 @@ bool MainWindow::print(uint count, bool collate)
     Keeper keeper;
     if (!project->sheetCount())
         return false;
+
+    saveAuto();
 
     bool res = true;
     bool showDialog = project->printer()->isShowProgressDialog();
@@ -1281,7 +1292,7 @@ void MainWindow::saveAs(const QString &fileName)
 
     mSaveFile = file;
     settings->setValue(Settings::SaveDir, QFileInfo(file).path());
-
+    addToRecentFiles(file);
 
     try
     {
@@ -1340,6 +1351,98 @@ void MainWindow::load()
     try
     {
         project->load(fileName);
+    }
+    catch (QString &err)
+    {
+        project->error(err);
+    }
+}
+
+/************************************************
+ *
+ ************************************************/
+void MainWindow::fillRecentFiles()
+{
+    QList<QAction*> acts = ui->menuRecentFiles->actions();
+    qDeleteAll(acts);
+    ui->menuRecentFiles->clear();
+
+    QStringList recentFiles = settings->value(Settings::RecentFiles).toStringList();
+    foreach (QString file, recentFiles)
+    {
+        QAction *act = new QAction(ui->menuRecentFiles);
+        act->setText(QFileInfo(file).fileName());
+        act->setData(file);
+        ui->menuRecentFiles->addAction(act);
+        connect(act, SIGNAL(triggered()),
+                this, SLOT(loadAuto()));
+    }
+
+    ui->menuRecentFiles->setEnabled(ui->menuRecentFiles->actions().count());
+}
+
+
+/************************************************
+
+ ************************************************/
+void MainWindow::addToRecentFiles(const QString &file)
+{
+    QStringList recentFiles = settings->value(Settings::RecentFiles).toStringList();
+    recentFiles.removeAll(file);
+    recentFiles << file;
+
+    while (recentFiles.size() > 20)
+        recentFiles.removeFirst();
+
+    settings->setValue(Settings::RecentFiles, recentFiles);
+}
+
+/************************************************
+
+ ************************************************/
+void MainWindow::saveAuto()
+{
+    qDebug() << settings->value(Settings::AutoSave).toBool();
+    qDebug() << settings->value(Settings::AutoSaveDir).toString();
+    if (!settings->value(Settings::AutoSave).toBool())
+            return;
+
+    QString dir = settings->value(Settings::AutoSaveDir).toString();
+    if (dir.startsWith("~"))
+        dir.replace(0, 1, QDir::homePath());
+
+    qDebug() << dir;
+
+    if (!QDir().mkpath(dir))
+    {
+        qWarning() << QString("Can't create autosave directory '%1'").arg(dir);
+        QMessageBox::warning(this, tr("Auto saving"), tr("I can't create dorctory \"%1\"")
+                             .arg(dir));
+        return;
+    }
+
+    QString file = QString("[%1]-%2.boo")
+            .arg(QDateTime::currentDateTime().toString("yyyy.MM.dd-hh:mm:ss"))
+            .arg(safeFileName(safeFileName(project->jobs()->first().title(true))));
+
+    file = dir + "/" + file;
+    addToRecentFiles(file);
+    project->save(file);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void MainWindow::loadAuto()
+{
+    QAction *act = qobject_cast<QAction*>(sender());
+    if (!act)
+        return;
+
+    try
+    {
+        project->load(act->data().toString());
     }
     catch (QString &err)
     {

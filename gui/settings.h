@@ -44,6 +44,10 @@ public:
         SaveDir,
         SubBookletsEnabled,
         SubBookletSize,
+        AllowNegativeMargins,
+        AutoSave,
+        AutoSaveDir,
+        RecentFiles,
 
         // Printer ******************************
         Printer_CurrentProfile,

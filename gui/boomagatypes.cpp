@@ -79,3 +79,19 @@ ColorMode strToColorMode(const QString &str)
     if (s == "COLOR")      return ColorModeColor;
     return ColorModeAuto;
 }
+
+
+/************************************************
+
+ ************************************************/
+QString safeFileName(const QString &str)
+{
+    QString res = str;
+    res.replace('|', "-");
+    res.replace('/', "-");
+    res.replace('\\', "-");
+    res.replace(':', "-");
+    res.replace('*', "-");
+    res.replace('?', "-");
+    return res;
+}

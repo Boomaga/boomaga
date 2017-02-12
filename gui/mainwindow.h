@@ -76,7 +76,6 @@ private slots:
     void deletePagesEnd();
     void insertBlankPageBefore();
     void insertBlankPageAfter();
-
     void cloneJob();
     void deleteJob();
     void renameJob();
@@ -95,6 +94,9 @@ private slots:
     void saveAs(const QString &fileName = "");
     void exportAs();
     void load();
+
+    void fillRecentFiles();
+    void loadAuto();
 
 protected:
     void closeEvent(QCloseEvent *event);
@@ -120,6 +122,9 @@ private:
     void saveSettings();
 
     QMessageBox *showPrintDialog(const QString &text);
+    void saveAuto();
+
+    void addToRecentFiles(const QString &file);
 };
 
 #endif // MAINWINDOW_H
