@@ -118,4 +118,7 @@ T* findExistingForm()
 
 QString safeFileName(const QString &str);
 
+QString expandHomeDir(const QString &fileName);
+QString shrinkHomeDir(const QString &fileName);
+
 #endif // BOOMAGATYPES_H

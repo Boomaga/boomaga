@@ -25,6 +25,7 @@
 
 #include "boomagatypes.h"
 #include <QDebug>
+#include <QDir>
 
 /************************************************
 
@@ -94,4 +95,33 @@ QString safeFileName(const QString &str)
     res.replace('*', "-");
     res.replace('?', "-");
     return res;
+}
+
+
+/************************************************
+
+ ************************************************/
+QString expandHomeDir(const QString &fileName)
+{
+    QString res = fileName;
+
+    if (res.startsWith("~"))
+        res.replace("~", QDir::homePath());
+
+    return res;
+}
+
+
+/************************************************
+
+ ************************************************/
+QString shrinkHomeDir(const QString &fileName)
+{
+    QString res = fileName;
+
+    if (res.startsWith(QDir::homePath()))
+        res.replace(QDir::homePath(), "~");
+
+    return res;
+
 }

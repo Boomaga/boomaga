@@ -28,6 +28,7 @@
 #include "ui_configdialog.h"
 #include "../settings.h"
 #include <QDebug>
+#include <QFileDialog>
 
 
 /************************************************
@@ -58,13 +59,13 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
     ui(new Ui::ConfigDialog)
 {
     ui->setupUi(this);
-
-    int width = settings->value("ConfigureDialog/Width").toInt();
-    int height = settings->value("ConfigureDialog/Height").toInt();
-    resize(width, height);
+    restoreGeometry(settings->value(Settings::Preferences_Geometry).toByteArray());
 
     connect(ui->bookletGroupBox, SIGNAL(clicked(bool)),
             this, SLOT(bookletGroupBoxClicked(bool)));
+
+    connect(ui->autoSaveDirBtn, SIGNAL(clicked()),
+            this, SLOT(openAutoSaveDirDialog()));
 }
 
 
@@ -82,8 +83,7 @@ ConfigDialog::~ConfigDialog()
  ************************************************/
 void ConfigDialog::done(int res)
 {
-    settings->setValue("ConfigureDialog/Width",  size().width());
-    settings->setValue("ConfigureDialog/Height", size().height());
+    settings->setValue(Settings::Preferences_Geometry, saveGeometry());
 
     if (res)
         saveSettings();
@@ -142,4 +142,19 @@ void ConfigDialog::saveSettings()
 
     if (upadateProject)
         project->update();
+}
+
+
+/************************************************
+
+ ************************************************/
+void ConfigDialog::openAutoSaveDirDialog()
+{
+
+    QString dir = expandHomeDir(ui->autoSaveDirEdit->text());
+    dir = QFileDialog::getExistingDirectory(this, tr("Select directory for saved jobs."), dir);
+    if (!dir.isEmpty())
+    {
+        ui->autoSaveDirEdit->setText(shrinkHomeDir(dir));
+    }
 }

@@ -139,10 +139,7 @@ void ExportToPdf::setMetaInfo(const MetaData &value)
  * ***********************************************/
 void ExportToPdf::accept()
 {
-    QString fileName = outFileName();
-
-    if (fileName.startsWith("~"))
-        fileName.replace("~", QDir::homePath());
+    QString fileName = expandHomeDir(outFileName());
 
     if(QFileInfo(fileName).exists())
     {

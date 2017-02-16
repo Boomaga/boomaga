@@ -49,12 +49,15 @@ public:
         AutoSaveDir,
         RecentFiles,
 
+        // Preferences **************************
+        Preferences_Geometry,
+
         // Printer ******************************
         Printer_CurrentProfile,
         Printer_CopiesNum,
         Printer_CollateCopies,
 
-        // PrinterProfile ******************************
+        // PrinterProfile ***********************
         PrinterProfile_Name,
         PrinterProfile_DuplexType,
         PrinterProfile_DrawBorder,

@@ -119,6 +119,8 @@ QString Settings::keyToString(Settings::Key key) const
     case AutoSaveDir:                   return "Project/AutoSaveDir";
     case RecentFiles:                   return "Project/RecentFiles";
 
+    // Preferences **************************
+    case Preferences_Geometry:          return "Preferences/Geometry";
 
     // Printer ******************************
     case Printer_CurrentProfile:        return "CurrentProfile";
@@ -183,7 +185,7 @@ void Settings::init()
 #else
     QString dir = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
 #endif
-    dir.replace(QDir::homePath(), "~");
+    dir = shrinkHomeDir(dir);
     setDefaultValue(AutoSaveDir, QDir(dir).filePath("Boomaga files"));
 
 }

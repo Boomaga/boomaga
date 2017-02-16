@@ -48,6 +48,7 @@ private slots:
     void loadSettings();
     void saveSettings();
 
+    void openAutoSaveDirDialog();
 private:
     Ui::ConfigDialog *ui;
 

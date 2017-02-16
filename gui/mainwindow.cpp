@@ -1340,9 +1340,7 @@ void MainWindow::exportAs()
 
     fileName = dialog.outFileName();
     settings->setValue(Settings::ExportPDF_FileName, fileName);
-
-    if (fileName.startsWith("~"))
-        fileName.replace("~", QDir::homePath());
+    fileName = expandHomeDir(fileName);
 
     project->setMetadata(dialog.metaInfo());
 
