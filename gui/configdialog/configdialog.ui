@@ -64,7 +64,7 @@
       <item row="0" column="0">
        <widget class="QLabel" name="label">
         <property name="text">
-         <string>Dirctory for saved sessions:</string>
+         <string>Directory for saved sessions:</string>
         </property>
        </widget>
       </item>

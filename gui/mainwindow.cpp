@@ -1427,7 +1427,7 @@ void MainWindow::saveAuto()
     if (!QDir().mkpath(dir))
     {
         qWarning() << QString("Can't create autosave directory '%1'").arg(dir);
-        QMessageBox::warning(this, tr("Auto saving"), tr("I can't create dorctory \"%1\"")
+        QMessageBox::warning(this, tr("Auto saving"), tr("I can't create directory \"%1\"")
                              .arg(dir));
         return;
     }
