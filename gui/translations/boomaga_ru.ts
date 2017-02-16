@@ -80,6 +80,34 @@
         <source>Sheets per sub-booklet:</source>
         <translation>Листов в тетради:</translation>
     </message>
+    <message>
+        <source>Autosave your jobs every time you print.</source>
+        <translation>Автоматически сохранять задания после печати.</translation>
+    </message>
+    <message>
+        <source>AutoSave the recent sessions</source>
+        <translation>Автоматически сохранять сесии</translation>
+    </message>
+    <message>
+        <source>Dirctory for saved sessions:</source>
+        <translation>Директория для сохранения сессий:</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Allow negative page margins:</source>
+        <translation>Разрешать отрицательные поля:</translation>
+    </message>
+    <message>
+        <source>Select directory for saved jobs.</source>
+        <translation>Укажите директорию для сохранения.</translation>
+    </message>
+    <message>
+        <source>Directory for saved sessions:</source>
+        <translation>Директория для сохраненных сессий:</translation>
+    </message>
 </context>
 <context>
     <name>ExportToPdf</name>
@@ -308,10 +336,6 @@ Are you sure you want to overwrite it?</source>
         <translation>Вставить пустую страницу перед этой</translation>
     </message>
     <message>
-        <source>Delete pages until the end of the job.</source>
-        <translation>Удалить страницы до конца задания. </translation>
-    </message>
-    <message>
         <source>Save</source>
         <translation>Сохранить</translation>
     </message>
@@ -409,16 +433,8 @@ Are you sure you want to overwrite it?</source>
         <translation>Повернуть задание по часовой стрелке</translation>
     </message>
     <message>
-        <source>Delete job</source>
-        <translation>Удалить</translation>
-    </message>
-    <message>
         <source>Job title:</source>
         <translation>Имя задания:</translation>
-    </message>
-    <message>
-        <source>&amp;Export...</source>
-        <translation>&amp;Экспортировать...</translation>
     </message>
     <message>
         <source>Export the project to PDF</source>
@@ -461,19 +477,54 @@ Are you sure you want to overwrite it?</source>
         <translation>Отменить удаление страниц</translation>
     </message>
     <message>
-        <source>Print in grayscale</source>
-        <comment>MainForm::Grayscale checkbox tooltip</comment>
-        <translation>Печать в оттенках серого</translation>
-    </message>
-    <message>
-        <source>Grayscale</source>
-        <comment>MainForm::Grayscale checkbox</comment>
-        <translation>Оттенки серого</translation>
-    </message>
-    <message>
         <source>Page %1 of %2</source>
         <comment>Status bar</comment>
         <translation>Стр. %1 из %2</translation>
+    </message>
+    <message>
+        <source>Recent files</source>
+        <translation>Недавние файлы</translation>
+    </message>
+    <message>
+        <source>&amp;Edit page</source>
+        <translation>Редактирование &amp;страницы</translation>
+    </message>
+    <message>
+        <source>Edit &amp;job</source>
+        <translation>Редактирование &amp;задания</translation>
+    </message>
+    <message>
+        <source>&amp;Export to PDF...</source>
+        <translation>&amp;Экспортировать в PDF...</translation>
+    </message>
+    <message>
+        <source>fake</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Delete pages until the end of the job</source>
+        <translation>Удалить страницы до конца задания. </translation>
+    </message>
+    <message>
+        <source>%1 %2: Page %3</source>
+        <comment>'Undo deletion' menu item</comment>
+        <translation>%1 %2: страница %3</translation>
+    </message>
+    <message>
+        <source>Delete current job</source>
+        <translation>Удалить текущее задание</translation>
+    </message>
+    <message>
+        <source>Auto saving</source>
+        <translation>Авто сохраниение</translation>
+    </message>
+    <message>
+        <source>I can&apos;t create directory &quot;%1&quot;</source>
+        <translation>Не получилось создать директорию &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
@@ -566,6 +617,22 @@ Are you sure you want to overwrite it?</source>
         <comment>Defaul name for created printer profile in the Printer Settings diaog</comment>
         <translation>Профиль %1</translation>
     </message>
+    <message>
+        <source>Color mode:</source>
+        <translation>Режим цвета:</translation>
+    </message>
+    <message>
+        <source>Default</source>
+        <translation>По умолчанию</translation>
+    </message>
+    <message>
+        <source>Force grayscale</source>
+        <translation>Градации серого</translation>
+    </message>
+    <message>
+        <source>Force color</source>
+        <translation>Цветной</translation>
+    </message>
 </context>
 <context>
     <name>Project</name>
@@ -619,10 +686,6 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
         <translation>Не получилось открыть файл: &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <source>Print to file (PDF)</source>
-        <translation>Сохранить как PDF файл</translation>
     </message>
     <message>
         <source>I can&apos;t read from file &apos;%1&apos;</source>

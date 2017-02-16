@@ -274,7 +274,6 @@
      <property name="title">
       <string>Recent files</string>
      </property>
-     <addaction name="actionFake"/>
     </widget>
     <addaction name="actionPrintAndClose"/>
     <addaction name="actionPrint"/>
@@ -428,11 +427,6 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+P</string>
-   </property>
-  </action>
-  <action name="actionFake">
-   <property name="text">
-    <string>fake</string>
    </property>
   </action>
  </widget>

@@ -80,6 +80,34 @@
         <source>Sheets per sub-booklet:</source>
         <translation>Blätter pro sub-booklet:</translation>
     </message>
+    <message>
+        <source>Autosave your jobs every time you print.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>AutoSave the recent sessions</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Dirctory for saved sessions:</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Allow negative page margins:</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Select directory for saved jobs.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Directory for saved sessions:</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>ExportToPdf</name>
@@ -308,10 +336,6 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
         <translation>Leere Seite vor dieser Seite einfügen</translation>
     </message>
     <message>
-        <source>Delete pages until the end of the job.</source>
-        <translation>Seiten ab hier bis zum Ende löschen.</translation>
-    </message>
-    <message>
         <source>Save</source>
         <translation>Speichern</translation>
     </message>
@@ -409,16 +433,8 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
         <translation>Druckauftrag nach rechts drehen</translation>
     </message>
     <message>
-        <source>Delete job</source>
-        <translation>Druckauftrag löschen</translation>
-    </message>
-    <message>
         <source>Job title:</source>
         <translation>Titel des Druckauftrags:</translation>
-    </message>
-    <message>
-        <source>&amp;Export...</source>
-        <translation>&amp;Exportieren...</translation>
     </message>
     <message>
         <source>Export the project to PDF</source>
@@ -458,22 +474,57 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
     <message>
         <source>Undo delete page</source>
-        <translation>Seite rückgängig löschen</translation>
-    </message>
-    <message>
-        <source>Print in grayscale</source>
-        <comment>MainForm::Grayscale checkbox tooltip</comment>
-        <translation>In Graustufen drucken</translation>
-    </message>
-    <message>
-        <source>Grayscale</source>
-        <comment>MainForm::Grayscale checkbox</comment>
-        <translation>Graustufen</translation>
+        <translation>Gelöschte Seite wiederherstellen</translation>
     </message>
     <message>
         <source>Page %1 of %2</source>
         <comment>Status bar</comment>
         <translation>Seite %1 von %2</translation>
+    </message>
+    <message>
+        <source>Recent files</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>&amp;Edit page</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Edit &amp;job</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>&amp;Export to PDF...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>fake</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Delete pages until the end of the job</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1 %2: Page %3</source>
+        <comment>'Undo deletion' menu item</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Delete current job</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Auto saving</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>I can&apos;t create directory &quot;%1&quot;</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -566,6 +617,22 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
         <comment>Defaul name for created printer profile in the Printer Settings diaog</comment>
         <translation>Profil %1</translation>
     </message>
+    <message>
+        <source>Color mode:</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Default</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Force grayscale</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Force color</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>Project</name>
@@ -619,10 +686,6 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
         <translation>Datei &quot;%1&quot; konnte nicht geöffnet werden</translation>
-    </message>
-    <message>
-        <source>Print to file (PDF)</source>
-        <translation>In Datei drucken (PDF)</translation>
     </message>
     <message>
         <source>I can&apos;t read from file &apos;%1&apos;</source>

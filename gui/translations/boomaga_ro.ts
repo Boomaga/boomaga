@@ -80,6 +80,34 @@
         <source>Sheets per sub-booklet:</source>
         <translation>Pagini per sub-broșură:</translation>
     </message>
+    <message>
+        <source>Autosave your jobs every time you print.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>AutoSave the recent sessions</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Dirctory for saved sessions:</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Allow negative page margins:</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Select directory for saved jobs.</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Directory for saved sessions:</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>ExportToPdf</name>
@@ -308,10 +336,6 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
         <translation>Introdu o pagină albă înainte de pagina curentă</translation>
     </message>
     <message>
-        <source>Delete pages until the end of the job.</source>
-        <translation>Șterge paginile până la sfârșitul sarcinii.</translation>
-    </message>
-    <message>
         <source>Save</source>
         <translation>Salvează</translation>
     </message>
@@ -409,16 +433,8 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
         <translation>Rotește sarcina spre dreapta</translation>
     </message>
     <message>
-        <source>Delete job</source>
-        <translation>Șterge sarcina</translation>
-    </message>
-    <message>
         <source>Job title:</source>
         <translation>Titlul sarcinii:</translation>
-    </message>
-    <message>
-        <source>&amp;Export...</source>
-        <translation>&amp;Exportă...</translation>
     </message>
     <message>
         <source>Export the project to PDF</source>
@@ -461,18 +477,53 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
         <translation type="unfinished"/>
     </message>
     <message>
-        <source>Print in grayscale</source>
-        <comment>MainForm::Grayscale checkbox tooltip</comment>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>Grayscale</source>
-        <comment>MainForm::Grayscale checkbox</comment>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>Page %1 of %2</source>
         <comment>Status bar</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Recent files</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>&amp;Edit page</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Edit &amp;job</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>&amp;Export to PDF...</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>fake</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Delete pages until the end of the job</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1 %2: Page %3</source>
+        <comment>'Undo deletion' menu item</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Delete current job</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Auto saving</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>I can&apos;t create directory &quot;%1&quot;</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -566,6 +617,22 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
         <comment>Defaul name for created printer profile in the Printer Settings diaog</comment>
         <translation>Profilul %1</translation>
     </message>
+    <message>
+        <source>Color mode:</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Default</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Force grayscale</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Force color</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>Project</name>
@@ -619,10 +686,6 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
         <translation>Nu pot deschide fișierul &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <source>Print to file (PDF)</source>
-        <translation>Imprimează în fișier (PDF)</translation>
     </message>
     <message>
         <source>I can&apos;t read from file &apos;%1&apos;</source>
