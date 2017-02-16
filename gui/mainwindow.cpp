@@ -169,9 +169,14 @@ MainWindow::MainWindow(QWidget *parent):
     connect(ui->jobsView, SIGNAL(contextMenuRequested(Job)),
             this, SLOT(showJobViewContextMenu(Job)));
 
-
     connect(ui->menuFile, SIGNAL(aboutToShow()),
             this, SLOT(fillRecentFiles()));
+
+    connect(ui->menuEditPage, SIGNAL(aboutToShow()),
+            this, SLOT(showEditPageMainMenu()));
+
+    connect(ui->menuEditJob, SIGNAL(aboutToShow()),
+            this, SLOT(showEditJobMainMenu()));
 
     ui->preview->setFocusPolicy(Qt::StrongFocus);
     ui->preview->setFocus();
@@ -819,136 +824,9 @@ void MainWindow::updateProgressBar(int value, int all)
  * ***********************************************/
 void MainWindow::showPreviewContextMenu(Sheet *sheet, ProjectPage *page)
 {
-    Job job;
-
-    if (page)
-    {
-        int n = project->jobs()->indexOfProjectPage(page);
-        if (n<0)
-            return;
-
-        job = project->jobs()->at(n);
-    }
-
-    QMenu *menu = new QMenu(this);
-
-    // New subbooklet ................................
-    if (page && (page != project->page(0)))
-    {
-        if (!page->isManualStartSubBooklet())
-        {
-            PageAction *act = new PageAction(tr("Start new booklet from this page"), sheet, page, menu);
-            connect(act, SIGNAL(triggered()),
-                    this, SLOT(startBooklet()));
-            menu->addAction(act);
-        }
-        else
-        {
-            PageAction *act = new PageAction(tr("Don't start new booklet from this page"), sheet, page, menu);
-            connect(act, SIGNAL(triggered()),
-                    this, SLOT(dontStartBooklet()));
-            menu->addAction(act);
-        }
-
-        menu->addSeparator();
-    }
-
-    // New subbooklet ................................
-
-    // Rotation ......................................
-    if (page)
-    {
-        PageAction *act;
-
-        act = new PageAction(Icon::icon(Icon::RotateLeft), tr("Rotate page to the left"), sheet, page, menu);
-        menu->addAction(act);
-        connect(act, SIGNAL(triggered()),
-                this, SLOT(rotatePageLeft()));
-
-        act = new PageAction(Icon::icon(Icon::RotateRight), tr("Rotate page to the right"), sheet, page, menu);
-        menu->addAction(act);
-        connect(act, SIGNAL(triggered()),
-                this, SLOT(rotatePageRight()));
-    }
-    // Rotation ......................................
-
-
-    // Blank page ....................................
-    if (page)
-    {
-        PageAction *act;
-        act = new PageAction(tr("Insert blank page before this page"), sheet, page, menu);
-        menu->addAction(act);
-        connect(act, SIGNAL(triggered()),
-                this, SLOT(insertBlankPageBefore()));
-
-        act = new PageAction(tr("Insert blank page after this page"), sheet, page, menu);
-        menu->addAction(act);
-        connect(act, SIGNAL(triggered()),
-                this, SLOT(insertBlankPageAfter()));
-
-    }
-    // ...............................................
-
-    menu->addSeparator();
-
-    // Delete page ...................................
-    if (page)
-    {
-        PageAction *act;
-        act = new PageAction(tr("Delete this page"), sheet, page, menu);
-        connect(act, SIGNAL(triggered()),
-                this, SLOT(deletePage()));
-        menu->addAction(act);
-
-        int n = job.indexOfPage(page);
-        bool hasVisible = false;
-        for (int p=n+1; p<job.pageCount(); ++p)
-        {
-            if (job.page(p)->visible())
-            {
-                hasVisible = true;
-                break;
-            }
-        }
-        if (hasVisible)
-        {
-            act = new PageAction(tr("Delete pages until the end of the job."), sheet, page, menu);
-            connect(act, SIGNAL(triggered()),
-                    this, SLOT(deletePagesEnd()));
-            menu->addAction(act);
-        }
-    }
-    // ...............................................
-
-    // Undo delete ...................................
-    QMenu *undelMenu = menu->addMenu(tr("Undo delete"));
-    undelMenu->setEnabled(false);
-
-    for(int j=0; j<project->jobs()->count(); ++j)
-    {
-        Job job = project->jobs()->at(j);
-        QMenu *jm = undelMenu->addMenu(QString("%1 %2").arg(j+1).arg(job.title()));
-
-        for(int p=0; p<job.pageCount(); ++p)
-        {
-            ProjectPage *page = job.page(p);
-            if (!page->visible())
-            {
-                PageAction *act;
-                act = new PageAction(tr("Page %1", "'Undo deletion' menu item").arg(p+1), 0, page, menu);
-                connect(act, SIGNAL(triggered()),
-                        this, SLOT(undoDeletePage()));
-
-                jm->addAction(act);
-            }
-        }
-        jm->setEnabled(!jm->isEmpty());
-        undelMenu->setEnabled(undelMenu->isEnabled() || jm->isEnabled());
-    }
-    // ...............................................
-
-    menu->popup(QCursor::pos());
+    QMenu menu;
+    fillPageEditMenu(page, &menu);
+    menu.exec(QCursor::pos());
 }
 
 
@@ -958,65 +836,206 @@ void MainWindow::showPreviewContextMenu(Sheet *sheet, ProjectPage *page)
 void MainWindow::showJobViewContextMenu(Job job)
 {
     QMenu menu;
-
-    JobAction *act;
-
-    act = new JobAction(tr("Rename job"), job, &menu);
-    menu.addAction(act);
-    connect(act, SIGNAL(triggered()),
-            this, SLOT(renameJob()));
+    fillJobEditMenu(job, &menu);
+    menu.exec(QCursor::pos());
+}
 
 
-    act = new JobAction(Icon::icon(Icon::RotateLeft), tr("Rotate job to the left"), job, &menu);
-    menu.addAction(act);
-    connect(act, SIGNAL(triggered()),
-            this, SLOT(rotateJobLeft()));
+/************************************************
+ *
+ ************************************************/
+void MainWindow::showEditPageMainMenu()
+{
+    ui->menuEditPage->clear();
+    fillPageEditMenu(project->currentPage(), ui->menuEditPage);
+}
 
-    act = new JobAction(Icon::icon(Icon::RotateRight), tr("Rotate job to the right"), job, &menu);
-    menu.addAction(act);
-    connect(act, SIGNAL(triggered()),
-            this, SLOT(rotateJobRight()));
+
+/************************************************
+ *
+ ************************************************/
+void MainWindow::showEditJobMainMenu()
+{
+    ProjectPage *page = project->currentPage();
+    Job job;
+    if (page)
+    {
+        int n = project->jobs()->indexOfProjectPage(page);
+        if (n >= 0)
+            job = project->jobs()->at(n);
+    }
+
+    ui->menuEditJob->clear();
+    fillJobEditMenu(job, ui->menuEditJob);
+}
 
 
-    menu.addSeparator();
+/************************************************
+ *
+ ************************************************/
+void MainWindow::fillPageEditMenu(ProjectPage *page, QMenu *menu)
+{
+    PageAction *act;
 
-    act = new JobAction(tr("Clone job..."), job, &menu);
-    menu.addAction(act);
-    connect(act, SIGNAL(triggered()),
-            this, SLOT(cloneJob()));
+    // New subbooklet ................................
+    act = new PageAction(tr("Start new booklet from this page"), page, menu);
+    connect(act, SIGNAL(triggered()), this, SLOT(startBooklet()));
+    act->setEnabled(page && page != project->page(0));
+    act->setVisible(page && !page->isManualStartSubBooklet());
+    menu->addAction(act);
 
-    menu.addSeparator();
+
+    act = new PageAction(tr("Don't start new booklet from this page"), page, menu);
+    connect(act, SIGNAL(triggered()), this, SLOT(dontStartBooklet()));
+    act->setEnabled(page && page != project->page(0));
+    act->setVisible(page && page->isManualStartSubBooklet());
+    menu->addAction(act);
+    // New subbooklet ................................
+
+
+    menu->addSeparator();
+
+
+    // Rotation ......................................
+    act = new PageAction(tr("Rotate page to the left"), page, menu);
+    connect(act, SIGNAL(triggered()), this, SLOT(rotatePageLeft()));
+    act->setEnabled(page);
+    menu->addAction(act);
+
+    act = new PageAction(tr("Rotate page to the right"), page, menu);
+    connect(act, SIGNAL(triggered()), this, SLOT(rotatePageRight()));
+    act->setEnabled(page);
+    menu->addAction(act);
+    // Rotation ......................................
+
+
+    menu->addSeparator();
+
+
+    // Blank page ....................................
+    act = new PageAction(tr("Insert blank page before this page"), page, menu);
+    connect(act, SIGNAL(triggered()), this, SLOT(insertBlankPageBefore()));
+    act->setEnabled(page);
+    menu->addAction(act);
+
+    act = new PageAction(tr("Insert blank page after this page"), page, menu);
+    connect(act, SIGNAL(triggered()), this, SLOT(insertBlankPageAfter()));
+    act->setEnabled(page);
+    menu->addAction(act);
+    // Blank page ....................................
+
+
+    menu->addSeparator();
+
+
+    // Delete page ...................................
+    act = new PageAction(tr("Delete this page"), page, menu);
+    connect(act, SIGNAL(triggered()), this, SLOT(deletePage()));
+    act->setEnabled(page);
+    menu->addAction(act);
+
+
+    act = new PageAction(tr("Delete pages until the end of the job"), page, menu);
+    connect(act, SIGNAL(triggered()), this, SLOT(deletePagesEnd()));
+    act->setEnabled(page);
+    menu->addAction(act);
+    // Delete page ...................................
 
     // Undo delete ...................................
-    QMenu *undelMenu = menu.addMenu(tr("Undo delete page"));
+    QMenu *undelMenu = menu->addMenu(tr("Undo delete"));
+    undelMenu->setEnabled(false);
+
+
+    for(int j=0; j<project->jobs()->count(); ++j)
+    {
+        Job job = project->jobs()->at(j);
+
+        for(int p=0; p<job.pageCount(); ++p)
+        {
+            ProjectPage *page = job.page(p);
+
+            if (page->visible())
+                continue;
+
+            act = new PageAction(tr("%1 %2: Page %3", "'Undo deletion' menu item")
+                                 .arg(j+1).arg(job.title()).arg(p+1),
+                                 page, undelMenu);
+
+            connect(act, SIGNAL(triggered()), this, SLOT(undoDeletePage()));
+            undelMenu->addAction(act);
+        }
+
+        undelMenu->setStyleSheet("* {menu-scrollable: 1 }");
+        undelMenu->setEnabled(undelMenu->actions().count() > 0);
+    }
+    // Undo delete ...................................
+}
+
+
+/************************************************
+ *
+ * ***********************************************/
+void MainWindow::fillJobEditMenu(const Job job, QMenu *menu)
+{
+    JobAction *act;
+
+    act = new JobAction(tr("Rename job"), job, menu);
+    connect(act, SIGNAL(triggered()), this, SLOT(renameJob()));
+    act->setEnabled(job.pageCount());
+    menu->addAction(act);
+
+
+    act = new JobAction(Icon::icon(Icon::RotateLeft), tr("Rotate job to the left"), job, menu);
+    connect(act, SIGNAL(triggered()), this, SLOT(rotateJobLeft()));
+    act->setEnabled(job.pageCount());
+    menu->addAction(act);
+
+
+    act = new JobAction(Icon::icon(Icon::RotateRight), tr("Rotate job to the right"), job, menu);
+    connect(act, SIGNAL(triggered()), this, SLOT(rotateJobRight()));
+    act->setEnabled(job.pageCount());
+    menu->addAction(act);
+
+
+    menu->addSeparator();
+
+
+    act = new JobAction(tr("Clone job..."), job, menu);
+    connect(act, SIGNAL(triggered()), this, SLOT(cloneJob()));
+    act->setEnabled(job.pageCount());
+    menu->addAction(act);
+
+
+    menu->addSeparator();
+
+
+
+    // Undo delete ...................................
+    QMenu *undelMenu = menu->addMenu(tr("Undo delete page"));
     undelMenu->setEnabled(false);
 
     for(int p=0; p<job.pageCount(); ++p)
     {
         ProjectPage *page = job.page(p);
-        if (!page->visible())
-        {
-            PageAction *act;
-            act = new PageAction(tr("Page %1", "'Undo deletion' menu item").arg(p+1), 0, page, &menu);
-            connect(act, SIGNAL(triggered()),
-                    this, SLOT(undoDeletePage()));
+        if (page->visible())
+            continue;
 
-            undelMenu->addAction(act);
-        }
+        PageAction *act;
+        act = new PageAction(tr("Page %1", "'Undo deletion' menu item").arg(p+1), page, undelMenu);
+        connect(act, SIGNAL(triggered()), this, SLOT(undoDeletePage()));
+
+        undelMenu->addAction(act);
     }
     undelMenu->setEnabled(undelMenu->isEnabled() || !undelMenu->isEmpty());
-
     // ...............................................
 
 
-    menu.addSeparator();
+    menu->addSeparator();
 
-    act = new JobAction(tr("Delete job"), job, &menu);
-    menu.addAction(act);
-    connect(act, SIGNAL(triggered()),
-            this, SLOT(deleteJob()));
-
-    menu.exec(QCursor::pos());
+    act = new JobAction(tr("Delete current job"), job, menu);
+    connect(act, SIGNAL(triggered()), this, SLOT(deleteJob()));
+    act->setEnabled(job.pageCount());
+    menu->addAction(act);
 }
 
 
@@ -1153,8 +1172,7 @@ void MainWindow::rotatePageLeft()
     if (!act || !act->page())
         return;
 
-    ProjectPage *page = act->page();
-    page->setManualRotation(page->manualRotation() - Rotate90);
+    act->page()->setManualRotation(act->page()->manualRotation() - Rotate90);
     project->update();
 }
 
@@ -1168,8 +1186,7 @@ void MainWindow::rotatePageRight()
     if (!act || !act->page())
         return;
 
-    ProjectPage *page = act->page();
-    page->setManualRotation(page->manualRotation() + Rotate90);
+    act->page()->setManualRotation(act->page()->manualRotation() + Rotate90);
     project->update();
 }
 
@@ -1363,8 +1380,6 @@ void MainWindow::load()
  ************************************************/
 void MainWindow::fillRecentFiles()
 {
-    QList<QAction*> acts = ui->menuRecentFiles->actions();
-    qDeleteAll(acts);
     ui->menuRecentFiles->clear();
 
     QStringList recentFiles = settings->value(Settings::RecentFiles).toStringList();
@@ -1402,8 +1417,6 @@ void MainWindow::addToRecentFiles(const QString &file)
  ************************************************/
 void MainWindow::saveAuto()
 {
-    qDebug() << settings->value(Settings::AutoSave).toBool();
-    qDebug() << settings->value(Settings::AutoSaveDir).toString();
     if (!settings->value(Settings::AutoSave).toBool())
             return;
 

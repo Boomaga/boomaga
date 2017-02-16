@@ -71,6 +71,8 @@ private slots:
 
     void showPreviewContextMenu(Sheet *sheet, ProjectPage *page);
     void showJobViewContextMenu(Job job);
+    void showEditPageMainMenu();
+    void showEditJobMainMenu();
     void deletePage();
     void undoDeletePage();
     void deletePagesEnd();
@@ -125,6 +127,8 @@ private:
     void saveAuto();
 
     void addToRecentFiles(const QString &file);
+    void fillPageEditMenu(ProjectPage *page, QMenu *menu);
+    void fillJobEditMenu(const Job job, QMenu *menu);
 };
 
 #endif // MAINWINDOW_H

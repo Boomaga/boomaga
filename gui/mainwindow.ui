@@ -263,7 +263,7 @@
      <x>0</x>
      <y>0</y>
      <width>1188</width>
-     <height>23</height>
+     <height>27</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -301,7 +301,19 @@
     </property>
     <addaction name="actionAbout"/>
    </widget>
+   <widget class="QMenu" name="menuEditPage">
+    <property name="title">
+     <string>&amp;Edit page</string>
+    </property>
+   </widget>
+   <widget class="QMenu" name="menuEditJob">
+    <property name="title">
+     <string>Edit &amp;job</string>
+    </property>
+   </widget>
    <addaction name="menuFile"/>
+   <addaction name="menuEditPage"/>
+   <addaction name="menuEditJob"/>
    <addaction name="menuPreferences"/>
    <addaction name="menuHelp"/>
   </widget>
