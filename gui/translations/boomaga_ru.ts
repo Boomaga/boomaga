@@ -627,11 +627,11 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Force grayscale</source>
-        <translation>Градации серого</translation>
+        <translation>Принудительно в сером</translation>
     </message>
     <message>
         <source>Force color</source>
-        <translation>Цветной</translation>
+        <translation>Принудительно в цвете</translation>
     </message>
 </context>
 <context>
