@@ -82,31 +82,31 @@
     </message>
     <message>
         <source>Autosave your jobs every time you print.</source>
-        <translation type="unfinished"/>
+        <translation>Při tisku vždy automaticky uložit vaše úlohy.</translation>
     </message>
     <message>
         <source>AutoSave the recent sessions</source>
-        <translation type="unfinished"/>
+        <translation>Automaticky uložit nedávná sezení</translation>
     </message>
     <message>
         <source>Dirctory for saved sessions:</source>
-        <translation type="unfinished"/>
+        <translation>Adresář pro uložená sezení:</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"/>
+        <translation>...</translation>
     </message>
     <message>
         <source>Allow negative page margins:</source>
-        <translation type="unfinished"/>
+        <translation>Povolit záporné okraje stran:</translation>
     </message>
     <message>
         <source>Select directory for saved jobs.</source>
-        <translation type="unfinished"/>
+        <translation>Vybrat adresář pro uložené úlohy.</translation>
     </message>
     <message>
         <source>Directory for saved sessions:</source>
-        <translation type="unfinished"/>
+        <translation>Adresář pro uložená sezení:</translation>
     </message>
 </context>
 <context>
@@ -483,48 +483,48 @@ Jste si jistý, že jej chcete přepsat?</translation>
     </message>
     <message>
         <source>Recent files</source>
-        <translation type="unfinished"/>
+        <translation>Nedávné soubory</translation>
     </message>
     <message>
         <source>&amp;Edit page</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Upravit stranu</translation>
     </message>
     <message>
         <source>Edit &amp;job</source>
-        <translation type="unfinished"/>
+        <translation>Upravit úl&amp;ohu</translation>
     </message>
     <message>
         <source>&amp;Export to PDF...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Vyvést do PDF...</translation>
     </message>
     <message>
         <source>fake</source>
-        <translation type="unfinished"/>
+        <translation>nepravý</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Upravit</translation>
     </message>
     <message>
         <source>Delete pages until the end of the job</source>
-        <translation type="unfinished"/>
+        <translation>Odstranit strany až po konec úlohy</translation>
     </message>
     <message>
         <source>%1 %2: Page %3</source>
         <comment>'Undo deletion' menu item</comment>
-        <translation type="unfinished"/>
+        <translation>%1 %2: Strana %3</translation>
     </message>
     <message>
         <source>Delete current job</source>
-        <translation type="unfinished"/>
+        <translation>Smazat nynější úlohu</translation>
     </message>
     <message>
         <source>Auto saving</source>
-        <translation type="unfinished"/>
+        <translation>Automatické ukládání</translation>
     </message>
     <message>
         <source>I can&apos;t create directory &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Nelze vytvořit adresář &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
@@ -619,19 +619,19 @@ Jste si jistý, že jej chcete přepsat?</translation>
     </message>
     <message>
         <source>Color mode:</source>
-        <translation type="unfinished"/>
+        <translation>Barevný režim:</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished"/>
+        <translation>Výchozí</translation>
     </message>
     <message>
         <source>Force grayscale</source>
-        <translation type="unfinished"/>
+        <translation>Vynutit odstíny šedi</translation>
     </message>
     <message>
         <source>Force color</source>
-        <translation type="unfinished"/>
+        <translation>Vynutit barvu</translation>
     </message>
 </context>
 <context>

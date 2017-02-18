@@ -82,31 +82,31 @@
     </message>
     <message>
         <source>Autosave your jobs every time you print.</source>
-        <translation type="unfinished"/>
+        <translation>Enregistrer automatiquement vos travaux lors de chaque impression</translation>
     </message>
     <message>
         <source>AutoSave the recent sessions</source>
-        <translation type="unfinished"/>
+        <translation>Enregistrer automatiquement les sessions récentes</translation>
     </message>
     <message>
         <source>Dirctory for saved sessions:</source>
-        <translation type="unfinished"/>
+        <translation>Répertoire des sessions enregistrées :</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"/>
+        <translation>...</translation>
     </message>
     <message>
         <source>Allow negative page margins:</source>
-        <translation type="unfinished"/>
+        <translation>Autoriser les marges négatives :</translation>
     </message>
     <message>
         <source>Select directory for saved jobs.</source>
-        <translation type="unfinished"/>
+        <translation>Sélectionner le répertoire des travaux enregistrés</translation>
     </message>
     <message>
         <source>Directory for saved sessions:</source>
-        <translation type="unfinished"/>
+        <translation>Répertoire des travaux enregistrés :</translation>
     </message>
 </context>
 <context>
@@ -483,48 +483,48 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Recent files</source>
-        <translation type="unfinished"/>
+        <translation>Fichiers récents</translation>
     </message>
     <message>
         <source>&amp;Edit page</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Modifier la page</translation>
     </message>
     <message>
         <source>Edit &amp;job</source>
-        <translation type="unfinished"/>
+        <translation>Modifier le &amp;travail</translation>
     </message>
     <message>
         <source>&amp;Export to PDF...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Exporter en PDF...</translation>
     </message>
     <message>
         <source>fake</source>
-        <translation type="unfinished"/>
+        <translation>faux</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Modifier</translation>
     </message>
     <message>
         <source>Delete pages until the end of the job</source>
-        <translation type="unfinished"/>
+        <translation>Supprimer les pages restantes du travail</translation>
     </message>
     <message>
         <source>%1 %2: Page %3</source>
         <comment>'Undo deletion' menu item</comment>
-        <translation type="unfinished"/>
+        <translation>%1 %2 : page %3</translation>
     </message>
     <message>
         <source>Delete current job</source>
-        <translation type="unfinished"/>
+        <translation>Supprimer le travail actuel</translation>
     </message>
     <message>
         <source>Auto saving</source>
-        <translation type="unfinished"/>
+        <translation>Enregistrement automatique</translation>
     </message>
     <message>
         <source>I can&apos;t create directory &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Je ne peux pas créer le répertoire « %1 »</translation>
     </message>
 </context>
 <context>
@@ -619,19 +619,19 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Color mode:</source>
-        <translation type="unfinished"/>
+        <translation>Mode chromatique :</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished"/>
+        <translation>Par défaut</translation>
     </message>
     <message>
         <source>Force grayscale</source>
-        <translation type="unfinished"/>
+        <translation>Forcer l&apos;échelle de gris</translation>
     </message>
     <message>
         <source>Force color</source>
-        <translation type="unfinished"/>
+        <translation>Forcer la couleur</translation>
     </message>
 </context>
 <context>

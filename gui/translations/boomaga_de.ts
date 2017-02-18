@@ -82,31 +82,31 @@
     </message>
     <message>
         <source>Autosave your jobs every time you print.</source>
-        <translation type="unfinished"/>
+        <translation>Automatisches Speichern Ihrer Aufträge bei jedem Druckvorgang.</translation>
     </message>
     <message>
         <source>AutoSave the recent sessions</source>
-        <translation type="unfinished"/>
+        <translation>Letzte Sitzungen automatisch speichern</translation>
     </message>
     <message>
         <source>Dirctory for saved sessions:</source>
-        <translation type="unfinished"/>
+        <translation>Verzeichnis für gespeicherte Sitzungen:</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"/>
+        <translation>...</translation>
     </message>
     <message>
         <source>Allow negative page margins:</source>
-        <translation type="unfinished"/>
+        <translation>Negative Seitenränder erlauben:</translation>
     </message>
     <message>
         <source>Select directory for saved jobs.</source>
-        <translation type="unfinished"/>
+        <translation>Verzeichnis für gespeicherte Aufträge auswählen.</translation>
     </message>
     <message>
         <source>Directory for saved sessions:</source>
-        <translation type="unfinished"/>
+        <translation>Verzeichnis für gespeicherte Sitzungen:</translation>
     </message>
 </context>
 <context>
@@ -483,19 +483,19 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
     <message>
         <source>Recent files</source>
-        <translation type="unfinished"/>
+        <translation>Letzte Dateien</translation>
     </message>
     <message>
         <source>&amp;Edit page</source>
-        <translation type="unfinished"/>
+        <translation>Seite &amp;bearbeiten</translation>
     </message>
     <message>
         <source>Edit &amp;job</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Auftrag bearbeiten</translation>
     </message>
     <message>
         <source>&amp;Export to PDF...</source>
-        <translation type="unfinished"/>
+        <translation>Als PDF &amp;exportieren...</translation>
     </message>
     <message>
         <source>fake</source>
@@ -503,28 +503,28 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
     <message>
         <source>&amp;Edit</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Bearbeiten</translation>
     </message>
     <message>
         <source>Delete pages until the end of the job</source>
-        <translation type="unfinished"/>
+        <translation>Seiten ab hier bis zum Ende löschen</translation>
     </message>
     <message>
         <source>%1 %2: Page %3</source>
         <comment>'Undo deletion' menu item</comment>
-        <translation type="unfinished"/>
+        <translation>%1 %2: Seite %3</translation>
     </message>
     <message>
         <source>Delete current job</source>
-        <translation type="unfinished"/>
+        <translation>Aktuellen Auftrag löschen</translation>
     </message>
     <message>
         <source>Auto saving</source>
-        <translation type="unfinished"/>
+        <translation>Automatisches Speichern</translation>
     </message>
     <message>
         <source>I can&apos;t create directory &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Ich kann das Verzeichnis &quot;%1&quot; nicht erstellen</translation>
     </message>
 </context>
 <context>
@@ -619,19 +619,19 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
     <message>
         <source>Color mode:</source>
-        <translation type="unfinished"/>
+        <translation>Farbmodus:</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished"/>
+        <translation>Standard</translation>
     </message>
     <message>
         <source>Force grayscale</source>
-        <translation type="unfinished"/>
+        <translation>Graustufen erzwingen</translation>
     </message>
     <message>
         <source>Force color</source>
-        <translation type="unfinished"/>
+        <translation>Farbe erzwingen</translation>
     </message>
 </context>
 <context>

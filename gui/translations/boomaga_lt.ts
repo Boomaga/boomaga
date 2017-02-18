@@ -98,7 +98,7 @@
     </message>
     <message>
         <source>Allow negative page margins:</source>
-        <translation type="unfinished"/>
+        <translation>Leisti neigiamas puslapio paraštes:</translation>
     </message>
     <message>
         <source>Select directory for saved jobs.</source>
@@ -483,7 +483,7 @@ Ar tikrai norite pakeisti šį failą?</translation>
     </message>
     <message>
         <source>Recent files</source>
-        <translation type="unfinished"/>
+        <translation>Paskiausiai naudoti failai</translation>
     </message>
     <message>
         <source>&amp;Edit page</source>
@@ -495,7 +495,7 @@ Ar tikrai norite pakeisti šį failą?</translation>
     </message>
     <message>
         <source>&amp;Export to PDF...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Eksportuoti į PDF...</translation>
     </message>
     <message>
         <source>fake</source>
@@ -512,19 +512,19 @@ Ar tikrai norite pakeisti šį failą?</translation>
     <message>
         <source>%1 %2: Page %3</source>
         <comment>'Undo deletion' menu item</comment>
-        <translation type="unfinished"/>
+        <translation>%1 %2: Puslapis %3</translation>
     </message>
     <message>
         <source>Delete current job</source>
-        <translation type="unfinished"/>
+        <translation>Ištrinti esamą darbą</translation>
     </message>
     <message>
         <source>Auto saving</source>
-        <translation type="unfinished"/>
+        <translation>Automatinis įrašymas</translation>
     </message>
     <message>
         <source>I can&apos;t create directory &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Negaliu sukurti katalogo &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
@@ -619,11 +619,11 @@ Ar tikrai norite pakeisti šį failą?</translation>
     </message>
     <message>
         <source>Color mode:</source>
-        <translation type="unfinished"/>
+        <translation>Spalvos veiksena:</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished"/>
+        <translation>Numatytasis</translation>
     </message>
     <message>
         <source>Force grayscale</source>

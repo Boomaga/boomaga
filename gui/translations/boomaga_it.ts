@@ -94,7 +94,7 @@
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"/>
+        <translation>...</translation>
     </message>
     <message>
         <source>Allow negative page margins:</source>
@@ -499,7 +499,7 @@ Sei sicuro di volerlo sovracrivere?</translation>
     </message>
     <message>
         <source>fake</source>
-        <translation type="unfinished"/>
+        <translation>falso</translation>
     </message>
     <message>
         <source>&amp;Edit</source>

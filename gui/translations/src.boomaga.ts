@@ -91,14 +91,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Dirctory for saved sessions:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>Allow negative page margins:</source>
         <translation type="unfinished"></translation>
     </message>
@@ -496,14 +488,6 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>&amp;Export to PDF...</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>fake</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Edit</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
