@@ -494,13 +494,6 @@ Are you sure you want to overwrite it?</source>
         <source>Delete pages until the end of the job</source>
         <translation type="unfinished"></translation>
     </message>
-    <message numerus="yes">
-        <source>%1 %2: Page %3</source>
-        <comment>&apos;Undo deletion&apos; menu item</comment>
-        <translation type="unfinished">
-            <numerusform></numerusform>
-        </translation>
-    </message>
     <message>
         <source>Delete current job</source>
         <translation type="unfinished"></translation>
@@ -511,6 +504,11 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>I can&apos;t create directory &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>%1 %2: Page %3</source>
+        <comment>&apos;Undo deletion&apos; menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>
