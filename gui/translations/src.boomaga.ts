@@ -494,10 +494,12 @@ Are you sure you want to overwrite it?</source>
         <source>Delete pages until the end of the job</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
+    <message numerus="yes">
         <source>%1 %2: Page %3</source>
         <comment>&apos;Undo deletion&apos; menu item</comment>
-        <translation type="unfinished"></translation>
+        <translation type="unfinished">
+            <numerusform></numerusform>
+        </translation>
     </message>
     <message>
         <source>Delete current job</source>

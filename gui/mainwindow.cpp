@@ -957,7 +957,8 @@ void MainWindow::fillPageEditMenu(ProjectPage *page, QMenu *menu)
             if (page->visible())
                 continue;
 
-            act = new PageAction(tr("%1 %2: Page %3", "'Undo deletion' menu item")
+            act = new PageAction(tr("%1 %2: Page %3", "'Undo deletion' menu item",
+                                    "%1 - is a job number, %2 - is a job title, %3 - is a page number in this job")
                                  .arg(j+1).arg(job.title()).arg(p+1),
                                  page, undelMenu);
 
