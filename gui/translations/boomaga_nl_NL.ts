@@ -1,224 +1,225 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="uz@Latn" version="2.0">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="nl_NL" version="2.0">
 <context>
     <name>AboutDialog</name>
     <message>
         <source> About Boomaga</source>
-        <translation>Boomaga haqida</translation>
+        <translation>Over Boomaga</translation>
     </message>
     <message>
         <source>About</source>
-        <translation>Dastur haqida</translation>
+        <translation>Over</translation>
     </message>
     <message>
         <source>Authors</source>
-        <translation>Mualliflar</translation>
+        <translation>Auteurs</translation>
     </message>
     <message>
         <source>Thanks</source>
-        <translation>Tashakkur</translation>
+        <translation>Bedankt</translation>
     </message>
     <message>
         <source>Translations</source>
-        <translation>Tarjimalar</translation>
+        <translation>Vertalingen</translation>
     </message>
     <message>
         <source>Version: %1</source>
-        <translation>Versiya: %1</translation>
+        <translation>Versie:%1</translation>
     </message>
     <message>
         <source>Boomaga provides a virtual printer for CUPS. This can be used for print preview or for print booklets.</source>
-        <translation type="unfinished"/>
+        <translation>Boomaga voorziet in een virtuele printer voor CUPS. Die kan gebruikt worden voor afdrukvoorbeelden of voor het afdrukken van boekjes.</translation>
     </message>
     <message>
         <source>Copyright: %1-%2 %3</source>
-        <translation>Mualliflik huquqi: %1-%2 %3</translation>
+        <translation>Auteursrechten: %1-%2 %3</translation>
     </message>
     <message>
         <source>Homepage: %1</source>
-        <translation>Uy sahifasi: %1</translation>
+        <translation>Startpagina: %1</translation>
     </message>
     <message>
         <source>License: %1</source>
-        <translation>Litsenziya: %1</translation>
+        <translation>Vergunning: %1</translation>
     </message>
     <message>
         <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on Github.</source>
-        <translation type="unfinished"/>
+        <translation>Boomaga is ontwikkeld door het &lt;a %1&gt;Boomaga Team en bijdragers &lt;/a&gt; op Github.</translation>
     </message>
     <message>
         <source>If you are interested in working with our development team, &lt;a %1&gt;join us&lt;/a&gt;.</source>
-        <translation type="unfinished"/>
+        <translation>Wanneer je met ons ontwikkelteam wilt samenwerken, &lt;a %1&gt;meld je dan aan &lt;/a&gt;.</translation>
     </message>
     <message>
         <source>Special thanks to:</source>
-        <translation>Alohida tashakkur:</translation>
+        <translation>In het bijzonder bedanken wij:</translation>
     </message>
     <message>
         <source>If you want to help translate, we will be glad to see you in our translation team on &lt;a %1&gt;Transifex server&lt;/a&gt;.</source>
-        <translation type="unfinished"/>
+        <translation>Wanneer je wilt helpen met vertalen, zien we je graag in ons vertaalteam op &lt;a %1&gt;Transifex server&lt;/a&gt;.</translation>
     </message>
 </context>
 <context>
     <name>ConfigDialog</name>
     <message>
         <source>Preferences</source>
-        <translation type="unfinished"/>
+        <translation>Voorkeuren</translation>
     </message>
     <message>
         <source>Divide your long booklets into smaller sub-booklets for printing.</source>
-        <translation type="unfinished"/>
+        <translation>Splits grote boeken op in deelboekjes om af te drukken.</translation>
     </message>
     <message>
         <source>Print as sub-booklets</source>
-        <translation type="unfinished"/>
+        <translation>Afdrukken als deelboekje</translation>
     </message>
     <message>
         <source>Maximum number of sheets in your sub-booklet.</source>
-        <translation type="unfinished"/>
+        <translation>Maximum aantal bladen per deelboekje.</translation>
     </message>
     <message>
         <source>Sheets per sub-booklet:</source>
-        <translation type="unfinished"/>
+        <translation>Aantal bladen per deelboekje:</translation>
     </message>
     <message>
         <source>Autosave your jobs every time you print.</source>
-        <translation type="unfinished"/>
+        <translation>Sla afdrukopdrachten na elke afdruk automatisch op.</translation>
     </message>
     <message>
         <source>AutoSave the recent sessions</source>
-        <translation type="unfinished"/>
+        <translation>Sla recente opdrachten automatisch op</translation>
     </message>
     <message>
         <source>Allow negative page margins:</source>
-        <translation type="unfinished"/>
+        <translation>Sta afdruk buiten afdrukbereik toe:</translation>
     </message>
     <message>
         <source>Select directory for saved jobs.</source>
-        <translation type="unfinished"/>
+        <translation>Kies een map om opdrachten op te slaan.</translation>
     </message>
     <message>
         <source>Directory for saved sessions:</source>
-        <translation type="unfinished"/>
+        <translation>Map voor opgeslagen opdrachten:</translation>
     </message>
 </context>
 <context>
     <name>ExportToPdf</name>
     <message>
         <source>Print to PDF</source>
-        <translation type="unfinished"/>
+        <translation>Afdrukken naar PDF</translation>
     </message>
     <message>
         <source>File name</source>
-        <translation type="unfinished"/>
+        <translation>Bestandsnaam</translation>
     </message>
     <message>
         <source>Output file:</source>
-        <translation type="unfinished"/>
+        <translation>Uitvoerbestand:</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"/>
+        <translation>...</translation>
     </message>
     <message>
         <source>Meta info</source>
-        <translation type="unfinished"/>
+        <translation>Trefwoorden</translation>
     </message>
     <message>
         <source>Author:</source>
-        <translation type="unfinished"/>
+        <translation>Auteur:</translation>
     </message>
     <message>
         <source> The name of the person who created the document.</source>
-        <translation type="unfinished"/>
+        <translation>De naam van de persoon die het bestand heeft aangemaakt.</translation>
     </message>
     <message>
         <source>Title:</source>
-        <translation type="unfinished"/>
+        <translation>Opschrift:</translation>
     </message>
     <message>
         <source>Subject:</source>
-        <translation type="unfinished"/>
+        <translation>Onderwerp:</translation>
     </message>
     <message>
         <source> The subject of the document.</source>
-        <translation type="unfinished"/>
+        <translation>Het onderwerp van het document.</translation>
     </message>
     <message>
         <source> Keywords associated with the document.</source>
-        <translation type="unfinished"/>
+        <translation>Trefwoorden in het document.</translation>
     </message>
     <message>
         <source>Keywords:</source>
-        <translation type="unfinished"/>
+        <translation>Trefwoorden:</translation>
     </message>
     <message>
         <source>PDF files (*.pdf);;All files (*.*)</source>
-        <translation type="unfinished"/>
+        <translation>PDF-bestanden (*.pdf);;Alle bestanden (*.*)</translation>
     </message>
     <message>
         <source>Overwrite file?</source>
-        <translation type="unfinished"/>
+        <translation>Bestand overschrijven?</translation>
     </message>
     <message>
         <source>A file named &quot;%1&quot; already exists.
 Are you sure you want to overwrite it?</source>
-        <translation type="unfinished"/>
+        <translation>Bestand &quot;%1&quot; bestaat al.
+Weet u zeker dat u dit wilt overschrijven?</translation>
     </message>
     <message>
         <source> The document&apos;s title.</source>
-        <translation type="unfinished"/>
+        <translation>Opschrift van het document.</translation>
     </message>
 </context>
 <context>
     <name>JobListView</name>
     <message>
         <source>%1 pages</source>
-        <translation type="unfinished"/>
+        <translation>%1 bladzijden</translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
         <source>&amp;File</source>
-        <translation>&amp;Fayl</translation>
+        <translation>&amp;Bestand</translation>
     </message>
     <message>
         <source>&amp;Preferences</source>
-        <translation>&amp;Sozlashlar</translation>
+        <translation>&amp;Voorkeuren</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation>Yordam</translation>
+        <translation>Hulp</translation>
     </message>
     <message>
         <source>Layout</source>
-        <translation>joylashuv</translation>
+        <translation>Opmaak</translation>
     </message>
     <message>
         <source>1 up</source>
-        <translation type="unfinished"/>
+        <translation>1 op 1</translation>
     </message>
     <message>
         <source>2 up</source>
-        <translation type="unfinished"/>
+        <translation>2 op 1</translation>
     </message>
     <message>
         <source>Booklet</source>
-        <translation>Buklet</translation>
+        <translation>Deelboekje</translation>
     </message>
     <message>
         <source>Print on both sides of a sheet.</source>
         <comment>MainForm::Double-sided checkbox tooltip</comment>
-        <translation type="unfinished"/>
+        <translation>Tweezijdig afdrukken.</translation>
     </message>
     <message>
         <source>Double-sided</source>
         <comment>MainForm::Double-sided checkbox</comment>
-        <translation>Ikki yoqlama</translation>
+        <translation>Tweezijdig</translation>
     </message>
     <message>
         <source>Jobs</source>
-        <translation>Vazifalar</translation>
+        <translation>Opdrachten</translation>
     </message>
     <message>
         <source>Printer</source>
@@ -226,23 +227,23 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Configure...</source>
-        <translation>Sozlash...</translation>
+        <translation>Instellen...</translation>
     </message>
     <message>
         <source>Toolbar</source>
-        <translation>Asboblar paneli</translation>
+        <translation>Werkbalk</translation>
     </message>
     <message>
         <source>&amp;Print</source>
-        <translation>Cho&amp;p etish</translation>
+        <translation>&amp;Afdrukken</translation>
     </message>
     <message>
         <source>E&amp;xit</source>
-        <translation>&amp;Chiqish</translation>
+        <translation>A&amp;fsluiten</translation>
     </message>
     <message>
         <source>Print and Close</source>
-        <translation>Chop etish va yopish</translation>
+        <translation>Afdrukken en sluiten</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
@@ -250,15 +251,15 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Next sheet</source>
-        <translation>Keyingi varaq</translation>
+        <translation>Volgende blad</translation>
     </message>
     <message>
         <source>Previous sheet</source>
-        <translation>Oldingi varaq</translation>
+        <translation>Vorige blad</translation>
     </message>
     <message>
         <source>About Boomaga</source>
-        <translation>Boomaga haqida</translation>
+        <translation>Over Boomaga</translation>
     </message>
     <message>
         <source>Boomaga</source>
@@ -267,354 +268,354 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>%v of %m</source>
         <comment>Format for QProgressBar (http://qt-project.org/doc/qt-4.8/qprogressbar.html#format-prop)</comment>
-        <translation>%v %m&apos;dan</translation>
+        <translation>%v of %m</translation>
     </message>
     <message>
         <source>Print the all pages on %1.</source>
-        <translation>Hamma sahifalarni %1&apos;da chop etish.</translation>
+        <translation>Druk alle bladzijden af op %1.</translation>
     </message>
     <message>
         <source>Print the odd pages on %1.&lt;p&gt;When finished, turn the pages, insert them into the printer&lt;br&gt;and click the Continue button.</source>
-        <translation type="unfinished"/>
+        <translation>Druk oneven bladzijden af op %1.&lt;p&gt; Wanneer de bladzijden zijn afgedrukt, doe ze opnieuw in de printer&lt;br&gt; en druk op de knop Doorgaan.</translation>
     </message>
     <message>
         <source>Print the even pages on %1.</source>
-        <translation type="unfinished"/>
+        <translation>Druk even bladzijden af op %1.</translation>
     </message>
     <message>
         <source>Continue</source>
-        <translation>Davom ettirish</translation>
+        <translation>Doorgaan</translation>
     </message>
     <message>
         <source>%1 pages</source>
         <comment>Status bar</comment>
-        <translation>%1 sahifa</translation>
+        <translation>%1 bladzijden</translation>
     </message>
     <message>
         <source>%1 page</source>
         <comment>Status bar</comment>
-        <translation>%1 sahifa</translation>
+        <translation>%1 bladzijde</translation>
     </message>
     <message>
         <source>%1 sheets</source>
         <comment>Status bar</comment>
-        <translation>%1 varaq</translation>
+        <translation>%1 bladen</translation>
     </message>
     <message>
         <source>%1 sheet</source>
         <comment>Status bar</comment>
-        <translation>%1 varaq</translation>
+        <translation>%1 blad</translation>
     </message>
     <message>
         <source>Sheet %1 of %2</source>
         <comment>Status bar</comment>
-        <translation>Varaq %1 %2&apos;dan</translation>
+        <translation>Blad %1 van %2</translation>
     </message>
     <message>
         <source>Insert blank page after this page</source>
-        <translation type="unfinished"/>
+        <translation>Voeg lege pagina in na deze bladzijde</translation>
     </message>
     <message>
         <source>Delete this page</source>
-        <translation type="unfinished"/>
+        <translation>Verwijder deze bladzijde</translation>
     </message>
     <message>
         <source>Undo delete</source>
-        <translation type="unfinished"/>
+        <translation>Maak verwijderen ongedaan</translation>
     </message>
     <message>
         <source>Insert blank page before this page</source>
-        <translation type="unfinished"/>
+        <translation>Voeg een leeg bladzijde in voor deze bladzijde</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished"/>
+        <translation>Opslaan</translation>
     </message>
     <message>
         <source>Save project</source>
-        <translation type="unfinished"/>
+        <translation>Sla project op</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
         <source>Save as...</source>
-        <translation type="unfinished"/>
+        <translation>Opslaan als...</translation>
     </message>
     <message>
         <source>Save project under a new name</source>
-        <translation type="unfinished"/>
+        <translation>Sla een project op onder een andere naam</translation>
     </message>
     <message>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
         <source>Open...</source>
-        <translation type="unfinished"/>
+        <translation>Openen...</translation>
     </message>
     <message>
         <source>Open an existing project</source>
-        <translation type="unfinished"/>
+        <translation>Open een bestaand project</translation>
     </message>
     <message>
         <source>Ctrl+O</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+O</translation>
     </message>
     <message>
         <source>Page %1</source>
         <comment>'Undo deletion' menu item</comment>
-        <translation type="unfinished"/>
+        <translation>Bladzijde %1</translation>
     </message>
     <message>
         <source>Boomaga files (*.boo);;All files (*.*)</source>
-        <translation type="unfinished"/>
+        <translation>Boomaga bestanden (*.boo);;Alle bestanden (*.*)</translation>
     </message>
     <message>
         <source>Project saved successfully.</source>
-        <translation type="unfinished"/>
+        <translation>Project succesvol opgeslagen.</translation>
     </message>
     <message>
         <source>All supported files (*.pdf *.boo);;Boomaga files (*.boo);;PDF files (*.pdf);;All files (*.*)</source>
-        <translation type="unfinished"/>
+        <translation>Alle ondersteunde bestanden (*.pdf *.boo);;Boomaga bestanden (*.boo);;PDF bestanden(*.pdf);;Alle bestanden (*.*)</translation>
     </message>
     <message>
         <source>4 up horizontal</source>
-        <translation type="unfinished"/>
+        <translation>4 op 1 horizontaal</translation>
     </message>
     <message>
         <source>4 up vertical</source>
-        <translation type="unfinished"/>
+        <translation>4 op 1 verticaal</translation>
     </message>
     <message>
         <source>8 up horizontal</source>
-        <translation type="unfinished"/>
+        <translation>8 op 1 horizontaal</translation>
     </message>
     <message>
         <source>8 up vertical</source>
-        <translation type="unfinished"/>
+        <translation>8 op 1 vertikaal</translation>
     </message>
     <message>
         <source>Start new booklet from this page</source>
-        <translation type="unfinished"/>
+        <translation>Begin een nieuw deelboekje vanaf deze bladzijde</translation>
     </message>
     <message>
         <source>Don&apos;t start new booklet from this page</source>
-        <translation type="unfinished"/>
+        <translation>Vanaf deze pagina geen nieuw deelboekje beginnen</translation>
     </message>
     <message>
         <source>Rotate page to the left</source>
-        <translation type="unfinished"/>
+        <translation>Bladzijde naar links draaien</translation>
     </message>
     <message>
         <source>Rotate page to the right</source>
-        <translation type="unfinished"/>
+        <translation>Bladzijde naar rechts draaien</translation>
     </message>
     <message>
         <source>Rename job</source>
-        <translation type="unfinished"/>
+        <translation>Opdracht hernoemen</translation>
     </message>
     <message>
         <source>Rotate job to the left</source>
-        <translation type="unfinished"/>
+        <translation>Opdracht naar links draaien</translation>
     </message>
     <message>
         <source>Rotate job to the right</source>
-        <translation type="unfinished"/>
+        <translation>Opdracht naar rechts draaien</translation>
     </message>
     <message>
         <source>Job title:</source>
-        <translation type="unfinished"/>
+        <translation>Naam opdracht:</translation>
     </message>
     <message>
         <source>Export the project to PDF</source>
-        <translation type="unfinished"/>
+        <translation>Project naar PDF exporteren</translation>
     </message>
     <message>
         <source>Ctrl+E</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+E</translation>
     </message>
     <message>
         <source>Clone job...</source>
-        <translation type="unfinished"/>
+        <translation>Dupliceer opdracht...</translation>
     </message>
     <message>
         <source>Clone job</source>
-        <translation type="unfinished"/>
+        <translation>Dupliceer opdracht</translation>
     </message>
     <message>
         <source>Number of copies:</source>
-        <translation type="unfinished"/>
+        <translation>Aantal afdrukken:</translation>
     </message>
     <message>
         <source>Print with options...</source>
-        <translation type="unfinished"/>
+        <translation>Opties voor afdrukken...</translation>
     </message>
     <message>
         <source>Select number of copies before printing.</source>
-        <translation type="unfinished"/>
+        <translation>Selecteer aantal kopieën om af te drukken</translation>
     </message>
     <message>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
         <source>Sub-booklets</source>
-        <translation type="unfinished"/>
+        <translation>Deelboekjes</translation>
     </message>
     <message>
         <source>Undo delete page</source>
-        <translation type="unfinished"/>
+        <translation>Verwijderen pagina ongedaan maken</translation>
     </message>
     <message>
         <source>Page %1 of %2</source>
         <comment>Status bar</comment>
-        <translation type="unfinished"/>
+        <translation>Pagina %1 van %2</translation>
     </message>
     <message>
         <source>Recent files</source>
-        <translation type="unfinished"/>
+        <translation>Recente bestanden</translation>
     </message>
     <message>
         <source>&amp;Edit page</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Pagina aanpassen</translation>
     </message>
     <message>
         <source>Edit &amp;job</source>
-        <translation type="unfinished"/>
+        <translation>Aanpassen &amp;opdracht</translation>
     </message>
     <message>
         <source>&amp;Export to PDF...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Exporteer naar PDF...</translation>
     </message>
     <message>
         <source>Delete pages until the end of the job</source>
-        <translation type="unfinished"/>
+        <translation>Verwijder resterende pagina&apos;s</translation>
     </message>
     <message>
         <source>Delete current job</source>
-        <translation type="unfinished"/>
+        <translation>Huidige opdracht verwijderen</translation>
     </message>
     <message>
         <source>Auto saving</source>
-        <translation type="unfinished"/>
+        <translation>Automatisch opslaan</translation>
     </message>
     <message>
         <source>I can&apos;t create directory &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Ik kan map &quot;%1&quot; niet aanmaken</translation>
     </message>
     <message>
         <source>%1 %2: Page %3</source>
         <comment>'Undo deletion' menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
-        <translation type="unfinished"/>
+        <translation>%1 %2: Pagina %3</translation>
     </message>
 </context>
 <context>
     <name>PrintDialog</name>
     <message>
         <source>Print document</source>
-        <translation type="unfinished"/>
+        <translation>Document afdrukken</translation>
     </message>
     <message>
         <source>Number of copies:</source>
-        <translation type="unfinished"/>
+        <translation>Aantal afdrukken:</translation>
     </message>
     <message>
         <source>Collate copies:</source>
-        <translation type="unfinished"/>
+        <translation>Afdrukken samenvoegen</translation>
     </message>
 </context>
 <context>
     <name>PrinterSettings</name>
     <message>
         <source>Margins (mm)</source>
-        <translation>Chegaralar (mm)</translation>
+        <translation>Marges (mm)</translation>
     </message>
     <message>
         <source>Right:</source>
-        <translation>O&apos;ng:</translation>
+        <translation>Rechts</translation>
     </message>
     <message>
         <source>Bottom:</source>
-        <translation>Ost:</translation>
+        <translation>Onder</translation>
     </message>
     <message>
         <source>Internal:</source>
-        <translation>Ichki:</translation>
+        <translation>Tekst:</translation>
     </message>
     <message>
         <source>Left:</source>
-        <translation>Chap:</translation>
+        <translation>Links</translation>
     </message>
     <message>
         <source>Top:</source>
-        <translation>Tepa:</translation>
+        <translation>Boven</translation>
     </message>
     <message>
         <source>Duplex:</source>
-        <translation>Dupleks:</translation>
+        <translation>Tweezijdig:</translation>
     </message>
     <message>
         <source>Draw border</source>
-        <translation>Chegara chizish</translation>
+        <translation>Paginarand toevoegen</translation>
     </message>
     <message>
         <source>Print in reverse order</source>
-        <translation>Teskari tartibda chop etish</translation>
+        <translation>Afdrukken in omgekeerde volgorde</translation>
     </message>
     <message>
         <source>Printer has duplexer</source>
-        <translation type="unfinished"/>
+        <translation>Printer heeft duplexmodule</translation>
     </message>
     <message>
         <source>Manual with reverse (suitable for most printers)</source>
-        <translation type="unfinished"/>
+        <translation>Handmatige duplex (geschikt voor de meeste printer)</translation>
     </message>
     <message>
         <source>Manual without reverse</source>
-        <translation type="unfinished"/>
+        <translation>Handmatig zonder duplex</translation>
     </message>
     <message>
         <source>Preferences of &quot;%1&quot;</source>
-        <translation>&quot;%1&quot; sozlashlari</translation>
+        <translation>Voorkeuren van &quot;%1&quot;</translation>
     </message>
     <message>
         <source>Profiles</source>
-        <translation type="unfinished"/>
+        <translation>Profielen</translation>
     </message>
     <message>
         <source>+</source>
-        <translation type="unfinished"/>
+        <translation>+</translation>
     </message>
     <message>
         <source>-</source>
-        <translation type="unfinished"/>
+        <translation>-</translation>
     </message>
     <message>
         <source>Reset to default</source>
-        <translation type="unfinished"/>
+        <translation>Terug naar standaardinstellingen</translation>
     </message>
     <message>
         <source>Profile %1</source>
         <comment>Defaul name for created printer profile in the Printer Settings diaog</comment>
-        <translation type="unfinished"/>
+        <translation>Profiel %1</translation>
     </message>
     <message>
         <source>Color mode:</source>
-        <translation type="unfinished"/>
+        <translation>Afdrukken in kleur:</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished"/>
+        <translation>Standaard</translation>
     </message>
     <message>
         <source>Force grayscale</source>
-        <translation type="unfinished"/>
+        <translation>In grijstinten afdrukken</translation>
     </message>
     <message>
         <source>Force color</source>
-        <translation type="unfinished"/>
+        <translation>In kleur afdrukken</translation>
     </message>
 </context>
 <context>
@@ -626,104 +627,105 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Ik kan bestand &quot;%1&quot; niet opslaan</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
-        <translation type="unfinished"/>
+        <translation>Ik kan bestand &quot;%1&quot; niet openen (Bestand of map bestaat niet)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
-        <translation type="unfinished"/>
+        <translation>Ik kan bestand &quot;%1&quot; niet openen (Toegang geweigerd)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Ik kan bestand &quot;%1&quot; niet openen</translation>
     </message>
     <message>
         <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
-        <translation type="unfinished"/>
+        <translation>Ik kan bestand &quot;%1&quot; niet lezen omdat het geen ondersteund bestandstype is of omdat het bestand beschadigd is.</translation>
     </message>
 </context>
 <context>
     <name>ProjectFile</name>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Ik kan bestand &quot;%1&quot; niet openen</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Ik kan bestand &quot;%1&quot; niet opslaan</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <source>PDF file &quot;%1&quot; is damaged.</source>
-        <translation>&quot;%1&quot; PDF fayli buzilgan.</translation>
+        <translation>PDF-bestand &quot;%1&quot; is beschadigd.</translation>
     </message>
     <message>
         <source>PDF file &quot;%1&quot; is encripted.</source>
-        <translation>&quot;%1&quot; PDF fayli shifrlangan.</translation>
+        <translation>PDF-bestand &quot;%1&quot; is versleuteld.</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>&apos;%1&apos; faylini ochib bo&apos;lmadi</translation>
+        <translation>Ik kan bestand &quot;%1&quot; niet openen</translation>
     </message>
     <message>
         <source>I can&apos;t read from file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Ik kan bestand &quot;%1&quot; niet lezen</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Ik kan bestand &quot;%1&quot; niet opslaan</translation>
     </message>
     <message>
         <source>Untitled</source>
-        <translation type="unfinished"/>
+        <translation>Naamloos</translation>
     </message>
     <message>
         <source>Default</source>
         <comment>Printer profile default name</comment>
-        <translation type="unfinished"/>
+        <translation>Standaard</translation>
     </message>
 </context>
 <context>
     <name>Settings</name>
     <message>
         <source>~/Untitled.pdf</source>
-        <translation type="unfinished"/>
+        <translation>~/Naamloos.pdf</translation>
     </message>
 </context>
 <context>
     <name>SubBookletView</name>
     <message>
         <source>Sub-booklet %1</source>
-        <translation type="unfinished"/>
+        <translation>Deelboekje %1</translation>
     </message>
     <message>
         <source>%1 pages</source>
-        <translation type="unfinished"/>
+        <translation>%1 bladzijden</translation>
     </message>
 </context>
 <context>
     <name>TmpPdfFile</name>
     <message>
         <source>I can&apos;t create temporary file &quot;%1&quot;</source>
-        <translation>&quot;%1&quot; vaqtinchalik faylini yaratib bo&apos;lmadi</translation>
+        <translation>Ik kan geen tijdelijk bestand maken &quot;%1&quot;</translation>
     </message>
     <message>
         <source>Something is wrong. I can't find boomagamerger program.
 Please reinstall me.</source>
-        <translation type="unfinished"/>
+        <translation>Er is iets mis. Ik kan het boomaga samenvoegprogramma niet vinden.
+Installeer mij opnieuw.</translation>
     </message>
     <message>
         <source>I can&apos;t read file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Ik kan bestand &apos;%1&apos; niet lezen.</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>Ik kan bestand &apos;%1&apos; niet opslaan.</translation>
     </message>
 </context>
 </TS>

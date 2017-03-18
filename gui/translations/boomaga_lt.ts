@@ -82,19 +82,11 @@
     </message>
     <message>
         <source>Autosave your jobs every time you print.</source>
-        <translation type="unfinished"/>
+        <translation>Automatiškai įrašyti jūsų darbus kas kartą jums spausdinant.</translation>
     </message>
     <message>
         <source>AutoSave the recent sessions</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>Dirctory for saved sessions:</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>...</source>
-        <translation>...</translation>
+        <translation>Automatiškai įrašyti paskiausius seansus</translation>
     </message>
     <message>
         <source>Allow negative page margins:</source>
@@ -102,11 +94,11 @@
     </message>
     <message>
         <source>Select directory for saved jobs.</source>
-        <translation type="unfinished"/>
+        <translation>Pasirinkite katalogą įrašytiems darbams.</translation>
     </message>
     <message>
         <source>Directory for saved sessions:</source>
-        <translation type="unfinished"/>
+        <translation>Katalogas, skirtas įrašytiems seansams:</translation>
     </message>
 </context>
 <context>
@@ -487,32 +479,19 @@ Ar tikrai norite pakeisti šį failą?</translation>
     </message>
     <message>
         <source>&amp;Edit page</source>
-        <translation type="unfinished"/>
+        <translation>R&amp;edaguoti puslapį</translation>
     </message>
     <message>
         <source>Edit &amp;job</source>
-        <translation type="unfinished"/>
+        <translation>Taisyti &amp;darbą</translation>
     </message>
     <message>
         <source>&amp;Export to PDF...</source>
         <translation>&amp;Eksportuoti į PDF...</translation>
     </message>
     <message>
-        <source>fake</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>&amp;Edit</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>Delete pages until the end of the job</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>%1 %2: Page %3</source>
-        <comment>'Undo deletion' menu item</comment>
-        <translation>%1 %2: Puslapis %3</translation>
+        <translation>Ištrinti puslapius iki pat darbo galo</translation>
     </message>
     <message>
         <source>Delete current job</source>
@@ -525,6 +504,11 @@ Ar tikrai norite pakeisti šį failą?</translation>
     <message>
         <source>I can&apos;t create directory &quot;%1&quot;</source>
         <translation>Negaliu sukurti katalogo &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>%1 %2: Page %3</source>
+        <comment>'Undo deletion' menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
+        <translation>%1 %2: Puslapis %3</translation>
     </message>
 </context>
 <context>
@@ -627,11 +611,11 @@ Ar tikrai norite pakeisti šį failą?</translation>
     </message>
     <message>
         <source>Force grayscale</source>
-        <translation type="unfinished"/>
+        <translation>Priverstinai pilkio pustoniais</translation>
     </message>
     <message>
         <source>Force color</source>
-        <translation type="unfinished"/>
+        <translation>Priverstinai spalvotai</translation>
     </message>
 </context>
 <context>

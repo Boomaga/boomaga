@@ -82,38 +82,30 @@
     </message>
     <message>
         <source>Autosave your jobs every time you print.</source>
-        <translation type="unfinished"/>
+        <translation>Salva automaticamente i tuoi lavori di stampa ogni volta che stampi.</translation>
     </message>
     <message>
         <source>AutoSave the recent sessions</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>Dirctory for saved sessions:</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>...</source>
-        <translation>...</translation>
+        <translation>Salva automaticamente le sessioni recenti</translation>
     </message>
     <message>
         <source>Allow negative page margins:</source>
-        <translation type="unfinished"/>
+        <translation>Consenti margini negativi per le pagine:</translation>
     </message>
     <message>
         <source>Select directory for saved jobs.</source>
-        <translation type="unfinished"/>
+        <translation>Seleziona la cartella per i lavori di stampa salvati.</translation>
     </message>
     <message>
         <source>Directory for saved sessions:</source>
-        <translation type="unfinished"/>
+        <translation>Cartella per le sessioni salvate:</translation>
     </message>
 </context>
 <context>
     <name>ExportToPdf</name>
     <message>
         <source>Print to PDF</source>
-        <translation>Stampare su PDF</translation>
+        <translation>Stampa in PDF</translation>
     </message>
     <message>
         <source>File name</source>
@@ -483,48 +475,40 @@ Sei sicuro di volerlo sovracrivere?</translation>
     </message>
     <message>
         <source>Recent files</source>
-        <translation type="unfinished"/>
+        <translation>File recenti</translation>
     </message>
     <message>
         <source>&amp;Edit page</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Modifica pagina</translation>
     </message>
     <message>
         <source>Edit &amp;job</source>
-        <translation type="unfinished"/>
+        <translation>Modifica &amp;lavoro di stampa</translation>
     </message>
     <message>
         <source>&amp;Export to PDF...</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>fake</source>
-        <translation>falso</translation>
-    </message>
-    <message>
-        <source>&amp;Edit</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Esporta in PDF...</translation>
     </message>
     <message>
         <source>Delete pages until the end of the job</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>%1 %2: Page %3</source>
-        <comment>'Undo deletion' menu item</comment>
-        <translation type="unfinished"/>
+        <translation>Cancella le pagine fino alla fine del lavoro di stampa</translation>
     </message>
     <message>
         <source>Delete current job</source>
-        <translation type="unfinished"/>
+        <translation>Cancella il lavoro di stampa corrente</translation>
     </message>
     <message>
         <source>Auto saving</source>
-        <translation type="unfinished"/>
+        <translation>Auto salvataggio</translation>
     </message>
     <message>
         <source>I can&apos;t create directory &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Non posso creare la cartella &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>%1 %2: Page %3</source>
+        <comment>'Undo deletion' menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
+        <translation>%1 %2: Pagina %3</translation>
     </message>
 </context>
 <context>
@@ -619,19 +603,19 @@ Sei sicuro di volerlo sovracrivere?</translation>
     </message>
     <message>
         <source>Color mode:</source>
-        <translation type="unfinished"/>
+        <translation>Modalità colore:</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished"/>
+        <translation>Predefinito</translation>
     </message>
     <message>
         <source>Force grayscale</source>
-        <translation type="unfinished"/>
+        <translation>Forza la scala di grigio</translation>
     </message>
     <message>
         <source>Force color</source>
-        <translation type="unfinished"/>
+        <translation>Forza il colore</translation>
     </message>
 </context>
 <context>

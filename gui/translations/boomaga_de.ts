@@ -89,14 +89,6 @@
         <translation>Letzte Sitzungen automatisch speichern</translation>
     </message>
     <message>
-        <source>Dirctory for saved sessions:</source>
-        <translation>Verzeichnis für gespeicherte Sitzungen:</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation>...</translation>
-    </message>
-    <message>
         <source>Allow negative page margins:</source>
         <translation>Negative Seitenränder erlauben:</translation>
     </message>
@@ -193,7 +185,7 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
     <message>
         <source>&amp;Preferences</source>
-        <translation>&amp;Einstellungen</translation>
+        <translation>&amp;Konfiguration</translation>
     </message>
     <message>
         <source>Help</source>
@@ -243,11 +235,11 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
     <message>
         <source>&amp;Print</source>
-        <translation>&amp;Drucken</translation>
+        <translation>Drucke&amp;n</translation>
     </message>
     <message>
         <source>E&amp;xit</source>
-        <translation>&amp;Beenden</translation>
+        <translation>B&amp;eenden</translation>
     </message>
     <message>
         <source>Print and Close</source>
@@ -487,7 +479,7 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
     <message>
         <source>&amp;Edit page</source>
-        <translation>Seite &amp;bearbeiten</translation>
+        <translation>&amp;Seite bearbeiten</translation>
     </message>
     <message>
         <source>Edit &amp;job</source>
@@ -495,24 +487,11 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
     <message>
         <source>&amp;Export to PDF...</source>
-        <translation>Als PDF &amp;exportieren...</translation>
-    </message>
-    <message>
-        <source>fake</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>&amp;Edit</source>
-        <translation>&amp;Bearbeiten</translation>
+        <translation>Als &amp;PDF exportieren...</translation>
     </message>
     <message>
         <source>Delete pages until the end of the job</source>
         <translation>Seiten ab hier bis zum Ende löschen</translation>
-    </message>
-    <message>
-        <source>%1 %2: Page %3</source>
-        <comment>'Undo deletion' menu item</comment>
-        <translation>%1 %2: Seite %3</translation>
     </message>
     <message>
         <source>Delete current job</source>
@@ -525,6 +504,11 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     <message>
         <source>I can&apos;t create directory &quot;%1&quot;</source>
         <translation>Ich kann das Verzeichnis &quot;%1&quot; nicht erstellen</translation>
+    </message>
+    <message>
+        <source>%1 %2: Page %3</source>
+        <comment>'Undo deletion' menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
+        <translation>%1 %2: Seite %3</translation>
     </message>
 </context>
 <context>

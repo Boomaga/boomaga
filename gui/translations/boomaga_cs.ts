@@ -89,14 +89,6 @@
         <translation>Automaticky uložit nedávná sezení</translation>
     </message>
     <message>
-        <source>Dirctory for saved sessions:</source>
-        <translation>Adresář pro uložená sezení:</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation>...</translation>
-    </message>
-    <message>
         <source>Allow negative page margins:</source>
         <translation>Povolit záporné okraje stran:</translation>
     </message>
@@ -498,21 +490,8 @@ Jste si jistý, že jej chcete přepsat?</translation>
         <translation>&amp;Vyvést do PDF...</translation>
     </message>
     <message>
-        <source>fake</source>
-        <translation>nepravý</translation>
-    </message>
-    <message>
-        <source>&amp;Edit</source>
-        <translation>&amp;Upravit</translation>
-    </message>
-    <message>
         <source>Delete pages until the end of the job</source>
         <translation>Odstranit strany až po konec úlohy</translation>
-    </message>
-    <message>
-        <source>%1 %2: Page %3</source>
-        <comment>'Undo deletion' menu item</comment>
-        <translation>%1 %2: Strana %3</translation>
     </message>
     <message>
         <source>Delete current job</source>
@@ -525,6 +504,11 @@ Jste si jistý, že jej chcete přepsat?</translation>
     <message>
         <source>I can&apos;t create directory &quot;%1&quot;</source>
         <translation>Nelze vytvořit adresář &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>%1 %2: Page %3</source>
+        <comment>'Undo deletion' menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
+        <translation>%1 %2: Strana %3</translation>
     </message>
 </context>
 <context>

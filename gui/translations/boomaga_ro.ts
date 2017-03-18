@@ -89,14 +89,6 @@
         <translation type="unfinished"/>
     </message>
     <message>
-        <source>Dirctory for saved sessions:</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>Allow negative page margins:</source>
         <translation type="unfinished"/>
     </message>
@@ -498,20 +490,7 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
         <translation type="unfinished"/>
     </message>
     <message>
-        <source>fake</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>&amp;Edit</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>Delete pages until the end of the job</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>%1 %2: Page %3</source>
-        <comment>'Undo deletion' menu item</comment>
         <translation type="unfinished"/>
     </message>
     <message>
@@ -524,6 +503,11 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
     </message>
     <message>
         <source>I can&apos;t create directory &quot;%1&quot;</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>%1 %2: Page %3</source>
+        <comment>'Undo deletion' menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
         <translation type="unfinished"/>
     </message>
 </context>

@@ -89,14 +89,6 @@
         <translation>Автоматически сохранять сесии</translation>
     </message>
     <message>
-        <source>Dirctory for saved sessions:</source>
-        <translation>Директория для сохранения сессий:</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>Allow negative page margins:</source>
         <translation>Разрешать отрицательные поля:</translation>
     </message>
@@ -498,21 +490,8 @@ Are you sure you want to overwrite it?</source>
         <translation>&amp;Экспортировать в PDF...</translation>
     </message>
     <message>
-        <source>fake</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>&amp;Edit</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>Delete pages until the end of the job</source>
         <translation>Удалить страницы до конца задания. </translation>
-    </message>
-    <message>
-        <source>%1 %2: Page %3</source>
-        <comment>'Undo deletion' menu item</comment>
-        <translation>%1 %2: страница %3</translation>
     </message>
     <message>
         <source>Delete current job</source>
@@ -525,6 +504,11 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>I can&apos;t create directory &quot;%1&quot;</source>
         <translation>Не получилось создать директорию &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>%1 %2: Page %3</source>
+        <comment>'Undo deletion' menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
+        <translation>%1 %2: страница %3</translation>
     </message>
 </context>
 <context>

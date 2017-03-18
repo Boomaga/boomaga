@@ -89,14 +89,6 @@
         <translation>Enregistrer automatiquement les sessions récentes</translation>
     </message>
     <message>
-        <source>Dirctory for saved sessions:</source>
-        <translation>Répertoire des sessions enregistrées :</translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation>...</translation>
-    </message>
-    <message>
         <source>Allow negative page margins:</source>
         <translation>Autoriser les marges négatives :</translation>
     </message>
@@ -498,21 +490,8 @@ Are you sure you want to overwrite it?</source>
         <translation>&amp;Exporter en PDF...</translation>
     </message>
     <message>
-        <source>fake</source>
-        <translation>faux</translation>
-    </message>
-    <message>
-        <source>&amp;Edit</source>
-        <translation>&amp;Modifier</translation>
-    </message>
-    <message>
         <source>Delete pages until the end of the job</source>
-        <translation>Supprimer les pages restantes du travail</translation>
-    </message>
-    <message>
-        <source>%1 %2: Page %3</source>
-        <comment>'Undo deletion' menu item</comment>
-        <translation>%1 %2 : page %3</translation>
+        <translation>Supprimer cette page et les suivantes</translation>
     </message>
     <message>
         <source>Delete current job</source>
@@ -525,6 +504,11 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>I can&apos;t create directory &quot;%1&quot;</source>
         <translation>Je ne peux pas créer le répertoire « %1 »</translation>
+    </message>
+    <message>
+        <source>%1 %2: Page %3</source>
+        <comment>'Undo deletion' menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
+        <translation>%1 %2 : page %3</translation>
     </message>
 </context>
 <context>
