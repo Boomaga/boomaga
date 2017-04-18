@@ -1,4 +1,4 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="ru" version="2.0">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="ru" version="2.1">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -42,10 +42,6 @@
         <translation>Лицензия: %1</translation>
     </message>
     <message>
-        <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on Github.</source>
-        <translation>Boomaga разрабатывается &lt;a %1&gt;командой Boomaga и помощниками&lt;/a&gt; на Github.</translation>
-    </message>
-    <message>
         <source>If you are interested in working with our development team, &lt;a %1&gt;join us&lt;/a&gt;.</source>
         <translation>Если есть желание работать вместе с нашей командой разработчиков - &lt;a %1&gt;присоединяйтесь&lt;/a&gt;.</translation>
     </message>
@@ -56,6 +52,10 @@
     <message>
         <source>If you want to help translate, we will be glad to see you in our translation team on &lt;a %1&gt;Transifex server&lt;/a&gt;.</source>
         <translation>Если Вы хотите помочь с переводом, мы будем рады видеть вас в нашей команде переводчиков на  &lt;a %1&gt;Transifex server&lt;/a&gt;.</translation>
+    </message>
+    <message>
+        <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on GitHub.</source>
+        <translation>Boomaga разрабатывается &lt;a %1&gt;командой Boomaga и помощниками&lt;/a&gt; на GitHub.</translation>
     </message>
 </context>
 <context>
@@ -99,6 +99,14 @@
     <message>
         <source>Directory for saved sessions:</source>
         <translation>Директория для сохраненных сессий:</translation>
+    </message>
+    <message>
+        <source>Dirctory for saved sessions:</source>
+        <translation>Директория для сохранения сессий:</translation>
+    </message>
+    <message>
+        <source>...</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -509,6 +517,14 @@ Are you sure you want to overwrite it?</source>
         <source>%1 %2: Page %3</source>
         <comment>'Undo deletion' menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
         <translation>%1 %2: страница %3</translation>
+    </message>
+    <message>
+        <source>fake</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
+        <translation>Правка</translation>
     </message>
 </context>
 <context>

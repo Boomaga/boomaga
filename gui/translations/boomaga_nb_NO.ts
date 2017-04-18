@@ -1,57 +1,57 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="nl_NL" version="2.1">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="nb_NO" version="2.1">
 <context>
     <name>AboutDialog</name>
     <message>
         <source> About Boomaga</source>
-        <translation>Over Boomaga</translation>
+        <translation>Om Boomaga</translation>
     </message>
     <message>
         <source>About</source>
-        <translation>Over</translation>
+        <translation>Om</translation>
     </message>
     <message>
         <source>Authors</source>
-        <translation>Auteurs</translation>
+        <translation>Utviklere</translation>
     </message>
     <message>
         <source>Thanks</source>
-        <translation>Bedankt</translation>
+        <translation>Takk</translation>
     </message>
     <message>
         <source>Translations</source>
-        <translation>Vertalingen</translation>
+        <translation>Oversettelser</translation>
     </message>
     <message>
         <source>Version: %1</source>
-        <translation>Versie:%1</translation>
+        <translation>Versjon: %1</translation>
     </message>
     <message>
         <source>Boomaga provides a virtual printer for CUPS. This can be used for print preview or for print booklets.</source>
-        <translation>Boomaga voorziet in een virtuele printer voor CUPS. Die kan gebruikt worden voor afdrukvoorbeelden of voor het afdrukken van boekjes.</translation>
+        <translation>Boomaga tilbyr en virtuell skriver for CUPS. Den kan brukes til forhåndsvisning av utskrifter eller for å skrive ut hefter.</translation>
     </message>
     <message>
         <source>Copyright: %1-%2 %3</source>
-        <translation>Auteursrechten: %1-%2 %3</translation>
+        <translation>Kopirett: %1-%2 %3</translation>
     </message>
     <message>
         <source>Homepage: %1</source>
-        <translation>Startpagina: %1</translation>
+        <translation>Hjemmeside: %1</translation>
     </message>
     <message>
         <source>License: %1</source>
-        <translation>Vergunning: %1</translation>
+        <translation>Lisens: %1</translation>
     </message>
     <message>
         <source>If you are interested in working with our development team, &lt;a %1&gt;join us&lt;/a&gt;.</source>
-        <translation>Wanneer je met ons ontwikkelteam wilt samenwerken, &lt;a %1&gt;meld je dan aan &lt;/a&gt;.</translation>
+        <translation>Hvis du er interessert i å jobbe i vårt utviklingslag, &lt;a %1&gt;velkommen&lt;/a&gt;.</translation>
     </message>
     <message>
         <source>Special thanks to:</source>
-        <translation>In het bijzonder bedanken wij:</translation>
+        <translation>Spesiell takk til:</translation>
     </message>
     <message>
         <source>If you want to help translate, we will be glad to see you in our translation team on &lt;a %1&gt;Transifex server&lt;/a&gt;.</source>
-        <translation>Wanneer je wilt helpen met vertalen, zien we je graag in ons vertaalteam op &lt;a %1&gt;Transifex server&lt;/a&gt;.</translation>
+        <translation>Hvis du ønsker å bidra med oversettelser, finn veien til &lt;a %1&gt;Transifex-tjeneren&lt;/a&gt;.</translation>
     </message>
     <message>
         <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on GitHub.</source>
@@ -62,43 +62,43 @@
     <name>ConfigDialog</name>
     <message>
         <source>Preferences</source>
-        <translation>Voorkeuren</translation>
+        <translation>Innstillinger</translation>
     </message>
     <message>
         <source>Divide your long booklets into smaller sub-booklets for printing.</source>
-        <translation>Splits grote boeken op in kleinere boekjes om af te drukken.</translation>
+        <translation>Del dine lange hefter inn i mini-hefter for utskrift.</translation>
     </message>
     <message>
         <source>Print as sub-booklets</source>
-        <translation>Afdrukken als boekjes</translation>
+        <translation>Skriv ut som mini-hefter</translation>
     </message>
     <message>
         <source>Maximum number of sheets in your sub-booklet.</source>
-        <translation>Maximum aantal bladen per boekje.</translation>
+        <translation>Maksimalt antall ark i ditt mini-hefte.</translation>
     </message>
     <message>
         <source>Sheets per sub-booklet:</source>
-        <translation>Aantal bladen per boekje:</translation>
+        <translation>Ark per mini-hefte:</translation>
     </message>
     <message>
         <source>Autosave your jobs every time you print.</source>
-        <translation>Sla afdrukopdrachten na elke afdruk automatisch op.</translation>
+        <translation>Lagre dine jobber automatisk hver gang du skriver ut.</translation>
     </message>
     <message>
         <source>AutoSave the recent sessions</source>
-        <translation>Sla recente opdrachten automatisch op</translation>
+        <translation>Lagre nylige økter automatisk</translation>
     </message>
     <message>
         <source>Allow negative page margins:</source>
-        <translation>Sta afdruk buiten afdrukbereik toe:</translation>
+        <translation>Tillat negative sidemarginer:</translation>
     </message>
     <message>
         <source>Select directory for saved jobs.</source>
-        <translation>Kies een map om opdrachten op te slaan.</translation>
+        <translation>Lagringsmappe for lagrede jobber.</translation>
     </message>
     <message>
         <source>Directory for saved sessions:</source>
-        <translation>Map voor opgeslagen opdrachten:</translation>
+        <translation>Mappe for lagrede økter:</translation>
     </message>
     <message>
         <source>Dirctory for saved sessions:</source>
@@ -113,145 +113,145 @@
     <name>ExportToPdf</name>
     <message>
         <source>Print to PDF</source>
-        <translation>Afdrukken naar PDF</translation>
+        <translation>Skriv ut til PDF</translation>
     </message>
     <message>
         <source>File name</source>
-        <translation>Bestandsnaam</translation>
+        <translation>Filnavn</translation>
     </message>
     <message>
         <source>Output file:</source>
-        <translation>Uitvoerbestand:</translation>
+        <translation>Utdata-fil:</translation>
     </message>
     <message>
         <source>...</source>
-        <translation>...</translation>
+        <translation>…</translation>
     </message>
     <message>
         <source>Meta info</source>
-        <translation>Trefwoorden</translation>
+        <translation>Metainfo</translation>
     </message>
     <message>
         <source>Author:</source>
-        <translation>Auteur:</translation>
+        <translation>Forfatter:</translation>
     </message>
     <message>
         <source> The name of the person who created the document.</source>
-        <translation>De naam van de persoon die het bestand heeft aangemaakt.</translation>
+        <translation>Navnet på personen som opprettet dokumentet.</translation>
     </message>
     <message>
         <source>Title:</source>
-        <translation>Opschrift:</translation>
+        <translation>Tittel:</translation>
     </message>
     <message>
         <source>Subject:</source>
-        <translation>Onderwerp:</translation>
+        <translation>Emne:</translation>
     </message>
     <message>
         <source> The subject of the document.</source>
-        <translation>Het onderwerp van het document.</translation>
+        <translation>Dokumentets emne</translation>
     </message>
     <message>
         <source> Keywords associated with the document.</source>
-        <translation>Trefwoorden in het document.</translation>
+        <translation>Nøkkelord tilknyttet dokumentet.</translation>
     </message>
     <message>
         <source>Keywords:</source>
-        <translation>Trefwoorden:</translation>
+        <translation>Nøkkelord:</translation>
     </message>
     <message>
         <source>PDF files (*.pdf);;All files (*.*)</source>
-        <translation>PDF-bestanden (*.pdf);;Alle bestanden (*.*)</translation>
+        <translation>PDF-filer (*.pdf);;Alle filer (*.*)</translation>
     </message>
     <message>
         <source>Overwrite file?</source>
-        <translation>Bestand overschrijven?</translation>
+        <translation>Overskriv fil?</translation>
     </message>
     <message>
         <source>A file named &quot;%1&quot; already exists.
 Are you sure you want to overwrite it?</source>
-        <translation>Bestand &quot;%1&quot; bestaat al.
-Weet u zeker dat u dit wilt overschrijven?</translation>
+        <translation>Ei fil ved navn &quot;%1&quot; finnes allerede.
+Er du sikker på at du vil overskrive den?</translation>
     </message>
     <message>
         <source> The document&apos;s title.</source>
-        <translation>Opschrift van het document.</translation>
+        <translation>Dokumentets tittel</translation>
     </message>
 </context>
 <context>
     <name>JobListView</name>
     <message>
         <source>%1 pages</source>
-        <translation>%1 bladzijden</translation>
+        <translation>%1 sider</translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
         <source>&amp;File</source>
-        <translation>&amp;Bestand</translation>
+        <translation>&amp;Fil</translation>
     </message>
     <message>
         <source>&amp;Preferences</source>
-        <translation>&amp;Voorkeuren</translation>
+        <translation>&amp;Innstillinger</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation>Hulp</translation>
+        <translation>Hjelp</translation>
     </message>
     <message>
         <source>Layout</source>
-        <translation>Opmaak</translation>
+        <translation>Oppsett</translation>
     </message>
     <message>
         <source>1 up</source>
-        <translation>1 op 1</translation>
+        <translation>1 oppover</translation>
     </message>
     <message>
         <source>2 up</source>
-        <translation>2 op 1</translation>
+        <translation>2 oppover</translation>
     </message>
     <message>
         <source>Booklet</source>
-        <translation>Boekje</translation>
+        <translation>Hefte</translation>
     </message>
     <message>
         <source>Print on both sides of a sheet.</source>
         <comment>MainForm::Double-sided checkbox tooltip</comment>
-        <translation>Tweezijdig afdrukken.</translation>
+        <translation>Skriv på begge sider av arket.</translation>
     </message>
     <message>
         <source>Double-sided</source>
         <comment>MainForm::Double-sided checkbox</comment>
-        <translation>Tweezijdig</translation>
+        <translation>Dobbeltsidig</translation>
     </message>
     <message>
         <source>Jobs</source>
-        <translation>Opdrachten</translation>
+        <translation>Jobber</translation>
     </message>
     <message>
         <source>Printer</source>
-        <translation>Printer</translation>
+        <translation>Skriver</translation>
     </message>
     <message>
         <source>Configure...</source>
-        <translation>Instellen...</translation>
+        <translation>Sett opp…</translation>
     </message>
     <message>
         <source>Toolbar</source>
-        <translation>Werkbalk</translation>
+        <translation>Verktøylinje</translation>
     </message>
     <message>
         <source>&amp;Print</source>
-        <translation>&amp;Afdrukken</translation>
+        <translation>&amp;Skriv ut</translation>
     </message>
     <message>
         <source>E&amp;xit</source>
-        <translation>A&amp;fsluiten</translation>
+        <translation>A&amp;vslutt</translation>
     </message>
     <message>
         <source>Print and Close</source>
-        <translation>Afdrukken en sluiten</translation>
+        <translation>Skriv ut og lukk</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
@@ -259,15 +259,15 @@ Weet u zeker dat u dit wilt overschrijven?</translation>
     </message>
     <message>
         <source>Next sheet</source>
-        <translation>Volgende blad</translation>
+        <translation>Neste ark</translation>
     </message>
     <message>
         <source>Previous sheet</source>
-        <translation>Vorige blad</translation>
+        <translation>Forrige ark</translation>
     </message>
     <message>
         <source>About Boomaga</source>
-        <translation>Over Boomaga</translation>
+        <translation>Om Boomaga</translation>
     </message>
     <message>
         <source>Boomaga</source>
@@ -276,72 +276,72 @@ Weet u zeker dat u dit wilt overschrijven?</translation>
     <message>
         <source>%v of %m</source>
         <comment>Format for QProgressBar (http://qt-project.org/doc/qt-4.8/qprogressbar.html#format-prop)</comment>
-        <translation>%v of %m</translation>
+        <translation>%v av %m</translation>
     </message>
     <message>
         <source>Print the all pages on %1.</source>
-        <translation>Druk alle bladzijden af op %1.</translation>
+        <translation>Skriv ut alle sidene på %1.</translation>
     </message>
     <message>
         <source>Print the odd pages on %1.&lt;p&gt;When finished, turn the pages, insert them into the printer&lt;br&gt;and click the Continue button.</source>
-        <translation>Druk oneven bladzijden af op %1.&lt;p&gt; Wanneer de bladzijden zijn afgedrukt, doe ze opnieuw in de printer&lt;br&gt; en druk op de knop Doorgaan.</translation>
+        <translation>Skriv oddetallssidene på %1.&lt;p&gt;Når fullført, vend sidene, sett dem inn i skriveren,&lt;br&gt; og trykk &quot;Fortsett&quot;-knappen.</translation>
     </message>
     <message>
         <source>Print the even pages on %1.</source>
-        <translation>Druk even bladzijden af op %1.</translation>
+        <translation>Skriv partallssider på %1.</translation>
     </message>
     <message>
         <source>Continue</source>
-        <translation>Doorgaan</translation>
+        <translation>Fortsett</translation>
     </message>
     <message>
         <source>%1 pages</source>
         <comment>Status bar</comment>
-        <translation>%1 bladzijden</translation>
+        <translation>%1 sider</translation>
     </message>
     <message>
         <source>%1 page</source>
         <comment>Status bar</comment>
-        <translation>%1 bladzijde</translation>
+        <translation>%1 side</translation>
     </message>
     <message>
         <source>%1 sheets</source>
         <comment>Status bar</comment>
-        <translation>%1 bladen</translation>
+        <translation>%1 ark</translation>
     </message>
     <message>
         <source>%1 sheet</source>
         <comment>Status bar</comment>
-        <translation>%1 blad</translation>
+        <translation>%1 ark</translation>
     </message>
     <message>
         <source>Sheet %1 of %2</source>
         <comment>Status bar</comment>
-        <translation>Blad %1 van %2</translation>
+        <translation>Ark %1 av %2</translation>
     </message>
     <message>
         <source>Insert blank page after this page</source>
-        <translation>Voeg lege pagina in na deze bladzijde</translation>
+        <translation>Smett inn blank side etter denne siden</translation>
     </message>
     <message>
         <source>Delete this page</source>
-        <translation>Verwijder deze bladzijde</translation>
+        <translation>Slett denne siden</translation>
     </message>
     <message>
         <source>Undo delete</source>
-        <translation>Maak verwijderen ongedaan</translation>
+        <translation>Angre sletting</translation>
     </message>
     <message>
         <source>Insert blank page before this page</source>
-        <translation>Voeg een leeg bladzijde in voor deze bladzijde</translation>
+        <translation>Smett inn blank side før denne siden</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation>Opslaan</translation>
+        <translation>Lagre</translation>
     </message>
     <message>
         <source>Save project</source>
-        <translation>Sla project op</translation>
+        <translation>Lagre prosjekt</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
@@ -349,96 +349,96 @@ Weet u zeker dat u dit wilt overschrijven?</translation>
     </message>
     <message>
         <source>Save as...</source>
-        <translation>Opslaan als...</translation>
+        <translation>Lagre som…</translation>
     </message>
     <message>
         <source>Save project under a new name</source>
-        <translation>Sla een project op onder een andere naam</translation>
+        <translation>Lagre prosjekt med nytt navn</translation>
     </message>
     <message>
         <source>Ctrl+Shift+S</source>
-        <translation>Ctrl+Shift+S</translation>
+        <translation>Ctrl+Shitf+S</translation>
     </message>
     <message>
         <source>Open...</source>
-        <translation>Openen...</translation>
+        <translation>Åpne…</translation>
     </message>
     <message>
         <source>Open an existing project</source>
-        <translation>Open een bestaand project</translation>
+        <translation>Åpne et eksisterende prosjekt</translation>
     </message>
     <message>
         <source>Ctrl+O</source>
-        <translation>Ctrl+O</translation>
+        <translation>Ctrl+O </translation>
     </message>
     <message>
         <source>Page %1</source>
         <comment>'Undo deletion' menu item</comment>
-        <translation>Bladzijde %1</translation>
+        <translation>Side %1</translation>
     </message>
     <message>
         <source>Boomaga files (*.boo);;All files (*.*)</source>
-        <translation>Boomaga bestanden (*.boo);;Alle bestanden (*.*)</translation>
+        <translation>Boomaga-filer (*.boo);;Alle filer (*.*)</translation>
     </message>
     <message>
         <source>Project saved successfully.</source>
-        <translation>Project succesvol opgeslagen.</translation>
+        <translation>Prosjekt lagret</translation>
     </message>
     <message>
         <source>All supported files (*.pdf *.boo);;Boomaga files (*.boo);;PDF files (*.pdf);;All files (*.*)</source>
-        <translation>Alle ondersteunde bestanden (*.pdf *.boo);;Boomaga bestanden (*.boo);;PDF bestanden(*.pdf);;Alle bestanden (*.*)</translation>
+        <translation>Alle støttede filer (*.pdf *.boo);;Boomaga-filer (*.boo);;PDF-filer (*.pdf);;All files (*.*)</translation>
     </message>
     <message>
         <source>4 up horizontal</source>
-        <translation>4 op 1 horizontaal</translation>
+        <translation>4 oppover vannrett</translation>
     </message>
     <message>
         <source>4 up vertical</source>
-        <translation>4 op 1 verticaal</translation>
+        <translation>4 oppover loddrett</translation>
     </message>
     <message>
         <source>8 up horizontal</source>
-        <translation>8 op 1 horizontaal</translation>
+        <translation>8 oppover vannrett</translation>
     </message>
     <message>
         <source>8 up vertical</source>
-        <translation>8 op 1 vertikaal</translation>
+        <translation>8 oppover loddrett</translation>
     </message>
     <message>
         <source>Start new booklet from this page</source>
-        <translation>Begin een nieuw boekje vanaf deze bladzijde</translation>
+        <translation>Start et nytt hefte fra denne siden</translation>
     </message>
     <message>
         <source>Don&apos;t start new booklet from this page</source>
-        <translation>Vanaf deze pagina geen nieuw boekje beginnen</translation>
+        <translation>Ikke start nytt hefte fra denne siden</translation>
     </message>
     <message>
         <source>Rotate page to the left</source>
-        <translation>Bladzijde naar links draaien</translation>
+        <translation>Roter side til venstre</translation>
     </message>
     <message>
         <source>Rotate page to the right</source>
-        <translation>Bladzijde naar rechts draaien</translation>
+        <translation>Roter side til høyre</translation>
     </message>
     <message>
         <source>Rename job</source>
-        <translation>Opdracht hernoemen</translation>
+        <translation>Gi jobb nytt navn</translation>
     </message>
     <message>
         <source>Rotate job to the left</source>
-        <translation>Opdracht naar links draaien</translation>
+        <translation>Roter jobb til venstre</translation>
     </message>
     <message>
         <source>Rotate job to the right</source>
-        <translation>Opdracht naar rechts draaien</translation>
+        <translation>Roter jobb til høyre</translation>
     </message>
     <message>
         <source>Job title:</source>
-        <translation>Naam opdracht:</translation>
+        <translation>Jobbtittel:</translation>
     </message>
     <message>
         <source>Export the project to PDF</source>
-        <translation>Project naar PDF exporteren</translation>
+        <translation>Eksporter prosjektet til PDF</translation>
     </message>
     <message>
         <source>Ctrl+E</source>
@@ -446,23 +446,23 @@ Weet u zeker dat u dit wilt overschrijven?</translation>
     </message>
     <message>
         <source>Clone job...</source>
-        <translation>Dupliceer opdracht...</translation>
+        <translation>Klon jobb…</translation>
     </message>
     <message>
         <source>Clone job</source>
-        <translation>Dupliceer opdracht</translation>
+        <translation>Klon jobb</translation>
     </message>
     <message>
         <source>Number of copies:</source>
-        <translation>Aantal afdrukken:</translation>
+        <translation>Antall kopier:</translation>
     </message>
     <message>
         <source>Print with options...</source>
-        <translation>Opties voor afdrukken...</translation>
+        <translation>Skriv ut med valg…</translation>
     </message>
     <message>
         <source>Select number of copies before printing.</source>
-        <translation>Selecteer aantal kopieën om af te drukken</translation>
+        <translation>Velg antall kopier før utskrift.</translation>
     </message>
     <message>
         <source>Ctrl+Shift+P</source>
@@ -470,53 +470,53 @@ Weet u zeker dat u dit wilt overschrijven?</translation>
     </message>
     <message>
         <source>Sub-booklets</source>
-        <translation>Boekjes</translation>
+        <translation>Mini-hefter</translation>
     </message>
     <message>
         <source>Undo delete page</source>
-        <translation>Verwijderen pagina ongedaan maken</translation>
+        <translation>Angre sletting av side</translation>
     </message>
     <message>
         <source>Page %1 of %2</source>
         <comment>Status bar</comment>
-        <translation>Pagina %1 van %2</translation>
+        <translation>Side %1 av %2</translation>
     </message>
     <message>
         <source>Recent files</source>
-        <translation>Recente bestanden</translation>
+        <translation>Nylige filer</translation>
     </message>
     <message>
         <source>&amp;Edit page</source>
-        <translation>&amp;Pagina aanpassen</translation>
+        <translation>%Rediger side</translation>
     </message>
     <message>
         <source>Edit &amp;job</source>
-        <translation>Aanpassen &amp;opdracht</translation>
+        <translation>Rediger &amp;jobb</translation>
     </message>
     <message>
         <source>&amp;Export to PDF...</source>
-        <translation>&amp;Exporteer naar PDF...</translation>
+        <translation>&amp;Eksporter til PDF…</translation>
     </message>
     <message>
         <source>Delete pages until the end of the job</source>
-        <translation>Verwijder resterende pagina&apos;s</translation>
+        <translation>Slett påfølgende sider av denne jobben.</translation>
     </message>
     <message>
         <source>Delete current job</source>
-        <translation>Huidige opdracht verwijderen</translation>
+        <translation>Slett nåværende jobb</translation>
     </message>
     <message>
         <source>Auto saving</source>
-        <translation>Automatisch opslaan</translation>
+        <translation>Automatisk lagring</translation>
     </message>
     <message>
         <source>I can&apos;t create directory &quot;%1&quot;</source>
-        <translation>Ik kan map &quot;%1&quot; niet aanmaken</translation>
+        <translation>Jeg kan ikke opprette mappa &quot;%1&quot;</translation>
     </message>
     <message>
         <source>%1 %2: Page %3</source>
         <comment>'Undo deletion' menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
-        <translation>%1 %2: Pagina %3</translation>
+        <translation>%1 %2: Side %3</translation>
     </message>
     <message>
         <source>fake</source>
@@ -531,74 +531,74 @@ Weet u zeker dat u dit wilt overschrijven?</translation>
     <name>PrintDialog</name>
     <message>
         <source>Print document</source>
-        <translation>Document afdrukken</translation>
+        <translation>Skriv ut dokument</translation>
     </message>
     <message>
         <source>Number of copies:</source>
-        <translation>Aantal afdrukken:</translation>
+        <translation>Antall kopier:</translation>
     </message>
     <message>
         <source>Collate copies:</source>
-        <translation>Afdrukken samenvoegen</translation>
+        <translation>Sorter kopier:</translation>
     </message>
 </context>
 <context>
     <name>PrinterSettings</name>
     <message>
         <source>Margins (mm)</source>
-        <translation>Marges (mm)</translation>
+        <translation>Marginer (mm)</translation>
     </message>
     <message>
         <source>Right:</source>
-        <translation>Rechts</translation>
+        <translation>Høyre:</translation>
     </message>
     <message>
         <source>Bottom:</source>
-        <translation>Onder</translation>
+        <translation>Bunn:</translation>
     </message>
     <message>
         <source>Internal:</source>
-        <translation>Tekst:</translation>
+        <translation>Internt:</translation>
     </message>
     <message>
         <source>Left:</source>
-        <translation>Links</translation>
+        <translation>Venstre:</translation>
     </message>
     <message>
         <source>Top:</source>
-        <translation>Boven</translation>
+        <translation>Topp:</translation>
     </message>
     <message>
         <source>Duplex:</source>
-        <translation>Tweezijdig:</translation>
+        <translation>Dupleks:</translation>
     </message>
     <message>
         <source>Draw border</source>
-        <translation>Paginarand toevoegen</translation>
+        <translation>Tegn rammekant</translation>
     </message>
     <message>
         <source>Print in reverse order</source>
-        <translation>Afdrukken in omgekeerde volgorde</translation>
+        <translation>Skriv ut i motsatt rekkefølge</translation>
     </message>
     <message>
         <source>Printer has duplexer</source>
-        <translation>Printer heeft duplexmodule</translation>
+        <translation>Skriveren har duplekser</translation>
     </message>
     <message>
         <source>Manual with reverse (suitable for most printers)</source>
-        <translation>Handmatige duplex (geschikt voor de meeste printer)</translation>
+        <translation>Manuell med revers (passer for de fleste skrivere)</translation>
     </message>
     <message>
         <source>Manual without reverse</source>
-        <translation>Handmatig zonder duplex</translation>
+        <translation>Manuell uten revers</translation>
     </message>
     <message>
         <source>Preferences of &quot;%1&quot;</source>
-        <translation>Voorkeuren van &quot;%1&quot;</translation>
+        <translation>Innstillinger for &quot;%1&quot;</translation>
     </message>
     <message>
         <source>Profiles</source>
-        <translation>Profielen</translation>
+        <translation>Profiler</translation>
     </message>
     <message>
         <source>+</source>
@@ -610,28 +610,28 @@ Weet u zeker dat u dit wilt overschrijven?</translation>
     </message>
     <message>
         <source>Reset to default</source>
-        <translation>Terug naar standaardinstellingen</translation>
+        <translation>Tilbakestill til forvalg</translation>
     </message>
     <message>
         <source>Profile %1</source>
         <comment>Defaul name for created printer profile in the Printer Settings diaog</comment>
-        <translation>Profiel %1</translation>
+        <translation>Profil %1</translation>
     </message>
     <message>
         <source>Color mode:</source>
-        <translation>Afdrukken in kleur:</translation>
+        <translation>Fargemodus:</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation>Standaard</translation>
+        <translation>Forvalg</translation>
     </message>
     <message>
         <source>Force grayscale</source>
-        <translation>In grijstinten afdrukken</translation>
+        <translation>Tving gråskala</translation>
     </message>
     <message>
         <source>Force color</source>
-        <translation>In kleur afdrukken</translation>
+        <translation>Tving farge</translation>
     </message>
 </context>
 <context>
@@ -643,105 +643,105 @@ Weet u zeker dat u dit wilt overschrijven?</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation>Ik kan bestand &quot;%1&quot; niet opslaan</translation>
+        <translation>Jeg kan ikke skrive til fil &quot;%1&quot;</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
-        <translation>Ik kan bestand &quot;%1&quot; niet openen (Bestand of map bestaat niet)</translation>
+        <translation>Jeg kan ikke åpne fila &quot;%1&quot; (Ingen slik fil eller mappe)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
-        <translation>Ik kan bestand &quot;%1&quot; niet openen (Toegang geweigerd)</translation>
+        <translation>Jeg kan ikke åpne fila &quot;%1&quot; (Tilgang nektet)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Ik kan bestand &quot;%1&quot; niet openen</translation>
+        <translation>Jeg kan ikke åpne fila &quot;%1&quot;</translation>
     </message>
     <message>
         <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
-        <translation>Ik kan bestand &quot;%1&quot; niet lezen omdat het geen ondersteund bestandstype is of omdat het bestand beschadigd is.</translation>
+        <translation>Jeg kan ikke lese fila &quot;%1&quot;, enten fordi det ikke er en støttet filtype, eller fordi fila har blitt skadet.</translation>
     </message>
 </context>
 <context>
     <name>ProjectFile</name>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Ik kan bestand &quot;%1&quot; niet openen</translation>
+        <translation>Jeg kan ikke åpne fila &quot;%1&quot;</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation>Ik kan bestand &quot;%1&quot; niet opslaan</translation>
+        <translation>Jeg kan ikke skrive til fila &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <source>PDF file &quot;%1&quot; is damaged.</source>
-        <translation>PDF-bestand &quot;%1&quot; is beschadigd.</translation>
+        <translation>PDF-fila &quot;%1&quot; er skadet.</translation>
     </message>
     <message>
         <source>PDF file &quot;%1&quot; is encripted.</source>
-        <translation>PDF-bestand &quot;%1&quot; is versleuteld.</translation>
+        <translation>PDF-fila &quot;%1&quot; er kryptert.</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Ik kan bestand &quot;%1&quot; niet openen</translation>
+        <translation>Jeg kan ikke åpne fila &quot;%1&quot;</translation>
     </message>
     <message>
         <source>I can&apos;t read from file &apos;%1&apos;</source>
-        <translation>Ik kan bestand &quot;%1&quot; niet lezen</translation>
+        <translation>Jeg kan ikke lese fra fila &quot;%1&quot;</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation>Ik kan bestand &quot;%1&quot; niet opslaan</translation>
+        <translation>Jeg kan ikke skrive til fila &quot;%1&quot;</translation>
     </message>
     <message>
         <source>Untitled</source>
-        <translation>Naamloos</translation>
+        <translation>Uten tittel</translation>
     </message>
     <message>
         <source>Default</source>
         <comment>Printer profile default name</comment>
-        <translation>Standaard</translation>
+        <translation>Forvalg</translation>
     </message>
 </context>
 <context>
     <name>Settings</name>
     <message>
         <source>~/Untitled.pdf</source>
-        <translation>~/Naamloos.pdf</translation>
+        <translation>~/Utentittel.pdf</translation>
     </message>
 </context>
 <context>
     <name>SubBookletView</name>
     <message>
         <source>Sub-booklet %1</source>
-        <translation>Deelboekje %1</translation>
+        <translation>Mini-hefte %1</translation>
     </message>
     <message>
         <source>%1 pages</source>
-        <translation>%1 bladzijden</translation>
+        <translation>%1 sider</translation>
     </message>
 </context>
 <context>
     <name>TmpPdfFile</name>
     <message>
         <source>I can&apos;t create temporary file &quot;%1&quot;</source>
-        <translation>Ik kan geen tijdelijk bestand maken &quot;%1&quot;</translation>
+        <translation>Jeg kan ikke opprette midlertidig fil &quot;%1&quot;</translation>
     </message>
     <message>
         <source>Something is wrong. I can't find boomagamerger program.
 Please reinstall me.</source>
-        <translation>Er is iets mis. Ik kan het boomaga samenvoegprogramma niet vinden.
-Installeer mij opnieuw.</translation>
+        <translation>Noe gikk galt. Jeg kan ikke finne boomagamerger-programmet.
+Re-installer meg.</translation>
     </message>
     <message>
         <source>I can&apos;t read file &apos;%1&apos;</source>
-        <translation>Ik kan bestand &apos;%1&apos; niet lezen.</translation>
+        <translation>Jeg kan ikke lese fila &quot;%1&quot;</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation>Ik kan bestand &apos;%1&apos; niet opslaan.</translation>
+        <translation>Jeg kan ikke skrive til fila &quot;%1&quot;</translation>
     </message>
 </context>
 </TS>

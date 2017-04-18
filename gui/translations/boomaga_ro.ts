@@ -1,4 +1,4 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="ro" version="2.0">
+<?xml version="1.0" ?><!DOCTYPE TS><TS language="ro" version="2.1">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -42,10 +42,6 @@
         <translation>Licența: %1</translation>
     </message>
     <message>
-        <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on Github.</source>
-        <translation>Boomaga este dezvoltat de către &lt;a %1&gt;Echipa Boomaga și contribuitori &lt;/a&gt; pe Github</translation>
-    </message>
-    <message>
         <source>If you are interested in working with our development team, &lt;a %1&gt;join us&lt;/a&gt;.</source>
         <translation>Dacă ești interesat să conlucrezi cu echipa noastră de dezvoltare, &lt;a %1&gt; alătură-te nouă &lt;/a&gt;/</translation>
     </message>
@@ -56,6 +52,10 @@
     <message>
         <source>If you want to help translate, we will be glad to see you in our translation team on &lt;a %1&gt;Transifex server&lt;/a&gt;.</source>
         <translation>Dacă doriți să ne ajutați cu traducerile, noi vom fi bucuroși să vă vedem în cadrul echipei noastre de traduceri pe &lt;a %1&gt;serverul Transifex&lt;/a&gt;.</translation>
+    </message>
+    <message>
+        <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on GitHub.</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -98,6 +98,14 @@
     </message>
     <message>
         <source>Directory for saved sessions:</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Dirctory for saved sessions:</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>...</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -508,6 +516,14 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
     <message>
         <source>%1 %2: Page %3</source>
         <comment>'Undo deletion' menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>fake</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
         <translation type="unfinished"/>
     </message>
 </context>

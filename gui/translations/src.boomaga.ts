@@ -1,6 +1,6 @@
 <?xml version="1.0" encoding="utf-8"?>
 <!DOCTYPE TS>
-<TS version="2.0">
+<TS version="2.1">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -44,10 +44,6 @@
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on Github.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>If you are interested in working with our development team, &lt;a %1&gt;join us&lt;/a&gt;.</source>
         <translation type="unfinished"></translation>
     </message>
@@ -57,6 +53,10 @@
     </message>
     <message>
         <source>If you want to help translate, we will be glad to see you in our translation team on &lt;a %1&gt;Transifex server&lt;/a&gt;.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on GitHub.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -100,6 +100,14 @@
     </message>
     <message>
         <source>Directory for saved sessions:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Dirctory for saved sessions:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>...</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -509,6 +517,14 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>%1 %2: Page %3</source>
         <comment>&apos;Undo deletion&apos; menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>fake</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Edit</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
