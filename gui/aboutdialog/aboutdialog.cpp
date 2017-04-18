@@ -116,7 +116,7 @@ QString AboutDialog::aboutText() const
 QString AboutDialog::authorsText() const
 {
     return QString("%1<p>%2").arg(
-                tr("Boomaga is developed by the <a %1>Boomaga Team and contributors</a> on Github.")
+                tr("Boomaga is developed by the <a %1>Boomaga Team and contributors</a> on GitHub.")
                     .arg(" href='https://github.com/Boomaga?tab=members'"),
                 tr("If you are interested in working with our development team, <a %1>join us</a>.")
                     .arg(" href='https://github.com/Boomaga/boomaga'")
