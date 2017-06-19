@@ -378,7 +378,7 @@ PDFDoc *PdfMerger::addFile(const QString &fileName, qint64 startPos, qint64 endP
  ************************************************/
 bool PdfMerger::run(const QString &outFileName)
 {
-    QDir().mkpath(outFileName + "/..");
+    QFileInfo(outFileName).dir().mkpath(".");
 
     FILE *f = fopen(outFileName.toLocal8Bit(), "wb");
     if (!f)
