@@ -102,14 +102,6 @@
         <source>Directory for saved sessions:</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>Dirctory for saved sessions:</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>ExportToPdf</name>
@@ -517,14 +509,6 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>%1 %2: Page %3</source>
         <comment>&apos;Undo deletion&apos; menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>fake</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>&amp;Edit</source>
         <translation type="unfinished"></translation>
     </message>
 </context>

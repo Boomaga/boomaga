@@ -55,7 +55,7 @@
     </message>
     <message>
         <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on GitHub.</source>
-        <translation type="unfinished"/>
+        <translation>Boomaga è sviluppato dal Team &lt;a %1&gt;Boomaga e dai  contributori&lt;/a&gt; su GitHub.</translation>
     </message>
 </context>
 <context>
@@ -99,14 +99,6 @@
     <message>
         <source>Directory for saved sessions:</source>
         <translation>Cartella per le sessioni salvate:</translation>
-    </message>
-    <message>
-        <source>Dirctory for saved sessions:</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>...</source>
-        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -517,14 +509,6 @@ Sei sicuro di volerlo sovracrivere?</translation>
         <source>%1 %2: Page %3</source>
         <comment>'Undo deletion' menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
         <translation>%1 %2: Pagina %3</translation>
-    </message>
-    <message>
-        <source>fake</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>&amp;Edit</source>
-        <translation type="unfinished"/>
     </message>
 </context>
 <context>
