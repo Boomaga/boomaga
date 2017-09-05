@@ -109,11 +109,18 @@ void writeTrailer(XRef *xRef, int rootNum, OutStream* stream)
     ref.num = rootNum;
     ref.gen = 0;
 
+#if POPPLER_VERSION < 5800
     Dict *trailerDict = PDFDoc::createTrailerDict(xRef->getNumObjects(), false, 0, &ref, xRef,
                                                   "fileName", stream->getPos());
     PDFDoc::writeXRefTableTrailer(trailerDict, xRef, false /* do not write unnecessary entries */,
                                   uxrefOffset, stream, xRef);
     delete trailerDict;
+#else
+    Object trailerDict = PDFDoc::createTrailerDict(xRef->getNumObjects(), false, 0, &ref, xRef,
+                                                  "fileName", stream->getPos());
+    PDFDoc::writeXRefTableTrailer(std::move(trailerDict), xRef, false /* do not write unnecessary entries */,
+                                  uxrefOffset, stream, xRef);
+#endif
 #endif
 }
 
@@ -238,9 +245,15 @@ OutStream &operator<<(OutStream &stream, const int value)
 OutStream &operator<<(OutStream &stream, Stream &value)
 {
     Object obj1;
+#if POPPLER_VERSION < 5800
     value.getDict()->lookup((char*)"Length", &obj1);
+#else
+    obj1 = value.getDict()->lookup((char*)"Length");
+#endif
     const int length = obj1.getInt();
+#if POPPLER_VERSION < 5800
     obj1.free();
+#endif
 
     value.unfilteredReset();
 
@@ -278,8 +291,10 @@ public:
 
     ~PdfMergerPageInfo()
     {
+#if POPPLER_VERSION < 5800
         page.free();
         stream.free();
+#endif
     }
 
     PDFDoc *doc;
@@ -308,7 +323,11 @@ QString PdfMergerPageInfo::dump()
         for (int i=0; i < array->getLength(); ++i)
         {
             Object o;
+#if POPPLER_VERSION < 5800
             array->get(i, &o);
+#else
+            o = array->get(i);
+#endif
             res += QString("    * %1 - %2\n").arg(i).arg(o.getTypeName());
         }
     }
@@ -448,7 +467,11 @@ bool PdfMerger::run(const QString &outFileName)
 
             pageInfo->doc = doc;
             pageInfo->numOffset = numOffset;
+#if POPPLER_VERSION < 5800
             doc->getXRef()->fetch(refPage->num, refPage->gen, &(pageInfo->page));
+#else
+            pageInfo->page = doc->getXRef()->fetch(refPage->num, refPage->gen);
+#endif
             Dict *pageDict = pageInfo->page.getDict();
 
             PDFRectangle *mediaBox = page->getMediaBox();
@@ -469,7 +492,11 @@ bool PdfMerger::run(const QString &outFileName)
             pageInfo->pageNum = i;
             if (pageDict->hasKey((char *)"Contents"))
             {
+#if POPPLER_VERSION < 5800
                 pageDict->lookup((char *)"Contents", &(pageInfo->stream));
+#else
+                pageInfo->stream = pageDict->lookup((char *)"Contents");
+#endif
                 pageDict->remove((char *)"Contents");
             }
 
@@ -575,11 +602,17 @@ void PdfMerger::writeStreamAsXObject(PdfMergerPageInfo *pageInfo, Stream *stream
         for (int i=0; i<dict->getLength(); ++i)
         {
             Object value;
+#if POPPLER_VERSION < 5800
             dict->getVal(i, &value);
+#else
+            dict->getVal(i);
+#endif
             *mStream << "/" << dict->getKey(i) << " ";
             POPPLER_WriteObject(&value, 0, mStream, &mXRef, pageInfo->numOffset);
             *mStream << "\n";
+#if POPPLER_VERSION < 5800
             value.free();
+#endif
         }
         *mStream << " >>\n";
 
@@ -617,7 +650,11 @@ bool PdfMerger::writePageAsXObject(PdfMergerPageInfo *pageInfo)
         for (int i=0; i < array->getLength(); ++i)
         {
             Object o;
+#if POPPLER_VERSION < 5800
             array->get(i, &o);
+#else
+            o = array->get(i);
+#endif
             if (!o.isStream())
             {
                 warning("Page content is array with incorrect item type:\n" + pageInfo->dump() + "\n");
@@ -643,10 +680,16 @@ bool PdfMerger::writeDictValue(Dict *dict, const char *key, Guint numOffset)
         return false;
 
     Object value;
+#if POPPLER_VERSION < 5800
     dict->lookupNF((char*)key, &value);
+#else
+    value = dict->lookupNF((char*)key);
+#endif
     *mStream << "/" << key << " ";
     POPPLER_WriteObject(&value, 0, mStream, &mXRef, numOffset);
     *mStream << "\n";
+#if POPPLER_VERSION < 5800
     value.free();
+#endif
     return true;
 }
