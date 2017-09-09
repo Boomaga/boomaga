@@ -134,7 +134,11 @@ class PJLFileStream: protected PJLFileStreamData, public FileStream
 public:
     PJLFileStream(const QString &fileName, qint64 startPos, qint64 endPos):
         PJLFileStreamData(fileName, startPos, endPos),
+#if POPPLER_VERSION < 5800
         FileStream(mFile, mStartPos, true, mLength, new Object())
+#else
+        FileStream(mFile, mStartPos, true, mLength, Object())
+#endif
     {
     }
 
@@ -189,12 +193,20 @@ QString BoomagaPDFDoc::getMetaInfo(const char *tag)
     QString result;
     Object docInfo;
 
+#if POPPLER_VERSION < 5800
     getDocInfo(&docInfo);
+#else
+    docInfo = getDocInfo();
+#endif
     if (docInfo.isDict())
     {
         Dict *dict = docInfo.getDict();
         Object obj;
+#if POPPLER_VERSION < 5800
         dict->lookup((char*)tag, &obj);
+#else
+        obj = dict->lookup((char*)tag);
+#endif
 
         if (obj.isString())
         {
@@ -211,10 +223,14 @@ QString BoomagaPDFDoc::getMetaInfo(const char *tag)
             }
         }
 
+#if POPPLER_VERSION < 5800
         obj.free();
+#endif
 
     }
+#if POPPLER_VERSION < 5800
     docInfo.free();
+#endif
 
     return result;
 }
