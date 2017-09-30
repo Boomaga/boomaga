@@ -374,17 +374,12 @@ PDFDoc *PdfMerger::addFile(const QString &fileName, qint64 startPos, qint64 endP
         error(doc->errorString());
     }
 
-    if (doc->getPDFMajorVersion() > mMajorVer)
+    if ((doc->getPDFMajorVersion()  > mMajorVer) ||
+        (doc->getPDFMajorVersion() == mMajorVer &&
+         doc->getPDFMinorVersion()  > mMinorVer))
     {
         mMajorVer = doc->getPDFMajorVersion();
         mMinorVer = doc->getPDFMinorVersion();
-    }
-    else if (doc->getPDFMajorVersion() == mMinorVer)
-    {
-        if (doc->getPDFMinorVersion() > mMinorVer)
-        {
-            mMinorVer = doc->getPDFMinorVersion();
-        }
     }
 
     mDocs << doc;
