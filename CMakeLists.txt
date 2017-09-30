@@ -38,6 +38,8 @@ add_definitions(-DMINOR_VERSION=\"${MINOR_VERSION}\")
 add_definitions(-DPATCH_VERSION=\"${PATCH_VERSION}\")
 add_definitions(-DFULL_VERSION=\"${FULL_VERSION}\")
 
+set (CMAKE_CXX_STANDARD 11)
+
 include("cmake/tools.cmake")
 status_message("boomaga ver. ${FULL_VERSION}")
 status_message(" ")
