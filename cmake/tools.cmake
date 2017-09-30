@@ -1,3 +1,13 @@
+file(GLOB cmakeFiles ${CMAKE_CURRENT_LIST_DIR}/*.cmake)
+foreach(cmakeFile ${cmakeFiles})
+    if ( NOT ${cmakeFile} STREQUAL ${CMAKE_CURRENT_LIST_FILE} )
+        INCLUDE(${cmakeFile})
+    endif()
+endforeach(cmakeFile)
+
+
+
+
 if (NOT CMAKE_BUILD_TYPE)
     set ( CMAKE_BUILD_TYPE Release )
 endif (NOT CMAKE_BUILD_TYPE)
@@ -6,22 +16,6 @@ if (CMAKE_BUILD_TYPE MATCHES [Dd]ebug)
     add_definitions("-g")
 endif()
 
-set(STATUS_MESSAGES "" CACHE INTERNAL "STATUS_MESSAGES_CACHE")
-
-macro(statusMessage message)
-        set(STATUS_MESSAGES ${STATUS_MESSAGES} ${message}  CACHE INTERNAL "STATUS_MESSAGES_CACHE")
-endmacro()
-
-
-macro(showStatus)
-    message(STATUS "*****************************************************")
-
-    foreach(msg ${STATUS_MESSAGES})
-        message(STATUS "* ${msg}")
-    endforeach()
-
-    message(STATUS "*****************************************************")
-endmacro()
 
 
 macro(setByDefault VAR_NAME VAR_VALUE)
@@ -54,9 +48,9 @@ macro(getQtVersion QT_VER)
     endif()
 
     if(USE_QT4)
-        statusMessage("Using Qt4, for building with Qt5 use -DUSE_QT5=Yes option.")
+        status_message("Using Qt4, for building with Qt5 use -DUSE_QT5=Yes option.")
     else()
-        statusMessage("Using Qt5, for building with Qt4 use -DUSE_QT4=Yes option.")
+        status_message("Using Qt5, for building with Qt4 use -DUSE_QT4=Yes option.")
     endif()
 
 endmacro()

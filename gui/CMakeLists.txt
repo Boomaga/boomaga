@@ -248,9 +248,9 @@ target_link_libraries(${INSTANCE_NAME} ${LIBRARIES})
 if(BUILD_TESTS STREQUAL "Yes")
     add_subdirectory(tests)
 else()
-    statusMessage(" ")
-    statusMessage("For building tests use -DBUILD_TESTS=Yes option.")
-    statusMessage(" ")
+    status_message(" ")
+    status_message("For building tests use -DBUILD_TESTS=Yes option.")
+    status_message(" ")
 endif()
 
 
