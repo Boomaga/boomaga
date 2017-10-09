@@ -274,13 +274,13 @@ Rotation LayoutNUp::calcPageRotation(const ProjectPage *page, Rotation sheetRota
         return this->rotation();
 
     Rotation res;
-    bool isSheetLandscape = isLandscape(this->rotation())    ^ isLandscape(sheetRotation);
-    bool isPageLandscape  = isLandscape(page->pdfRotation()) ^ isLandscape(page->rect());
+    bool isSheetLandscape = isLandscape(this->rotation())  ^ isLandscape(sheetRotation);
 
-    res = page->pdfRotation();
+    bool isPageLandscape = isLandscape(page->pdfRotation()) ^ isLandscape(page->rect());
+        res = page->pdfRotation();
 
-    //if (isPageLandscape != isSheetLandscape)
-    //    res -= 90;
+    if (isPageLandscape != isSheetLandscape)
+        res -= 90;
 
     return res - sheetRotation;
 }
