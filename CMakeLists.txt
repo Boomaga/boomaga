@@ -77,7 +77,6 @@ add_definitions(-DGUI_DIR=\"${GUI_DIR}\")
 set(NONGUI_DIR ${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}/boomaga)
 add_definitions(-DNONGUI_DIR=\"${NONGUI_DIR}\")
 
-getQtVersion(QT_VERSION)
 ###########################################################
 
 setByDefault(INSTANCE_NAME      "boomaga")

@@ -24,7 +24,8 @@
  # END_COMMON_COPYRIGHT_HEADER
 
 
-cmake_minimum_required( VERSION 2.6 )
+cmake_minimum_required(VERSION 3.0.0)
+cmake_policy(SET CMP0028 NEW)
 
 project(boomagamerger)
 
@@ -41,15 +42,21 @@ set(MERGER_SOURCES
     ../kernel/boomagapoppler.cpp
 )
 
-set(MERGER_MOCS
-    pdfmergeripc.h
-)
-
-
 
 #*******************************************
 set(EXECUTABLE_OUTPUT_PATH "${PROJECT_BINARY_DIR}/..")
 SET(CMAKE_MODULE_PATH ${PROJECT_SOURCE_DIR}/cmake)
+
+set(CMAKE_INCLUDE_CURRENT_DIR ON)
+set(CMAKE_AUTOMOC ON)
+set(CMAKE_AUTOUIC ON)
+set(CMAKE_AUTORCC ON)
+find_package(Qt5 REQUIRED
+    Core
+    Widgets
+    PrintSupport
+    LinguistTools
+)
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -59,15 +66,9 @@ include_directories(
     ${POPPLER_INCLUDE_DIRS}
 )
 
-if(USE_QT4)
-    qt4_wrap_cpp(MERGER_MOC_SOURCES ${MERGER_MOCS})
-else()
-    qt5_wrap_cpp(MERGER_MOC_SOURCES ${MERGER_MOCS})
-endif()
 
-
-add_executable(${PROJECT_NAME} ${MERGER_HEADERS} ${MERGER_SOURCES} ${MERGER_MOC_SOURCES})
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${POPPLER_LIBRARIES})
+add_executable(${PROJECT_NAME} ${MERGER_HEADERS} ${MERGER_SOURCES})
+target_link_libraries(${PROJECT_NAME} ${POPPLER_LIBRARIES} Qt5::Core Qt5::Widgets Qt5::PrintSupport)
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${NONGUI_DIR})
 

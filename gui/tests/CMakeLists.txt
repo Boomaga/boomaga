@@ -24,8 +24,10 @@
  # END_COMMON_COPYRIGHT_HEADER
  
  
- project(boomaga_test)
-cmake_minimum_required( VERSION 2.6 )
+cmake_minimum_required(VERSION 3.0.0)
+cmake_policy(SET CMP0028 NEW)
+
+project(boomaga_test)
 
 
 set(TEST_HEADERS
@@ -34,10 +36,6 @@ set(TEST_HEADERS
 
 set(TEST_SOURCES
     testboomaga.cpp
-)
-
-set(TEST_MOCS
-    testboomaga.h
 )
 
 
@@ -51,10 +49,8 @@ macro(ADD_FROM_PROJECT OUT_FILES)
 endmacro()
 
 
-
 ADD_FROM_PROJECT(TEST_HEADERS ${HEADERS})
 ADD_FROM_PROJECT(TEST_SOURCES ${SOURCES})
-ADD_FROM_PROJECT(TEST_MOCS    ${MOCS})
 
 
 add_definitions(-DTEST_DATA_DIR=\"${CMAKE_CURRENT_SOURCE_DIR}/data/\")
@@ -69,22 +65,15 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-if(USE_QT4)
-    set(QT_USE_QTTEST true)
-    find_package(Qt4 REQUIRED QUIET)
-    include(${QT_USE_FILE})
-    qt4_wrap_cpp(TEST_MOC_SOURCES ${TEST_MOCS})
-else()
-    cmake_minimum_required(VERSION 2.8.3)
-
-    find_package(Qt5Test REQUIRED)
-    include_directories(${Qt5Test_INCLUDE_DIRS})
-    add_definitions(${Qt5Test_DEFINITIONS})
-    set(QT_LIBRARIES ${QT_LIBRARIES} ${Qt5Test_LIBRARIES})
-
-    qt5_wrap_cpp(TEST_MOC_SOURCES ${TEST_MOCS})
-endif()
+find_package(Qt5 REQUIRED
+    Core
+    Test
+    Widgets
+    PrintSupport
+    DBus
+    LinguistTools
+)
 
 
-add_executable(${PROJECT_NAME} ${TEST_HEADERS} ${TEST_SOURCES} ${TEST_MOC_SOURCES} )
-target_link_libraries(${PROJECT_NAME} ${QT_LIBRARIES} ${LIBRARIES})
+add_executable(${PROJECT_NAME} ${TEST_HEADERS} ${TEST_SOURCES})
+target_link_libraries(${PROJECT_NAME} ${LIBRARIES} Qt5::Core Qt5::Test Qt5::Widgets Qt5::PrintSupport Qt5::DBus)
