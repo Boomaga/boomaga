@@ -73,8 +73,6 @@ MainWindow::MainWindow(QWidget *parent):
 
     setStyleSheet("QListView::item { padding: 2px;}");
 
-    fillPrintersCombo();
-
     initStatusBar();
     initActions();
 
@@ -106,10 +104,9 @@ MainWindow::MainWindow(QWidget *parent):
     mAvailableLayouts << layout;
     ui->layoutBookletBtn->setLayout(layout);
 
-
     loadSettings();
-    switchPrinterProfile();
-    updateWidgets();
+    fillPrintersCombo();
+
 
     connect(ui->layout1UpBtn,     SIGNAL(clicked(bool)),
             this, SLOT(switchLayout()));
@@ -201,31 +198,16 @@ MainWindow::~MainWindow()
  ************************************************/
 void MainWindow::fillPrintersCombo()
 {
-    PrintersComboBox *combo = ui->printersCombo;
-
-    Printer *prevPrinter = combo->currentPrinter();
-    int prevProfile = combo->currentProfile();
-
-    combo->setUpdatesEnabled(false);
-    combo->clear();
+    ui->printersCombo->setUpdatesEnabled(false);
+    ui->printersCombo->clear();
 
     foreach(Printer *printer, Printer::availablePrinters())
     {
-        combo->addPrinter(printer);
+        ui->printersCombo->addPrinter(printer);
     }
 
-
-    int index = combo->findItem(prevPrinter, prevProfile);
-
-    if (index < 0)
-        index = combo->findItem(prevPrinter, 0);
-
-    if (index < 0)
-        index = combo->findFirstProfile();
-
-
-    combo->setCurrentIndex(index);
     ui->printersCombo->setUpdatesEnabled(true);
+    updateWidgets();
 }
 
 
@@ -290,10 +272,7 @@ void MainWindow::loadSettings()
     if (!currentPrinter)
         currentPrinter = Printer::nullPrinter();
 
-    ui->printersCombo->setCurrentPrinterProfile(currentPrinter->name(), currentPrinter->currentProfile());
-    if (ui->printersCombo->currentIndex() < 1)
-        ui->printersCombo->setCurrentIndex(ui->printersCombo->findFirstProfile());
-
+    project->setPrinterProfile(currentPrinter, currentPrinter->currentProfileIndex(), false);
 
     QString layoutId = settings->value(Settings::Layout).toString();
 
@@ -439,6 +418,9 @@ void MainWindow::updateWidgets()
         btn->setChecked(btn->layout() == project->layout());
     }
 
+    ui->printersCombo->setCurrentPrinterProfile(project->printer(), project->printer()->currentProfileIndex());
+
+
     ui->actionPrint->setEnabled(project->pageCount() > 0);
     ui->actionPrintAndClose->setEnabled(ui->actionPrint->isEnabled());
 
@@ -509,7 +491,8 @@ void MainWindow::showPrinterSettingsDialog()
     if (printer)
     {
         PrinterSettings *dialog = PrinterSettings::execute(printer);
-        connect(dialog, SIGNAL(accepted()), this, SLOT(applyPrinterSettings()));
+        connect(dialog, SIGNAL(accepted()),
+                this, SLOT(applyPrinterSettings()));
     }
 }
 
@@ -521,7 +504,7 @@ void MainWindow::applyPrinterSettings()
 {
     project->printer()->saveSettings();
     fillPrintersCombo();
-    switchPrinterProfile();
+    project->update();
 }
 
 

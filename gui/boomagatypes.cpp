@@ -27,6 +27,32 @@
 #include <QDebug>
 #include <QDir>
 
+
+/************************************************
+
+ ************************************************/
+QString flipTypeToStr(FlipType value)
+{
+    switch (value)
+    {
+    case FlipType::LongEdge:    return "LongEdge";
+    case FlipType::ShortEdge:   return "ShortEdge";
+    }
+    return "";
+}
+
+
+/************************************************
+
+ ************************************************/
+FlipType strToFlipType(const QString &str)
+{
+    QString s = str.toUpper();
+    if (s.contains("SHORT"))    return FlipType::ShortEdge;
+    return FlipType::LongEdge;
+}
+
+
 /************************************************
 
  ************************************************/

@@ -116,7 +116,7 @@ status_message("  CUPS_BACKEND_INFO    =  ${CUPS_BACKEND_INFO}")
 status_message("  CUPS_BACKEND_MODEL   =  ${CUPS_BACKEND_MODEL}")
 status_message("  CUPS_BACKEND_DESCRIPTION  = ${CUPS_BACKEND_DESCRIPTION}")
 status_message("  CUPS_BACKEND_MANUFACTURER = ${CUPS_BACKEND_MANUFACTURER}")
-
+status_message(" ")
 
 add_subdirectory(cups)
 add_subdirectory(gui)

@@ -244,16 +244,6 @@ set(LIBRARIES ${LIBRARIES} ${QT_LIBRARIES})
 add_executable(${INSTANCE_NAME} ${HEADERS} ${SOURCES} ${MOC_SOURCES} ${QM_FILES} ${QRC_SOURCES} ${UI_HEADERS} ${QRC_CXX_SOURCES})
 target_link_libraries(${INSTANCE_NAME} ${LIBRARIES})
 
-
-if(BUILD_TESTS STREQUAL "Yes")
-    add_subdirectory(tests)
-else()
-    status_message(" ")
-    status_message("For building tests use -DBUILD_TESTS=Yes option.")
-    status_message(" ")
-endif()
-
-
 install(TARGETS ${INSTANCE_NAME} RUNTIME DESTINATION ${GUI_DIR})
 install(FILES ${QM_FILES} DESTINATION ${TRANSLATIONS_DIR})
 
@@ -274,3 +264,5 @@ install(FILES   ${CMAKE_CURRENT_BINARY_DIR}/boomaga.desktop DESTINATION "share/a
 install(FILES   misc/boomaga.xml        DESTINATION "share/mime/packages")
 
 add_subdirectory(pdfmerger)
+
+add_tests("tests")

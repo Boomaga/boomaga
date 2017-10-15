@@ -44,6 +44,17 @@ QString duplexTypeToStr(DuplexType value);
 DuplexType strToDuplexType(const QString &str);
 
 
+enum class FlipType
+{
+    ShortEdge,
+    LongEdge
+};
+
+Q_DECLARE_METATYPE(FlipType)
+
+QString flipTypeToStr(FlipType value);
+FlipType strToFlipType(const QString &str);
+
 enum ColorMode
 {
     ColorModeAuto       = 0,

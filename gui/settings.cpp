@@ -27,17 +27,12 @@
 #include "settings.h"
 #include <QDir>
 #include <QDebug>
-
-#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
-#include <QDesktopServices>
-#else
 #include <QStandardPaths>
-#endif
 
 
 #define MAINWINDOW_GROUP "MainWindow"
-#define PROJECT_GROUP "Project"
-#define PRINTERS_GROUP "Printer"
+#define PROJECT_GROUP    "Project"
+#define PRINTERS_GROUP   "Printer"
 
 
 
@@ -139,6 +134,8 @@ QString Settings::keyToString(Settings::Key key) const
     case PrinterProfile_BottomMargin:   return "BottomMargin";
     case PrinterProfile_InternalMargin: return "InternalMargin";
     case PrinterProfile_ColorMode:      return "ColorMode";
+    case PrinterProfile_LandscapeFlip:  return "LandscapeFlip";
+    case PrinterProfile_PortraitFlip:   return "PortraitFlip";
 
     // PrinterSettingsDialog ****************
     case PrinterSettingsDialog_Geometry:return "PrinterSettingsDialog/Geometry";
@@ -180,11 +177,7 @@ void Settings::init()
     setDefaultValue(AllowNegativeMargins, false);
     setDefaultValue(AutoSave, false);
 
-#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
-    QString dir = QDesktopServices::storageLocation(QDesktopServices::DocumentsLocation);
-#else
     QString dir = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
-#endif
     dir = shrinkHomeDir(dir);
     setDefaultValue(AutoSaveDir, QDir(dir).filePath("Boomaga files"));
 

@@ -79,6 +79,12 @@ public:
     QSizeF paperSize(Unit unit) const;
     void setPaperSize(const QSizeF & paperSize, Unit unit);
 
+    FlipType landscapeFlipType() const { return mLandscapeFlipType; }
+    void setLandscapeFlipType(FlipType value);
+
+    FlipType portraitFlipType() const { return mPortraitFlipType; }
+    void setPortraitFlipType(FlipType value);
+
     void readSettings();
     void saveSettings() const;
 
@@ -94,6 +100,8 @@ private:
     bool mReverseOrder;
     QSizeF mPaperSize;
     ColorMode mColorMode;
+    FlipType mLandscapeFlipType;
+    FlipType mPortraitFlipType;
 };
 
 
@@ -105,13 +113,15 @@ public:
 
     virtual QString name() const { return mPrinterName; }
 
-    QVector<PrinterProfile> *profiles() { return &mProfiles; }
-    const QVector<PrinterProfile> *profiles() const { return &mProfiles; }
+    QVector<PrinterProfile> profiles() { return mProfiles; }
+    const QVector<PrinterProfile> profiles() const { return mProfiles; }
+    void setProfiles(const QVector<PrinterProfile> &value);
 
-    int currentProfile() const { return mCurrentProfileIndex; }
+    PrinterProfile *currentProfile() const { return mCurrentProfile; }
+    int currentProfileIndex() const { return mCurrentProfileIndex; }
     void setCurrentProfile(int index);
 
-    const PrinterProfile *cupsProfile() const { return &mCupsProfile; }
+    const PrinterProfile *defaultCupsProfile() const { return &mDefaultCupsProfile; }
 
     QSizeF paperSize(Unit unit) const { return mCurrentProfile->paperSize(unit); }
     void setPaperSize(const QSizeF & paperSize, Unit unit) { mCurrentProfile->setPaperSize(paperSize, unit); }
@@ -149,6 +159,12 @@ public:
     bool grayscale() const { return mCurrentProfile->grayscale(); }
     bool isSupportColor() const;
 
+    FlipType landscapeFlipType() const { return mCurrentProfile->landscapeFlipType(); }
+    void setLandscapeFlipType(FlipType value) { mCurrentProfile->setLandscapeFlipType(value);}
+
+    FlipType portraitFlipType() const { return mCurrentProfile->portraitFlipType(); }
+    void setPortraitFlipType(FlipType value) { mCurrentProfile->setPortraitFlipType(value); }
+
     bool canChangeDuplexType() const { return mCanChangeDuplexType; }
     bool isShowProgressDialog() const { return mShowProgressDialog; }
 
@@ -173,7 +189,7 @@ private:
     QVector<PrinterProfile> mProfiles;
     int mCurrentProfileIndex;
     PrinterProfile *mCurrentProfile;
-    PrinterProfile mCupsProfile;
+    PrinterProfile mDefaultCupsProfile;
     QString mGrayscaleOption;
     QString mColorOption;
 };

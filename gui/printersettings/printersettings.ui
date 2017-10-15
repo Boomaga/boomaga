@@ -6,223 +6,86 @@
    <rect>
     <x>0</x>
     <y>0</y>
-    <width>562</width>
-    <height>439</height>
+    <width>662</width>
+    <height>446</height>
    </rect>
   </property>
-  <layout class="QVBoxLayout" name="verticalLayout_5">
-   <property name="leftMargin">
-    <number>4</number>
-   </property>
-   <property name="topMargin">
-    <number>4</number>
-   </property>
-   <property name="rightMargin">
-    <number>4</number>
+  <layout class="QVBoxLayout" name="verticalLayout_2">
+   <property name="spacing">
+    <number>0</number>
    </property>
    <item>
-    <layout class="QHBoxLayout" name="horizontalLayout_2">
+    <layout class="QHBoxLayout" name="horizontalLayout">
+     <property name="spacing">
+      <number>6</number>
+     </property>
      <item>
-      <widget class="QGroupBox" name="profilesGroupBox">
-       <property name="sizePolicy">
-        <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-         <horstretch>0</horstretch>
-         <verstretch>0</verstretch>
-        </sizepolicy>
-       </property>
-       <property name="sizeIncrement">
+      <widget class="QTreeView" name="profilesList">
+       <property name="minimumSize">
         <size>
-         <width>1</width>
+         <width>150</width>
          <height>0</height>
         </size>
        </property>
-       <property name="title">
-        <string>Profiles</string>
+       <property name="sizeIncrement">
+        <size>
+         <width>10</width>
+         <height>0</height>
+        </size>
        </property>
-       <layout class="QVBoxLayout" name="verticalLayout_3">
-        <property name="spacing">
-         <number>0</number>
-        </property>
-        <property name="leftMargin">
-         <number>0</number>
-        </property>
-        <property name="topMargin">
-         <number>2</number>
-        </property>
-        <property name="rightMargin">
-         <number>0</number>
-        </property>
-        <property name="bottomMargin">
-         <number>0</number>
-        </property>
-        <item>
-         <widget class="QListWidget" name="profilesList">
-          <property name="minimumSize">
-           <size>
-            <width>150</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="sizeIncrement">
-           <size>
-            <width>10</width>
-            <height>0</height>
-           </size>
-          </property>
-          <property name="dragDropMode">
-           <enum>QAbstractItemView::DragDrop</enum>
-          </property>
-          <property name="defaultDropAction">
-           <enum>Qt::MoveAction</enum>
-          </property>
-         </widget>
-        </item>
-        <item>
-         <layout class="QHBoxLayout" name="horizontalLayout">
-          <item>
-           <widget class="QToolButton" name="addProfileButton">
-            <property name="text">
-             <string>+</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <widget class="QToolButton" name="delProfileButton">
-            <property name="text">
-             <string>-</string>
-            </property>
-           </widget>
-          </item>
-          <item>
-           <spacer name="horizontalSpacer">
-            <property name="orientation">
-             <enum>Qt::Horizontal</enum>
-            </property>
-            <property name="sizeHint" stdset="0">
-             <size>
-              <width>40</width>
-              <height>20</height>
-             </size>
-            </property>
-           </spacer>
-          </item>
-         </layout>
-        </item>
-       </layout>
+       <property name="dragDropMode">
+        <enum>QAbstractItemView::DragDrop</enum>
+       </property>
+       <property name="defaultDropAction">
+        <enum>Qt::MoveAction</enum>
+       </property>
+       <property name="rootIsDecorated">
+        <bool>false</bool>
+       </property>
+       <property name="itemsExpandable">
+        <bool>false</bool>
+       </property>
+       <property name="headerHidden">
+        <bool>true</bool>
+       </property>
+       <property name="expandsOnDoubleClick">
+        <bool>false</bool>
+       </property>
+       <attribute name="headerDefaultSectionSize">
+        <number>0</number>
+       </attribute>
       </widget>
      </item>
      <item>
-      <layout class="QVBoxLayout" name="verticalLayout_4">
-       <item>
-        <widget class="QGroupBox" name="groupBox_2">
-         <property name="title">
-          <string>Margins (mm)</string>
+      <widget class="QTabWidget" name="tabWidget">
+       <property name="currentIndex">
+        <number>0</number>
+       </property>
+       <widget class="QWidget" name="settingsTab">
+        <attribute name="title">
+         <string>Settings</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout_5">
+         <property name="spacing">
+          <number>20</number>
          </property>
-         <layout class="QVBoxLayout" name="verticalLayout">
-          <item>
-           <layout class="QGridLayout" name="gridLayout_2">
-            <item row="2" column="1">
-             <widget class="QDoubleSpinBox" name="leftMarginSpin"/>
-            </item>
-            <item row="3" column="1">
-             <widget class="QDoubleSpinBox" name="rightMarginSpin"/>
-            </item>
-            <item row="0" column="1">
-             <widget class="QDoubleSpinBox" name="topMarginSpin"/>
-            </item>
-            <item row="2" column="0">
-             <widget class="QLabel" name="label_5">
+         <item>
+          <widget class="QGroupBox" name="groupBox_3">
+           <property name="title">
+            <string>Print on both sides</string>
+           </property>
+           <layout class="QGridLayout" name="gridLayout">
+            <item row="1" column="0">
+             <widget class="QLabel" name="portraitFlipLabel">
               <property name="text">
-               <string>Left:</string>
+               <string>Portrait documents:</string>
               </property>
              </widget>
             </item>
             <item row="1" column="1">
-             <widget class="QDoubleSpinBox" name="bottomMarginSpin"/>
+             <widget class="QComboBox" name="portraitFlipComboBox"/>
             </item>
-            <item row="1" column="0">
-             <widget class="QLabel" name="label_4">
-              <property name="text">
-               <string>Bottom:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="1">
-             <widget class="QDoubleSpinBox" name="internalMarginSpin"/>
-            </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="Label3">
-              <property name="text">
-               <string>Top:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="0">
-             <widget class="QLabel" name="label_6">
-              <property name="text">
-               <string>Right:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="internalMarginLbl">
-              <property name="text">
-               <string>Internal:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="5" column="0" colspan="2">
-             <widget class="QPushButton" name="resetButton">
-              <property name="text">
-               <string>Reset to default</string>
-              </property>
-             </widget>
-            </item>
-            <item row="0" column="2" rowspan="6">
-             <widget class="QLabel" name="marginsPereview">
-              <property name="sizePolicy">
-               <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
-                <horstretch>1</horstretch>
-                <verstretch>0</verstretch>
-               </sizepolicy>
-              </property>
-              <property name="minimumSize">
-               <size>
-                <width>220</width>
-                <height>0</height>
-               </size>
-              </property>
-              <property name="frameShape">
-               <enum>QFrame::NoFrame</enum>
-              </property>
-              <property name="frameShadow">
-               <enum>QFrame::Raised</enum>
-              </property>
-             </widget>
-            </item>
-           </layout>
-          </item>
-         </layout>
-        </widget>
-       </item>
-       <item>
-        <widget class="QGroupBox" name="groupBox_3">
-         <property name="title">
-          <string/>
-         </property>
-         <property name="flat">
-          <bool>true</bool>
-         </property>
-         <layout class="QVBoxLayout" name="verticalLayout_2">
-          <property name="topMargin">
-           <number>0</number>
-          </property>
-          <item>
-           <layout class="QGridLayout" name="gridLayout">
-            <item row="4" column="1">
-             <widget class="QComboBox" name="colorModeCombo"/>
-            </item>
-            <item row="0" column="1">
+            <item row="0" column="0" colspan="2">
              <widget class="QComboBox" name="duplexTypeComboBox">
               <property name="sizePolicy">
                <sizepolicy hsizetype="Preferred" vsizetype="Fixed">
@@ -238,55 +101,205 @@
               </property>
              </widget>
             </item>
-            <item row="0" column="0">
-             <widget class="QLabel" name="label">
+            <item row="2" column="0">
+             <widget class="QLabel" name="landscapeFlipLabel">
               <property name="text">
-               <string>Duplex:</string>
+               <string>Landscape documents: </string>
               </property>
              </widget>
             </item>
-            <item row="1" column="1">
-             <widget class="QCheckBox" name="reverseOrderCbx">
-              <property name="text">
-               <string>Print in reverse order</string>
-              </property>
-             </widget>
-            </item>
-            <item row="3" column="1">
-             <widget class="QCheckBox" name="borderCbx">
-              <property name="text">
-               <string>Draw border</string>
-              </property>
-             </widget>
-            </item>
-            <item row="4" column="0">
-             <widget class="QLabel" name="colorModeLabel">
-              <property name="text">
-               <string>Color mode:</string>
-              </property>
-             </widget>
+            <item row="2" column="1">
+             <widget class="QComboBox" name="landscapeFlipComboBox"/>
             </item>
            </layout>
-          </item>
-         </layout>
-        </widget>
-       </item>
-      </layout>
+          </widget>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="reverseOrderCbx">
+           <property name="text">
+            <string>Print in reverse order</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <layout class="QFormLayout" name="formLayout">
+           <item row="0" column="0">
+            <widget class="QLabel" name="colorModeLabel">
+             <property name="text">
+              <string>Color mode:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="1">
+            <widget class="QComboBox" name="colorModeCombo"/>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <spacer name="verticalSpacer_2">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>269</width>
+             <height>76</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+       <widget class="QWidget" name="MarginsTab">
+        <attribute name="title">
+         <string>Margins (mm)</string>
+        </attribute>
+        <layout class="QVBoxLayout" name="verticalLayout">
+         <property name="spacing">
+          <number>21</number>
+         </property>
+         <item>
+          <layout class="QGridLayout" name="gridLayout_2">
+           <property name="verticalSpacing">
+            <number>9</number>
+           </property>
+           <item row="0" column="1">
+            <widget class="QDoubleSpinBox" name="topMarginSpin"/>
+           </item>
+           <item row="0" column="2" rowspan="6">
+            <widget class="QLabel" name="marginsPereview">
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Preferred" vsizetype="Preferred">
+               <horstretch>1</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
+             </property>
+             <property name="minimumSize">
+              <size>
+               <width>220</width>
+               <height>0</height>
+              </size>
+             </property>
+             <property name="frameShape">
+              <enum>QFrame::NoFrame</enum>
+             </property>
+             <property name="frameShadow">
+              <enum>QFrame::Raised</enum>
+             </property>
+            </widget>
+           </item>
+           <item row="4" column="0">
+            <widget class="QLabel" name="internalMarginLbl">
+             <property name="text">
+              <string>Internal:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="1">
+            <widget class="QDoubleSpinBox" name="rightMarginSpin"/>
+           </item>
+           <item row="4" column="1">
+            <widget class="QDoubleSpinBox" name="internalMarginSpin"/>
+           </item>
+           <item row="1" column="1">
+            <widget class="QDoubleSpinBox" name="bottomMarginSpin"/>
+           </item>
+           <item row="2" column="0">
+            <widget class="QLabel" name="label_5">
+             <property name="text">
+              <string>Left:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="0" column="0">
+            <widget class="QLabel" name="Label3">
+             <property name="text">
+              <string>Top:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="1" column="0">
+            <widget class="QLabel" name="label_4">
+             <property name="text">
+              <string>Bottom:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="3" column="0">
+            <widget class="QLabel" name="label_6">
+             <property name="text">
+              <string>Right:</string>
+             </property>
+            </widget>
+           </item>
+           <item row="2" column="1">
+            <widget class="QDoubleSpinBox" name="leftMarginSpin"/>
+           </item>
+           <item row="5" column="0" colspan="2">
+            <widget class="QPushButton" name="resetButton">
+             <property name="text">
+              <string>Reset to default</string>
+             </property>
+            </widget>
+           </item>
+          </layout>
+         </item>
+         <item>
+          <widget class="QCheckBox" name="borderCbx">
+           <property name="text">
+            <string>Draw border</string>
+           </property>
+          </widget>
+         </item>
+         <item>
+          <spacer name="verticalSpacer">
+           <property name="orientation">
+            <enum>Qt::Vertical</enum>
+           </property>
+           <property name="sizeHint" stdset="0">
+            <size>
+             <width>20</width>
+             <height>91</height>
+            </size>
+           </property>
+          </spacer>
+         </item>
+        </layout>
+       </widget>
+      </widget>
      </item>
     </layout>
    </item>
    <item>
-    <spacer name="verticalSpacer">
-     <property name="orientation">
-      <enum>Qt::Vertical</enum>
-     </property>
-     <property name="sizeHint" stdset="0">
-      <size>
-       <width>20</width>
-       <height>40</height>
-      </size>
-     </property>
-    </spacer>
+    <layout class="QHBoxLayout" name="horizontalLayout_2">
+     <item>
+      <widget class="QToolButton" name="addProfileButton">
+       <property name="text">
+        <string>+</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <widget class="QToolButton" name="delProfileButton">
+       <property name="text">
+        <string>-</string>
+       </property>
+      </widget>
+     </item>
+     <item>
+      <spacer name="horizontalSpacer">
+       <property name="orientation">
+        <enum>Qt::Horizontal</enum>
+       </property>
+       <property name="sizeHint" stdset="0">
+        <size>
+         <width>40</width>
+         <height>20</height>
+        </size>
+       </property>
+      </spacer>
+     </item>
+    </layout>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">
@@ -301,17 +314,15 @@
   </layout>
  </widget>
  <tabstops>
+  <tabstop>tabWidget</tabstop>
+  <tabstop>duplexTypeComboBox</tabstop>
+  <tabstop>reverseOrderCbx</tabstop>
+  <tabstop>colorModeCombo</tabstop>
   <tabstop>topMarginSpin</tabstop>
   <tabstop>bottomMarginSpin</tabstop>
   <tabstop>leftMarginSpin</tabstop>
   <tabstop>rightMarginSpin</tabstop>
   <tabstop>internalMarginSpin</tabstop>
-  <tabstop>duplexTypeComboBox</tabstop>
-  <tabstop>reverseOrderCbx</tabstop>
-  <tabstop>borderCbx</tabstop>
-  <tabstop>profilesList</tabstop>
-  <tabstop>addProfileButton</tabstop>
-  <tabstop>delProfileButton</tabstop>
  </tabstops>
  <resources/>
  <connections/>

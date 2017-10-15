@@ -98,32 +98,6 @@ int LayoutNUp::calcSheetCount() const
 /************************************************
  *
  * ***********************************************/
-Rotation LayoutNUp::calcSheetRotation(int sheetNum, Rotation projectRotation, DuplexType printerType, bool doubleSided) const
-{
-    if (!doubleSided)
-        return projectRotation;
-
-
-    if (printerType == DuplexAuto)
-    {
-        if ((sheetNum % 2) && isLandscape(projectRotation))
-            return projectRotation + Rotate180;
-        else
-            return projectRotation;
-    }
-    else
-    {
-        if ((sheetNum % 2) && isPortrate(projectRotation))
-            return projectRotation + Rotate180;
-        else
-            return projectRotation;
-    }
-}
-
-
-/************************************************
- *
- * ***********************************************/
 void LayoutNUp::fillSheets(QList<Sheet *> *sheets) const
 {
     doFillSheets(sheets, false);
@@ -161,13 +135,7 @@ void LayoutNUp::doFillSheets(QList<Sheet *> *sheets, bool forPreview) const
             ++i;
         }
 
-        if (forPreview)
-            sheet->setRotation(project->rotation());
-        else
-            sheet->setRotation(calcSheetRotation(sheets->count(),
-                                             project->rotation(),
-                                             project->printer()->duplexType(),
-                                             project->doubleSided()));
+        sheet->setRotation(project->rotation());
         sheets->append(sheet);
     }
 }
@@ -241,6 +209,15 @@ Rotation LayoutNUp::rotation() const
         return Rotate90;
     else
         return NoRotate;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+FlipType LayoutNUp::flipType(FlipType printerFlipType) const
+{
+    return printerFlipType;
 }
 
 
@@ -451,10 +428,7 @@ void LayoutBooklet::fillSheetsForBook(int bookStart, int bookLength, QList<Sheet
         // Sheet 1 **************************
         sheet = new Sheet(2, sheets->count());
         sheet->setHints(Sheet::HintDrawFold);
-        sheet->setRotation(calcSheetRotation(sheets->count(),
-                                             project->rotation(),
-                                             project->printer()->duplexType(),
-                                             project->doubleSided()));
+        sheet->setRotation(project->rotation());
         sheets->append(sheet);
 
         n = i + 1;
@@ -525,6 +499,15 @@ void LayoutBooklet::updatePages(QList<ProjectPage *> pages) const
     }
 
     pages.first()->setAutoStartSubBooklet(true);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+FlipType LayoutBooklet::flipType(FlipType printerFlipType) const
+{
+    return FlipType::ShortEdge;
 }
 
 
@@ -609,30 +592,7 @@ QList<LayoutBooklet::BookletInfo> LayoutBooklet::split(const QList<ProjectPage *
 
 /************************************************
  *
- * ***********************************************/
-Rotation LayoutBooklet::calcSheetRotation(int sheetNum, Rotation projectRotation, DuplexType printerType, bool doubleSided) const
-{
-    if (!doubleSided)
-        return projectRotation;
-
-
-    if (printerType == DuplexAuto)
-    {
-        if (sheetNum % 2)
-            return projectRotation + Rotate180;
-        else
-            return projectRotation;
-    }
-    else
-    {
-        return projectRotation;
-    }
-}
-
-
-/************************************************
- *
- * ***********************************************/
+ ************************************************/
 int LayoutBooklet::previewPageNum(int sheetNum) const
 {
     return sheetNum * 2 -1;
