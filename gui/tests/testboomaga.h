@@ -69,6 +69,23 @@ private slots:
 
     void test_BooklesSplit();
     void test_BooklesSplit_data();
+
+    void testCanReadName();
+    void testCanReadName_data();
+
+    void testReadName();
+    void testReadName_data();
+
+    void testReadLink();
+    void testReadLink_data();
+
+    void testReadNum();
+    void testReadNum_data();
+
+    void testSkipDict();
+    void testSkipDict_data();
+
+
 private:
     LayoutNUp *createLayout(const QString &name);
     QList<ProjectPage*> createPages(const QString &definition);

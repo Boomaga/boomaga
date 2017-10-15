@@ -31,6 +31,13 @@ project(boomagamerger)
 set(MERGER_HEADERS
     pdfmerger.h
     pdfmergeripc.h
+    ../pdfparser/pdfxref.h
+    ../pdfparser/pdfdata.h
+    ../pdfparser/pdfvalue.h
+    ../pdfparser/pdfvalue_p.h
+    ../pdfparser/pdfobject.h
+    ../pdfparser/pdfreader.h
+    ../pdfparser/pdfwriter.h
     ../kernel/boomagapoppler.h
 )
 
@@ -38,10 +45,16 @@ set(MERGER_SOURCES
     main.cpp
     pdfmerger.cpp
     pdfmergeripc.cpp
+    ../pdfparser/pdfdata.cpp
+    ../pdfparser/pdfvalue.cpp
+    ../pdfparser/pdfobject.cpp
+    ../pdfparser/pdfreader.cpp
+    ../pdfparser/pdfwriter.cpp
     ../kernel/boomagapoppler.cpp
 )
 
 set(MERGER_MOCS
+    pdfmerger.h
     pdfmergeripc.h
 )
 

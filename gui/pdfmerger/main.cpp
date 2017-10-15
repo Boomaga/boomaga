@@ -43,14 +43,32 @@ int main(int argc, char *argv[])
     QCoreApplication app(argc, argv);
 
     QStringList args = app.arguments();
-    for (int i=1; i<args.count() - 3; i+=3)
+    try {
+        for (int i=1; i<args.count() - 3; i+=3)
+        {
+            merger.addSourceFile(args.at(i),
+                                 QString(args.at(i+1)).toInt(),
+                                 QString(args.at(i+2)).toInt());
+        }
+        merger.run(argv[argc-1]);
+
+    }
+    catch (const PdfParser::Error &err)
     {
-        merger.addFile(args.at(i),
-                       QString(args.at(i+1)).toInt(),
-                       QString(args.at(i+2)).toInt());
+        QString s = err.description()
+                .replace('\r', "\\r")
+                .replace('\n', "\\n")
+                .replace('\t', "\\t")
+                .replace('\v', "\\v");
+        qWarning() << "\n\n\nError on" << err.pos() << ":" << s;
+        return 1;
     }
 
-    merger.run(argv[argc-1]);
+    catch (const QString &err)
+    {
+        qWarning() << err;
+        return 1;
+    }
 
     return 0;
 }

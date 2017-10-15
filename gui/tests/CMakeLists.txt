@@ -30,10 +30,22 @@ cmake_minimum_required( VERSION 2.6 )
 
 set(TEST_HEADERS
     testboomaga.h
+    tools.h
+    ../pdfparser/pdfreader.h
+    ../pdfparser/pdfvalue.h
+    ../pdfparser/pdfdata.h
+    ../pdfparser/pdftypes.h
+    ../pdfparser/pdfobject.h
+
 )
 
 set(TEST_SOURCES
     testboomaga.cpp
+    testpdfparser.cpp
+    ../pdfparser/pdfreader.cpp
+    ../pdfparser/pdfvalue.cpp
+    ../pdfparser/pdfdata.cpp
+    ../pdfparser/pdfobject.cpp
 )
 
 set(TEST_MOCS
@@ -45,6 +57,7 @@ macro(ADD_FROM_PROJECT OUT_FILES)
     set (IN_FILES ${ARGN})
     foreach(FILE ${IN_FILES})
         if(NOT FILE STREQUAL "main.cpp")
+            message(">>>${FILE}<<<")
             set(${OUT_FILES} ${${OUT_FILES}} "../${FILE}")
         endif()
     endforeach()

@@ -29,8 +29,54 @@
 #ifndef PDFMERGER_H
 #define PDFMERGER_H
 
+#include <QObject>
+#include "pdfparser/pdfreader.h"
 #include "pdfmergeripc.h"
+#include <QString>
+#include <QList>
+#include <QIODevice>
 
+namespace  PdfParser {
+    class Writer;
+}
+
+class PdfMerger: public QObject, public PdfParser::ReaderHandler
+{
+    Q_OBJECT
+public:
+    PdfMerger(QObject *parent = 0);
+    ~PdfMerger();
+
+    void addSourceFile(const QString &fileName, qint64 startPos = 0, qint64 endPos = 0);
+    void run(const QString &outFileName);
+    void run(QIODevice *outDevice);
+
+    virtual void trailerReady(const PdfParser::XRefTable &xRefTable, const PdfParser::Dict &trailerDict) override {}
+    void objectReady(const PdfParser::Object &object) override;
+
+signals:
+    void error(const QString &message);
+
+private:
+    struct SourceFile {
+        QString fileName;
+        qint64 startPos;
+        qint64 endPos;
+    };
+
+    QList<SourceFile> mSources;
+    //int mPdfMajorVer;
+    //int mPdfMinorVer;
+    //QIODevice *mOutDevice;
+
+
+    void emitError(const QString &message);
+    PdfParser::Writer *mWriter;
+    PdfParser::Link mRootObject;
+};
+
+
+#ifdef OLD
 #include <QList>
 #include <QVector>
 #include <QRectF>
@@ -67,5 +113,5 @@ private:
     bool writeDictValue(Dict *dict, const char *key, Guint numOffset);
     QString getDocumentMetaInfo(PDFDoc *doc, const char *tag);
 };
-
+#endif
 #endif // PDFMERGER_H

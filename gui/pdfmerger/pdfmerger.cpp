@@ -23,8 +23,160 @@
  *
  * END_COMMON_COPYRIGHT_HEADER */
 
- // This code based on poppler pdfunite.cc
+#include "pdfmerger.h"
+#include "pdfparser/pdfobject.h"
+#include "pdfparser/pdfwriter.h"
+#include <QFile>
+#include <QDebug>
 
+using namespace PdfParser;
+
+/************************************************
+ *
+ ************************************************/
+PdfMerger::PdfMerger(QObject *parent):
+    QObject(parent),
+    mWriter(new Writer())
+   // mPdfMajorVer(1),
+   // mPdfMinorVer(4)
+    //mOutDevice(nullptr)
+{
+
+}
+
+/************************************************
+ *
+ ************************************************/
+PdfMerger::~PdfMerger()
+{
+    delete mWriter;
+}
+
+
+
+
+
+
+/************************************************
+ *
+ ************************************************/
+void PdfMerger::addSourceFile(const QString &fileName, qint64 startPos, qint64 endPos)
+{
+    mSources << PdfMerger::SourceFile{fileName, startPos, endPos};
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void PdfMerger::run(const QString &outFileName)
+{
+    QFile file(outFileName);
+    if (! file.open(QFile::WriteOnly | QFile::Truncate))
+    {
+        throw tr("I can't write file \"%1\"").arg(file.fileName()) + "\n" + file.errorString();
+    }
+
+    // QFile destructor close file.
+    run(&file);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void PdfMerger::run(QIODevice *outDevice)
+{
+    mWriter->setDevice(outDevice);
+    mWriter->writePDFHeader(1,7);
+
+
+    foreach (const SourceFile &source, mSources)
+    {
+        QFile file(source.fileName);
+        if(!file.open(QFile::ReadOnly))
+            throw tr("I can't open file \"%1\"").arg(source.fileName) + "\n" + file.errorString();
+
+        int start = source.startPos;
+        int end   = source.endPos ? source.endPos : file.size();
+
+        if (end < start)
+            throw QString("Invalid request for %1, the start position (%2) is greater than the end (%3) one.")
+                .arg(source.fileName)
+                .arg(source.startPos)
+                .arg(source.endPos);
+
+        file.seek(start);
+
+        uchar *buf = file.map(start, end - start);
+        Reader reader(reinterpret_cast<const char*>(buf), end - start);
+        reader.setHandler(this);
+        reader.load();
+        mWriter->writeXrefTable();
+
+        //mWriter->writeTrailer(reader.trailerDict());
+        mWriter->writeTrailer(mRootObject);
+        file.unmap(buf);
+    }
+}
+
+
+
+/************************************************
+ *
+ ************************************************/
+void PdfMerger::emitError(const QString &message)
+{
+    qWarning() << message;
+    emit error(message);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void PdfMerger::objectReady(const PdfParser::Object &object)
+{
+    mWriter->writeObject(object);
+    if (object.dictionary().value("Type").toName().value() == "Catalog")
+    {
+        mRootObject = object;
+    }
+}
+
+
+//void PdfMerger::readPdfVersion(const PdfMerger::SourceFile *sourceFile)
+//{
+//    QFile file(sourceFile->fileName);
+//    if(!file.open(QFile::ReadOnly))
+//    {
+//        throw tr("I can't open file \"%1\"").arg(sourceFile) + "\n" + file.errorString();
+//    }
+
+//    file.seek(sourceFile->startPos);
+//    QByteArray data = file.read(10);
+
+//    try
+//    {
+//    if (!data.startsWith("%PDF-"))
+//    {
+//        file.close();
+//        throw tr("I can't read file \"%1\" because is either not a supported file type or because the file has been damaged.").arg(file.fileName());
+//    }
+
+
+//    int pos = data.indexOf(".");
+//    if (pos<0)
+//        throw
+//    int major = data.mid(5, pos).trimmed().toInt();
+//    mVersion = data.mid(5, pos-5).trimmed();
+
+//    catch(QString err)
+//       throw tr("I can't read file \"%1\" because is either not a supported file type or because the file has been damaged.").arg(file.fileName());
+//}
+
+#ifdef OLD
+// This code based on poppler pdfunite.cc
 
 #include "pdfmerger.h"
 #include <QtAlgorithms>
@@ -693,3 +845,6 @@ bool PdfMerger::writeDictValue(Dict *dict, const char *key, Guint numOffset)
 #endif
     return true;
 }
+#endif
+
+
