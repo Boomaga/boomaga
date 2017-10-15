@@ -1014,4 +1014,4 @@ void TestBoomaga::test_BooklesSplit_data()
 }
 
 
-QTEST_MAIN(TestBoomaga)
+QTEST_GUILESS_MAIN(TestBoomaga)
