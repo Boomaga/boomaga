@@ -75,16 +75,6 @@
             <string>Print on both sides</string>
            </property>
            <layout class="QGridLayout" name="gridLayout">
-            <item row="1" column="0">
-             <widget class="QLabel" name="portraitFlipLabel">
-              <property name="text">
-               <string>Portrait documents:</string>
-              </property>
-             </widget>
-            </item>
-            <item row="1" column="1">
-             <widget class="QComboBox" name="portraitFlipComboBox"/>
-            </item>
             <item row="0" column="0" colspan="2">
              <widget class="QComboBox" name="duplexTypeComboBox">
               <property name="sizePolicy">
@@ -102,14 +92,18 @@
              </widget>
             </item>
             <item row="2" column="0">
-             <widget class="QLabel" name="landscapeFlipLabel">
+             <widget class="QRadioButton" name="flipShortEdgeCheck">
               <property name="text">
-               <string>Landscape documents: </string>
+               <string>Flip on short edge</string>
               </property>
              </widget>
             </item>
-            <item row="2" column="1">
-             <widget class="QComboBox" name="landscapeFlipComboBox"/>
+            <item row="1" column="0">
+             <widget class="QRadioButton" name="flipLongEdgeCheck">
+              <property name="text">
+               <string>Flip on &amp;long edge</string>
+              </property>
+             </widget>
             </item>
            </layout>
           </widget>

@@ -125,12 +125,6 @@ PrinterSettings::PrinterSettings(QWidget *parent) :
     ui->colorModeCombo->addItem(tr("Force grayscale"), ColorModeGrayscale);
     ui->colorModeCombo->addItem(tr("Force color"), ColorModeColor);
 
-    ui->landscapeFlipComboBox->addItem(tr("Flip on long edge"),  int(FlipType::LongEdge));
-    ui->landscapeFlipComboBox->addItem(tr("Flip on short edge"), int(FlipType::ShortEdge));
-
-    ui->portraitFlipComboBox->addItem(tr("Flip on long edge"),   int(FlipType::LongEdge));
-    ui->portraitFlipComboBox->addItem(tr("Flip on short edge"),  int(FlipType::ShortEdge));
-
 
     QPalette pal(palette());
     pal.setColor(QPalette::Background, QColor(105, 101, 98));
@@ -190,10 +184,10 @@ PrinterSettings::PrinterSettings(QWidget *parent) :
     connect(ui->resetButton, SIGNAL(clicked()),
             this, SLOT(resetToDefault()));
 
-    connect(ui->landscapeFlipComboBox, SIGNAL(activated(int)),
+    connect(ui->flipLongEdgeCheck, SIGNAL(clicked(bool)),
             this, SLOT(updateProfile()));
 
-    connect(ui->portraitFlipComboBox, SIGNAL(activated(int)),
+    connect(ui->flipShortEdgeCheck, SIGNAL(clicked(bool)),
             this, SLOT(updateProfile()));
 
     restoreGeometry(settings->value(Settings::PrinterSettingsDialog_Geometry).toByteArray());
@@ -296,8 +290,10 @@ void PrinterSettings::updateProfile()
 
     v = ui->colorModeCombo->itemData(ui->colorModeCombo->currentIndex());
     profile->setColorMode(static_cast<ColorMode>(v.toInt()));
-    profile->setLandscapeFlipType(FlipType(ui->landscapeFlipComboBox->currentData().toInt()));
-    profile->setPortraitFlipType( FlipType(ui->portraitFlipComboBox->currentData().toInt()));
+    if (ui->flipShortEdgeCheck->isChecked())
+        profile->setFlipType(FlipType::ShortEdge);
+    else
+        profile->setFlipType(FlipType::LongEdge);
 }
 
 
@@ -323,10 +319,8 @@ void PrinterSettings::updateWidgets()
     ui->internalMarginSpin->setValue(profile->internalMargin(mUnit));
 
     bool enable = ui->duplexTypeComboBox->currentData().toInt() == DuplexAuto;
-    ui->landscapeFlipLabel->setEnabled(enable);
-    ui->landscapeFlipComboBox->setEnabled(enable);
-    ui->portraitFlipLabel->setEnabled(enable);
-    ui->portraitFlipComboBox->setEnabled(enable);
+    ui->flipLongEdgeCheck->setEnabled(enable);
+    ui->flipShortEdgeCheck->setEnabled(enable);
 
     if (mPrinter->isSupportColor())
     {
@@ -340,11 +334,8 @@ void PrinterSettings::updateWidgets()
         ui->colorModeCombo->setCurrentIndex(0);
     }
 
-    n = ui->landscapeFlipComboBox->findData(int(profile->landscapeFlipType()));
-    ui->landscapeFlipComboBox->setCurrentIndex(n);
-
-    n = ui->portraitFlipComboBox->findData(int(profile->portraitFlipType()));
-    ui->portraitFlipComboBox->setCurrentIndex(n);
+    ui->flipLongEdgeCheck-> setChecked(profile->flipType() == FlipType::LongEdge);
+    ui->flipShortEdgeCheck->setChecked(profile->flipType() == FlipType::ShortEdge);
 
     updatePreview();
 }

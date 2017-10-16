@@ -134,8 +134,7 @@ QString Settings::keyToString(Settings::Key key) const
     case PrinterProfile_BottomMargin:   return "BottomMargin";
     case PrinterProfile_InternalMargin: return "InternalMargin";
     case PrinterProfile_ColorMode:      return "ColorMode";
-    case PrinterProfile_LandscapeFlip:  return "LandscapeFlip";
-    case PrinterProfile_PortraitFlip:   return "PortraitFlip";
+    case PrinterProfile_FlipType:       return "FlipType";
 
     // PrinterSettingsDialog ****************
     case PrinterSettingsDialog_Geometry:return "PrinterSettingsDialog/Geometry";

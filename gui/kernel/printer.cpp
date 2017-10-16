@@ -92,8 +92,7 @@ PrinterProfile::PrinterProfile():
     mReverseOrder(false),
     mPaperSize(QSizeF(A4_WIDTH_PT, A4_HEIGHT_PT)),
     mColorMode(ColorModeAuto),
-    mLandscapeFlipType(FlipType::LongEdge),
-    mPortraitFlipType(FlipType::LongEdge)
+    mFlipType(FlipType::LongEdge)
 {
 
 }
@@ -104,19 +103,18 @@ PrinterProfile::PrinterProfile():
  ************************************************/
 PrinterProfile &PrinterProfile::operator=(const PrinterProfile &other)
 {
-    mName              = other.mName;
-    mLeftMargin        = other.mLeftMargin;
-    mRightMargin       = other.mRightMargin;
-    mTopMargin         = other.mTopMargin;
-    mBottomMargin      = other.mBottomMargin;
-    mInternalMargin    = other.mInternalMargin;
-    mDuplexType        = other.mDuplexType;
-    mDrawBorder        = other.mDrawBorder;
-    mReverseOrder      = other.mReverseOrder;
-    mPaperSize         = other.mPaperSize;
-    mColorMode         = other.mColorMode;
-    mLandscapeFlipType = other.mLandscapeFlipType;
-    mPortraitFlipType  = other.mPortraitFlipType;
+    mName           = other.mName;
+    mLeftMargin     = other.mLeftMargin;
+    mRightMargin    = other.mRightMargin;
+    mTopMargin      = other.mTopMargin;
+    mBottomMargin   = other.mBottomMargin;
+    mInternalMargin = other.mInternalMargin;
+    mDuplexType     = other.mDuplexType;
+    mDrawBorder     = other.mDrawBorder;
+    mReverseOrder   = other.mReverseOrder;
+    mPaperSize      = other.mPaperSize;
+    mColorMode      = other.mColorMode;
+    mFlipType       = other.mFlipType;
 
     return *this;
 }
@@ -280,18 +278,9 @@ void PrinterProfile::setPaperSize(const QSizeF &paperSize, Unit unit)
 /************************************************
 
 ************************************************/
-void PrinterProfile::setLandscapeFlipType(FlipType value)
+void PrinterProfile::setFlipType(FlipType value)
 {
-    mLandscapeFlipType = value;
-}
-
-
-/************************************************
-
-************************************************/
-void PrinterProfile::setPortraitFlipType(FlipType value)
-{
-    mPortraitFlipType = value;
+    mFlipType = value;
 }
 
 
@@ -316,11 +305,8 @@ void PrinterProfile::readSettings()
     s = settings->value(Settings::PrinterProfile_ColorMode, colorModeToStr(mColorMode)).toString();
     mColorMode      = strToColorMode(s);
 
-    s = settings->value(Settings::PrinterProfile_LandscapeFlip, flipTypeToStr(mLandscapeFlipType)).toString();
-    mLandscapeFlipType = strToFlipType(s);
-
-    s = settings->value(Settings::PrinterProfile_PortraitFlip, flipTypeToStr(mPortraitFlipType)).toString();
-    mPortraitFlipType  = strToFlipType(s);
+    s = settings->value(Settings::PrinterProfile_FlipType, flipTypeToStr(mFlipType)).toString();
+    mFlipType = strToFlipType(s);
 
 }
 
@@ -341,8 +327,7 @@ void PrinterProfile::saveSettings() const
     settings->setValue(Settings::PrinterProfile_DrawBorder,     mDrawBorder);
     settings->setValue(Settings::PrinterProfile_ReverseOrder,   mReverseOrder);
     settings->setValue(Settings::PrinterProfile_ColorMode,      colorModeToStr(mColorMode));
-    settings->setValue(Settings::PrinterProfile_LandscapeFlip,  flipTypeToStr(mLandscapeFlipType));
-    settings->setValue(Settings::PrinterProfile_PortraitFlip,   flipTypeToStr(mPortraitFlipType));
+    settings->setValue(Settings::PrinterProfile_FlipType,       flipTypeToStr(mFlipType));
 }
 
 
@@ -567,11 +552,7 @@ bool Printer::print(const QList<Sheet *> &sheets, const QString &jobName, bool d
     {
         if (duplex)
         {
-            FlipType flip = (isLandscape(project->rotation())) ?
-                        project->layout()->flipType(landscapeFlipType()):
-                        project->layout()->flipType(portraitFlipType());
-
-            if (flip == FlipType::LongEdge)
+            if (project->layout()->flipType(flipType()) == FlipType::LongEdge)
                 args << "-o sides=two-sided-long-edge";
             else
                 args << "-o sides=two-sided-short-edge";

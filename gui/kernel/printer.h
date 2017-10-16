@@ -79,11 +79,8 @@ public:
     QSizeF paperSize(Unit unit) const;
     void setPaperSize(const QSizeF & paperSize, Unit unit);
 
-    FlipType landscapeFlipType() const { return mLandscapeFlipType; }
-    void setLandscapeFlipType(FlipType value);
-
-    FlipType portraitFlipType() const { return mPortraitFlipType; }
-    void setPortraitFlipType(FlipType value);
+    FlipType flipType() const { return mFlipType; }
+    void setFlipType(FlipType value);
 
     void readSettings();
     void saveSettings() const;
@@ -100,8 +97,7 @@ private:
     bool mReverseOrder;
     QSizeF mPaperSize;
     ColorMode mColorMode;
-    FlipType mLandscapeFlipType;
-    FlipType mPortraitFlipType;
+    FlipType mFlipType;
 };
 
 
@@ -159,11 +155,8 @@ public:
     bool grayscale() const { return mCurrentProfile->grayscale(); }
     bool isSupportColor() const;
 
-    FlipType landscapeFlipType() const { return mCurrentProfile->landscapeFlipType(); }
-    void setLandscapeFlipType(FlipType value) { mCurrentProfile->setLandscapeFlipType(value);}
-
-    FlipType portraitFlipType() const { return mCurrentProfile->portraitFlipType(); }
-    void setPortraitFlipType(FlipType value) { mCurrentProfile->setPortraitFlipType(value); }
+    FlipType flipType() const { return mCurrentProfile->flipType(); }
+    void setFlipType(FlipType value) { mCurrentProfile->setFlipType(value);}
 
     bool canChangeDuplexType() const { return mCanChangeDuplexType; }
     bool isShowProgressDialog() const { return mShowProgressDialog; }
