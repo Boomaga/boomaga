@@ -45,6 +45,7 @@ set(MERGER_SOURCES
     main.cpp
     pdfmerger.cpp
     pdfmergeripc.cpp
+    ../pdfparser/pdfxref.cpp
     ../pdfparser/pdfdata.cpp
     ../pdfparser/pdfvalue.cpp
     ../pdfparser/pdfobject.cpp

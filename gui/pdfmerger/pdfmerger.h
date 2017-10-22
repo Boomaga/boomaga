@@ -36,11 +36,13 @@
 #include <QList>
 #include <QIODevice>
 
-namespace  PdfParser {
+namespace  PDF {
+    class Reader;
     class Writer;
+    class Object;
 }
 
-class PdfMerger: public QObject, public PdfParser::ReaderHandler
+class PdfMerger: public QObject
 {
     Q_OBJECT
 public:
@@ -50,9 +52,6 @@ public:
     void addSourceFile(const QString &fileName, qint64 startPos = 0, qint64 endPos = 0);
     void run(const QString &outFileName);
     void run(QIODevice *outDevice);
-
-    virtual void trailerReady(const PdfParser::XRefTable &xRefTable, const PdfParser::Dict &trailerDict) override {}
-    void objectReady(const PdfParser::Object &object) override;
 
 signals:
     void error(const QString &message);
@@ -64,54 +63,20 @@ private:
         qint64 endPos;
     };
 
+    struct PageInfo;
     QList<SourceFile> mSources;
-    //int mPdfMajorVer;
-    //int mPdfMinorVer;
-    //QIODevice *mOutDevice;
 
 
     void emitError(const QString &message);
-    PdfParser::Writer *mWriter;
-    PdfParser::Link mRootObject;
+    PDF::Reader *mReader;
+    PDF::Writer *mWriter;
+
+    quint32 mObjNumOffset;
+    QSet<quint64> mSkippedObjects;
+
+    int walkPageTree(int pageNum, const PDF::Object &page, const PDF::Dict &inherited);
+    void writePageAsXObject(const PDF::Object &page, const PDF::Dict &inherited);
+    PDF::Object &addOffset(PDF::Object &obj, quint32 offset);
 };
 
-
-#ifdef OLD
-#include <QList>
-#include <QVector>
-#include <QRectF>
-#include <poppler/PDFDoc.h>
-
-class PdfMergerPageInfo;
-
-class PdfMerger
-{
-public:
-    PdfMerger();
-    ~PdfMerger();
-    int majorVer() const { return mMajorVer; }
-    int minorVer() const { return mMinorVer; }
-
-    PDFDoc *addFile(const QString &fileName, qint64 startPos, qint64 endPos);
-    bool run(const QString &outFileName);
-
-    qint64 xrefPos() const { return mXrefPos; }
-
-private:
-    XRef mXRef;
-    QList<PDFDoc*> mDocs;
-    QVector<PdfMergerPageInfo*> mOrigPages;
-    int mMajorVer;
-    int mMinorVer;
-    FileOutStream *mStream;
-
-    Guint  mNextFreeNum;
-    qint64 mXrefPos;
-    bool writePageAsXObject(PdfMergerPageInfo *pageInfo);
-    void writeStreamAsXObject(PdfMergerPageInfo *pageInfo, Stream *stream);
-    void copyStream(Stream *stream, PdfMergerPageInfo *pageInfo);
-    bool writeDictValue(Dict *dict, const char *key, Guint numOffset);
-    QString getDocumentMetaInfo(PDFDoc *doc, const char *tag);
-};
-#endif
 #endif // PDFMERGER_H

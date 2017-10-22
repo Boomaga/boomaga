@@ -28,7 +28,7 @@
 #include <ctgmath>
 #include <QDebug>
 
-using namespace PdfParser;
+using namespace PDF;
 
 
 /************************************************

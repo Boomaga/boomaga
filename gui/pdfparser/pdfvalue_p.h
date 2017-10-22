@@ -30,32 +30,53 @@
 #include "pdfvalue.h"
 #include <QSharedData>
 #include <QIODevice>
+#include <QDebug>
+#include <QThreadStorage>
 
-using namespace PdfParser;
+using namespace PDF;
 
 //###############################################
 // PDF Value
 //###############################################
-class PdfParser::ValueData: public QSharedData
+class PDF::ValueData: public QSharedData
 {
 public:
     ValueData(Value::Type type):
         mType(type),
+        mNumberValue(0),
+        mLinkObjNum(0),
+        mLinkGenNum(0),
+        mBoolValue(false),
         mValid(false)
     {
     }
 
     ValueData(const ValueData &other):
         QSharedData(other),
-        mType(other.mType),
-        mValid(other.mValid)
+        mType        (other.mType),
+        mArrayValues (other.mArrayValues),
+        mDictValues  (other.mDictValues),
+        mStringValue (other.mStringValue),
+        mNumberValue (other.mNumberValue),
+        mLinkObjNum  (other.mLinkObjNum),
+        mLinkGenNum  (other.mLinkGenNum),
+        mBoolValue   (other.mBoolValue),
+        mValid       (other.mValid)
     {
     }
 
     ValueData &operator =(const ValueData &other)
     {
-        mValid = other.mValid;
-        mType  = other.mType;
+        mValid       = other.mValid;
+        mType        = other.mType;
+        mArrayValues = other.mArrayValues;
+        mBoolValue   = other.mBoolValue;
+        mDictValues  = other.mDictValues;
+        mStringValue = other.mStringValue;
+        mLinkObjNum  = other.mLinkObjNum;
+        mLinkGenNum  = other.mLinkGenNum;
+        mNumberValue = other.mNumberValue;
+
         return *this;
     }
 
@@ -63,273 +84,26 @@ public:
     {
     }
 
-    ValueData *privateData(const Value &other) const;
-
-    template <typename T>
-    T  *as() {
-        return static_cast<T*>(this);
-    }
-
-    template <typename T>
-    const T  *as() const {
-        return static_cast<const T*>(this);
-    }
 
     Value::Type mType;
+
+    QVector<Value> mArrayValues;
+    QMap<QString, Value> mDictValues;
+    QByteArray mStringValue;
+    double mNumberValue;
+    quint32 mLinkObjNum;
+    quint16 mLinkGenNum;
+    bool mBoolValue;
     bool mValid;
-};
 
 
-//###############################################
-// PDF Array
-//###############################################
-class ArrayData: public ValueData
-{
-public:
-    ArrayData():
-        ValueData(Value::Type::Array)
+    template <typename T>
+    static T &emptyValue()
     {
-    }
-
-    ArrayData(const ArrayData &other):
-        ValueData(other),
-        mValues(other.mValues)
-    {
-    }
-
-    ArrayData &operator =(const ArrayData &other)
-    {
-        mValid  = other.mValid;
-        mType   = other.mType;
-        mValues = other.mValues;
-        return *this;
-    }
-
-    QVector<Value> mValues;
-};
-
-
-//###############################################
-// PDF Bool
-//###############################################
-class BoolData: public ValueData
-{
-public:
-    BoolData():
-        ValueData(Value::Type::Bool),
-        mValue(false)
-    {
-    }
-
-    BoolData(const BoolData &other):
-        ValueData(other),
-        mValue(other.mValue)
-    {
-    }
-
-    BoolData &operator =(const BoolData &other)
-    {
-        mValid = other.mValid;
-        mType  = other.mType;
-        mValue = other.mValue;
-        return *this;
-    }
-
-    bool mValue;
-};
-
-
-//###############################################
-// PDF Dictionary
-//###############################################
-class DictData: public ValueData
-{
-public:
-    DictData():
-        ValueData(Value::Type::Dict)
-    {
-    }
-
-    DictData(const DictData &other):
-        ValueData(other),
-        mValues(other.mValues)
-    {
-    }
-
-    DictData &operator =(const DictData &other)
-    {
-        mValid  = other.mValid;
-        mType   = other.mType;
-        mValues = other.mValues;
-        return *this;
-    }
-
-    QMap<QString, Value> mValues;
-};
-
-
-//###############################################
-// PDF Literal String
-//###############################################
-class LinkData: public ValueData
-{
-public:
-    LinkData(quint32 objNum = 0, quint16 genNum = 0):
-      ValueData(Value::Type::Link),
-      mObjNum(0),
-      mGenNum(0)
-    {
-    }
-
-    LinkData(const LinkData &other):
-        ValueData(other),
-        mObjNum(other.mObjNum),
-        mGenNum(other.mGenNum)
-    {
-    }
-
-
-    LinkData &operator =(const LinkData &other)
-    {
-        mValid  = other.mValid;
-        mType   = other.mType;
-        mObjNum = other.mObjNum;
-        mGenNum = other.mGenNum;
-        return *this;
-    }
-
-    quint32 mObjNum;
-    quint16 mGenNum;
-};
-
-
-//###############################################
-// PDF Hexadecimal String
-//###############################################
-class HexStringData: public ValueData
-{
-public:
-    HexStringData():
-        ValueData(Value::Type::HexString)
-    {
-    }
-
-    HexStringData(const HexStringData &other):
-        ValueData(other),
-        mValue(other.mValue)
-    {
-    }
-
-    HexStringData &operator =(const HexStringData &other)
-    {
-        mValid = other.mValid;
-        mType  = other.mType;
-        mValue = other.mValue;
-        return *this;
-    }
-
-    QByteArray mValue;
-};
-
-
-class LiteralStringData: public ValueData
-{
-public:
-    LiteralStringData():
-        ValueData(Value::Type::LiteralString)
-    {
-    }
-
-    LiteralStringData(const LiteralStringData &other):
-        ValueData(other),
-        mValue(other.mValue)
-    {
-    }
-
-    LiteralStringData &operator =(const LiteralStringData &other)
-    {
-        mValid = other.mValid;
-        mType  = other.mType;
-        mValue = other.mValue;
-        return *this;
-    }
-
-    QByteArray mValue;
-};
-
-class NameData: public ValueData
-{
-public:
-    NameData():
-        ValueData(Value::Type::Name)
-    {
-    }
-
-    NameData(const NameData &other):
-        ValueData(other),
-        mValue(other.mValue)
-    {
-    }
-
-
-    NameData &operator =(const NameData &other)
-    {
-        mValid = other.mValid;
-        mType  = other.mType;
-        mValue = other.mValue;
-        return *this;
-    }
-
-    QString mValue;
-};
-
-class NullData: public ValueData
-{
-public:
-    NullData():
-        ValueData(Value::Type::Null)
-    {
-    }
-
-    NullData(const NullData &other):
-        ValueData(other)
-    {
-    }
-
-    NullData &operator =(const NullData &other)
-    {
-        mValid = other.mValid;
-        mType  = other.mType;
-        return *this;
+        static QThreadStorage<T> stor;
+        stor.localData().setValid(false);
+        return stor.localData();
     }
 };
-
-
-class NumberData: public ValueData
-{
-public:
-    NumberData(double value = 0):
-        ValueData(Value::Type::Number),
-        mValue(value)
-    {
-    }
-
-    NumberData(const NumberData &other):
-        ValueData(other),
-        mValue(other.mValue)
-    {
-    }
-
-    NumberData &operator =(const NumberData &other)
-    {
-        mValid = other.mValid;
-        mType  = other.mType;
-        mValue = other.mValue;
-        return *this;
-    }
-
-    double mValue;
-};
-
 
 #endif // PDFVALUE_P_H

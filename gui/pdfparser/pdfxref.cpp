@@ -24,48 +24,41 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#ifndef PDFXREF_H
-#define PDFXREF_H
+#include "pdfxref.h"
+#include <ctgmath>
+#include <QDebug>
 
-#include <QMap>
-namespace PDF {
+using namespace PDF;
 
 
-struct XRefEntry {
-    enum Type{
-        Free,
-        Used
-    };
-
-    XRefEntry():
-        pos(0),
-        objNum(0),
-        genNum(0),
-        type(Type::Free)
-    {
-    }
-
-    XRefEntry(qint64  pos, quint32 objNum, quint16 genNum, Type type):
-        pos(pos),
-        objNum(objNum),
-        genNum(genNum),
-        type(type)
-    {
-    }
-
-    qint64  pos;
-    quint32 objNum;
-    quint16 genNum;
-    Type type;
-};
-
-class XRefTable: public QMap<quint32, XRefEntry>
+/************************************************
+ *
+ ************************************************/
+qint32 XRefTable::maxObjNum() const
 {
-public:
-    qint32 maxObjNum() const;
-};
+    return (--constEnd()).key();
+}
 
-} // namespace PDF
 
-QDebug operator<<(QDebug debug, const PDF::XRefEntry &xref);
-#endif // PDFXREF_H
+/************************************************
+ *
+ ************************************************/
+QDebug operator<<(QDebug debug, const XRefEntry &xref)
+{
+    if (xref.type == XRefEntry::Type::Free)
+    {
+        debug.space()
+                << xref.objNum
+                << xref.genNum
+                << "FREE";
+    }
+    else
+    {
+        debug.space()
+                << xref.objNum
+                << xref.genNum
+                << "Pos:" << xref.pos;
+    }
+
+    return debug;
+}

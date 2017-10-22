@@ -33,7 +33,7 @@
 #include "pdfvalue.h"
 #include "pdfxref.h"
 
-namespace PdfParser {
+namespace PDF {
 
 class Object;
 
@@ -71,10 +71,8 @@ public:
     Reader(const char * const data, quint64 size);
     virtual ~Reader();
 
+    void open();
     void load();
-
-
-
 
 
     /// Returns the content handler or 0 if none was set.
@@ -88,6 +86,9 @@ public:
     const XRefTable &xRefTable() { return mXRefTable; }
     //const Dict &trailerDict() { return mTrailerDict; }
     Dict trailerDict() { return mTrailerDict; }
+
+    Object getObject(const Link &link) const;
+    Object getObject(uint objNum, quint16 genNum) const;
 
 protected:
     bool canReadArray(qint64 pos) const;
@@ -113,7 +114,7 @@ protected:
     qint64 readObject(qint64 start, Object *res) const;
     qint64 readXRefTable(qint64 start, XRefTable *res) const;
 
-    Object getObject(uint objNum, quint16 genNum) const;
+
     QString readNameString(qint64 *pos) const;
 
 private:
@@ -123,5 +124,5 @@ private:
     ReaderHandler *mHandler;
 };
 
-} // namespace PdfParser
+} // namespace PDF
 #endif // PDFREADER_H

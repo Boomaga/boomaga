@@ -53,7 +53,7 @@ int main(int argc, char *argv[])
         merger.run(argv[argc-1]);
 
     }
-    catch (const PdfParser::Error &err)
+    catch (const PDF::Error &err)
     {
         QString s = err.description()
                 .replace('\r', "\\r")

@@ -28,7 +28,7 @@
 #define PDFDATA_H
 
 #include <QtGlobal>
-namespace PdfParser {
+namespace PDF {
 
 
 class Data
@@ -66,5 +66,5 @@ private:
     const qint64 mSize;
 };
 
-} // namespace PdfParser
+} // namespace PDF
 #endif // PDFDATA_H

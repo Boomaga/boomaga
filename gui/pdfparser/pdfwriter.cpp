@@ -34,7 +34,7 @@
 #include <QCryptographicHash>
 #include <QDebug>
 
-using namespace PdfParser;
+using namespace PDF;
 
 
 /************************************************
@@ -366,7 +366,7 @@ void Writer::writeTrailer(const Link &root, const Link &info)
     // Start - The total number of entries in the file’s cross-reference table,
     // as defined by the combination of the original section and all update sections.
     // Equivalently, this value is 1 greater than the highest object number used in the file.
-    trailerDict.insert("Size", (--mXRefTable->constEnd()).key() + 1);
+    trailerDict.insert("Size", mXRefTable->maxObjNum() + 1);
 
     // Root - (Required; must be an indirect reference) The catalog dictionary for the
     // PDF document contained in the file (see Section 3.6.1, “Document Catalog”).
@@ -391,7 +391,7 @@ void Writer::writeTrailer(const Link &root, const Link &info)
     Array id;
     id.append(HexString(idHash.result()));
 
-    idHash.addData("PdfParser");
+    idHash.addData("PDF parser");
     id.append(HexString(HexString(idHash.result())));
 
     trailerDict.insert("ID", id);
@@ -414,21 +414,35 @@ void Writer::writeTrailer(const Dict &trailerDict)
 /************************************************
  *
  ************************************************/
+void Writer::writeComment(const QString &comment)
+{
+    *mDevice << "\n%";
+    QString s = comment;
+    *mDevice << s.replace("\n", "\n%");
+    *mDevice << "\n";
+}
+
+
+/************************************************
+ *
+ ************************************************/
 void Writer::writeObject(const Object &object)
 {
+    *mDevice << "\n";
     mXRefTable->insert(object.objNum(), XRefEntry(mDevice->pos(), object.objNum(), object.genNum(), XRefEntry::Used));
-    mDevice->write(QString("%1 %2 obj\n")
-               .arg(object.objNum())
-               .arg(object.genNum()).toLatin1());
+    *mDevice << object.objNum();
+    *mDevice << " ";
+    *mDevice << object.genNum();
+    *mDevice << " obj\n";
 
     writeValue(object.value());
 
     if (object.stream().length())
     {
-        mDevice->write("\nstream\n");
+        *mDevice << "\nstream\n";
         mDevice->write(object.stream());
-        mDevice->write("\nendstream");
+        *mDevice << "\nendstream";
     }
-    mDevice->write("\nendobj");
-    mDevice->write("\n");
+    *mDevice << "\nendobj";
+    *mDevice << "\n";
 }

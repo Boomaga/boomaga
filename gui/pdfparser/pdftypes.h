@@ -30,7 +30,7 @@
 #include <QtGlobal>
 #include <QString>
 
-namespace PdfParser {
+namespace PDF {
 
 enum class ObjecType
 {
@@ -55,6 +55,6 @@ PDF_ERROR(HeaderError);
 PDF_ERROR(ParseError);
 PDF_ERROR(UnknownValueError);
 
-} // namespace PdfParser
+} // namespace PDF
 
 #endif // PDFTYPES_H

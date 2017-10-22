@@ -33,7 +33,7 @@
 #include "tools.h"
 #include <QDebug>
 
-using namespace PdfParser;
+using namespace PDF;
 
 
 /************************************************
@@ -89,7 +89,7 @@ void TestBoomaga::testReadName()
         QCOMPARE(newPos, expectedPos);
 
     }
-    catch (PdfParser::Error& e)
+    catch (PDF::Error& e)
     {
         if (expectedPos > 0)
             FAIL_EXCEPTION(e);
@@ -131,12 +131,12 @@ void TestBoomaga::testReadLink()
         Link link;
         int newPos = reader.readLink(pos, &link);
 
-        QCOMPARE(link.objNum(), expectedObjNum);
-        QCOMPARE(link.genNum(), expectedGenNum);
+        QCOMPARE(link.objNum(), quint32(expectedObjNum));
+        QCOMPARE(link.genNum(), quint16(expectedGenNum));
         QCOMPARE(newPos, expectedPos);
 
     }
-    catch (PdfParser::Error& e)
+    catch (PDF::Error& e)
     {
         if (expectedPos > 0)
             FAIL_EXCEPTION(e);
@@ -243,4 +243,658 @@ void TestBoomaga::testSkipDict_data()
     QTest::newRow("05") << " <</Root 1 0 R /Dict1 << /Name val>> /Size 8>>" <<  0;
     QTest::newRow("06") << " <</Root 1 0 R /Dict1 << /Name val /Dict2<</N v>>>> /Size 8>>" <<  0;
     QTest::newRow("07") << " <</Root 1 0 R /Dict1 << /Name val /Dict2<<>>>> /Size 8>>" <<  0;
+}
+
+void TestBoomaga::testPdfArray()
+{
+    //......................................
+    {
+        Array a1;
+        QCOMPARE(a1.isValid(), true);
+        QCOMPARE(a1.count(),   0);
+
+        Value v;
+        QCOMPARE(v.toArray().isValid(), false);
+        QCOMPARE(v.toArray().count(),   0);
+
+        Array &la1 = a1;
+        QCOMPARE(la1.isValid(), true);
+        QCOMPARE(la1.count(),   0);
+
+        Array &la2 = v.toArray();
+        QCOMPARE(la2.isValid(), false);
+        QCOMPARE(la2.count(),   0);
+    }
+    //......................................
+
+    //......................................
+    {
+        Array a1;
+        Array a2 = a1;
+        Array &la1 = a1;
+
+        a1.append(Number(42));
+
+        QCOMPARE(a1.count(),   1);
+        QCOMPARE(a2.count(),   0);
+        QCOMPARE(la1.count(),  1);
+
+    }
+    //......................................
+
+    //......................................
+    {
+        Array a1;
+        QCOMPARE(a1.count(),   0);
+
+        a1.append(Number(42));
+        a1.append(Number(55));
+        a1.append(Number(33));
+
+        QCOMPARE(a1.count(),   3);
+        QCOMPARE(a1.at(0).toNumber().value(),     42.0);
+        QCOMPARE(a1.at(1).toNumber().value(),     55.0);
+        QCOMPARE(a1.at(2).toNumber().value(),     33.0);
+
+        QCOMPARE(a1[0].toNumber().value(),        42.0);
+        QCOMPARE(a1[1].toNumber().value(),        55.0);
+        QCOMPARE(a1[2].toNumber().value(),        33.0);
+
+        a1.remove(1);
+        QCOMPARE(a1.count(),   2);
+        QCOMPARE(a1.at(0).toNumber().value(),     42.0);
+        QCOMPARE(a1.at(1).toNumber().value(),     33.0);
+
+    }
+    //......................................
+
+
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void TestBoomaga::testPdfBool()
+{
+    {
+        Bool b;
+        QCOMPARE(b.isValid(), true);
+        QCOMPARE(b.value(),   false);
+    }
+    //......................................
+    {
+        Bool b(false);
+        QCOMPARE(b.isValid(), true);
+        QCOMPARE(b.value(),   false);
+    }
+    //......................................
+    {
+        Bool b(true);
+        QCOMPARE(b.isValid(), true);
+        QCOMPARE(b.value(),   true);
+    }
+    //......................................
+    {
+        Bool b = false;
+        QCOMPARE(b.isValid(), true);
+        QCOMPARE(b.value(),   false);
+
+        b.setValue(true);
+        QCOMPARE(b.value(),   true);
+    }
+    //......................................
+    {
+        Bool b = true;
+        QCOMPARE(b.isValid(), true);
+        QCOMPARE(b.value(),   true);
+
+        b.setValue(false);
+        QCOMPARE(b.value(),   false);
+    }
+    //......................................
+    {
+        Bool b = true;
+        Bool &lb = b;
+        QCOMPARE(lb.isValid(), true);
+
+        QCOMPARE(b.value(),   true);
+        QCOMPARE(lb.value(),  true);
+
+        b.setValue(false);
+
+        QCOMPARE(b.value(),   false);
+        QCOMPARE(lb.value(),  false);
+    }
+    //......................................
+    {
+        Bool b = false;
+        Bool &lb = b;
+
+        QCOMPARE(b.value(),   false);
+        QCOMPARE(lb.value(),  false);
+
+        lb.setValue(true);
+
+        QCOMPARE(b.value(),   true);
+        QCOMPARE(lb.value(),  true);
+    }
+    //......................................
+    {
+        Bool b = true;
+        Bool b2 = b;
+        QCOMPARE(b2.isValid(), true);
+
+        QCOMPARE(b.value(),   true);
+        QCOMPARE(b2.value(),  true);
+
+        b.setValue(false);
+
+        QCOMPARE(b.value(),   false);
+        QCOMPARE(b2.value(),  true);
+    }
+    //......................................
+    {
+        Value v;
+        QCOMPARE(v.toBool().isValid(), false);
+
+        Bool &lb = v.toBool();
+        QCOMPARE(lb.isValid(), false);
+
+        lb.setValue(true);
+        QCOMPARE(lb.value(),  false);
+        QCOMPARE(v.toBool().value(),  false);
+    }
+    //......................................
+    {
+        Value v;
+        QCOMPARE(v.toBool().isValid(), false);
+
+
+        Bool b = v.toBool();
+        QCOMPARE(b.isValid(), true);
+
+        b.setValue(true);
+        QCOMPARE(b.value(),           true);
+        QCOMPARE(v.toBool().value(),  false);
+
+    }
+    //......................................
+
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void TestBoomaga::testPdfNumber()
+{
+    //......................................
+    {
+        Number n0;
+        QCOMPARE(n0.isValid(), true);
+        QCOMPARE(n0.value(), 0.0);
+
+        Number n1;
+        n1.setValue(42);
+        QCOMPARE(n1.isValid(), true);
+        QCOMPARE(n1.value(), 42.0);
+qDebug() << n1;
+        Number n2(33);
+        QCOMPARE(n2.isValid(), true);
+        QCOMPARE(n2.value(), 33.0);
+
+        Number n3(n1);
+        QCOMPARE(n3.isValid(), true);
+        QCOMPARE(n3.value(), 42.0);
+
+        Number n4 = n1;
+        QCOMPARE(n4.isValid(), true);
+        QCOMPARE(n4.value(), 42.0);
+
+
+    }
+
+    //......................................
+    {
+        Number n = 42;
+        Number n2 = n;
+        n.setValue(12);
+        QCOMPARE(n.value(),  12.0);
+        QCOMPARE(n2.value(), 42.0);
+    }
+
+    //......................................
+    {
+        Number n = 42;
+        Number &ln = n;
+        ln.setValue(15);
+        QCOMPARE(n.value(),  15.0);
+        QCOMPARE(ln.value(), 15.0);
+
+        n.setValue(33);
+        QCOMPARE(n.value(),  33.0);
+        QCOMPARE(ln.value(), 33.0);
+
+    }
+
+    //......................................
+    {
+        Number n(42);
+        Value v = n;
+
+        Number &ln = v.toNumber();
+        QCOMPARE(ln.value(), 42.0);
+
+        ln.setValue(10);
+        QCOMPARE(ln.value(), 10.0);
+        QCOMPARE(n.value(),  42.0);
+    }
+
+    //......................................
+    {
+        Number n(42);
+        Value &v = n;
+
+        Number &ln = v.toNumber();
+        QCOMPARE(ln.value(), 42.0);
+
+        ln.setValue(10);
+        QCOMPARE(ln.value(), 10.0);
+        QCOMPARE(n.value(),  10.0);
+    }
+
+    //......................................
+    {
+        Number n(42);
+        Value v = n;
+
+        Number &n2 = v.toNumber();
+        QCOMPARE(n2.value(), 42.0);
+
+        n2.setValue(10);
+        QCOMPARE(n.value(),  42.0);
+        QCOMPARE(n2.value(), 10.0);
+    }
+
+    //......................................
+
+    //......................................
+    {
+        Value v;
+        Number &ln1 = v.toNumber();
+        ln1.setValue(42);
+        QCOMPARE(ln1.value(),  0.0);
+
+        Number &ln2 = v.toNumber();
+        QCOMPARE(ln2.value(),  0.0);
+
+        ln2.setValue(33);
+        QCOMPARE(ln1.value(),  0.0);
+        QCOMPARE(ln2.value(),  0.0);
+
+    }
+    //......................................
+
+    //......................................
+    {
+        Value v;
+        Number &ln = v.toNumber();
+        QCOMPARE(ln.isValid(),  false);
+
+        ln.setValue(11);
+        QCOMPARE(ln.value(), 0.0);
+
+        Number n = v.toNumber();
+        QCOMPARE(n.isValid(),  true);
+
+        n.setValue(11);
+        QCOMPARE(n.value(), 11.0);
+
+    }
+    //......................................
+}
+
+void TestBoomaga::testPdfDict()
+{
+    //......................................
+    {
+        Dict d1;
+        QCOMPARE(d1.isValid(),  true);
+        QCOMPARE(d1.count(),    0);
+        QCOMPARE(d1.isEmpty(),  true);
+
+        d1.insert("Test", Number(42));
+        QCOMPARE(d1.count(),  1);
+        QCOMPARE(d1.isEmpty(),  false);
+        bool ok;
+        double n = d1.value("Test").toNumber(&ok).value();
+        QCOMPARE(ok,  true);
+        QCOMPARE(n,   42.0);
+    }
+    //......................................
+
+    //......................................
+    {
+        Dict d1;
+        Dict &ld1 = d1;
+
+        d1.insert("value_D1", Number(42));
+        QCOMPARE(d1.count(),  1);
+        QCOMPARE(d1.isEmpty(),  false);
+
+        bool ok;
+        double n = ld1.value("value_D1").toNumber(&ok).value();
+        QCOMPARE(ok,  true);
+        QCOMPARE(n,   42.0);
+
+        Dict d2 = d1;
+        d2.insert("value_D1", Number(55));
+        d2.insert("value_D2", Number(17));
+
+        QCOMPARE(d1.value("value_D1").toNumber(&ok).value(),   42.0);
+
+        QCOMPARE(d2.value("value_D1").toNumber(&ok).value(),   55.0);
+        QCOMPARE(d2.value("value_D2").toNumber(&ok).value(),   17.0);
+    }
+    //......................................
+
+    //......................................
+    {
+        bool ok;
+
+        Dict d1;
+        d1.insert("value_D1", Number(42));
+
+        Value v = d1;
+
+        Dict &lv= v.toDict(&ok);
+        QCOMPARE(ok,  true);
+
+        Dict d2 = v.toDict(&ok);
+        QCOMPARE(ok,  true);
+
+        d2.insert("value_D2", Number(55));
+
+        QCOMPARE(d1.value("value_D1").toNumber().value(),   42.0);
+        QCOMPARE(lv.value("value_D1").toNumber().value(),   42.0);
+
+        QCOMPARE(d2.value("value_D1").toNumber().value(),   42.0);
+        QCOMPARE(d2.value("value_D2").toNumber().value(),   55.0);
+
+        lv.insert("value_D1", Number(10));
+        QCOMPARE(lv.value("value_D1").toNumber().value(),   10.0);
+        QCOMPARE(v.toDict().value("value_D1").toNumber().value(),   10.0);
+        QCOMPARE(d1.value("value_D1").toNumber().value(),   42.0);
+
+
+        QCOMPARE(d2.value("value_D1").toNumber().value(),   42.0);
+    }
+    //......................................
+
+    //......................................
+    {
+        bool ok;
+        Value v;
+        QCOMPARE(v.toDict(&ok).count(), 0);
+        QCOMPARE(ok,  false);
+
+        v.toDict().insert("KEY", 11);
+        QCOMPARE(v.toDict().count(), 0);
+
+    }
+    //......................................
+
+    //......................................
+    {
+        Value v;
+        QCOMPARE(v.isValid(),   false);
+        QCOMPARE(v.type(),      Value::Type::Undefined);
+
+        Dict &ld = v.toDict();
+        QCOMPARE(ld.isValid(),  false);
+        QCOMPARE(ld.type(),     Value::Type::Dict);
+
+        Dict d1;
+        QCOMPARE(d1.isValid(),  true);
+        QCOMPARE(d1.type(),     Value::Type::Dict);
+
+        Dict d2(v.toDict());
+        QCOMPARE(d2.isValid(),  true);
+        QCOMPARE(d2.type(),     Value::Type::Dict);
+
+        Dict d3 = v.toDict();
+        QCOMPARE(d3.isValid(),  true);
+        QCOMPARE(d3.type(),     Value::Type::Dict);
+
+    }
+    //......................................
+
+    //......................................
+    {
+        Value v;
+        Dict &ld = v.toDict();
+        QCOMPARE(ld.isValid(),  false);
+
+        ld.toDict().insert("KEY", 11);
+        QCOMPARE(ld.count(), 0);
+
+        Dict d = v.toDict();
+        QCOMPARE(d.isValid(),  true);
+
+        d.toDict().insert("KEY", 11);
+        QCOMPARE(d.count(), 1);
+
+    }
+    //......................................
+
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void TestBoomaga::testPdfHexString()
+{
+    {
+        HexString s;
+        QCOMPARE(s.isValid(), true);
+        QCOMPARE(s.value(),   QByteArray(""));
+    }
+    //......................................
+    {
+        HexString s("Test");
+        QCOMPARE(s.isValid(), true);
+        QCOMPARE(s.value(),   QByteArray("54657374"));
+    }
+    //......................................
+    {
+        HexString s("First");
+        HexString &l = s;
+        QCOMPARE(l.isValid(), true);
+
+        QCOMPARE(s.value(),  QString("First").toLocal8Bit().toHex());
+        QCOMPARE(l.value(),  QString("First").toLocal8Bit().toHex());
+
+        s.setValue(QString("Second").toLocal8Bit().toHex());
+
+        QCOMPARE(s.value(),   QString("Second").toLocal8Bit().toHex());
+        QCOMPARE(l.value(),   QString("Second").toLocal8Bit().toHex());
+    }
+    //......................................
+    {
+        HexString s("First");
+        HexString s2 = s;
+        QCOMPARE(s2.isValid(), true);
+
+        QCOMPARE(s.value(),  QString("First").toLocal8Bit().toHex());
+        QCOMPARE(s2.value(), QString("First").toLocal8Bit().toHex());
+
+        s.setValue(QString("Second").toLocal8Bit().toHex());
+
+        QCOMPARE(s.value(),   QString("Second").toLocal8Bit().toHex());
+        QCOMPARE(s2.value(),  QString("First").toLocal8Bit().toHex());
+    }
+    //......................................
+    {
+        Value v;
+        QCOMPARE(v.toHexString().isValid(), false);
+
+        HexString &l = v.toHexString();
+        QCOMPARE(l.isValid(), false);
+
+        l.setValue(QString("Test").toLocal8Bit().toHex());
+        QCOMPARE(l.value(),                 QByteArray(""));
+        QCOMPARE(v.toHexString().value(),   QByteArray(""));
+    }
+    //......................................
+    {
+        Value v;
+        QCOMPARE(v.toHexString().isValid(), false);
+
+        HexString s = v.toHexString();
+        QCOMPARE(s.isValid(), true);
+
+        s.setValue(QString("Test").toLocal8Bit().toHex());
+        QCOMPARE(s.value(),                 QString("Test").toLocal8Bit().toHex());
+        QCOMPARE(v.toHexString().value(),   QByteArray(""));
+    }
+    //......................................
+}
+
+void TestBoomaga::testPdfLiteralString()
+{
+    {
+        LiteralString s;
+        QCOMPARE(s.isValid(), true);
+        QCOMPARE(s.value(),   QByteArray(""));
+    }
+    //......................................
+    {
+        LiteralString s("Test");
+        QCOMPARE(s.isValid(), true);
+        QCOMPARE(s.value(),   QByteArray("Test"));
+    }
+    //......................................
+    {
+        LiteralString s("First");
+        LiteralString &l = s;
+        QCOMPARE(l.isValid(), true);
+
+        QCOMPARE(s.value(),  QString("First").toLocal8Bit());
+        QCOMPARE(l.value(),  QString("First").toLocal8Bit());
+
+        s.setValue(QString("Second").toLocal8Bit());
+
+        QCOMPARE(s.value(),   QString("Second").toLocal8Bit());
+        QCOMPARE(l.value(),   QString("Second").toLocal8Bit());
+    }
+    //......................................
+    {
+        LiteralString s("First");
+        LiteralString s2 = s;
+        QCOMPARE(s2.isValid(), true);
+
+        QCOMPARE(s.value(),  QString("First").toLocal8Bit());
+        QCOMPARE(s2.value(), QString("First").toLocal8Bit());
+
+        s.setValue(QString("Second").toLocal8Bit());
+
+        QCOMPARE(s.value(),   QString("Second").toLocal8Bit());
+        QCOMPARE(s2.value(),  QString("First").toLocal8Bit());
+    }
+    //......................................
+    {
+        Value v;
+        QCOMPARE(v.toLiteralString().isValid(), false);
+
+        LiteralString &l = v.toLiteralString();
+        QCOMPARE(l.isValid(), false);
+
+        l.setValue(QString("Test").toLocal8Bit());
+        QCOMPARE(l.value(),                 QByteArray(""));
+        QCOMPARE(v.toLiteralString().value(),   QByteArray(""));
+    }
+    //......................................
+    {
+        Value v;
+        QCOMPARE(v.toLiteralString().isValid(), false);
+
+        LiteralString s = v.toLiteralString();
+        QCOMPARE(s.isValid(), true);
+
+        s.setValue(QString("Test").toLocal8Bit());
+        QCOMPARE(s.value(),                 QString("Test").toLocal8Bit());
+        QCOMPARE(v.toLiteralString().value(),   QByteArray(""));
+    }
+    //......................................
+}
+
+void TestBoomaga::testPdfName()
+{
+    {
+        Name s;
+        QCOMPARE(s.isValid(), true);
+        QCOMPARE(s.value(),   QString(""));
+    }
+    //......................................
+    {
+        Name s("Test");
+        QCOMPARE(s.isValid(), true);
+        QCOMPARE(s.value(),   QString("Test"));
+    }
+    //......................................
+    {
+        Name s("First");
+        Name &l = s;
+        QCOMPARE(l.isValid(), true);
+
+        QCOMPARE(s.value(),  QString("First"));
+        QCOMPARE(l.value(),  QString("First"));
+
+        s.setValue("Second");
+
+        QCOMPARE(s.value(),   QString("Second"));
+        QCOMPARE(l.value(),   QString("Second"));
+    }
+    //......................................
+    {
+        Name s("First");
+        Name s2 = s;
+        QCOMPARE(s2.isValid(), true);
+
+        QCOMPARE(s.value(),  QString("First"));
+        QCOMPARE(s2.value(), QString("First"));
+
+        s.setValue("Second");
+
+        QCOMPARE(s.value(),   QString("Second"));
+        QCOMPARE(s2.value(),  QString("First"));
+    }
+    //......................................
+    {
+        Value v;
+        QCOMPARE(v.toName().isValid(), false);
+
+        Name &l = v.toName();
+        QCOMPARE(l.isValid(), false);
+
+        l.setValue("Test");
+        QCOMPARE(l.value(),             QString(""));
+        QCOMPARE(v.toName().value(),    QString(""));
+    }
+    //......................................
+    {
+        Value v;
+        QCOMPARE(v.toName().isValid(), false);
+
+        Name s = v.toName();
+        QCOMPARE(s.isValid(), true);
+
+        s.setValue("Test");
+        QCOMPARE(s.value(),             QString("Test"));
+        QCOMPARE(v.toName().value(),    QString(""));
+    }
+    //......................................
+
 }

@@ -33,7 +33,7 @@
 
 class QIODevice;
 
-namespace PdfParser {
+namespace PDF {
 
 class ObjectData;
 
@@ -54,18 +54,29 @@ public:
     quint16 genNum() const;
     void setGenNum(quint16 value);
 
-    Dict dictionary() const;
+    const Dict &dict() const;
+          Dict &dict();
 
-    Value value() const;
+    const Value &value() const;
+    Value &value();
     void setValue(const Value &value);
 
     QByteArray stream() const;
     void setStream(const QByteArray &value);
 
+    /// the Type entry identifies the type of object.
+    QString type() const;
+
+    /// In some cases, a Subtype entry is used to further
+    /// identify a specialized subcategory of the general type.
+    QString subType() const;
+
 private:
     QExplicitlySharedDataPointer<ObjectData> d;
 };
 
-} // namespace PdfParser
+} // namespace PDF
+
+QDebug operator<<(QDebug dbg, const PDF::Object &obj);
 
 #endif // PDFOBJECT_H

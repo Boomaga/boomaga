@@ -34,7 +34,7 @@
 #include "pdfvalue.h"
 #include <QDebug>
 
-using namespace PdfParser;
+using namespace PDF;
 
 
 /************************************************
@@ -390,7 +390,7 @@ qint64 Reader::readLiteralString(qint64 start, LiteralString *res) const
 qint64 Reader::readName(qint64 start, Name *res) const
 {
     res->setValid(true);
-    res->setName(readNameString(&start));
+    res->setValue(readNameString(&start));
     return start;
 }
 
@@ -453,7 +453,7 @@ qint64 Reader::readObject(qint64 start, Object *res) const
         pos = mData->skipCRLF(pos + strlen("stream"));
 
         qint64 len = 0;
-        Value v = res->dictionary().value("Length");
+        Value v = res->dict().value("Length");
         switch (v.type()) {
         case Value::Type::Number:
             len = v.toNumber().value();
@@ -541,6 +541,15 @@ qint64 Reader::readXRefTable(qint64 pos, XRefTable *res) const
 /************************************************
  *
  ************************************************/
+Object Reader::getObject(const Link &link) const
+{
+    return getObject(link.objNum(), link.genNum());
+}
+
+
+/************************************************
+ *
+ ************************************************/
 Object Reader::getObject(uint objNum, quint16 genNum) const
 {
     Object obj;
@@ -571,7 +580,7 @@ QString Reader::readNameString(qint64 *pos) const
 /************************************************
  *
  ************************************************/
-void Reader::load()
+void Reader::open()
 {
     // Check header ...................................
     if (mData->indexOf("%PDF-") != 0)
@@ -603,8 +612,45 @@ void Reader::load()
         readDict(pos, &dict);
         parentXrefPos = dict.value("Prev").toNumber().value();
     }
+}
 
-    mHandler->trailerReady(mXRefTable, mTrailerDict);
+/************************************************
+ *
+ ************************************************/
+void Reader::load()
+{
+//    // Check header ...................................
+//    if (mData->indexOf("%PDF-") != 0)
+//        throw HeaderError(0);
+
+//    bool ok;
+//    // Get xref table position ..................
+//    qint64 startXRef = mData->indexOfBack("startxref", mData->size() - 1);
+//    if (startXRef < 0)
+//        throw ParseError(0, "Incorrect trailer, the marker 'startxref' was not found.");
+
+//    qint64 pos = startXRef + strlen("startxref");
+//    quint64 xrefPos = mData->readUInt(&pos, &ok);
+//    if (!ok)
+//        throw ParseError(pos, "Error in trailer, can't read xref position.");
+
+//    // Read xref table ..........................
+//    pos = readXRefTable(xrefPos, &mXRefTable);
+//    pos = mData->skipSpace(pos+strlen("trailer"));
+//    readDict(pos, &mTrailerDict);
+
+//    qint64 parentXrefPos = mTrailerDict.value("Prev").toNumber().value();
+
+//    while (parentXrefPos)
+//    {
+//        pos = readXRefTable(parentXrefPos, &mXRefTable);
+//        pos = mData->skipSpace(pos+strlen("trailer"));
+//        Dict dict;
+//        readDict(pos, &dict);
+//        parentXrefPos = dict.value("Prev").toNumber().value();
+//    }
+
+//    mHandler->trailerReady(mXRefTable, mTrailerDict);
 
     foreach (const XRefEntry &entry, mXRefTable)
     {

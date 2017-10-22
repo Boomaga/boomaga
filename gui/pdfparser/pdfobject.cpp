@@ -33,9 +33,9 @@
 #include <QDebug>
 #include <QSharedData>
 
-using namespace PdfParser;
+using namespace PDF;
 
-class PdfParser::ObjectData: public QSharedData
+class PDF::ObjectData: public QSharedData
 {
 public:
     ObjectData():
@@ -155,7 +155,7 @@ void Object::setGenNum(quint16 value)
 /************************************************
  *
  ************************************************/
-Dict Object::dictionary() const
+const Dict &Object::dict() const
 {
     return d->mValue.toDict();
 }
@@ -164,7 +164,25 @@ Dict Object::dictionary() const
 /************************************************
  *
  ************************************************/
-Value Object::value() const
+Dict &Object::dict()
+{
+    return d->mValue.toDict();
+}
+
+
+/************************************************
+ *
+ ************************************************/
+const Value &Object::value() const
+{
+    return d->mValue;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+Value &Object::value()
 {
     return d->mValue;
 }
@@ -194,4 +212,42 @@ QByteArray Object::stream() const
 void Object::setStream(const QByteArray &value)
 {
     d->mStream = value;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+QString Object::type() const
+{
+    return dict().value("Type").toName().value();
+}
+
+
+/************************************************
+ *
+ ************************************************/
+QString Object::subType() const
+{
+    QString s = dict().value("Subtype").toName().value();
+    if (s.isEmpty())
+        return dict().value("S").toName().value();
+    else
+        return s;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+QDebug operator<<(QDebug dbg, const Object &obj)
+{
+    dbg.nospace() << obj.objNum() << " " << obj.genNum() << " obj\n";
+    dbg.nospace() << obj.value();
+    if (obj.stream().length())
+        dbg.nospace() << "\n" << "stream length " << obj.stream().length();
+    else
+        dbg.nospace() << "\n" << "no stream";
+    dbg.nospace() << "\nendobj\n";
+    return dbg;
 }

@@ -29,11 +29,11 @@
 
 #include <QIODevice>
 #include "pdfvalue.h"
+#include "pdfxref.h"
 
-namespace PdfParser {
+namespace PDF {
 
 class Object;
-class XRefTable;
 
 class Writer
 {
@@ -82,6 +82,10 @@ public:
     void writeTrailer(const Link &root, const Link &info);
     void writeTrailer(const Dict &trailerDict);
 
+    const XRefTable xRefTable() const { return *mXRefTable; }
+
+    void writeComment(const QString &comment);
+
 private:
     QIODevice *mDevice;
 
@@ -92,6 +96,6 @@ private:
     void writeXrefSection(uint from, uint to);
 };
 
-} // namespace PdfParser
+} // namespace PDF
 
 #endif // PDFWRITER_H

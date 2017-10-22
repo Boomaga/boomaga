@@ -23,26 +23,28 @@
  *
  * END_COMMON_COPYRIGHT_HEADER */
 
+#include "assert.h"
 #include "pdfmerger.h"
 #include "pdfparser/pdfobject.h"
 #include "pdfparser/pdfwriter.h"
 #include <QFile>
 #include <QDebug>
 
-using namespace PdfParser;
+using namespace PDF;
+
 
 /************************************************
  *
  ************************************************/
 PdfMerger::PdfMerger(QObject *parent):
     QObject(parent),
-    mWriter(new Writer())
-   // mPdfMajorVer(1),
-   // mPdfMinorVer(4)
-    //mOutDevice(nullptr)
+    mReader(nullptr),
+    mWriter(new Writer()),
+    mObjNumOffset(0)
 {
 
 }
+
 
 /************************************************
  *
@@ -51,10 +53,6 @@ PdfMerger::~PdfMerger()
 {
     delete mWriter;
 }
-
-
-
-
 
 
 /************************************************
@@ -77,7 +75,7 @@ void PdfMerger::run(const QString &outFileName)
         throw tr("I can't write file \"%1\"").arg(file.fileName()) + "\n" + file.errorString();
     }
 
-    // QFile destructor close file.
+    // QFile destructor close the file.
     run(&file);
 }
 
@@ -90,9 +88,43 @@ void PdfMerger::run(QIODevice *outDevice)
     mWriter->setDevice(outDevice);
     mWriter->writePDFHeader(1,7);
 
+    int rootNum = 1;
+    int pagesNum = rootNum +1;
+
+    // Catalog object ...........................
+    {
+        PDF::Object obj;
+        obj.setObjNum(rootNum);
+        obj.setGenNum(0);
+
+        obj.setValue(Dict());
+        obj.dict().insert("Type",  Name("Catalog"));
+        obj.dict().insert("Pages", Number(pagesNum));
+        mWriter->writeObject(obj);
+    }
+    // ..........................................
+
+
+    // Pages object .............................
+    {
+        PDF::Object obj;
+        obj.setObjNum(pagesNum);
+        obj.setGenNum(0);
+        obj.setValue(Dict());
+        obj.dict().insert("Type",  Name("Pages"));
+        obj.dict().insert("Count", Number(0));
+        obj.dict().insert("Kids",  Array());
+        mWriter->writeObject(obj);
+    }
+    // ..........................................
+
+    mObjNumOffset = mWriter->xRefTable().count();
 
     foreach (const SourceFile &source, mSources)
     {
+        mSkippedObjects.clear();
+        mWriter->writeComment(" Document **************************************");
+
         QFile file(source.fileName);
         if(!file.open(QFile::ReadOnly))
             throw tr("I can't open file \"%1\"").arg(source.fileName) + "\n" + file.errorString();
@@ -110,16 +142,40 @@ void PdfMerger::run(QIODevice *outDevice)
 
         uchar *buf = file.map(start, end - start);
         Reader reader(reinterpret_cast<const char*>(buf), end - start);
-        reader.setHandler(this);
-        reader.load();
-        mWriter->writeXrefTable();
+        reader.open();
+        mReader = &reader;
 
-        //mWriter->writeTrailer(reader.trailerDict());
-        mWriter->writeTrailer(mRootObject);
+        PDF::Object catalog = reader.getObject(reader.trailerDict().value("Root").toLink());
+        mSkippedObjects << catalog.objNum();
+        PDF::Object pages   = reader.getObject(catalog.dict().value("Pages").toLink());
+
+        mWriter->writeComment("-- Start XObjects ------------------------------------");
+        PDF::Dict dict;
+        walkPageTree(0, pages, dict);
+        mWriter->writeComment("-- End XObjects --------------------------------------");
+
+        mWriter->writeComment("-- Start copied objects ------------------------------");
+        foreach (const PDF::XRefEntry &xref, mReader->xRefTable())
+        {
+            if (xref.type == PDF::XRefEntry::Type::Free)
+                continue;
+
+            if (mSkippedObjects.contains(xref.objNum))
+                continue;
+            PDF::Object obj = mReader->getObject(xref.objNum, xref.genNum);
+            mWriter->writeComment(QString("%%%%%% copied from [%1 %2]").arg(xref.objNum).arg(xref.genNum));
+            mWriter->writeObject(addOffset(obj, mObjNumOffset));
+
+        }
+        mWriter->writeComment("-- End copied objects --------------------------------");
+
+        mObjNumOffset = mWriter->xRefTable().maxObjNum();
         file.unmap(buf);
     }
-}
 
+    mWriter->writeXrefTable();
+    mWriter->writeTrailer(Link(1,0));
+}
 
 
 /************************************************
@@ -135,572 +191,43 @@ void PdfMerger::emitError(const QString &message)
 /************************************************
  *
  ************************************************/
-void PdfMerger::objectReady(const PdfParser::Object &object)
+int PdfMerger::walkPageTree(int pageNum, const PDF::Object &page, const PDF::Dict &inherited)
 {
-    mWriter->writeObject(object);
-    if (object.dictionary().value("Type").toName().value() == "Catalog")
+    assert(page.type() == "Pages" || page.type() == "Page");
+
+    if (page.type() == "Pages")
     {
-        mRootObject = object;
-    }
-}
-
-
-//void PdfMerger::readPdfVersion(const PdfMerger::SourceFile *sourceFile)
-//{
-//    QFile file(sourceFile->fileName);
-//    if(!file.open(QFile::ReadOnly))
-//    {
-//        throw tr("I can't open file \"%1\"").arg(sourceFile) + "\n" + file.errorString();
-//    }
-
-//    file.seek(sourceFile->startPos);
-//    QByteArray data = file.read(10);
-
-//    try
-//    {
-//    if (!data.startsWith("%PDF-"))
-//    {
-//        file.close();
-//        throw tr("I can't read file \"%1\" because is either not a supported file type or because the file has been damaged.").arg(file.fileName());
-//    }
-
-
-//    int pos = data.indexOf(".");
-//    if (pos<0)
-//        throw
-//    int major = data.mid(5, pos).trimmed().toInt();
-//    mVersion = data.mid(5, pos-5).trimmed();
-
-//    catch(QString err)
-//       throw tr("I can't read file \"%1\" because is either not a supported file type or because the file has been damaged.").arg(file.fileName());
-//}
-
-#ifdef OLD
-// This code based on poppler pdfunite.cc
-
-#include "pdfmerger.h"
-#include <QtAlgorithms>
-#include <QDebug>
-#include <QDir>
-
-#include "../kernel/project.h"
-
-#include <poppler/PDFDoc.h>
-#include <poppler/GlobalParams.h>
-#include <poppler/poppler-config.h>
-#include <kernel/boomagapoppler.h>
-
-
-#ifdef __GNUC__
-#define GCC_VARIABLE_IS_USED __attribute__ ((unused))
-#else
-#define GCC_VARIABLE_IS_USED
-#endif
-
-
-static GBool GCC_VARIABLE_IS_USED printVersion = true;
-static GBool GCC_VARIABLE_IS_USED printHelp = true;
-
-
-void POPPLER_WriteObject(Object *obj, Ref *ref, OutStream* outStr, XRef *xref, Guint numOffset)
-{
-#if POPPLER_VERSION < 2100
-    //static Guint writeObject (Object *obj, Ref *ref, OutStream* outStr, XRef *xref, Guint numOffset);
-    PDFDoc::writeObject(obj, 0, outStr, xref, numOffset);
-#else
-    //static void writeObject (Object *obj, OutStream* outStr, XRef *xref, Guint numOffset, Guchar *fileKey,
-    //                         CryptAlgorithm encAlgorithm, int keyLength, int objNum, int objGen);
-
-    PDFDoc::writeObject(obj, outStr, xref, numOffset, NULL, cryptRC4, 0, 0, 0);
-#endif
-}
-
-
-void POPPLER_WritePageObjects(PDFDoc *doc, OutStream *outStr, XRef *xRef, Guint numOffset)
-{
-#if POPPLER_VERSION < 2200
-        doc->writePageObjects(outStr, xRef, numOffset);
-#else
-        doc->writePageObjects(outStr, xRef, numOffset, true);
-#endif
-}
-
-void POPPLER_replacePageDict(PDFDoc *doc, int pageNo, int rotate, PDFRectangle *mediaBox, PDFRectangle *cropBox)
-{
-#if POPPLER_VERSION < 2800
-    doc->replacePageDict(pageNo, rotate, mediaBox, cropBox, NULL);
-#else
-    doc->replacePageDict(pageNo, rotate, mediaBox, cropBox);
-#endif
-}
-
-void POPPLER_markPageObjects(PDFDoc *doc, Dict *pageDict, XRef *xRef, XRef *countRef, Guint numOffset, int oldRefNum, int newRefNum)
-{
-#if POPPLER_VERSION < 2800
-    doc->markPageObjects(pageDict, xRef, countRef, numOffset);
-#else
-    doc->markPageObjects(pageDict, xRef, countRef, numOffset, oldRefNum, newRefNum);
-#endif
-}
-
-void writeTrailer(XRef *xRef, int rootNum, OutStream* stream)
-{
-
-#if POPPLER_VERSION < 1904
-    xRef->writeToFile(stream, false);
-
-    Ref ref;
-    ref.num = rootNum;
-    ref.gen = 0;
-
-    PDFDoc::writeTrailer(stream->getPos(), xRef->getNumObjects(), stream, false, 0,
-                         &ref, xRef, "fileNamef", stream->getPos());
-#else
-    int uxrefOffset = stream->getPos();
-    Ref ref;
-    ref.num = rootNum;
-    ref.gen = 0;
-
-#if POPPLER_VERSION < 5800
-    Dict *trailerDict = PDFDoc::createTrailerDict(xRef->getNumObjects(), false, 0, &ref, xRef,
-                                                  "fileName", stream->getPos());
-    PDFDoc::writeXRefTableTrailer(trailerDict, xRef, false /* do not write unnecessary entries */,
-                                  uxrefOffset, stream, xRef);
-    delete trailerDict;
-#else
-    Object trailerDict = PDFDoc::createTrailerDict(xRef->getNumObjects(), false, 0, &ref, xRef,
-                                                  "fileName", stream->getPos());
-    PDFDoc::writeXRefTableTrailer(std::move(trailerDict), xRef, false /* do not write unnecessary entries */,
-                                  uxrefOffset, stream, xRef);
-#endif
-#endif
-}
-
-/************************************************
-
- ************************************************/
-void error(const QString &message)
-{
-    PdfMergerIPCWriter().writeError(message);
-    exit(3);
-}
-
-
-/************************************************
-
- ************************************************/
-void warning(const QString &message)
-{
-    qWarning("%s", message.toLocal8Bit().data());
-}
-
-
-/************************************************
-
- ************************************************/
-void warning(const char *message)
-{
-    warning(QString(message));
-}
-
-
-/************************************************
-
- ************************************************/
-void debug(const QString &message)
-{
-    QTextStream out(stdout);
-    PdfMergerIPCWriter().writeDebug(message);
-}
-
-
-/************************************************
-
- ************************************************/
-OutStream &operator<<(OutStream &stream, const QString &str)
-{
-    stream.printf("%s", str.toLocal8Bit().constData());
-    return stream;
-}
-
-
-/************************************************
-
- ************************************************/
-OutStream &operator<<(OutStream &stream, const char *str)
-{
-    stream.printf("%s", str);
-    return stream;
-}
-
-
-/************************************************
-
- ************************************************/
-OutStream &operator<<(OutStream &stream, const PDFRectangle &rect)
-{
-    stream << QString("[ %1 %2 %3 %4 ]")
-              .arg(rect.x1)
-              .arg(rect.y1)
-              .arg(rect.x2)
-              .arg(rect.y2);
-    return stream;
-}
-
-
-/************************************************
-
- ************************************************/
-OutStream &operator<<(OutStream &stream, const QRectF &rect)
-{
-    stream << QString("[ %1 %2 %3 %4 ]")
-              .arg(rect.left())
-              .arg(rect.top())
-              .arg(rect.right())
-              .arg(rect.bottom());
-    return stream;
-}
-
-
-/************************************************
-
- ************************************************/
-OutStream &operator<<(OutStream &stream, const PDFRectangle *rect)
-{
-    return operator<<(stream, *rect);
-}
-
-
-/************************************************
-
- ************************************************/
-OutStream &operator<<(OutStream &stream, const unsigned int value)
-{
-    stream << QString("%1").arg(value);
-    return stream;
-}
-
-
-/************************************************
-
- ************************************************/
-OutStream &operator<<(OutStream &stream, const int value)
-{
-    stream << QString("%1").arg(value);
-    return stream;
-}
-
-
-/************************************************
-
- ************************************************/
-OutStream &operator<<(OutStream &stream, Stream &value)
-{
-    Object obj1;
-#if POPPLER_VERSION < 5800
-    value.getDict()->lookup((char*)"Length", &obj1);
-#else
-    obj1 = value.getDict()->lookup((char*)"Length");
-#endif
-    const int length = obj1.getInt();
-#if POPPLER_VERSION < 5800
-    obj1.free();
-#endif
-
-    value.unfilteredReset();
-
-    for (int i=0; i<length; i++)
-    {
-        int c = value.getUnfilteredChar();
-        stream.printf("%c", c);
-    }
-
-    value.reset();
-    return stream;
-}
-
-
-/************************************************
-
- ************************************************/
-OutStream &operator<<(OutStream &stream, Stream *value)
-{
-    return operator<<(stream, *value);
-}
-
-
-class PdfMergerPageInfo: public PdfPageInfo
-{
-public:
-
-    PdfMergerPageInfo():
-        PdfPageInfo(),
-        doc(0),
-        numOffset(-1),
-        pageNum(-1)
-    {
-    }
-
-    ~PdfMergerPageInfo()
-    {
-#if POPPLER_VERSION < 5800
-        page.free();
-        stream.free();
-#endif
-    }
-
-    PDFDoc *doc;
-    Guint   numOffset;
-    Object  page;
-    Object  stream;
-    int     pageNum;
-
-    QString dump();
-};
-
-
-/************************************************
-
- ************************************************/
-QString PdfMergerPageInfo::dump()
-{
-    QString res;
-    res += QString("  Page: %1\n").arg(pageNum);
-    res += QString("  Content type: %1\n").arg(stream.getTypeName());
-    if (stream.isArray())
-    {
-        Array *array = stream.getArray();
-        res += QString("  Array length: %1\n").arg(array->getLength());
-
-        for (int i=0; i < array->getLength(); ++i)
+        mSkippedObjects << page.objNum();
+        const PDF::Dict &pageDict = page.dict();
+        PDF::Dict dict = inherited;
+        if (pageDict.contains("Resources"))
+            dict.insert("Resources", pageDict.value("Resources"));
+
+        if (pageDict.contains("MediaBox"))
+            dict.insert("MediaBox",  pageDict.value("MediaBox"));
+
+        if (pageDict.contains("CropBox"))
+            dict.insert("CropBox",   pageDict.value("CropBox"));
+
+        if (pageDict.contains("Rotate"))
+            dict.insert("Rotate",    pageDict.value("Rotate"));
+
+        const Array &kids = pageDict.value("Kids").toArray();
+        for (int i=0; i<kids.count(); ++i)
         {
-            Object o;
-#if POPPLER_VERSION < 5800
-            array->get(i, &o);
-#else
-            o = array->get(i);
-#endif
-            res += QString("    * %1 - %2\n").arg(i).arg(o.getTypeName());
+            pageNum = walkPageTree(pageNum, mReader->getObject(kids.at(i).toLink()), dict);
         }
+        return pageNum;
     }
 
-    return res;
-}
-
-
-/************************************************
-
- ************************************************/
-PdfMerger::PdfMerger():
-    mMajorVer(1),
-    mMinorVer(4),
-    mStream(0),
-    mNextFreeNum(0),
-    mXrefPos(0)
-{
-    if (!globalParams)
-        globalParams = new GlobalParams();
-}
-
-
-/************************************************
-
- ************************************************/
-PdfMerger::~PdfMerger()
-{
-    qDeleteAll(mOrigPages);
-    qDeleteAll(mDocs);
-    delete mStream;
-}
-
-
-/************************************************
-
- ************************************************/
-PDFDoc *PdfMerger::addFile(const QString &fileName, qint64 startPos, qint64 endPos)
-{
-    BoomagaPDFDoc *doc = new BoomagaPDFDoc(fileName, startPos, endPos);
-
-    if (!doc->isValid())
+    if (page.type() == "Page")
     {
-        error(doc->errorString());
+        mSkippedObjects << page.objNum();
+        this->writePageAsXObject(page, inherited);
+        return pageNum + 1;
     }
 
-    if (doc->getPDFMajorVersion() > mMajorVer)
-    {
-        mMajorVer = doc->getPDFMajorVersion();
-        mMinorVer = doc->getPDFMinorVersion();
-    }
-    else if (doc->getPDFMajorVersion() == mMinorVer)
-    {
-        if (doc->getPDFMinorVersion() > mMinorVer)
-        {
-            mMinorVer = doc->getPDFMinorVersion();
-        }
-    }
-
-    mDocs << doc;
-    return doc;
-}
-
-
-/************************************************
-
- ************************************************/
-bool PdfMerger::run(const QString &outFileName)
-{
-    QFileInfo(outFileName).dir().mkpath(".");
-
-    FILE *f = fopen(outFileName.toLocal8Bit(), "wb");
-    if (!f)
-        error(QObject::tr("I can't open file \"%1\"").arg(outFileName));
-
-    mStream = new FileOutStream(f, 0);
-    PDFDoc::writeHeader(mStream, mMajorVer, mMinorVer);
-
-    mXRef.add(0, 65535, 0, false);
-
-    int rootNum = mXRef.getNumObjects();
-    int pagesNum = rootNum +1;
-
-
-    // Catalog object ...........................
-    mXRef.add(rootNum, 0, mStream->getPos(), true);
-    *mStream << rootNum << " 0 obj\n";
-    *mStream << "<<\n";
-    *mStream << "/Type /Catalog\n";
-    *mStream << "/Pages " << pagesNum << " 0 R\n";
-    *mStream << ">>\n";
-    *mStream << "endobj\n";
-    // ..........................................
-
-
-    // Pages object .............................
-    mXRef.add(pagesNum, 0, mStream->getPos(), true);
-    *mStream << pagesNum << " 0 obj\n";
-    *mStream << "<<\n";
-    *mStream << "/Type /Pages\n";
-    *mStream << "/Kids [ ] /Count 0\n";
-    *mStream << ">>\n";
-    *mStream << "endobj\n";
-    // ..........................................
-
-    int pagesCnt = 0;
-    foreach (PDFDoc *doc, mDocs)
-        pagesCnt += doc->getNumPages();
-
-    mOrigPages.resize(pagesCnt);
-
-    PdfMergerIPCWriter ipc;
-    ipc.writeAllPagesCount(pagesCnt);
-
-    Guint numOffset = mXRef.getNumObjects();
-    XRef countXref;
-
-    int n=0;
-    foreach (PDFDoc *doc, mDocs)
-    {
-        //*mStream << "\n% Document **************************************\n\n";
-        for (int i = 1; i <= doc->getNumPages(); i++)
-        {
-            Page *page = doc->getCatalog()->getPage(i);
-            {
-                PDFRectangle *cropBox = 0;
-                if (page->isCropped())
-                    cropBox = page->getCropBox();
-
-                POPPLER_replacePageDict(doc, i,
-                                 doc->getCatalog()->getPage(i)->getRotate(),
-                                 doc->getCatalog()->getPage(i)->getMediaBox(), cropBox);
-            }
-
-            Ref *refPage = doc->getCatalog()->getPageRef(i);
-            PdfMergerPageInfo *pageInfo = new PdfMergerPageInfo();
-
-            pageInfo->doc = doc;
-            pageInfo->numOffset = numOffset;
-#if POPPLER_VERSION < 5800
-            doc->getXRef()->fetch(refPage->num, refPage->gen, &(pageInfo->page));
-#else
-            pageInfo->page = doc->getXRef()->fetch(refPage->num, refPage->gen);
-#endif
-            Dict *pageDict = pageInfo->page.getDict();
-
-            PDFRectangle *mediaBox = page->getMediaBox();
-
-            pageInfo->mediaBox.setLeft(mediaBox->x1);
-            pageInfo->mediaBox.setTop(mediaBox->y1);
-            pageInfo->mediaBox.setRight(mediaBox->x2);
-            pageInfo->mediaBox.setBottom(mediaBox->y2);
-
-            PDFRectangle *cropBox = page->getCropBox();
-            pageInfo->cropBox.setLeft(cropBox->x1);
-            pageInfo->cropBox.setTop(cropBox->y1);
-            pageInfo->cropBox.setRight(cropBox->x2);
-            pageInfo->cropBox.setBottom(cropBox->y2);
-
-            pageInfo->rotate = page->getRotate();
-
-            pageInfo->pageNum = i;
-            if (pageDict->hasKey((char *)"Contents"))
-            {
-#if POPPLER_VERSION < 5800
-                pageDict->lookup((char *)"Contents", &(pageInfo->stream));
-#else
-                pageInfo->stream = pageDict->lookup((char *)"Contents");
-#endif
-                pageDict->remove((char *)"Contents");
-            }
-
-            mOrigPages[n] = pageInfo;
-
-            POPPLER_markPageObjects(doc, pageDict, &mXRef, &countXref, numOffset, refPage->num, refPage->num);
-
-            if (n % 2)
-                ipc.writeProgressStatus((n + 1) / 2);
-
-            n++;
-        }
-
-        POPPLER_WritePageObjects(doc, mStream, &mXRef, numOffset);
-        numOffset = mXRef.getNumObjects() + 1;
-    }
-
-    //*mStream  << "\n% XObjects **************************************\n\n";
-    for (int i=0; i<mOrigPages.count(); ++i)
-    {
-        writePageAsXObject(mOrigPages[i]);
-        if (i % 2)
-            ipc.writeProgressStatus((pagesCnt + i ) / 2);
-    }
-
-    mXrefPos = mStream->getPos();
-
-    writeTrailer(&mXRef, rootNum, mStream);
-
-    //*mStream  << "\n% End update **************************************\n\n";
-
-    mStream->close();
-    delete mStream;
-    mStream = 0;
-    fclose(f);
-
-    int i = 0;
-    for (int docNum=0; docNum<mDocs.count(); ++docNum)
-    {
-        PDFDoc *doc = mDocs.at(docNum);
-
-        int pc = doc->getNumPages();
-        for (int pageNum=0; pageNum<pc; ++pageNum)
-        {
-            PdfMergerPageInfo *pageInfo = mOrigPages.at(i);
-            ipc.writePageInfo(docNum, pageNum, *pageInfo);
-            i++;
-        }
-    }
-
-    ipc.writeXRefInfo(mXrefPos, mXRef.getNumObjects());
-    return true;
+    return pageNum;
 }
 
 
@@ -723,128 +250,137 @@ bool PdfMerger::run(const QString &outFileName)
     OPI                 -
     OC                  -
     Name                -
+
+
+  Page Boundaries
+  ================
+
+  MediaBox (required, inheritable)
+    The media box defines the boundaries of the physical medium on which the
+    page is to be printed. It may include any extended area surrounding the
+    finished page for bleed, printing marks, or other such purposes. It may also
+    include areas close to the edges of the medium that cannot be marked because
+    of physical limitations of the output device. Content falling outside this
+    boundary can safely be discarded without affecting the meaning of the PDF file.
+
+  CropBox (optional, inheritable, default=MediaBox)
+    The crop box defines the region to which the contents of the page are to be
+    clipped (cropped) when displayed or printed. Unlike the other boxes, the crop
+    box has no defined meaning in terms of physical page geometry or intended
+    use; it merely imposes clipping on the page contents. However, in the absence
+    of additional information (such as imposition instructions specified in a JDF or
+    PJTF job ticket), the crop box determines how the page’s contents are to be po-
+    sitioned on the output medium. The default value is the page’s media box.
+
+  BleedBox (optional, default=CropBox)
+    The bleed box defines the region to which the contents of the page
+    should be clipped when output in a production environment. This may include
+    any extra bleed area needed to accommodate the physical limitations of cut-
+    ting, folding, and trimming equipment. The actual printed page may include
+    printing marks that fall outside the bleed box. The default value is the page’s
+    crop box.
+
+  TrimBox (optional, defaul=CropBox)
+    The trim box (PDF 1.3) defines the intended dimensions of the finished page
+    after trimming. It may be smaller than the media box to allow for production-
+    related content, such as printing instructions, cut marks, or color bars.
+    The default value is the page’s crop box.
+
+  ArtBox (optional, default=CropBox)
+    The art box defines the extent of the page’s meaningful content
+    (including potential white space) as intended by the page’s creator. The default
+    value is the page’s crop box.
  ************************************************/
-void PdfMerger::writeStreamAsXObject(PdfMergerPageInfo *pageInfo, Stream *stream)
+void PdfMerger::writePageAsXObject(const PDF::Object &page, const Dict &inherited)
 {
-    uint num = mXRef.getNumObjects();
-    pageInfo->xObjNums << mXRef.getNumObjects();
-    mXRef.add(num, 0, mStream->getPos(), true);
-    *mStream << num << " 0 obj\n";
+    const PDF::Object &contents = mReader->getObject(page.dict().value("Contents").toLink());
+    mSkippedObjects << contents.objNum();
 
+    PDF::Object xObj;
+    xObj.setObjNum(page.objNum());
+    xObj.setGenNum(page.genNum());
 
-    Dict *pageDict = pageInfo->page.getDict();
-    // Copy dict from the page object ...........
-    *mStream << "<<\n";
-    *mStream << "/Type /XObject\n";
-    *mStream << "/Subtype /Form\n";
-    *mStream << "/FormType 1\n";
-    *mStream << "/Boomaga  1\n";
-    *mStream << "/BBox " << pageInfo->cropBox <<"\n";
-    writeDictValue(pageDict, "Resources",     pageInfo->numOffset);
-    writeDictValue(pageDict, "Metadata",      pageInfo->numOffset);
-    writeDictValue(pageDict, "PieceInfo",     pageInfo->numOffset);
-    writeDictValue(pageDict, "LastModified",  pageInfo->numOffset);
-    writeDictValue(pageDict, "StructParents", pageInfo->numOffset);
+    xObj.setValue(contents.dict());
+    PDF::Dict &dict = xObj.dict();
 
+    dict.insert("Type",     Name("XObject"));
+    dict.insert("Subtype",  Name("Form"));
+    dict.insert("FormType", Number(1));
 
-    if (stream)
+    const PDF::Dict &pageDict = page.dict();
+    dict.insert("Resources", pageDict.value("Resources", inherited.value("Resources")));
+
+    foreach (auto &key, QStringList() << "CropBox" << "MediaBox")
     {
-        // Copy dict from the stream object .........
-        Dict *dict = stream->getDict();
-        for (int i=0; i<dict->getLength(); ++i)
+        if (pageDict.contains(key))
         {
-            Object value;
-#if POPPLER_VERSION < 5800
-            dict->getVal(i, &value);
-#else
-            dict->getVal(i);
-#endif
-            *mStream << "/" << dict->getKey(i) << " ";
-            POPPLER_WriteObject(&value, 0, mStream, &mXRef, pageInfo->numOffset);
-            *mStream << "\n";
-#if POPPLER_VERSION < 5800
-            value.free();
-#endif
+            dict.insert("BBox", pageDict.value(key));
+            break;
         }
-        *mStream << " >>\n";
 
-        // Write stream .............................
-        *mStream << "stream\n";
-        *mStream << *stream;
-        *mStream << "endstream\n";
+        if (inherited.contains(key))
+        {
+            dict.insert("BBox", inherited.value(key));
+            break;
+        }
     }
-    else
+
+    foreach (auto &key, QStringList() << "Metadata" << "PieceInfo" << "LastModified" << "StructParents")
     {
-        *mStream << "/Length 0\n";
-        *mStream << " >>\n";
-        *mStream << "stream\n";
-        *mStream << "endstream\n";
+        if (pageDict.contains(key))
+            dict.insert(key, pageDict.value(key));
     }
 
-    *mStream << "endobj\n";
+    xObj.setStream(contents.stream());
+
+    mWriter->writeObject(addOffset(xObj, mObjNumOffset));
+}
+
+
+
+/************************************************
+ *
+ ************************************************/
+void offsetValue(PDF::Value &value, const quint32 offset)
+{
+    if (value.isLink())
+    {
+        PDF::Link &link = value.toLink();
+        link.setObjNum(link.objNum() + offset);
+    }
+
+    if (value.isArray())
+    {
+        PDF::Array &arr = value.toArray();
+
+        for (int i=0; i<arr.count(); ++i)
+        {
+            offsetValue(arr[i], offset);
+        }
+    }
+
+    if (value.isDict())
+    {
+        PDF::Dict &dict = value.toDict();
+
+        foreach (auto &key, dict.keys())
+        {
+            offsetValue(dict[key], offset);
+        }
+    }
 }
 
 
 /************************************************
-
+ *
  ************************************************/
-bool PdfMerger::writePageAsXObject(PdfMergerPageInfo *pageInfo)
+Object &PdfMerger::addOffset(PDF::Object &obj, quint32 offset)
 {
-    if (pageInfo->stream.isStream())
-    {
-        writeStreamAsXObject(pageInfo, pageInfo->stream.getStream());
-        return true;
-    }
+    if (offset == 0)
+        return obj;
 
-    if (pageInfo->stream.isArray())
-    {
-        Array *array = pageInfo->stream.getArray();
-        for (int i=0; i < array->getLength(); ++i)
-        {
-            Object o;
-#if POPPLER_VERSION < 5800
-            array->get(i, &o);
-#else
-            o = array->get(i);
-#endif
-            if (!o.isStream())
-            {
-                warning("Page content is array with incorrect item type:\n" + pageInfo->dump() + "\n");
-                return false;
-            }
+    obj.setObjNum(obj.objNum() + offset);
+    offsetValue(obj.value(), offset);
 
-            writeStreamAsXObject(pageInfo, o.getStream());
-        }
-        return true;
-    }
-
-    warning("Page has incorrect content type:\n" + pageInfo->dump() + "\n");
-    return false;
+    return obj;
 }
-
-
-/************************************************
-
- ************************************************/
-bool PdfMerger::writeDictValue(Dict *dict, const char *key, Guint numOffset)
-{
-    if (!dict->hasKey((char*)key))
-        return false;
-
-    Object value;
-#if POPPLER_VERSION < 5800
-    dict->lookupNF((char*)key, &value);
-#else
-    value = dict->lookupNF((char*)key);
-#endif
-    *mStream << "/" << key << " ";
-    POPPLER_WriteObject(&value, 0, mStream, &mXRef, numOffset);
-    *mStream << "\n";
-#if POPPLER_VERSION < 5800
-    value.free();
-#endif
-    return true;
-}
-#endif
-
-

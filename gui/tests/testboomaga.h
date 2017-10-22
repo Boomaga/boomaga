@@ -85,6 +85,21 @@ private slots:
     void testSkipDict();
     void testSkipDict_data();
 
+    void testPdfArray();
+
+    void testPdfBool();
+
+    void testPdfDict();
+
+    void testPdfHexString();
+
+    void testPdfLiteralString();
+
+    void testPdfName();
+
+    void testPdfNumber();
+
+
 
 private:
     LayoutNUp *createLayout(const QString &name);
