@@ -214,7 +214,7 @@ void MainWindow::fillPrintersCombo()
 /************************************************
 
  ************************************************/
-void MainWindow::closeEvent(QCloseEvent *event)
+void MainWindow::closeEvent(QCloseEvent*)
 {
     project->free();
 }
@@ -805,7 +805,7 @@ void MainWindow::updateProgressBar(int value, int all)
 /************************************************
  *
  * ***********************************************/
-void MainWindow::showPreviewContextMenu(Sheet *sheet, ProjectPage *page)
+void MainWindow::showPreviewContextMenu(Sheet*, ProjectPage *page)
 {
     QMenu menu;
     fillPageEditMenu(page, &menu);

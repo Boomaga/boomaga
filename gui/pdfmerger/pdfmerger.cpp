@@ -58,7 +58,7 @@ void POPPLER_WriteObject(Object *obj, Ref *ref, OutStream* outStr, XRef *xref, G
 #else
     //static void writeObject (Object *obj, OutStream* outStr, XRef *xref, Guint numOffset, Guchar *fileKey,
     //                         CryptAlgorithm encAlgorithm, int keyLength, int objNum, int objGen);
-
+    Q_UNUSED(ref);
     PDFDoc::writeObject(obj, outStr, xref, numOffset, NULL, cryptRC4, 0, 0, 0);
 #endif
 }

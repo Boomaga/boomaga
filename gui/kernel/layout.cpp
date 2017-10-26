@@ -116,7 +116,7 @@ void LayoutNUp::fillPreviewSheets(QList<Sheet *> *sheets) const
 /************************************************
 
  ************************************************/
-void LayoutNUp::doFillSheets(QList<Sheet *> *sheets, bool forPreview) const
+void LayoutNUp::doFillSheets(QList<Sheet *> *sheets, bool) const
 {
     int pps = mPageCountVert * mPageCountHoriz;
 
@@ -505,7 +505,7 @@ void LayoutBooklet::updatePages(QList<ProjectPage *> pages) const
 /************************************************
  *
  ************************************************/
-FlipType LayoutBooklet::flipType(FlipType printerFlipType) const
+FlipType LayoutBooklet::flipType(FlipType) const
 {
     return FlipType::ShortEdge;
 }

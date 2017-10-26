@@ -388,7 +388,7 @@ void PrinterSettings::delProfile()
 /************************************************
  *
  ************************************************/
-void PrinterSettings::profileRenamed(QWidget *editor)
+void PrinterSettings::profileRenamed(QWidget *)
 {
     ProfileItem *item = currentItem();
     if (item)

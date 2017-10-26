@@ -59,7 +59,8 @@ do {\
 /************************************************
  *
  * ***********************************************/
-TestBoomaga::TestBoomaga(QObject *parent)
+TestBoomaga::TestBoomaga(QObject *parent):
+    QObject(parent)
 {
 }
 

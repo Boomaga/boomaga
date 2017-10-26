@@ -304,7 +304,7 @@ void PreviewWidget::drawShadow(QPainter &painter, QRectF rect)
 /************************************************
 
  ************************************************/
-void PreviewWidget::paintEvent(QPaintEvent *event)
+void PreviewWidget::paintEvent(QPaintEvent *)
 {
 
 //#define DEBUG_LAYOUT

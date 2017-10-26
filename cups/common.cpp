@@ -108,7 +108,7 @@ void messageOutput(QtMsgType type, const char *message)
 /************************************************
  *
  ************************************************/
-void messageOutput(QtMsgType type, const QMessageLogContext &context, const QString &message)
+void messageOutput(QtMsgType type, const QMessageLogContext&, const QString &message)
 {
     switch (type) {
     case QtDebugMsg:
