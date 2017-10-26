@@ -101,7 +101,7 @@
             <item row="1" column="0">
              <widget class="QRadioButton" name="flipLongEdgeCheck">
               <property name="text">
-               <string>Flip on &amp;long edge</string>
+               <string>Flip on long edge</string>
               </property>
              </widget>
             </item>

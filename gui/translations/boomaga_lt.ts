@@ -553,10 +553,6 @@ Ar tikrai norite pakeisti šį failą?</translation>
         <translation>Viršus:</translation>
     </message>
     <message>
-        <source>Duplex:</source>
-        <translation>Dvipusis:</translation>
-    </message>
-    <message>
         <source>Draw border</source>
         <translation>Braižyti rėmelį</translation>
     </message>
@@ -616,6 +612,22 @@ Ar tikrai norite pakeisti šį failą?</translation>
     <message>
         <source>Force color</source>
         <translation>Priverstinai spalvotai</translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Print on both sides</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Flip on short edge</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Flip on long edge</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>

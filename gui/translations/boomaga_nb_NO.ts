@@ -553,10 +553,6 @@ Er du sikker på at du vil overskrive den?</translation>
         <translation>Topp:</translation>
     </message>
     <message>
-        <source>Duplex:</source>
-        <translation>Dupleks:</translation>
-    </message>
-    <message>
         <source>Draw border</source>
         <translation>Tegn rammekant</translation>
     </message>
@@ -616,6 +612,22 @@ Er du sikker på at du vil overskrive den?</translation>
     <message>
         <source>Force color</source>
         <translation>Tving farge</translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Print on both sides</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Flip on short edge</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Flip on long edge</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>

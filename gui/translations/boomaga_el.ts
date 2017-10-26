@@ -55,7 +55,7 @@
     </message>
     <message>
         <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on GitHub.</source>
-        <translation type="unfinished"/>
+        <translation>Το Boomaga αναπτύσσεται από την &lt;a %1&gt;ομάδα του Boomaga και τους συνεισφέροντες&lt;/a&gt; στο GitHub.</translation>
     </message>
 </context>
 <context>
@@ -82,23 +82,23 @@
     </message>
     <message>
         <source>Autosave your jobs every time you print.</source>
-        <translation type="unfinished"/>
+        <translation>Αυτόματη αποθήκευση των εργασιών σε κάθε εκτύπωση.</translation>
     </message>
     <message>
         <source>AutoSave the recent sessions</source>
-        <translation type="unfinished"/>
+        <translation>Αυτόματη αποθήκευση των πρόσφατων συνεδριών</translation>
     </message>
     <message>
         <source>Allow negative page margins:</source>
-        <translation type="unfinished"/>
+        <translation>ΝΑ επιτρέπονται τα αρνητικά περιθώρια σελίδος:</translation>
     </message>
     <message>
         <source>Select directory for saved jobs.</source>
-        <translation type="unfinished"/>
+        <translation>Επιλογή καταλόγου των αποθηκευμένων εργασιών.</translation>
     </message>
     <message>
         <source>Directory for saved sessions:</source>
-        <translation type="unfinished"/>
+        <translation>Κατάλογος των αποθηκευμένων συνεδριών:</translation>
     </message>
 </context>
 <context>
@@ -471,44 +471,44 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>Page %1 of %2</source>
         <comment>Status bar</comment>
-        <translation type="unfinished"/>
+        <translation>Σελίδα %1 από %2</translation>
     </message>
     <message>
         <source>Recent files</source>
-        <translation type="unfinished"/>
+        <translation>Πρόσφατα αρχεία</translation>
     </message>
     <message>
         <source>&amp;Edit page</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Επεξεργασία σελίδας</translation>
     </message>
     <message>
         <source>Edit &amp;job</source>
-        <translation type="unfinished"/>
+        <translation>Επεξεργασία ε&amp;ργασίας</translation>
     </message>
     <message>
         <source>&amp;Export to PDF...</source>
-        <translation type="unfinished"/>
+        <translation>Εξαγωγή σε &amp;PDF...</translation>
     </message>
     <message>
         <source>Delete pages until the end of the job</source>
-        <translation type="unfinished"/>
+        <translation>Διαγράψτε τις υπολειπόμενες σελίδες της εργασίας εκτύπωσης</translation>
     </message>
     <message>
         <source>Delete current job</source>
-        <translation type="unfinished"/>
+        <translation>Διαγραφή της τρέχουσας εργασίας</translation>
     </message>
     <message>
         <source>Auto saving</source>
-        <translation type="unfinished"/>
+        <translation>Αυτόματη αποθήκευση</translation>
     </message>
     <message>
         <source>I can&apos;t create directory &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Αδύνατη η δημιουργία του καταλόγου «%1»</translation>
     </message>
     <message>
         <source>%1 %2: Page %3</source>
         <comment>'Undo deletion' menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
-        <translation type="unfinished"/>
+        <translation>%1 %2: Σελίδα %3</translation>
     </message>
 </context>
 <context>
@@ -523,7 +523,7 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Collate copies:</source>
-        <translation type="unfinished"/>
+        <translation>Τοποθέτηση σε σειρά των αντιγράφων:</translation>
     </message>
 </context>
 <context>
@@ -551,10 +551,6 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>Top:</source>
         <translation>Πάνω:</translation>
-    </message>
-    <message>
-        <source>Duplex:</source>
-        <translation>Διπλής όψης:</translation>
     </message>
     <message>
         <source>Draw border</source>
@@ -603,18 +599,34 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Color mode:</source>
-        <translation type="unfinished"/>
+        <translation>Λειτουργία χρώματος:</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished"/>
+        <translation>Εξ ορισμού</translation>
     </message>
     <message>
         <source>Force grayscale</source>
-        <translation type="unfinished"/>
+        <translation>Εξαναγκασμός ασπρόμαυρου χρωματισμού</translation>
     </message>
     <message>
         <source>Force color</source>
+        <translation>Εξαναγκασμός χρώματος</translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Print on both sides</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Flip on short edge</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Flip on long edge</source>
         <translation type="unfinished"/>
     </message>
 </context>

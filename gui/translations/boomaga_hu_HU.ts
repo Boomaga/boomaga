@@ -552,10 +552,6 @@ Are you sure you want to overwrite it?</source>
         <translation type="unfinished"/>
     </message>
     <message>
-        <source>Duplex:</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>Draw border</source>
         <translation type="unfinished"/>
     </message>
@@ -614,6 +610,22 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Force color</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Print on both sides</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Flip on short edge</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Flip on long edge</source>
         <translation type="unfinished"/>
     </message>
 </context>

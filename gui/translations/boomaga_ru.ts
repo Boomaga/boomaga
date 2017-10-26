@@ -553,10 +553,6 @@ Are you sure you want to overwrite it?</source>
         <translation>Верхнее:</translation>
     </message>
     <message>
-        <source>Duplex:</source>
-        <translation>Дуплекс</translation>
-    </message>
-    <message>
         <source>Draw border</source>
         <translation>Печатать рамку</translation>
     </message>
@@ -616,6 +612,22 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>Force color</source>
         <translation>Принудительно в цвете</translation>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation>Настройки</translation>
+    </message>
+    <message>
+        <source>Print on both sides</source>
+        <translation>Двусторонняя печать</translation>
+    </message>
+    <message>
+        <source>Flip on short edge</source>
+        <translation>Переплет по короткой стороне</translation>
+    </message>
+    <message>
+        <source>Flip on long edge</source>
+        <translation>Переплет по длинной стороне</translation>
     </message>
 </context>
 <context>
