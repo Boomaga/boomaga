@@ -23,8 +23,8 @@
  #
  # END_COMMON_COPYRIGHT_HEADER
 
-
-cmake_minimum_required( VERSION 2.6 )
+cmake_minimum_required(VERSION 3.0.0)
+cmake_policy(SET CMP0028 NEW)
 
 project(boomagabackend)
 
@@ -48,9 +48,6 @@ set(SOURCES
 set(LIBRARIES
 )
 
-set (MOCS
-)
-
 
 if(CMAKE_COMPILER_IS_GNUCXX)
     add_definitions (-Wall -pedantic)
@@ -62,34 +59,13 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-set(QT_LIBRARIES, "")
-if (USE_QT4)
-    find_package(Qt4 REQUIRED QUIET COMPONENTS QTCORE QTDBUS)
-    include(${QT_USE_FILE})
-    qt4_wrap_cpp(MOC_SOURCES ${MOCS})
-endif()
+find_package(Qt5 REQUIRED
+    Core
+    DBus
+)
 
-if (USE_QT5)
-    cmake_minimum_required(VERSION 2.8.3)
-
-    find_package(Qt5Core REQUIRED QUIET)
-    include_directories(${Qt5Core_INCLUDE_DIRS})
-    add_definitions(${Qt5Core_DEFINITIONS})
-    set(QT_LIBRARIES ${QT_LIBRARIES} ${Qt5Core_LIBRARIES})
-
-    find_package(Qt5DBus REQUIRED QUIET)
-    include_directories(${Qt5DBus_INCLUDE_DIRS})
-    add_definitions(${Qt5DBus_DEFINITIONS})
-    set(QT_LIBRARIES ${QT_LIBRARIES} ${Qt5DBus_LIBRARIES})
-
-    qt5_wrap_cpp(MOC_SOURCES ${MOCS})
-endif()
-
-
-set(LIBRARIES ${LIBRARIES} ${QT_LIBRARIES})
-
-add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES} ${MOC_SOURCES})
-target_link_libraries(${PROJECT_NAME} ${LIBRARIES})
+add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})
+target_link_libraries(${PROJECT_NAME} ${LIBRARIES} Qt5::Core Qt5::DBus)
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/boomagabackend
   DESTINATION ${NONGUI_DIR}

@@ -27,12 +27,13 @@
 #include "printer.h"
 #include "settings.h"
 #include "cupsprinteroptions.h"
+#include "layout.h"
 
 #include <QProcess>
 #include <QSharedData>
 #include <QDebug>
 #include <QDir>
-
+#include <QTemporaryFile>
 
 #define A4_HEIGHT_MM    297
 #define A4_HEIGHT_PT    842
@@ -90,7 +91,8 @@ PrinterProfile::PrinterProfile():
     mDrawBorder(false),
     mReverseOrder(false),
     mPaperSize(QSizeF(A4_WIDTH_PT, A4_HEIGHT_PT)),
-    mColorMode(ColorModeAuto)
+    mColorMode(ColorModeAuto),
+    mFlipType(FlipType::LongEdge)
 {
 
 }
@@ -111,6 +113,8 @@ PrinterProfile &PrinterProfile::operator=(const PrinterProfile &other)
     mDrawBorder     = other.mDrawBorder;
     mReverseOrder   = other.mReverseOrder;
     mPaperSize      = other.mPaperSize;
+    mColorMode      = other.mColorMode;
+    mFlipType       = other.mFlipType;
 
     return *this;
 }
@@ -263,11 +267,20 @@ QSizeF PrinterProfile::paperSize(Unit unit) const
 
 /************************************************
 
-     ************************************************/
+************************************************/
 void PrinterProfile::setPaperSize(const QSizeF &paperSize, Unit unit)
 {
     mPaperSize.setWidth( fromUnit(paperSize.width(),  unit));
     mPaperSize.setHeight(fromUnit(paperSize.height(), unit));
+}
+
+
+/************************************************
+
+************************************************/
+void PrinterProfile::setFlipType(FlipType value)
+{
+    mFlipType = value;
 }
 
 
@@ -291,6 +304,10 @@ void PrinterProfile::readSettings()
 
     s = settings->value(Settings::PrinterProfile_ColorMode, colorModeToStr(mColorMode)).toString();
     mColorMode      = strToColorMode(s);
+
+    s = settings->value(Settings::PrinterProfile_FlipType, flipTypeToStr(mFlipType)).toString();
+    mFlipType = strToFlipType(s);
+
 }
 
 
@@ -310,6 +327,7 @@ void PrinterProfile::saveSettings() const
     settings->setValue(Settings::PrinterProfile_DrawBorder,     mDrawBorder);
     settings->setValue(Settings::PrinterProfile_ReverseOrder,   mReverseOrder);
     settings->setValue(Settings::PrinterProfile_ColorMode,      colorModeToStr(mColorMode));
+    settings->setValue(Settings::PrinterProfile_FlipType,       flipTypeToStr(mFlipType));
 }
 
 
@@ -328,15 +346,15 @@ Printer::Printer(const QString &printerName):
     mDeviceUri = cupsOpts.deviceURI();
     if (!cupsOpts.paperSize().isEmpty())
     {
-        mCupsProfile.setPaperSize(cupsOpts.paperSize(), UnitPoint);
-        mCupsProfile.setLeftMargin(cupsOpts.leftMargin(), UnitPoint);
-        mCupsProfile.setRightMargin(cupsOpts.rightMargin(), UnitPoint);
-        mCupsProfile.setTopMargin(cupsOpts.topMargin(), UnitPoint);
-        mCupsProfile.setBottomMargin(cupsOpts.bottomMargin(), UnitPoint);
+        mDefaultCupsProfile.setPaperSize(cupsOpts.paperSize(), UnitPoint);
+        mDefaultCupsProfile.setLeftMargin(cupsOpts.leftMargin(), UnitPoint);
+        mDefaultCupsProfile.setRightMargin(cupsOpts.rightMargin(), UnitPoint);
+        mDefaultCupsProfile.setTopMargin(cupsOpts.topMargin(), UnitPoint);
+        mDefaultCupsProfile.setBottomMargin(cupsOpts.bottomMargin(), UnitPoint);
     }
 
     if (cupsOpts.duplex())
-        mCupsProfile.setDuplexType(DuplexAuto);
+        mDefaultCupsProfile.setDuplexType(DuplexAuto);
 
     mGrayscaleOption = cupsOpts.grayScaleOption();
     mColorOption     = cupsOpts.colorOption();
@@ -351,6 +369,15 @@ Printer::Printer(const QString &printerName):
 Printer::~Printer()
 {
 
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Printer::setProfiles(const QVector<PrinterProfile> &value)
+{
+    mProfiles = value;
 }
 
 
@@ -375,7 +402,7 @@ void Printer::readSettings()
     for (int i=0; i<size; ++i)
     {
         PrinterProfile profile;
-        profile = mCupsProfile;
+        profile = mDefaultCupsProfile;
 
         settings->setArrayIndex(i);
         profile.readSettings();
@@ -386,7 +413,7 @@ void Printer::readSettings()
     if (mProfiles.isEmpty())
     {
         PrinterProfile profile;
-        profile = mCupsProfile;
+        profile = mDefaultCupsProfile;
 
         profile.readSettings();
         profile.setName(QObject::tr("Default", "Printer profile default name"));
@@ -507,21 +534,7 @@ bool Printer::isSupportColor() const
  ************************************************/
 bool Printer::print(const QList<Sheet *> &sheets, const QString &jobName, bool duplex, int numCopies, bool collate) const
 {
-//#define DEBUG_PRINT
-#ifdef DEBUG_PRINT
 
-    QString fileName;
-    {
-        QTemporaryFile f;
-        f.open();
-        fileName = f.fileName();
-        f.close();
-    }
-
-    project->writeDocument(sheets, fileName);
-
-    QProcess::startDetached("okular", QStringList() << fileName);
-#else
     QString file = QString("%1/.cache/boomaga_tmp_%2-print.pdf")
                           .arg(QDir::homePath())
                           .arg(QCoreApplication::applicationPid());
@@ -533,11 +546,26 @@ bool Printer::print(const QList<Sheet *> &sheets, const QString &jobName, bool d
     args << "-#" << QString("%1").arg(numCopies); // Sets the number of copies to print
     args << "-T" << jobName;                      // Sets the job name.
     args << "-r";                                 // The print files should be deleted after printing them
-    if (duplexType() == DuplexAuto && !duplex)
-        args << "-o sides=one-sided";             // Turn off duplex printing
+
+    // Duplex options ...........................
+    if (duplexType() == DuplexAuto)
+    {
+        if (duplex)
+        {
+            if (project->layout()->flipType(flipType()) == FlipType::LongEdge)
+                args << "-o sides=two-sided-long-edge";
+            else
+                args << "-o sides=two-sided-short-edge";
+        }
+        else
+        {
+            args << "-o sides=one-sided";               // Turn off duplex printing
+        }
+    }
+    // Duplex options ...........................
 
     if (collate)
-        args << "-o Collate=True";                // Use the -o Collate=True option to get collated copies
+        args << "-o Collate=True";                      // Use the -o Collate=True option to get collated copies
 
 
     // Grayscale/color printing .................
@@ -561,8 +589,29 @@ bool Printer::print(const QList<Sheet *> &sheets, const QString &jobName, bool d
 
     args << file.toLocal8Bit();
 
+//#define DEBUG_PRINT
+#ifndef DEBUG_PRINT
     QProcess proc;
     proc.startDetached("lpr", args);
+    return true;
+#else
+    QString s = "lpr";
+    foreach (QString a, args)
+    {
+        s += " \"" + a + "\"";
+    }
+    qDebug(s.toLocal8Bit());
+
+    QString fileName;
+    {
+        QTemporaryFile f;
+        f.open();
+        fileName = f.fileName();
+        f.close();
+    }
+
+    project->writeDocument(sheets, fileName);
+    QProcess::startDetached("okular", QStringList() << fileName);
     return true;
 #endif
 }

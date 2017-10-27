@@ -61,7 +61,6 @@ private slots:
     void printWithOptions();
 
     void updateWidgets();
-
     void showPrinterSettingsDialog();
     void applyPrinterSettings();
 

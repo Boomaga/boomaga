@@ -247,7 +247,7 @@ int PrintersComboBox::addPrinter(Printer *printer)
     QStandardItemModel* itemModel = (QStandardItemModel*)model();
     itemModel->appendRow(item);
 
-    for (int i=0; i<printer->profiles()->count(); ++i)
+    for (int i=0; i<printer->profiles().count(); ++i)
         addProfile(printer, i);
 
     return this->count() - 1;
@@ -259,7 +259,7 @@ int PrintersComboBox::addPrinter(Printer *printer)
  ************************************************/
 int PrintersComboBox::addProfile(Printer *printer, int profileIndex)
 {
-    const PrinterProfile &profile = printer->profiles()->at(profileIndex);
+    const PrinterProfile &profile = printer->profiles().at(profileIndex);
 
     QStandardItem *item = new QStandardItem(printer->name() + " (" + profile.name() + ") ");
     item->setData(profile.name(), PRINTER_ITEM_TEXT_ROLE);

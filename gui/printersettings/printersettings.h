@@ -31,15 +31,14 @@
 #include <QDialog>
 #include <QList>
 #include <QHash>
-#include <QListWidgetItem>
-
-class QAbstractButton;
 
 namespace Ui {
 class PrinterSettings;
 }
 
+class QAbstractButton;
 class ProfileItem;
+
 
 class PrinterSettings : public QDialog
 {
@@ -68,10 +67,7 @@ private slots:
     void btnClicked(QAbstractButton *button);
     void addProfile();
     void delProfile();
-
-    void selectProfile(QListWidgetItem * current, QListWidgetItem * previous);
-    void profileRenamed(QWidget * editor, QAbstractItemDelegate::EndEditHint hint);
-
+    void profileRenamed(QWidget * editor);
     void resetToDefault();
 
 private:

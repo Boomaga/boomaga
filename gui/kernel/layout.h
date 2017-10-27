@@ -60,6 +60,7 @@ public:
     virtual TransformSpec transformSpec(const Sheet *sheet, int pageNumOnSheet, Rotation sheetRotation) const = 0;
 
     virtual Rotation rotation() const = 0;
+    virtual FlipType flipType(FlipType printerFlipType) const = 0;
 
     virtual void updatePages(QList<ProjectPage*> pages) const = 0;
 
@@ -74,7 +75,6 @@ protected:
     };
 
     virtual PagePosition calcPagePosition(int pageNumOnSheet, Rotation sheetRotation) const = 0;
-    virtual Rotation calcSheetRotation(int sheetNum, Rotation projectRotation, DuplexType printerType, bool doubleSided) const = 0;
 };
 
 
@@ -90,6 +90,7 @@ public:
     void fillPreviewSheets(QList<Sheet*> *sheets) const;
     TransformSpec transformSpec(const Sheet *sheet, int pageNumOnSheet, Rotation sheetRotation) const;
     virtual Rotation rotation() const;
+    virtual FlipType flipType(FlipType printerFlipType) const override;
 
     virtual void updatePages(QList<ProjectPage*> pages) const;
     virtual int pagePerSheet() const { return mPageCountHoriz * mPageCountVert; }
@@ -99,7 +100,6 @@ protected:
     void doFillSheets(QList<Sheet*> *sheets, bool forPreview) const;
     virtual Rotation calcPageRotation(const ProjectPage *page, Rotation sheetRotation) const;
     virtual PagePosition calcPagePosition(int pageNumOnSheet, Rotation sheetRotation) const;
-    virtual Rotation calcSheetRotation(int sheetNum, Rotation projectRotation, DuplexType printerType, bool doubleSided) const;
 
     int mPageCountVert;
     int mPageCountHoriz;
@@ -119,6 +119,7 @@ public:
     void fillPreviewSheets(QList<Sheet*> *sheets) const;
 
     virtual void updatePages(QList<ProjectPage*> pages) const;
+    virtual FlipType flipType(FlipType printerFlipType) const override;
 
 protected:
     struct BookletInfo
@@ -128,7 +129,6 @@ protected:
     };
 
     QList<BookletInfo> split(const QList<ProjectPage*> &pages) const;
-    virtual Rotation calcSheetRotation(int sheetNum, Rotation projectRotation, DuplexType printerType, bool doubleSided) const;
 
     virtual int previewPageNum(int sheetNum) const;
 private:

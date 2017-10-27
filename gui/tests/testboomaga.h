@@ -64,9 +64,6 @@ private slots:
     void test_ProjectFilePageSpec();
     void test_ProjectFilePageSpec_data();
 
-    void test_SheetRotation();
-    void test_SheetRotation_data();
-
     void test_BooklesSplit();
     void test_BooklesSplit_data();
 

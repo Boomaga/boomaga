@@ -553,10 +553,6 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
         <translation>Antet:</translation>
     </message>
     <message>
-        <source>Duplex:</source>
-        <translation>Duplex:</translation>
-    </message>
-    <message>
         <source>Draw border</source>
         <translation>Desenează chenarul</translation>
     </message>
@@ -615,6 +611,22 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
     </message>
     <message>
         <source>Force color</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Settings</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Print on both sides</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Flip on short edge</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Flip on long edge</source>
         <translation type="unfinished"/>
     </message>
 </context>

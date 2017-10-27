@@ -59,7 +59,8 @@ do {\
 /************************************************
  *
  * ***********************************************/
-TestBoomaga::TestBoomaga(QObject *parent)
+TestBoomaga::TestBoomaga(QObject *parent):
+    QObject(parent)
 {
 }
 
@@ -955,63 +956,6 @@ void TestBoomaga::test_ProjectFilePageSpec_data()
 /************************************************
  *
  * ***********************************************/
-void TestBoomaga::test_SheetRotation()
-{
-     QStringList tags = QString(QTest::currentDataTag()).split(" ", QString::SkipEmptyParts);
-     LayoutNUp *layout = createLayout(tags.at(0));
-     DuplexType duplex = (tags.at(1).toUpper() == "AUTO") ?
-                            DuplexAuto :
-                            DuplexManual;
-
-     Rotation projectRotation = StrToRotation(tags.at(2));
-
-     QFETCH(QString, rotationsExpected);
-
-     QStringList expectedSl = rotationsExpected.split(" ", QString::SkipEmptyParts);
-     QStringList resultSl;
-     for (int i=0; i<expectedSl.count(); ++i)
-     {
-         resultSl << QString::number(
-                         (int)layout->calcSheetRotation(i, projectRotation, duplex, true));
-     }
-
-     QString result = resultSl.join(" ");
-     QString expected = expectedSl.join(" ");
-     QCOMPARE(result, expected);
-}
-
-
-/************************************************
- *
- * ***********************************************/
-void TestBoomaga::test_SheetRotation_data()
-{
-    QTest::addColumn<QString>("rotationsExpected");
-
-    //          Layout duplex rotation    results
-    QTest::newRow("1up Manual  0") << " 0 180   0 180";
-    QTest::newRow("1up Manual 90") << "90  90  90  90";
-    QTest::newRow("2up Manual  0") << " 0 180   0 180";
-    QTest::newRow("2up Manual 90") << "90  90  90  90";
-
-
-    QTest::newRow("1up Auto    0") << " 0   0   0   0";
-    QTest::newRow("1up Auto   90") << "90 270  90 270";
-    QTest::newRow("2up Auto    0") << " 0   0   0   0";
-    QTest::newRow("2up Auto   90") << "90 270  90 270";
-
-
-    QTest::newRow("booklet Manual  0") << " 0   0   0   0";
-    QTest::newRow("booklet Manual 90") << "90  90  90  90";
-    QTest::newRow("booklet Auto    0") << " 0 180   0 180";
-    QTest::newRow("booklet Auto   90") << "90 270  90 270";
-
-}
-
-
-/************************************************
- *
- * ***********************************************/
 void TestBoomaga::test_BooklesSplit()
 {
     settings->setValue(Settings::SubBookletsEnabled, true);
@@ -1071,4 +1015,4 @@ void TestBoomaga::test_BooklesSplit_data()
 }
 
 
-QTEST_MAIN(TestBoomaga)
+QTEST_GUILESS_MAIN(TestBoomaga)

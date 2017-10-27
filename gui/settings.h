@@ -69,7 +69,7 @@ public:
         PrinterProfile_BottomMargin,
         PrinterProfile_InternalMargin,
         PrinterProfile_ColorMode,
-
+        PrinterProfile_FlipType,
 
         // PrinterSettingsDialog ****************
         PrinterSettingsDialog_Geometry,

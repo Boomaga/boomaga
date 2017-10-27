@@ -493,7 +493,7 @@ void TmpPdfFile::getPageStream(QString *out, const Sheet *sheet) const
 /************************************************
 
  ************************************************/
-void TmpPdfFile::mergerFinished(int exitCode)
+void TmpPdfFile::mergerFinished(int)
 {
     mValid = (mMerger->exitCode() == 0 ) &&
              (mMerger->exitStatus() == QProcess::NormalExit);

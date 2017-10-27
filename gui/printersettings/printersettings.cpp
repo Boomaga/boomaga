@@ -26,41 +26,35 @@
 #include "printersettings.h"
 #include "ui_printersettings.h"
 
-#include <QListWidget>
-#include <QListWidgetItem>
-#include <QApplication>
-#include <QAbstractButton>
+#include <QStandardItem>
 #include <QPainter>
-#include <QRect>
 #include <QDebug>
 #include <QMessageBox>
 #include "settings.h"
 
 
-class ProfileItem: public QListWidgetItem
+class ProfileItem: public QStandardItem
 {
 public:
     explicit ProfileItem(const PrinterProfile &profile):
-        QListWidgetItem(),
-        mProfile(profile),
-        mIsCurrent(false)
+        QStandardItem(profile.name()),
+        mProfile(profile)
     {
         setFlags(flags() | Qt::ItemIsEditable);
-        setText(profile.name());
+    }
+
+    explicit ProfileItem():
+        QStandardItem()
+    {
+        setFlags(flags() | Qt::ItemIsEditable);
     }
 
     virtual ~ProfileItem() { }
-
     PrinterProfile *profile() { return &mProfile; }
-
-    bool isCurrent() const { return mIsCurrent; }
-    void setIsCurrent(bool value) { mIsCurrent = value; }
 
 private:
     PrinterProfile mProfile;
-    bool mIsCurrent;
 };
-
 
 
 /************************************************
@@ -95,19 +89,19 @@ PrinterSettings *PrinterSettings::execute(Printer *printer)
 }
 
 
-
 /************************************************
 
  ************************************************/
 PrinterSettings::PrinterSettings(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::PrinterSettings),
-    mPrinter(0),
+    mPrinter(nullptr),
     mUnit(UnitMillimeter)
 {
     setAttribute(Qt::WA_DeleteOnClose);
 
     ui->setupUi(this);
+    ui->profilesList->setModel(new QStandardItemModel(this));
 
     if (settings->value(Settings::AllowNegativeMargins).toBool())
     {
@@ -136,22 +130,29 @@ PrinterSettings::PrinterSettings(QWidget *parent) :
     pal.setColor(QPalette::Background, QColor(105, 101, 98));
     ui->marginsPereview->setPalette(pal);
     ui->marginsPereview->setAutoFillBackground(true);
+    ui->marginsPereview->installEventFilter(this);
 
     int n = qMax(ui->addProfileButton->minimumSizeHint().width(), ui->addProfileButton->minimumSizeHint().height());
     ui->addProfileButton->setMinimumSize(n, n);
     ui->delProfileButton->setMinimumSize(n, n);
 
-    connect(ui->buttonBox, SIGNAL(clicked(QAbstractButton*)), this, SLOT(btnClicked(QAbstractButton*)));
-    connect(ui->borderCbx, SIGNAL(toggled(bool)), this, SLOT(updatePreview()));
+    connect(ui->buttonBox, SIGNAL(clicked(QAbstractButton*)),
+            this, SLOT(btnClicked(QAbstractButton*)));
 
-    connect(ui->profilesList, SIGNAL(currentItemChanged(QListWidgetItem*,QListWidgetItem*)),
-            this, SLOT(selectProfile(QListWidgetItem*,QListWidgetItem*)));
+    connect(ui->borderCbx, SIGNAL(toggled(bool)),
+            this, SLOT(updatePreview()));
+
+    connect(ui->profilesList->selectionModel(),SIGNAL(currentChanged(QModelIndex,QModelIndex)),
+            this, SLOT(updateWidgets()));
 
     connect(ui->profilesList->itemDelegate(), SIGNAL(closeEditor(QWidget*,QAbstractItemDelegate::EndEditHint)),
-            this, SLOT(profileRenamed(QWidget*,QAbstractItemDelegate::EndEditHint)));
+            this, SLOT(profileRenamed(QWidget*)));
 
-    connect(ui->addProfileButton, SIGNAL(clicked()), this, SLOT(addProfile()));
-    connect(ui->delProfileButton, SIGNAL(clicked()), this, SLOT(delProfile()));
+    connect(ui->addProfileButton, SIGNAL(clicked()),
+            this, SLOT(addProfile()));
+
+    connect(ui->delProfileButton, SIGNAL(clicked()),
+            this, SLOT(delProfile()));
 
     connect(ui->leftMarginSpin, SIGNAL(editingFinished()),
             this, SLOT(updateProfile()));
@@ -171,6 +172,9 @@ PrinterSettings::PrinterSettings(QWidget *parent) :
     connect(ui->duplexTypeComboBox, SIGNAL(activated(int)),
             this, SLOT(updateProfile()));
 
+    connect(ui->duplexTypeComboBox, SIGNAL(activated(int)),
+            this, SLOT(updateWidgets()));
+
     connect(ui->reverseOrderCbx, SIGNAL(clicked()),
             this, SLOT(updateProfile()));
 
@@ -179,6 +183,12 @@ PrinterSettings::PrinterSettings(QWidget *parent) :
 
     connect(ui->resetButton, SIGNAL(clicked()),
             this, SLOT(resetToDefault()));
+
+    connect(ui->flipLongEdgeCheck, SIGNAL(clicked(bool)),
+            this, SLOT(updateProfile()));
+
+    connect(ui->flipShortEdgeCheck, SIGNAL(clicked(bool)),
+            this, SLOT(updateProfile()));
 
     restoreGeometry(settings->value(Settings::PrinterSettingsDialog_Geometry).toByteArray());
 }
@@ -200,20 +210,34 @@ PrinterSettings::~PrinterSettings()
 void PrinterSettings::setCurrentPrinter(Printer *printer)
 {
     mPrinter = printer;
-
     setWindowTitle(tr("Preferences of \"%1\"").arg(mPrinter->name()));
     ui->duplexTypeComboBox->setEnabled(printer->canChangeDuplexType());
 
 
-    ui->profilesList->clear();
-    foreach (const PrinterProfile &profile, *(mPrinter->profiles()))
+    QStandardItem *root = new QStandardItem(tr("Profiles"));
+    root->setFlags(root->flags() & (~Qt::ItemIsSelectable));
+    root->setFlags(Qt::NoItemFlags);
+    QFont font = root->font();
+    font.setBold(true);
+    root->setFont(font);
+    root->setSizeHint(QSize(0, 30));
+
+    static_cast<QStandardItemModel*>(ui->profilesList->model())
+        ->invisibleRootItem()->appendRow(root);
+
+    for (int i=0; i<mPrinter->profiles().count(); ++i )
     {
-        ui->profilesList->addItem(new ProfileItem(profile));
+        ProfileItem *item = new ProfileItem(mPrinter->profiles().at(i));
+        item->setFlags(item->flags() | Qt::ItemIsEditable);
+        root->appendRow(item);
+        if (i == mPrinter->currentProfileIndex())
+        {
+            ui->profilesList->setCurrentIndex(item->index());
+        }
+
     }
 
-    ui->profilesList->setCurrentRow(mPrinter->currentProfile());
-    currentItem()->setIsCurrent(true);
-
+    ui->profilesList->expandAll();
     updateWidgets();
 }
 
@@ -233,6 +257,12 @@ bool PrinterSettings::eventFilter(QObject *obj, QEvent *event)
             updatePreview();
     }
 
+    if (obj == ui->marginsPereview)
+    {
+        if (event->type() == QEvent::Resize)
+            updatePreview();
+    }
+
     return QDialog::eventFilter(obj, event);
 }
 
@@ -243,6 +273,8 @@ bool PrinterSettings::eventFilter(QObject *obj, QEvent *event)
 void PrinterSettings::updateProfile()
 {
     PrinterProfile *profile = currentProfile();
+    if (!profile)
+        return;
 
     profile->setName(currentItem()->text());
     profile->setLeftMargin(ui->leftMarginSpin->value(), mUnit);
@@ -258,6 +290,10 @@ void PrinterSettings::updateProfile()
 
     v = ui->colorModeCombo->itemData(ui->colorModeCombo->currentIndex());
     profile->setColorMode(static_cast<ColorMode>(v.toInt()));
+    if (ui->flipShortEdgeCheck->isChecked())
+        profile->setFlipType(FlipType::ShortEdge);
+    else
+        profile->setFlipType(FlipType::LongEdge);
 }
 
 
@@ -267,6 +303,10 @@ void PrinterSettings::updateProfile()
 void PrinterSettings::updateWidgets()
 {
     PrinterProfile *profile = currentProfile();
+    if (profile == nullptr)
+        return;
+
+
 
     int n = ui->duplexTypeComboBox->findData(profile->duplexType());
     ui->duplexTypeComboBox->setCurrentIndex(n);
@@ -277,7 +317,10 @@ void PrinterSettings::updateWidgets()
     ui->topMarginSpin->setValue(profile->topMargin(mUnit));
     ui->bottomMarginSpin->setValue(profile->bottomMargin(mUnit));
     ui->internalMarginSpin->setValue(profile->internalMargin(mUnit));
-    ui->delProfileButton->setEnabled(ui->profilesList->count() > 1);
+
+    bool enable = ui->duplexTypeComboBox->currentData().toInt() == DuplexAuto;
+    ui->flipLongEdgeCheck->setEnabled(enable);
+    ui->flipShortEdgeCheck->setEnabled(enable);
 
     if (mPrinter->isSupportColor())
     {
@@ -290,15 +333,11 @@ void PrinterSettings::updateWidgets()
         ui->colorModeCombo->setEnabled(false);
         ui->colorModeCombo->setCurrentIndex(0);
     }
-}
 
+    ui->flipLongEdgeCheck-> setChecked(profile->flipType() == FlipType::LongEdge);
+    ui->flipShortEdgeCheck->setChecked(profile->flipType() == FlipType::ShortEdge);
 
-/************************************************
- *
- ************************************************/
-void PrinterSettings::selectProfile(QListWidgetItem * current, QListWidgetItem * previous)
-{
-    updateWidgets();
+    updatePreview();
 }
 
 
@@ -309,12 +348,19 @@ void PrinterSettings::addProfile()
 {
     updateProfile();
 
-    ProfileItem *item = new ProfileItem(*(currentItem()->profile()));
-    item->setText(tr("Profile %1", "Defaul name for created printer profile in the Printer Settings diaog").arg(ui->profilesList->count() + 1));
-    item->profile()->setName(item->text());
-    ui->profilesList->addItem(item);
-    ui->profilesList->setCurrentItem(item);
-    ui->profilesList->editItem(item);
+    ProfileItem *cur = currentItem();
+    if (!cur)
+        return;
+
+    QStandardItem *parent = cur->parent();
+
+    ProfileItem *item =new ProfileItem();
+    item->setText(tr("Profile %1", "Defaul name for created printer profile in the Printer Settings diaog")
+                  .arg(parent->rowCount()));
+    parent->insertRow(cur->row()+1, item);
+
+    ui->profilesList->setCurrentIndex(item->index());
+    ui->profilesList->edit(item->index());
 }
 
 
@@ -323,13 +369,18 @@ void PrinterSettings::addProfile()
  ************************************************/
 void PrinterSettings::delProfile()
 {
-    if (ui->profilesList->count() == 1)
+    ProfileItem *cur = currentItem();
+    if (!cur)
+        return;
+
+    QStandardItem *parent = cur->parent();
+    if (parent->rowCount() == 1)
     {
         QMessageBox::warning(this, windowTitle(), "I can't remove last profile.");
         return;
     }
 
-    delete currentItem();
+    parent->removeRow(cur->row());
     updateWidgets();
 }
 
@@ -337,9 +388,11 @@ void PrinterSettings::delProfile()
 /************************************************
  *
  ************************************************/
-void PrinterSettings::profileRenamed(QWidget *editor, QAbstractItemDelegate::EndEditHint hint)
+void PrinterSettings::profileRenamed(QWidget *)
 {
-    currentProfile()->setName(ui->profilesList->currentItem()->text());
+    ProfileItem *item = currentItem();
+    if (item)
+        item->profile()->setName(item->text());
 }
 
 
@@ -348,11 +401,15 @@ void PrinterSettings::profileRenamed(QWidget *editor, QAbstractItemDelegate::End
  ************************************************/
 void PrinterSettings::resetToDefault()
 {
-    currentProfile()->setTopMargin(     currentPrinter()->cupsProfile()->topMargin(mUnit),      mUnit);
-    currentProfile()->setBottomMargin(  currentPrinter()->cupsProfile()->bottomMargin(mUnit),   mUnit);
-    currentProfile()->setLeftMargin(    currentPrinter()->cupsProfile()->leftMargin(mUnit),     mUnit);
-    currentProfile()->setRightMargin(   currentPrinter()->cupsProfile()->rightMargin(mUnit),    mUnit);
-    currentProfile()->setInternalMargin(currentPrinter()->cupsProfile()->internalMargin(mUnit), mUnit);
+    PrinterProfile *profile = currentProfile();
+    if (!profile)
+        return;
+
+    profile->setTopMargin(     currentPrinter()->defaultCupsProfile()->topMargin(mUnit),      mUnit);
+    profile->setBottomMargin(  currentPrinter()->defaultCupsProfile()->bottomMargin(mUnit),   mUnit);
+    profile->setLeftMargin(    currentPrinter()->defaultCupsProfile()->leftMargin(mUnit),     mUnit);
+    profile->setRightMargin(   currentPrinter()->defaultCupsProfile()->rightMargin(mUnit),    mUnit);
+    profile->setInternalMargin(currentPrinter()->defaultCupsProfile()->internalMargin(mUnit), mUnit);
     updateWidgets();
 }
 
@@ -362,33 +419,19 @@ void PrinterSettings::resetToDefault()
  ************************************************/
 void PrinterSettings::applyUpdates()
 {
-    bool curIsSet = false;
-    mPrinter->profiles()->clear();
+    ProfileItem *item = currentItem();
+    if (!item)
+        return;
 
-    for(int i=0; i< ui->profilesList->count(); ++i)
+    QVector<PrinterProfile> profiles;
+    QStandardItem *root = item->parent();
+    for (int i=0; i< root->rowCount(); ++i)
     {
-        ProfileItem *item = static_cast<ProfileItem*>(ui->profilesList->item(i));
-        mPrinter->profiles()->append(*(item->profile()));
-
-        if (item->isCurrent())
-        {
-            mPrinter->setCurrentProfile(i);
-            curIsSet = true;
-        }
+        profiles << *(static_cast<ProfileItem*>(root->child(i))->profile());
     }
 
-
-    if (!curIsSet)
-        mPrinter->setCurrentProfile(0);
-}
-
-
-/************************************************
-
- ************************************************/
-ProfileItem *PrinterSettings::currentItem() const
-{
-    return static_cast<ProfileItem*>(ui->profilesList->currentItem());
+    mPrinter->setProfiles(profiles);
+    mPrinter->setCurrentProfile(item->row());
 }
 
 
@@ -397,7 +440,26 @@ ProfileItem *PrinterSettings::currentItem() const
  ************************************************/
 PrinterProfile *PrinterSettings::currentProfile() const
 {
-    return currentItem()->profile();
+    ProfileItem *item = currentItem();
+    if (item)
+         return item->profile();
+
+    return nullptr;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+ProfileItem *PrinterSettings::currentItem() const
+{
+    QModelIndex idx = ui->profilesList->currentIndex();
+    if (!idx.parent().isValid())
+        return nullptr;
+
+    return static_cast<ProfileItem*>(
+        static_cast<QStandardItemModel*>(ui->profilesList->model())
+            ->itemFromIndex(idx));
 }
 
 
@@ -410,7 +472,6 @@ void PrinterSettings::save()
     applyUpdates();
     emit accepted();
 }
-
 
 
 /************************************************
@@ -445,6 +506,7 @@ void PrinterSettings::updatePreview()
 
     QRectF rect1Up(0.5, 5.5, 70.5, 100.5);
     QRectF rect2Up(0.5, 5.5, 101.5, 70.5);
+
     rect1Up.moveCenter(ui->marginsPereview->rect().center());
     rect1Up.moveLeft((rectImg.width() - rect1Up.width() - rect2Up.width()) / 3.0);
     rect2Up.moveCenter(ui->marginsPereview->rect().center());
@@ -453,12 +515,12 @@ void PrinterSettings::updatePreview()
     painter.fillRect(rect1Up, Qt::white);
     painter.fillRect(rect2Up, Qt::white);
 
-    QRectF rect1UpPage = rect1Up.adjusted(3, 3, -3, -3);
+    QRectF rect1UpPage = rect1Up.adjusted(3.5, 3.5, -3.5, -3.5);
 
-    QRectF rect2UpPage1 = rect2Up.adjusted(3, 3, -3, -3);
+    QRectF rect2UpPage1 = rect2Up.adjusted(3.5, 3.5, -3.5, -3.5);
     rect2UpPage1.setRight(rect2Up.center().x() - 2);
 
-    QRectF rect2UpPage2 = rect2Up.adjusted(3, 3, -3, -3);
+    QRectF rect2UpPage2 = rect2Up.adjusted(3.5, 3.5, -3.5, -3.5);
     rect2UpPage2.setLeft(rect2Up.center().x() + 4);
 
     QPen pen = painter.pen();
@@ -478,71 +540,70 @@ void PrinterSettings::updatePreview()
     painter.drawRect(rect2UpPage1);
     painter.drawRect(rect2UpPage2);
 
+
     QColor mark("#CC7373");
+
     if (ui->topMarginSpin->hasFocus())
     {
-        QRectF rect;
-        rect.setTop(rect1Up.top());
-        rect.setLeft(rect1UpPage.left());
-        rect.setBottom(rect1UpPage.top());
-        rect.setRight(rect1UpPage.right());
+        QRectF rect = rect1UpPage;
+        rect.setHeight(3);
+        rect.moveTop(rect1Up.top());
         painter.fillRect(rect, mark);
 
-        rect.setTop(rect2UpPage1.top());
-        rect.setLeft(rect2Up.left());
-        rect.setBottom(rect2UpPage1.bottom());
-        rect.setRight(rect2UpPage1.left());
+        rect = rect2UpPage1;
+        rect.setWidth(3);
+        rect.moveLeft(rect2Up.left());
         painter.fillRect(rect, mark);
     }
 
     if (ui->bottomMarginSpin->hasFocus())
     {
-        QRectF rect;
-        rect.setTop(rect1UpPage.bottom());
-        rect.setLeft(rect1UpPage.left());
-        rect.setBottom(rect1Up.bottom());
-        rect.setRight(rect1UpPage.right());
+        QRectF rect = rect1UpPage;
+        rect.setHeight(3);
+        rect.moveBottom(rect1Up.bottom());
         painter.fillRect(rect, mark);
 
-        rect.setTop(rect2UpPage1.top());
-        rect.setLeft(rect2UpPage2.right() + 0.5);
-        rect.setBottom(rect2UpPage1.bottom());
-        rect.setRight(rect2Up.right());
+        rect = rect2UpPage1;
+        rect.setWidth(3);
+        rect.moveRight(rect2Up.right());
         painter.fillRect(rect, mark);
     }
 
     if (ui->leftMarginSpin->hasFocus())
     {
-        QRectF rect;
-        rect.setTop(rect1UpPage.top());
-        rect.setLeft(rect1Up.left());
-        rect.setBottom(rect1UpPage.bottom());
-        rect.setRight(rect1UpPage.left());
+        QRectF rect = rect1UpPage;
+        rect.setWidth(3);
+        rect.moveLeft(rect1Up.left());
         painter.fillRect(rect, mark);
 
-        rect.setTop(rect2UpPage1.bottom());
-        rect.setLeft(rect2UpPage1.left());
-        rect.setBottom(rect2Up.bottom());
-        rect.setRight(rect2UpPage2.right());
+        rect = rect2UpPage1;
+        rect.setHeight(3);
+        rect.moveBottom(rect2Up.bottom());
+        painter.fillRect(rect, mark);
+
+        rect = rect2UpPage2;
+        rect.setHeight(3);
+        rect.moveBottom(rect2Up.bottom());
         painter.fillRect(rect, mark);
     }
 
 
     if (ui->rightMarginSpin->hasFocus())
     {
-        QRectF rect;
-        rect.setTop(rect1UpPage.top());
-        rect.setLeft(rect1Up.left());
-        rect.setBottom(rect1UpPage.bottom());
-        rect.setRight(rect1UpPage.left());
+        QRectF rect = rect1UpPage;
+        rect.setWidth(3);
+        rect.moveRight(rect1Up.right());
         painter.fillRect(rect, mark);
 
-        rect.setTop(rect2Up.top());
-        rect.setLeft(rect2UpPage1.left());
-        rect.setBottom(rect2UpPage1.top());
-        rect.setRight(rect2UpPage2.right());
+        rect = rect2UpPage1;
+        rect.setHeight(3);
+        rect.moveTop(rect2Up.top());
         painter.fillRect(rect, mark);
 
+        rect = rect2UpPage2;
+        rect.setHeight(3);
+        rect.moveTop(rect2Up.top());
+        painter.fillRect(rect, mark);
     }
 
     if (ui->internalMarginSpin->hasFocus())
@@ -562,7 +623,4 @@ void PrinterSettings::updatePreview()
     }
 
     ui->marginsPereview->setPixmap(QPixmap::fromImage(img));
-
 }
-
-
