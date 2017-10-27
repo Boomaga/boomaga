@@ -85,6 +85,8 @@ void POPPLER_replacePageDict(PDFDoc *doc, int pageNo, int rotate, PDFRectangle *
 void POPPLER_markPageObjects(PDFDoc *doc, Dict *pageDict, XRef *xRef, XRef *countRef, Guint numOffset, int oldRefNum, int newRefNum)
 {
 #if POPPLER_VERSION < 2800
+    Q_UNUSED(oldRefNum);
+    Q_UNUSED(newRefNum);
     doc->markPageObjects(pageDict, xRef, countRef, numOffset);
 #else
     doc->markPageObjects(pageDict, xRef, countRef, numOffset, oldRefNum, newRefNum);
