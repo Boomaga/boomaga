@@ -98,30 +98,6 @@ set(SOURCES
     widgets/subbookletview.cpp
 )
 
-# set (MOCS
-#     kernel/project.h
-#     kernel/projectpage.h
-#     kernel/tmppdffile.h
-#     render.h
-
-#     settings.h
-#     mainwindow.h
-#     actions.h
-#     dbus.h
-#     printersettings/printersettings.h
-#     aboutdialog/aboutdialog.h
-#     export/exporttopdf.h
-#     kernel/projectfile.h
-#     pdfmerger/pdfmergeripc.h
-#     configdialog/configdialog.h
-#     printdialog/printdialog.h
-#     widgets/pagelistview.h
-#     widgets/joblistview.h
-#     widgets/layoutradiobutton.h
-#     widgets/printerscombobox.h
-#     widgets/previewwidget.h
-#     widgets/subbookletview.h
-# )
 
 set(LIBRARIES
 )
