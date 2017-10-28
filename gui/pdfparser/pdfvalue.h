@@ -155,6 +155,13 @@ public:
     const Number  &toNumber(bool *ok = NULL) const;
           Number  &toNumber(bool *ok = NULL);
 
+
+    /// Returns true if the value is equal to other.
+    bool operator==(const Value &other) const;
+
+    /// Returns true if the value is not equal to other.
+    bool operator!=(const Value &other) const;
+
 protected:
     Value(Type type);
     Value(ValueData *data);
@@ -192,7 +199,7 @@ public:
     /// Returns the number of occurrences of value in the vector.
     /// This function requires the value type to have an implementation of operator==().
     // \sa contains() and indexOf().
-    int count(const Value &value) const { return values().count(); }
+    int count(const Value &value) const;
 
     /// This is an overloaded function.
     /// Same as size().

@@ -552,10 +552,28 @@ Object Reader::getObject(const Link &link) const
  ************************************************/
 Object Reader::getObject(uint objNum, quint16 genNum) const
 {
+    Q_UNUSED(genNum)
     Object obj;
     if (mXRefTable.value(objNum).pos)
         readObject(mXRefTable.value(objNum).pos, &obj);
     return obj;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+const Value Reader::find(const QString &path) const
+{
+    QStringList objects = path.split('/', QString::SkipEmptyParts);
+    QString val = objects.takeLast();
+
+    Dict dict = trailerDict();
+    foreach (const QString &obj, objects)
+    {
+        dict = getObject(dict.value(obj).toLink()).dict();
+    }
+    return dict.value(val);
 }
 
 

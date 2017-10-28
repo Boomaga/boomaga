@@ -50,13 +50,13 @@ public:
 
     double readNum(qint64 *pos, bool *ok) const;
 
-    const char * const data() const { return mData; }
+    const char * data() const { return mData; }
     qint64 size() const { return mSize; }
 
     void dump(qint64 pos) const;
 
-    const char at(qint64 i) const { return mData[i]; }
-    const char operator[](qint64 i) const { return mData[i]; }
+    char at(qint64 i) const { return mData[i]; }
+    char operator[](qint64 i) const { return mData[i]; }
 
     bool compareStr(qint64 pos, const char *str) const;
     bool compareWord(qint64 pos, const char *str) const;

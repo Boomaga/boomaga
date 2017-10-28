@@ -318,6 +318,40 @@ Number &Value::toNumber(bool *ok)
 }
 
 
+/************************************************
+ *
+ ************************************************/
+bool Value::operator==(const Value &other) const
+{
+    if (d->mType != other.d->mType)
+        return false;
+
+    switch (d->mType)
+    {
+    case Type::Undefined:       return true;
+    case Type::Array:           return d->mArrayValues == other.d->mArrayValues;
+    case Type::Bool:            return d->mBoolValue   == other.d->mBoolValue;
+    case Type::Dict:            return d->mDictValues  == other.d->mDictValues;
+    case Type::HexString:       return d->mStringValue == other.d->mStringValue;
+    case Type::Link:            return d->mLinkObjNum  == other.d->mLinkObjNum && d->mLinkGenNum == other.d->mLinkGenNum;
+    case Type::LiteralString:   return d->mStringValue == other.d->mStringValue;
+    case Type::Name:            return d->mStringValue == other.d->mStringValue;
+    case Type::Null:            return true;
+    case Type::Number:          return d->mNumberValue == other.d->mNumberValue;
+    }
+    return false;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+bool Value::operator!=(const Value &other) const
+{
+    return ! operator ==(other);
+}
+
+
 //###############################################
 // PDF Array
 //###############################################
@@ -376,6 +410,15 @@ void Array::append(const Value &value)
 {
     assert(d->mType == Type::Array);
     d->mArrayValues.append(value);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+int Array::count(const Value &value) const
+{
+    return d->mArrayValues.count(value);
 }
 
 
@@ -969,7 +1012,7 @@ void debugValue(QDebug dbg, const Value &value, int indent = 0)
             debugValue(dbg, i.value(),  s.length());
             dbg.nospace() << "\n";
         }
-        dbg.nospace() << QString(" %1>>").arg("", indent, ' ').toAscii().data();
+        dbg.nospace() << QString(" %1>>").arg("", indent, ' ').toLatin1().data();
         break;
     }
 

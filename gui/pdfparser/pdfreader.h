@@ -84,11 +84,13 @@ public:
     void setHandler(ReaderHandler *handler);
 
     const XRefTable &xRefTable() { return mXRefTable; }
-    //const Dict &trailerDict() { return mTrailerDict; }
+    const Dict &trailerDict() const { return mTrailerDict; }
     Dict trailerDict() { return mTrailerDict; }
 
     Object getObject(const Link &link) const;
     Object getObject(uint objNum, quint16 genNum) const;
+
+    const Value find(const QString &path) const;
 
 protected:
     bool canReadArray(qint64 pos) const;
