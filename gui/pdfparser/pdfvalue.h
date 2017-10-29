@@ -31,9 +31,13 @@
 #include <QVector>
 #include <QMap>
 #include <QStringList>
+#include <QRectF>
 #include <QDebug>
 
 namespace PDF {
+
+typedef quint32 ObjNum;
+typedef quint16 GenNum;
 
 class ValueData;
 class Array;
@@ -174,6 +178,7 @@ class Array: public Value
 {
 public:
     Array();
+    Array(const QRectF &rect);
     Array(const Array &other);
     Array &operator =(const Array &other);
 
@@ -212,6 +217,12 @@ public:
 
     /// Removes the element at index position i.
     void remove(int i);
+
+    /// Inserts value at the end of the array and returns a reference to this array.
+    /// \sa operator+=() and append().
+    Array &operator<<(const Value &value);
+
+
 };
 
 
@@ -257,6 +268,7 @@ public:
     /// If no defaultValue is specified, the function returns a Value with type Undefined.
     /// \sa key(), values(), contains(), and operator[]().
     const Value value(const QString &key, const Value &defaultValue = Value()) const;
+
 
     /// Returns the value associated with the key key as a modifiable reference.
     /// If the dictionary contains no item with key key, the function inserts a Value with type Undefined

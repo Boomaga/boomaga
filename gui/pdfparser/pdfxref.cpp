@@ -36,6 +36,8 @@ using namespace PDF;
  ************************************************/
 qint32 XRefTable::maxObjNum() const
 {
+    if (isEmpty())
+        return 0;
     return (--constEnd()).key();
 }
 

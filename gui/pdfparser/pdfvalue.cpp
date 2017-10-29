@@ -363,6 +363,28 @@ Array::Array():
 
 
 /************************************************
+ * Typically, the array takes the form
+ *   [ llx lly urx ur y ]
+ *  specifying the
+ *   - lower-left x,
+ *   - lower-left y,
+ *   - upper-right x,
+ *   - and upper-right y
+ * coordinates of the rectangle, in that order.
+ ************************************************/
+Array::Array(const QRectF &rect):
+    Value(Type::Array)
+{
+    d->mValid = true;
+    d->mArrayValues.resize(4);
+    d->mArrayValues[0] = PDF::Number(rect.left());
+    d->mArrayValues[1] = PDF::Number(rect.bottom());
+    d->mArrayValues[2] = PDF::Number(rect.right());
+    d->mArrayValues[3] = PDF::Number(rect.top());
+}
+
+
+/************************************************
  *
  ************************************************/
 Array::Array(const Array &other):
@@ -429,6 +451,17 @@ void Array::remove(int i)
 {
     assert(d->mType == Type::Array);
     d->mArrayValues.remove(i);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+Array &Array::operator<<(const Value &value)
+{
+    assert(d->mType == Type::Array);
+    d->mArrayValues.operator <<(value);
+    return *this;
 }
 
 

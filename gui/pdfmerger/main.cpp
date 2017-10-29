@@ -60,13 +60,13 @@ int main(int argc, char *argv[])
                 .replace('\n', "\\n")
                 .replace('\t', "\\t")
                 .replace('\v', "\\v");
-        qWarning() << "\n\n\nError on" << err.pos() << ":" << s;
+        PdfMergerIPCWriter().writeError(QString("Error on %1: %2").arg(err.pos()).arg(s));
         return 1;
     }
 
     catch (const QString &err)
     {
-        qWarning() << err;
+        PdfMergerIPCWriter().writeError(err);
         return 1;
     }
 

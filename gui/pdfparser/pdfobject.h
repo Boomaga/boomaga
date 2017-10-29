@@ -42,7 +42,7 @@ class Object
     friend class Reader;
     friend class Writer;
 public:
-    Object();
+    Object(ObjNum objNum = 0, GenNum genNum = 0);
     Object(const Object &other);
     Object &operator =(const Object &other);
 

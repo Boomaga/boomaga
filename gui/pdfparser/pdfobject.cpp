@@ -82,9 +82,11 @@ public:
 /************************************************
  *
  ************************************************/
-Object::Object()
+Object::Object(ObjNum objNum, GenNum genNum)
 {
     d = new ObjectData;
+    d->mObjNum = objNum;
+    d->mGenNum = genNum;
 }
 
 

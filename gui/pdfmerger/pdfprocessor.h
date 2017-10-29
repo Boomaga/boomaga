@@ -24,45 +24,52 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#ifndef PDFMERGER_H
-#define PDFMERGER_H
+#ifndef PDFPROCESSOR_H
+#define PDFPROCESSOR_H
 
-#include <QObject>
-#include "pdfparser/pdfreader.h"
 #include "pdfmergeripc.h"
+#include <QVector>
 #include <QString>
-#include <QList>
-#include <QIODevice>
+#include <QFile>
+#include <QSet>
+#include "pdfparser/pdfvalue.h"
 
 namespace  PDF {
     class Reader;
     class Writer;
     class Object;
+    class Dict;
 }
 
-class PdfMerger: public QObject
+class PdfProcessor
 {
-    Q_OBJECT
 public:
-    PdfMerger(QObject *parent = 0);
-    ~PdfMerger();
+    PdfProcessor(const QString &fileName, qint64 startPos = 0, qint64 endPos = 0);
+    ~PdfProcessor();
 
-    void addSourceFile(const QString &fileName, qint64 startPos = 0, qint64 endPos = 0);
-    void run(const QString &outFileName);
-    void run(QIODevice *outDevice);
+    void open();
 
-signals:
-    void error(const QString &message);
+    quint32 pageCount();
 
+    void run(PDF::Writer *writer, quint32 objNumOffset);
+
+    const QVector<PdfPageInfo> &pageInfo() const { return mPageInfo; }
 private:
-    struct SourceFile {
-        QString fileName;
-        qint64 startPos;
-        qint64 endPos;
-    };
+    QString mFileName;
+    qint64 mStartPos;
+    qint64 mEndPos;
+    QFile mFile;
+    PDF::Reader *mReader;
+    uchar *mBuf;
+    quint32 mObjNumOffset;
+    PDF::Writer *mWriter;
+    QSet<PDF::ObjNum> mSkippedObjects;
+    QVector<PdfPageInfo> mPageInfo;
 
-    struct PageInfo;
-    QList<SourceFile> mSources;
+
+    int walkPageTree(int pageNum, const PDF::Object &page, const PDF::Dict &inherited);
+    PDF::ObjNum writeContentAsXObject(const PDF::Link &contentLink, const PDF::Dict &pageDict, const PDF::Dict &inherited);
+    PDF::Object &addOffset(PDF::Object &obj, quint32 offset);
 };
 
-#endif // PDFMERGER_H
+#endif // PDFPROCESSOR_H

@@ -31,6 +31,7 @@ project(boomagamerger)
 
 set(MERGER_HEADERS
     pdfmerger.h
+    pdfprocessor.h
     pdfmergeripc.h
     ../pdfparser/pdfxref.h
     ../pdfparser/pdfdata.h
@@ -45,6 +46,7 @@ set(MERGER_HEADERS
 set(MERGER_SOURCES
     main.cpp
     pdfmerger.cpp
+    pdfprocessor.cpp
     pdfmergeripc.cpp
     ../pdfparser/pdfxref.cpp
     ../pdfparser/pdfdata.cpp
