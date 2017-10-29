@@ -81,13 +81,13 @@ void TestBoomaga::testReadName()
 
     try
     {
-        Reader reader(data.toLocal8Bit().data(), data.toLocal8Bit().length());
+        const QByteArray b = data.toLocal8Bit();
+        Reader reader(b.data(), b.length());
         Name name;
         int newPos = reader.readName(pos, &name);
 
         QCOMPARE(name.value(), expected);
         QCOMPARE(newPos, expectedPos);
-
     }
     catch (PDF::Error& e)
     {
@@ -127,7 +127,8 @@ void TestBoomaga::testReadLink()
 
     try
     {
-        Reader reader(data.toLocal8Bit().data(), data.toLocal8Bit().length());
+        const QByteArray b = data.toLocal8Bit();
+        Reader reader(b.data(), b.length());
         Link link;
         int newPos = reader.readLink(pos, &link);
 

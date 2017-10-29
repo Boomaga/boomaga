@@ -83,23 +83,23 @@ class LayoutNUp: public Layout
 public:
     explicit LayoutNUp(int pageCountVert, int pageCountHoriz, Qt::Orientation orientation = Qt::Horizontal);
 
-    virtual QString id() const;
+    virtual QString id() const override;
 
-    virtual int calcSheetCount() const;
-    void fillSheets(QList<Sheet*> *sheets) const;
-    void fillPreviewSheets(QList<Sheet*> *sheets) const;
-    TransformSpec transformSpec(const Sheet *sheet, int pageNumOnSheet, Rotation sheetRotation) const;
-    virtual Rotation rotation() const;
+    virtual int calcSheetCount() const override;
+    void fillSheets(QList<Sheet*> *sheets) const override;
+    void fillPreviewSheets(QList<Sheet*> *sheets) const override;
+    TransformSpec transformSpec(const Sheet *sheet, int pageNumOnSheet, Rotation sheetRotation) const override;
+    virtual Rotation rotation() const override;
     virtual FlipType flipType(FlipType printerFlipType) const override;
 
-    virtual void updatePages(QList<ProjectPage*> pages) const;
-    virtual int pagePerSheet() const { return mPageCountHoriz * mPageCountVert; }
-    virtual int previewPageNum(int sheetNum) const;
+    virtual void updatePages(QList<ProjectPage*> pages) const override;
+    virtual int pagePerSheet() const override { return mPageCountHoriz * mPageCountVert; }
+    virtual int previewPageNum(int sheetNum) const override;
 
 protected:
     void doFillSheets(QList<Sheet*> *sheets, bool forPreview) const;
-    virtual Rotation calcPageRotation(const ProjectPage *page, Rotation sheetRotation) const;
-    virtual PagePosition calcPagePosition(int pageNumOnSheet, Rotation sheetRotation) const;
+    virtual Rotation calcPageRotation(const ProjectPage *page, Rotation sheetRotation) const override;
+    virtual PagePosition calcPagePosition(int pageNumOnSheet, Rotation sheetRotation) const override;
 
     int mPageCountVert;
     int mPageCountHoriz;
@@ -112,13 +112,13 @@ class LayoutBooklet: public LayoutNUp
 public:
     explicit LayoutBooklet();
 
-    virtual QString id() const { return "Booklet"; }
+    virtual QString id() const override { return "Booklet"; }
 
-    virtual int calcSheetCount() const;
-    void fillSheets(QList<Sheet*> *sheets) const;
-    void fillPreviewSheets(QList<Sheet*> *sheets) const;
+    virtual int calcSheetCount() const override;
+    void fillSheets(QList<Sheet*> *sheets) const override;
+    void fillPreviewSheets(QList<Sheet*> *sheets) const override;
 
-    virtual void updatePages(QList<ProjectPage*> pages) const;
+    virtual void updatePages(QList<ProjectPage*> pages) const override;
     virtual FlipType flipType(FlipType printerFlipType) const override;
 
 protected:
@@ -130,7 +130,7 @@ protected:
 
     QList<BookletInfo> split(const QList<ProjectPage*> &pages) const;
 
-    virtual int previewPageNum(int sheetNum) const;
+    virtual int previewPageNum(int sheetNum) const override;
 private:
     void fillSheetsForBook(int bookStart, int bookLength, QList<Sheet *> *sheets) const;
     void fillPreviewSheetsForBook(int bookStart, int bookLength, QList<Sheet *> *sheets) const;
