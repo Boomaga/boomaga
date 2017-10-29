@@ -140,8 +140,8 @@ void fillPageInfo(PdfPageInfo *pageInfo, const PDF::Dict &pageDict, const PDF::D
 
     pageInfo->mediaBox = QRectF(mediaBox.at(0).toNumber().value(),
                                 mediaBox.at(1).toNumber().value(),
-                                mediaBox.at(2).toNumber().value(),
-                                mediaBox.at(3).toNumber().value());
+                                mediaBox.at(2).toNumber().value() - mediaBox.at(0).toNumber().value(),
+                                mediaBox.at(3).toNumber().value() - mediaBox.at(1).toNumber().value());
 
     const PDF::Array &cropBox  = pageDict.value("CropBox", inherited.value("CropBox")).toArray();
     if (cropBox.isValid())
@@ -149,11 +149,10 @@ void fillPageInfo(PdfPageInfo *pageInfo, const PDF::Dict &pageDict, const PDF::D
         if (cropBox.count() != 4)
             throw QString("Incorrect CropBox rectangle");
 
-
         pageInfo->cropBox = QRectF(cropBox.at(0).toNumber().value(),
-                                  cropBox.at(1).toNumber().value(),
-                                  cropBox.at(2).toNumber().value(),
-                                  cropBox.at(3).toNumber().value());
+                                   cropBox.at(1).toNumber().value(),
+                                   cropBox.at(2).toNumber().value() - cropBox.at(0).toNumber().value(),
+                                   cropBox.at(3).toNumber().value() - cropBox.at(1).toNumber().value());
     }
     else
     {
