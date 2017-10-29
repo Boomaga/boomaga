@@ -386,7 +386,6 @@ public:
 
 QDebug operator<<(QDebug debug, const PDF::Value &value);
 
-#include "pdfdata.h"
 #include "pdftypes.h"
 
 #endif // PDFVALUE_H

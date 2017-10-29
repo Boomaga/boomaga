@@ -34,7 +34,6 @@ set(MERGER_HEADERS
     pdfprocessor.h
     pdfmergeripc.h
     ../pdfparser/pdfxref.h
-    ../pdfparser/pdfdata.h
     ../pdfparser/pdfvalue.h
     ../pdfparser/pdfvalue_p.h
     ../pdfparser/pdfobject.h
@@ -49,7 +48,6 @@ set(MERGER_SOURCES
     pdfprocessor.cpp
     pdfmergeripc.cpp
     ../pdfparser/pdfxref.cpp
-    ../pdfparser/pdfdata.cpp
     ../pdfparser/pdfvalue.cpp
     ../pdfparser/pdfobject.cpp
     ../pdfparser/pdfreader.cpp

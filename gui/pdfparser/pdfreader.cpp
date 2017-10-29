@@ -26,34 +26,20 @@
 
 #include "pdfreader.h"
 #include "pdfxref.h"
-#include "pdfdata.h"
-
 #include "pdfobject.h"
 #include "pdftypes.h"
-
 #include "pdfvalue.h"
 #include <QDebug>
 
 using namespace PDF;
-
-/************************************************
- *
- ************************************************/
-inline bool isDelim(const char * const data, qint64 size, qint64 pos)
-{
-    Q_UNUSED(size)
-    return isspace(data[pos]) ||
-           strchr("()<>[]{}/%", data[pos]);
-}
 
 
 /************************************************
  *
  ************************************************/
 Reader::Reader(const char * const data, quint64 size):
-    mData2(data),
-    mSize(size),
-    mData(new Data(data, size))
+    mData(data),
+    mSize(size)
 {
 }
 
@@ -63,7 +49,7 @@ Reader::Reader(const char * const data, quint64 size):
  ************************************************/
 Reader::~Reader()
 {
-    delete mData;
+
 }
 
 
@@ -72,7 +58,7 @@ Reader::~Reader()
  ************************************************/
 Value Reader::readValue(qint64 *pos) const
 {
-    char c = mData2[*pos];
+    char c = mData[*pos];
     switch (c) {
     // Link or Number .................
     case '0':
@@ -87,23 +73,23 @@ Value Reader::readValue(qint64 *pos) const
     case '9':
     {
         bool ok;
-        double n1 = mData->readNum(pos, &ok);
+        double n1 = readNum(pos, &ok);
         if (!ok)
-            throw ParseError(*pos, QString("Unexpected symbol '%1', expected a number.").arg(mData2[*pos]));
+            throw ParseError(*pos, QString("Unexpected symbol '%1', expected a number.").arg(mData[*pos]));
 
         if (n1 != quint64(n1))
             return Number(n1);
 
         qint64 p = *pos;
-        p = mData->skipSpace(p);
+        p = skipSpace(p);
 
-        quint64 n2 = mData->readUInt(&p, &ok);
+        quint64 n2 = readUInt(&p, &ok);
         if (!ok)
             return Number(n1);
 
-        p = mData->skipSpace(p);
+        p = skipSpace(p);
 
-        if (mData2[p] != 'R')
+        if (mData[p] != 'R')
             return Number(n1);
 
         *pos = p+1;
@@ -115,9 +101,9 @@ Value Reader::readValue(qint64 *pos) const
     case '.':
     {
         bool ok;
-        double n = mData->readNum(pos, &ok);
+        double n = readNum(pos, &ok);
         if (!ok)
-            throw ParseError(*pos, QString("Unexpected symbol '%1', expected a number.").arg(mData->at(*pos)));
+            throw ParseError(*pos, QString("Unexpected symbol '%1', expected a number.").arg(mData[*pos]));
 
         return Number(n);
     }
@@ -135,7 +121,7 @@ Value Reader::readValue(qint64 *pos) const
     // Dict or HexString ..............
     case '<':
     {
-        if (mData->at(*pos+1) == '<')
+        if (mData[*pos+1] == '<')
         {
             Dict res;
             *pos = readDict(*pos, &res);
@@ -167,25 +153,25 @@ Value Reader::readValue(qint64 *pos) const
     case 't':
     case 'f':
     {
-        if (mData->compareWord(*pos, "true"))
+        if (compareWord(*pos, "true"))
         {
             *pos += 4;
             return Bool(true);
         }
 
-        if (mData->compareWord(*pos, "false"))
+        if (compareWord(*pos, "false"))
         {
             *pos += 5;
             return Bool(true);
         }
 
-        throw ParseError(*pos, QString("Unexpected symbol '%1', expected a boolean.").arg(mData->at(*pos)));
+        throw ParseError(*pos, QString("Unexpected symbol '%1', expected a boolean.").arg(mData[*pos]));
     }
 
     // None ...........................
     case 'n':
     {
-        if (!mData->compareWord(*pos, "null"))
+        if (!compareWord(*pos, "null"))
             throw ParseError(*pos, QString("Invalid PDF null on pos %1").arg(*pos));
 
         *pos += 4;
@@ -194,7 +180,7 @@ Value Reader::readValue(qint64 *pos) const
 
     }
 
-    QByteArray d(mData->data() + *pos, qMin(mData->size() - *pos, 20ll));
+    QByteArray d(mData + *pos, qMin(mSize - *pos, 20ll));
     throw UnknownValueError(*pos, QString("Unknown object type on %1: '%2'").arg(*pos).arg(d.data()));
 }
 
@@ -206,14 +192,14 @@ qint64 Reader::readArray(qint64 start, Array *res) const
 {
     qint64 pos = start + 1;
 
-    while (pos < mData->size())
+    while (pos < mSize)
     {
-        pos = mData->skipSpace(pos);
+        pos = skipSpace(pos);
 
-        if (pos == mData->size())
+        if (pos == mSize)
             throw ParseError(start);
 
-        if (mData->at(pos) == ']')
+        if (mData[pos] == ']')
         {
             res->setValid(true);
             return pos + 1;
@@ -233,19 +219,19 @@ qint64 Reader::readDict(qint64 start, Dict *res) const
 {
     qint64 pos = start + 2;         // skip "<<" mark
 
-    while (pos < mData->size() - 1)
+    while (pos < mSize - 1)
     {
-        pos = mData->skipSpace(pos);
+        pos = skipSpace(pos);
 
-        if (mData->at(pos)     == '>' &&
-            mData->at(pos + 1) == '>' )
+        if (mData[pos]     == '>' &&
+            mData[pos + 1] == '>' )
         {
             res->setValid(true);
             return pos += 2;        // skip ">>" mark
         }
 
         QString name = readNameString(&pos);
-        pos = mData->skipSpace(pos);
+        pos = skipSpace(pos);
         res->insert(name, readValue(&pos));
     }
 
@@ -258,15 +244,15 @@ qint64 Reader::readDict(qint64 start, Dict *res) const
  ************************************************/
 qint64 Reader::readHexString(qint64 start, HexString *res) const
 {
-    for (qint64 pos = start+1; pos < mData->size(); ++pos)
+    for (qint64 pos = start+1; pos < mSize; ++pos)
     {
-        if (isxdigit(mData->at(pos)) || isspace(mData->at(pos)))
+        if (isxdigit(mData[pos]) || isspace(mData[pos]))
             continue;
 
-        if (mData->at(pos) == '>')
+        if (mData[pos] == '>')
         {
             res->setValid(true);
-            res->setValue(QByteArray(mData->data() + start + 1, pos - start - 1));
+            res->setValue(QByteArray(mData + start + 1, pos - start - 1));
             return pos + 1;
         }
 
@@ -283,16 +269,16 @@ qint64 Reader::readHexString(qint64 start, HexString *res) const
 qint64 Reader::readLiteralString(qint64 start, LiteralString *res) const
 {
     bool esc = false;
-    for (qint64 pos = start+1; pos < mData->size(); ++pos)
+    for (qint64 pos = start+1; pos < mSize; ++pos)
     {
-        if (mData->at(pos) == '\\')
+        if (mData[pos] == '\\')
         {
             esc = !esc;
         }
-        else if (mData->at(pos) == ')' && !esc)
+        else if (mData[pos] == ')' && !esc)
         {
             res->setValid(true);
-            res->setValue(QByteArray(mData->data() + start + 1, pos - start - 1));
+            res->setValue(QByteArray(mData + start + 1, pos - start - 1));
             return pos + 1;
         }
         else
@@ -313,24 +299,24 @@ qint64 Reader::readObject(qint64 start, Object *res) const
     qint64 pos = start;
 
     bool ok;
-    res->setObjNum(mData->readUInt(&pos, &ok));
+    res->setObjNum(readUInt(&pos, &ok));
     if (!ok)
         throw ParseError(pos);
 
-    pos = mData->skipSpace(pos);
-    res->setGenNum(mData->readUInt(&pos, &ok));
+    pos = skipSpace(pos);
+    res->setGenNum(readUInt(&pos, &ok));
     if (!ok)
         throw ParseError(pos);
 
-    pos = mData->indexOf("obj", pos) + 3;
-    pos = mData->skipSpace(pos);
+    pos = indexOf("obj", pos) + 3;
+    pos = skipSpace(pos);
 
     res->setValue(readValue(&pos));
-    pos = mData->skipSpace(pos);
+    pos = skipSpace(pos);
 
-    if (mData->compareWord(pos, "stream"))
+    if (compareWord(pos, "stream"))
     {
-        pos = mData->skipCRLF(pos + strlen("stream"));
+        pos = skipCRLF(pos + strlen("stream"));
 
         qint64 len = 0;
         Value v = res->dict().value("Length");
@@ -344,12 +330,12 @@ qint64 Reader::readObject(qint64 start, Object *res) const
             break;
 
         default:
-            throw ParseError(pos, QString("Incorrect stream length in object at %1.").arg(mData->at(start)));
+            throw ParseError(pos, QString("Incorrect stream length in object at %1.").arg(mData[start]));
         }
 
-        res->setStream(QByteArray::fromRawData(mData->data() + pos, len));
-        pos = mData->skipSpace(pos + len);
-        if (mData->compareWord(pos, "endstream"))
+        res->setStream(QByteArray::fromRawData(mData + pos, len));
+        pos = skipSpace(pos + len);
+        if (compareWord(pos, "endstream"))
             pos += strlen("endstream");
     }
 
@@ -362,37 +348,36 @@ qint64 Reader::readObject(qint64 start, Object *res) const
  ************************************************/
 qint64 Reader::readXRefTable(qint64 pos, XRefTable *res) const
 {
-    pos = mData->skipSpace(pos);
-    if (!mData->compareWord(pos, "xref"))
+    pos = skipSpace(pos);
+    if (!compareWord(pos, "xref"))
         throw ParseError(pos, "Incorrect XRef. Expected 'xref'.");
     pos +=4;
 
-    pos = mData->skipSpace(pos);
+    pos = skipSpace(pos);
 
     // read XRef table ..........................
-    const char* data = mData->data();
     do {
         bool ok;
-        uint startObjNum = mData->readUInt(&pos, &ok);
+        uint startObjNum = readUInt(&pos, &ok);
         if (!ok)
             throw ParseError(pos, "Incorrect XRef. Can't read object number of the first object.");
 
-        uint cnt = mData->readUInt(&pos, &ok);
+        uint cnt = readUInt(&pos, &ok);
         if (!ok)
             throw ParseError(pos, "Incorrect XRef. Can't read number of entries.");
-        pos = mData->skipSpace(pos);
+        pos = skipSpace(pos);
 
         for (uint i=0; i<cnt; ++i)
         {
             if (!res->contains(startObjNum + i))
             {
-                if (data[pos + 17] == 'n')
+                if (mData[pos + 17] == 'n')
                 {
                     res->insert(startObjNum + i,
                                 XRefEntry(
-                                    strtoull(data + pos,     nullptr, 10),
+                                    strtoull(mData + pos,     nullptr, 10),
                                     startObjNum + i,
-                                    strtoul(data + pos + 11, nullptr, 10),
+                                    strtoul(mData + pos + 11, nullptr, 10),
                                     XRefEntry::Used));
                 }
                 else
@@ -401,7 +386,7 @@ qint64 Reader::readXRefTable(qint64 pos, XRefTable *res) const
                                 XRefEntry(
                                     0,
                                     startObjNum + i,
-                                    strtoul(data + pos + 11, nullptr, 10),
+                                    strtoul(mData + pos + 11, nullptr, 10),
                                     XRefEntry::Free));
 
                 }
@@ -410,8 +395,8 @@ qint64 Reader::readXRefTable(qint64 pos, XRefTable *res) const
             pos += 20;
         }
 
-        pos = mData->skipSpace(pos);
-    } while (!mData->compareStr(pos, "trailer"));
+        pos = skipSpace(pos);
+    } while (!compareStr(pos, "trailer"));
 
     return pos;
 }
@@ -461,15 +446,15 @@ const Value Reader::find(const QString &path) const
  ************************************************/
 QString Reader::readNameString(qint64 *pos) const
 {
-    if (mData2[*pos] != '/')
+    if (mData[*pos] != '/')
         throw ParseError(*pos, QString("Invalid PDF name on pos %1").arg(*pos));
 
     qint64 start = *pos;
     for (++(*pos); *pos < mSize; ++(*pos))
     {
-        if (isDelim(mData2, mSize, *pos))
+        if (isDelim(*pos))
         {
-            return QString::fromLocal8Bit(mData2 + start + 1, *pos - start - 1);
+            return QString::fromLocal8Bit(mData + start + 1, *pos - start - 1);
         }
     }
 
@@ -483,23 +468,23 @@ QString Reader::readNameString(qint64 *pos) const
 void Reader::open()
 {
     // Check header ...................................
-    if (mData->indexOf("%PDF-") != 0)
+    if (indexOf("%PDF-") != 0)
         throw HeaderError(0);
 
     bool ok;
     // Get xref table position ..................
-    qint64 startXRef = mData->indexOfBack("startxref", mData->size() - 1);
+    qint64 startXRef = indexOfBack("startxref", mSize - 1);
     if (startXRef < 0)
         throw ParseError(0, "Incorrect trailer, the marker 'startxref' was not found.");
 
     qint64 pos = startXRef + strlen("startxref");
-    quint64 xrefPos = mData->readUInt(&pos, &ok);
+    quint64 xrefPos = readUInt(&pos, &ok);
     if (!ok)
         throw ParseError(pos, "Error in trailer, can't read xref position.");
 
     // Read xref table ..........................
     pos = readXRefTable(xrefPos, &mXRefTable);
-    pos = mData->skipSpace(pos+strlen("trailer"));
+    pos = skipSpace(pos+strlen("trailer"));
     readDict(pos, &mTrailerDict);
 
     qint64 parentXrefPos = mTrailerDict.value("Prev").toNumber().value();
@@ -507,7 +492,7 @@ void Reader::open()
     while (parentXrefPos)
     {
         pos = readXRefTable(parentXrefPos, &mXRefTable);
-        pos = mData->skipSpace(pos+strlen("trailer"));
+        pos = skipSpace(pos+strlen("trailer"));
         Dict dict;
         readDict(pos, &dict);
         parentXrefPos = dict.value("Prev").toNumber().value();
@@ -530,3 +515,154 @@ void Reader::load()
 }
 
 
+/************************************************
+ *
+ ************************************************/
+bool Reader::isDelim(qint64 pos) const
+{
+    return isspace(mData[pos]) ||
+            strchr("()<>[]{}/%", mData[pos]);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+qint64 Reader::skipSpace(qint64 pos) const
+{
+    while (pos < mSize && isspace(mData[pos]))
+        pos++;
+
+    return pos;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+qint64 Reader::indexOf(const char *str, qint64 from) const
+{
+    qint64 len = strlen(str);
+
+    for (qint64 i = from; i<mSize-len; i++)
+    {
+        if (strncmp(mData + i, str, len) == 0)
+            return i;
+    }
+
+    return -1;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+qint64 Reader::indexOfBack(const char *str, qint64 from) const
+{
+    qint64 len = strlen(str);
+
+    for (qint64 i = from - len + 1 ; i>0; i--)
+    {
+        if (strncmp(mData + i, str, len) == 0)
+            return i;
+    }
+
+    return -1;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+qint64 Reader::skipCRLF(qint64 pos) const
+{
+    for (; pos >= 0; ++pos)
+    {
+        if (mData[pos] != '\n' && mData[pos] != '\r')
+            return pos;
+    }
+
+    return 0;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+//qint64 Reader::indexOf(char c, qint64 from) const
+//{
+//    for (qint64 i = from; i<mSize; i++)
+//    {
+//        if (mData[i] == c)
+//            return i;
+//    }
+
+//    return -1;
+//}
+
+
+/************************************************
+ *
+ ************************************************/
+quint32 Reader::readUInt(qint64 *pos, bool *ok) const
+{
+    char *end;
+    quint32 res = strtoul(mData + *pos, &end, 10);
+    *ok = end != mData + *pos;
+    *pos = end - mData;
+    return res;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+double Reader::readNum(qint64 *pos, bool *ok) const
+{
+    const char * str = mData + *pos;
+    int sign = 1;
+    if (str[0] == '-')
+    {
+        ++str;
+        sign = -1;
+    }
+
+    char *end;
+    double res = strtoll(str, &end, 10);
+    if (end[0] == '.')
+    {
+        ++end;
+        if (isdigit(end[0]))
+        {
+            str = end;
+            long long fract = strtoll(str, &end, 10);
+            if (str < end)
+                res += fract / pow(10.0, end - str);
+        }
+    }
+    *ok = end != mData + *pos;
+    *pos = end - mData;
+    return res * sign;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+bool Reader::compareStr(qint64 pos, const char *str) const
+{
+    int len = strlen(str);
+    return (mSize - pos > len) && strncmp(mData + pos, str, len) == 0;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+bool Reader::compareWord(qint64 pos, const char *str) const
+{
+    int len = strlen(str);
+    return (mSize - pos > len + 1) &&
+            strncmp(mData + pos, str, len) == 0 &&
+            isDelim(pos + len);
+}

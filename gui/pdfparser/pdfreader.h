@@ -27,7 +27,6 @@
 #ifndef PDFREADER_H
 #define PDFREADER_H
 
-//#include <stddef.h>
 #include <QtGlobal>
 #include <exception>
 #include "pdfvalue.h"
@@ -85,7 +84,7 @@ public:
     const Value find(const QString &path) const;
 
 protected:
-    Value readValue(qint64 *pos) const;
+    Value  readValue(qint64 *pos) const;
     qint64 readArray(qint64 start, Array *res) const;
     qint64 readDict(qint64 start, Dict *res) const;
     qint64 readHexString(qint64 start, HexString *res) const;
@@ -96,10 +95,22 @@ protected:
 
     QString readNameString(qint64 *pos) const;
 
+    bool isDelim(qint64 pos) const;
+    qint64 skipSpace(qint64 pos) const;
+    qint64 skipCRLF(qint64 pos) const;
+
+    qint64 indexOf(const char *str, qint64 from = 0) const;
+    qint64 indexOfBack(const char *str, qint64 from) const;
+
+    quint32 readUInt(qint64 *pos, bool *ok) const;
+    double readNum(qint64 *pos, bool *ok) const;
+
+    bool compareStr(qint64 pos, const char *str) const;
+    bool compareWord(qint64 pos, const char *str) const;
+
 private:
-    const char * const mData2;
+    const char * const mData;
     const qint64  mSize;
-    const Data    *mData;
     XRefTable     mXRefTable;
     Dict          mTrailerDict;
 };

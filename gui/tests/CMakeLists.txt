@@ -35,7 +35,6 @@ set(TEST_HEADERS
     tools.h
     ../pdfparser/pdfreader.h
     ../pdfparser/pdfvalue.h
-    ../pdfparser/pdfdata.h
     ../pdfparser/pdftypes.h
     ../pdfparser/pdfobject.h
 
@@ -46,7 +45,6 @@ set(TEST_SOURCES
     testpdfparser.cpp
     ../pdfparser/pdfreader.cpp
     ../pdfparser/pdfvalue.cpp
-    ../pdfparser/pdfdata.cpp
     ../pdfparser/pdfobject.cpp
 )
 

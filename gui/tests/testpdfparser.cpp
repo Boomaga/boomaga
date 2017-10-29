@@ -29,7 +29,6 @@
 
 #include <QTest>
 #include "../pdfparser/pdfreader.h"
-#include "../pdfparser/pdfdata.h"
 #include "tools.h"
 #include <QDebug>
 
@@ -202,34 +201,6 @@ void TestBoomaga::testReadNum_data()
 /************************************************
  *
  ************************************************/
-void TestBoomaga::testSkipDict()
-{
-    QFETCH(QString, data);
-    QFETCH(int,     expectedPos);
-
-    Data pdfData(data.toLocal8Bit().data(), data.toLocal8Bit().length());
-    int newPos = pdfData.skipDictBack(data.toLocal8Bit().length());
-    QCOMPARE(newPos, expectedPos);
-}
-
-
-/************************************************
- *
- ************************************************/
-void TestBoomaga::testSkipDict_data()
-{
-    QTest::addColumn<QString>("data");
-    QTest::addColumn<int>("expectedPos");
-
-    QTest::newRow("01") << "" << -1;
-    QTest::newRow("02") << "<</Root 1 0 R /Size 8>>" <<  -1;
-    QTest::newRow("03") << " <</Root 1 0 R /Size 8>>" <<  0;
-    QTest::newRow("04") << "SOME <</Root 1 0 R /Size 8>>" << 4;
-    QTest::newRow("05") << " <</Root 1 0 R /Dict1 << /Name val>> /Size 8>>" <<  0;
-    QTest::newRow("06") << " <</Root 1 0 R /Dict1 << /Name val /Dict2<</N v>>>> /Size 8>>" <<  0;
-    QTest::newRow("07") << " <</Root 1 0 R /Dict1 << /Name val /Dict2<<>>>> /Size 8>>" <<  0;
-}
-
 void TestBoomaga::testPdfArray()
 {
     //......................................

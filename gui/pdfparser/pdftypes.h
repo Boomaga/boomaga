@@ -32,11 +32,6 @@
 
 namespace PDF {
 
-enum class ObjecType
-{
-    Dictionary,
-};
-
 
 #define PDF_ERROR(NAME)  class NAME: public Error { public:  NAME(qint64 pos, const QString description = ""): Error(pos, description)  {}}
 

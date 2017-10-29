@@ -76,9 +76,6 @@ private slots:
     void testReadNum();
     void testReadNum_data();
 
-    void testSkipDict();
-    void testSkipDict_data();
-
     void testPdfArray();
 
     void testPdfBool();
