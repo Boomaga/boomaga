@@ -39,39 +39,6 @@ using namespace PDF;
 /************************************************
  *
  ************************************************/
-void TestBoomaga::testCanReadName()
-{
-    QFETCH(QString, data);
-    QFETCH(int,     pos);
-    QFETCH(bool,    expected);
-
-    Reader reader(data.toLocal8Bit().data(), data.toLocal8Bit().length());
-    bool res = reader.canReadName(pos);
-
-    QCOMPARE(res, expected);
-}
-
-
-/************************************************
- *
- ************************************************/
-void TestBoomaga::testCanReadName_data()
-{
-    QTest::addColumn<QString>("data");
-    QTest::addColumn<int>("pos");
-    QTest::addColumn<bool>("expected");
-
-    QTest::newRow("01") << "/Name" << 0 << true;
-    QTest::newRow("02") << "/Name" << 1 << false;
-    QTest::newRow("03") << "/Name /Other" << 5 << false;
-    QTest::newRow("04") << "/Name /Other" << 6 << true;
-    QTest::newRow("05") << "/Name /Other" << 600 << false;
-}
-
-
-/************************************************
- *
- ************************************************/
 void TestBoomaga::testReadName()
 {
     QFETCH(QString, data);
@@ -79,22 +46,25 @@ void TestBoomaga::testReadName()
     QFETCH(QString, expected);
     QFETCH(int,     expectedPos);
 
+
+    const QByteArray byteArray = data.toLocal8Bit();
+    Reader reader(byteArray.data(), byteArray.length());
+
+    PDF::Value v;
+    qint64 newPos = pos;
     try
     {
-        const QByteArray b = data.toLocal8Bit();
-        Reader reader(b.data(), b.length());
-        Name name;
-        int newPos = reader.readName(pos, &name);
+        v = reader.readValue(&newPos);
 
-        QCOMPARE(name.value(), expected);
         QCOMPARE(newPos, expectedPos);
+        QCOMPARE(v.isName(), true);
+        QCOMPARE(v.toName().value(), expected);
     }
     catch (PDF::Error& e)
     {
         if (expectedPos > 0)
             FAIL_EXCEPTION(e);
     }
-
 }
 
 
@@ -125,17 +95,19 @@ void TestBoomaga::testReadLink()
     QFETCH(int,     expectedGenNum);
     QFETCH(int,     expectedPos);
 
+    const QByteArray byteArray = data.toLocal8Bit();
+    Reader reader(byteArray.data(), byteArray.length());
+
+    PDF::Value v;
+    qint64 newPos = pos;
     try
     {
-        const QByteArray b = data.toLocal8Bit();
-        Reader reader(b.data(), b.length());
-        Link link;
-        int newPos = reader.readLink(pos, &link);
+        v = reader.readValue(&newPos);
 
-        QCOMPARE(link.objNum(), quint32(expectedObjNum));
-        QCOMPARE(link.genNum(), quint16(expectedGenNum));
         QCOMPARE(newPos, expectedPos);
-
+        QCOMPARE(v.isLink(), true);
+        QCOMPARE(v.toLink().objNum(), quint32(expectedObjNum));
+        QCOMPARE(v.toLink().genNum(), quint16(expectedGenNum));
     }
     catch (PDF::Error& e)
     {
@@ -171,15 +143,27 @@ void TestBoomaga::testReadNum()
     QFETCH(double,  expected);
     QFETCH(int,  expectedPos);
 
-    Data pdfData(data.toLocal8Bit().data(), data.toLocal8Bit().length());
-    bool ok;
-    qint64 pos = 0;
-    double res;
+    const QByteArray byteArray = data.toLocal8Bit();
+    Reader reader(byteArray.data(), byteArray.length());
 
-    res = pdfData.readNum(&pos, &ok);
-    QCOMPARE(res, expected);
-    int newPos = pos;
+    PDF::Value v;
+    qint64 newPos = 0;
+    try
+    {
+        v = reader.readValue(&newPos);
+    }
+    catch (PDF::Error& e)
+    {
+        if (expectedPos > 0)
+            FAIL_EXCEPTION(e);
+    }
+
     QCOMPARE(newPos, expectedPos);
+
+    QCOMPARE(v.isNumber(), true);
+
+    double res = v.toNumber().value();
+    QCOMPARE(res, expected);
 }
 
 
@@ -192,7 +176,6 @@ void TestBoomaga::testReadNum_data()
     QTest::addColumn<int>("expectedPos");
 
     //           data       expected       pos
-    QTest::newRow("")       <<  0.0     <<  0;
     QTest::newRow("1")      <<  1.0     <<  1;
     QTest::newRow("0.2")    <<  0.2     <<  3;
     QTest::newRow("-0.2")   << -0.2     <<  4;
@@ -207,11 +190,12 @@ void TestBoomaga::testReadNum_data()
     QTest::newRow("-3.62")  << -3.62    <<  5;
     QTest::newRow("+123.6") <<  123.6   <<  6;
 
-    QTest::newRow("4.")     <<  4.0     <<  2;
-    QTest::newRow("-.002")  << -.002    <<  5;
-    QTest::newRow("0.0")    <<  0.0     <<  3;
-    QTest::newRow("1.0004") <<  1.0004  <<  6;
-    QTest::newRow("42. 15") <<  42.0    <<  3;
+    QTest::newRow("4.")      <<  4.0     <<  2;
+    QTest::newRow("-.002")   << -.002    <<  5;
+    QTest::newRow("0.0")     <<  0.0     <<  3;
+    QTest::newRow("1.0004")  <<  1.0004  <<  6;
+    QTest::newRow("42. 15")  <<  42.0    <<  3;
+    QTest::newRow("42 15")   <<  42.0    <<  2;
 }
 
 
@@ -440,7 +424,7 @@ void TestBoomaga::testPdfNumber()
         n1.setValue(42);
         QCOMPARE(n1.isValid(), true);
         QCOMPARE(n1.value(), 42.0);
-qDebug() << n1;
+
         Number n2(33);
         QCOMPARE(n2.isValid(), true);
         QCOMPARE(n2.value(), 33.0);

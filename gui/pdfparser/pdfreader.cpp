@@ -36,13 +36,24 @@
 
 using namespace PDF;
 
+/************************************************
+ *
+ ************************************************/
+inline bool isDelim(const char * const data, qint64 size, qint64 pos)
+{
+    Q_UNUSED(size)
+    return isspace(data[pos]) ||
+           strchr("()<>[]{}/%", data[pos]);
+}
+
 
 /************************************************
  *
  ************************************************/
 Reader::Reader(const char * const data, quint64 size):
-    mData(new Data(data, size)),
-    mHandler(nullptr)
+    mData2(data),
+    mSize(size),
+    mData(new Data(data, size))
 {
 }
 
@@ -59,168 +70,128 @@ Reader::~Reader()
 /************************************************
  *
  ************************************************/
-bool Reader::canReadArray(qint64 pos) const
-{
-    return mData->at(pos) == '[';
-}
-
-
-/************************************************
- *
- ************************************************/
-bool Reader::canReadBool(qint64 pos) const
-{
-    return mData->compareWord(pos, "true") ||
-           mData->compareWord(pos, "false");
-}
-
-
-/************************************************
- *
- ************************************************/
-bool Reader::canReadDict(qint64 pos) const
-{
-    return mData->at(pos)   == '<' &&
-           mData->at(pos+1) == '<';
-}
-
-
-/************************************************
- *
- ************************************************/
-bool Reader::canReadHexString(qint64 pos) const
-{
-    return mData->at(pos)   == '<' &&
-           mData->at(pos+1) != '<';
-}
-
-
-/************************************************
- *
- ************************************************/
-bool Reader::canReadLink(qint64 pos) const
-{
-    bool ok;
-    mData->readUInt(&pos, &ok);
-    if (!ok)
-        return false;
-
-    pos = mData->skipSpace(pos);
-
-    mData->readUInt(&pos, &ok);
-    if (!ok)
-        return false;
-
-    pos = mData->skipSpace(pos);
-
-    return mData->at(pos) == 'R';
-}
-
-
-/************************************************
- *
- ************************************************/
-bool Reader::canReadLiteralString(qint64 pos) const
-{
-    return mData->at(pos) == '(';
-}
-
-
-/************************************************
- *
- ************************************************/
-bool Reader::canReadName(qint64 pos) const
-{
-    return mData->at(pos) == '/';
-}
-
-
-/************************************************
- *
- ************************************************/
-bool Reader::canReadNull(qint64 pos) const
-{
-    return mData->compareWord(pos, "null");
-}
-
-
-/************************************************
- *
- ************************************************/
-bool Reader::canReadNumber(qint64 pos) const
-{
-    bool ok;
-    mData->readNum(&pos, &ok);
-    return ok;
-}
-
-
-/************************************************
- *
- ************************************************/
 Value Reader::readValue(qint64 *pos) const
 {
-    if (canReadDict(*pos))
+    char c = mData2[*pos];
+    switch (c) {
+    // Link or Number .................
+    case '0':
+    case '1':
+    case '2':
+    case '3':
+    case '4':
+    case '5':
+    case '6':
+    case '7':
+    case '8':
+    case '9':
     {
-        Dict res;
-        *pos = readDict(*pos, &res);
-        return res;
+        bool ok;
+        double n1 = mData->readNum(pos, &ok);
+        if (!ok)
+            throw ParseError(*pos, QString("Unexpected symbol '%1', expected a number.").arg(mData2[*pos]));
+
+        if (n1 != quint64(n1))
+            return Number(n1);
+
+        qint64 p = *pos;
+        p = mData->skipSpace(p);
+
+        quint64 n2 = mData->readUInt(&p, &ok);
+        if (!ok)
+            return Number(n1);
+
+        p = mData->skipSpace(p);
+
+        if (mData2[p] != 'R')
+            return Number(n1);
+
+        *pos = p+1;
+        return Link(n1, n2);
+    }
+    // Float number ...................
+    case '-':
+    case '+':
+    case '.':
+    {
+        bool ok;
+        double n = mData->readNum(pos, &ok);
+        if (!ok)
+            throw ParseError(*pos, QString("Unexpected symbol '%1', expected a number.").arg(mData->at(*pos)));
+
+        return Number(n);
     }
 
-    if (canReadArray(*pos))
+
+    // Array ..........................
+    case '[':
     {
         Array res;
         *pos = readArray(*pos, &res);
         return res;
+
     }
 
-    if (canReadName(*pos))
+    // Dict or HexString ..............
+    case '<':
     {
-        Name res;
-        *pos = readName(*pos, &res);
-        return res;
+        if (mData->at(*pos+1) == '<')
+        {
+            Dict res;
+            *pos = readDict(*pos, &res);
+            return res;
+        }
+        else
+        {
+            HexString res;
+            *pos = readHexString(*pos, &res);
+            return res;
+        }
     }
 
-    if (canReadLink(*pos))
+    // Name ...........................
+    case '/':
     {
-        Link res;
-        *pos = readLink(*pos, &res);
-        return res;
+        return Name(readNameString(pos));
     }
 
-    if (canReadNumber(*pos))
-    {
-        Number res;
-        *pos = readNumber(*pos, &res);
-        return res;
-    }
-
-    if (canReadHexString(*pos))
-    {
-        HexString res;
-        *pos = readHexString(*pos, &res);
-        return res;
-    }
-
-    if (canReadBool(*pos))
-    {
-        Bool res;
-        *pos = readBool(*pos, &res);
-        return res;
-    }
-
-    if (canReadLiteralString(*pos))
+    //LiteralString ...................
+    case '(':
     {
         LiteralString res;
         *pos = readLiteralString(*pos, &res);
         return res;
     }
 
-    if (canReadNull(*pos))
+    // Bool ...........................
+    case 't':
+    case 'f':
     {
-        Null res;
-        *pos = readNull(*pos, &res);
-        return res;
+        if (mData->compareWord(*pos, "true"))
+        {
+            *pos += 4;
+            return Bool(true);
+        }
+
+        if (mData->compareWord(*pos, "false"))
+        {
+            *pos += 5;
+            return Bool(true);
+        }
+
+        throw ParseError(*pos, QString("Unexpected symbol '%1', expected a boolean.").arg(mData->at(*pos)));
+    }
+
+    // None ...........................
+    case 'n':
+    {
+        if (!mData->compareWord(*pos, "null"))
+            throw ParseError(*pos, QString("Invalid PDF null on pos %1").arg(*pos));
+
+        *pos += 4;
+        return Null();
+    }
+
     }
 
     QByteArray d(mData->data() + *pos, qMin(mData->size() - *pos, 20ll));
@@ -258,29 +229,6 @@ qint64 Reader::readArray(qint64 start, Array *res) const
 /************************************************
  *
  ************************************************/
-qint64 Reader::readBool(qint64 start, Bool *res) const
-{
-    if (mData->compareWord(start, "true"))
-    {
-        res->setValid(true);
-        res->setValue(true);
-        return start + 4;
-    }
-
-    if (mData->compareWord(start, "false"))
-    {
-        res->setValid(true);
-        res->setValue(false);
-        return start + 5;
-    }
-
-    throw ParseError(start, QString("Unexpected symbol '%1', expected a boolean.").arg(mData->at(start)));
-}
-
-
-/************************************************
- *
- ************************************************/
 qint64 Reader::readDict(qint64 start, Dict *res) const
 {
     qint64 pos = start + 2;         // skip "<<" mark
@@ -294,11 +242,6 @@ qint64 Reader::readDict(qint64 start, Dict *res) const
         {
             res->setValid(true);
             return pos += 2;        // skip ">>" mark
-        }
-
-        if (!canReadName(pos))
-        {
-            throw ParseError(pos, QString("Invalid PDF name on pos %1").arg(pos));
         }
 
         QString name = readNameString(&pos);
@@ -337,28 +280,6 @@ qint64 Reader::readHexString(qint64 start, HexString *res) const
 /************************************************
  *
  ************************************************/
-qint64 Reader::readLink(qint64 pos, Link *res) const
-{
-    bool ok;
-    res->setObjNum(mData->readUInt(&pos, &ok));
-    if (!ok)
-        throw ParseError(pos, QString("Unexpected symbol '%1', expected a number.").arg(mData->at(pos)));
-
-    pos = mData->skipSpace(pos);
-
-    res->setGenNum(mData->readUInt(&pos, &ok));
-    if (!ok)
-        throw ParseError(pos, QString("Unexpected symbol '%1', expected a number.").arg(mData->at(pos)));
-
-    pos = mData->skipSpace(pos);
-    res->setValid(true);
-    return pos + 1;
-}
-
-
-/************************************************
- *
- ************************************************/
 qint64 Reader::readLiteralString(qint64 start, LiteralString *res) const
 {
     bool esc = false;
@@ -381,47 +302,6 @@ qint64 Reader::readLiteralString(qint64 start, LiteralString *res) const
     }
 
     throw ParseError(start, "The closing literal string marker ')' was not found.");
-}
-
-
-/************************************************
- *
- ************************************************/
-qint64 Reader::readName(qint64 start, Name *res) const
-{
-    res->setValid(true);
-    res->setValue(readNameString(&start));
-    return start;
-}
-
-
-/************************************************
- *
- ************************************************/
-qint64 Reader::readNull(qint64 start, Null *res) const
-{
-    if (mData->compareWord(start, "null"))
-    {
-        res->setValid(true);
-        return start + 4;
-    }
-
-    throw ParseError(start, QString("Invalid PDF null on pos %1").arg(start));
-}
-
-
-/************************************************
- *
- ************************************************/
-qint64 Reader::readNumber(qint64 pos, Number *res) const
-{
-    bool ok;
-    res->setValue(mData->readNum(&pos, &ok));
-    if (!ok)
-        throw ParseError(pos, QString("Unexpected symbol '%1', expected a number.").arg(mData->at(pos)));
-
-    res->setValid(true);
-    return pos;
 }
 
 
@@ -475,7 +355,6 @@ qint64 Reader::readObject(qint64 start, Object *res) const
 
     return pos;
 }
-
 
 
 /************************************************
@@ -582,12 +461,15 @@ const Value Reader::find(const QString &path) const
  ************************************************/
 QString Reader::readNameString(qint64 *pos) const
 {
+    if (mData2[*pos] != '/')
+        throw ParseError(*pos, QString("Invalid PDF name on pos %1").arg(*pos));
+
     qint64 start = *pos;
-    for (++(*pos); *pos < mData->size(); ++(*pos))
+    for (++(*pos); *pos < mSize; ++(*pos))
     {
-        if (mData->isDelim(*pos))
+        if (isDelim(mData2, mSize, *pos))
         {
-            return QString::fromLocal8Bit(mData->data() + start + 1, *pos - start - 1);
+            return QString::fromLocal8Bit(mData2 + start + 1, *pos - start - 1);
         }
     }
 
@@ -637,55 +519,14 @@ void Reader::open()
  ************************************************/
 void Reader::load()
 {
-//    // Check header ...................................
-//    if (mData->indexOf("%PDF-") != 0)
-//        throw HeaderError(0);
-
-//    bool ok;
-//    // Get xref table position ..................
-//    qint64 startXRef = mData->indexOfBack("startxref", mData->size() - 1);
-//    if (startXRef < 0)
-//        throw ParseError(0, "Incorrect trailer, the marker 'startxref' was not found.");
-
-//    qint64 pos = startXRef + strlen("startxref");
-//    quint64 xrefPos = mData->readUInt(&pos, &ok);
-//    if (!ok)
-//        throw ParseError(pos, "Error in trailer, can't read xref position.");
-
-//    // Read xref table ..........................
-//    pos = readXRefTable(xrefPos, &mXRefTable);
-//    pos = mData->skipSpace(pos+strlen("trailer"));
-//    readDict(pos, &mTrailerDict);
-
-//    qint64 parentXrefPos = mTrailerDict.value("Prev").toNumber().value();
-
-//    while (parentXrefPos)
-//    {
-//        pos = readXRefTable(parentXrefPos, &mXRefTable);
-//        pos = mData->skipSpace(pos+strlen("trailer"));
-//        Dict dict;
-//        readDict(pos, &dict);
-//        parentXrefPos = dict.value("Prev").toNumber().value();
-//    }
-
-//    mHandler->trailerReady(mXRefTable, mTrailerDict);
-
     foreach (const XRefEntry &entry, mXRefTable)
     {
         if (entry.type == XRefEntry::Used)
         {
             Object obj = Object();
             readObject(entry.pos, &obj);
-            mHandler->objectReady(obj);
         }
     }
 }
 
 
-/************************************************
- *
- ************************************************/
-void Reader::setHandler(ReaderHandler *handler)
-{
-    mHandler = handler;
-}

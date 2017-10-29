@@ -353,7 +353,7 @@ public:
 class Name: public Value
 {
 public:
-    Name(const char *name = "");
+    Name(const QString &name = "");
     Name(const Name &other);
     Name &operator =(const Name &other);
 

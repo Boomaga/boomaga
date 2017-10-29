@@ -872,11 +872,11 @@ void LiteralString::setValue(const QByteArray &value)
 //###############################################
 // PDF Name
 //###############################################
-Name::Name(const char *name):
+Name::Name(const QString &name):
     Value(Type::Name)
 {
     d->mValid = true;
-    d->mStringValue = QString(name).toLatin1();
+    d->mStringValue = name.toLatin1();
 }
 
 

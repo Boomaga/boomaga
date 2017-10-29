@@ -67,9 +67,6 @@ private slots:
     void test_BooklesSplit();
     void test_BooklesSplit_data();
 
-    void testCanReadName();
-    void testCanReadName_data();
-
     void testReadName();
     void testReadName_data();
 

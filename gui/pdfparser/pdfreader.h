@@ -75,14 +75,6 @@ public:
     void load();
 
 
-    /// Returns the content handler or 0 if none was set.
-    /// \sa setHandler().
-    ReaderHandler *handler() const { return mHandler; }
-
-    /// Sets the content handler to handler.
-    /// \sa handler().
-    void setHandler(ReaderHandler *handler);
-
     const XRefTable &xRefTable() { return mXRefTable; }
     const Dict &trailerDict() const { return mTrailerDict; }
     Dict trailerDict() { return mTrailerDict; }
@@ -93,37 +85,23 @@ public:
     const Value find(const QString &path) const;
 
 protected:
-    bool canReadArray(qint64 pos) const;
-    bool canReadBool(qint64 pos) const;
-    bool canReadDict(qint64 pos) const;
-    bool canReadHexString(qint64 pos) const;
-    bool canReadLink(qint64 pos) const;
-    bool canReadLiteralString(qint64 pos) const;
-    bool canReadName(qint64 pos) const;
-    bool canReadNull(qint64 pos) const;
-    bool canReadNumber(qint64 pos) const;
-
     Value readValue(qint64 *pos) const;
     qint64 readArray(qint64 start, Array *res) const;
-    qint64 readBool(qint64 start, Bool *res) const;
     qint64 readDict(qint64 start, Dict *res) const;
     qint64 readHexString(qint64 start, HexString *res) const;
-    qint64 readLink(qint64 start, Link *res) const;
     qint64 readLiteralString(qint64 start, LiteralString *res) const;
-    qint64 readName(qint64 start, Name *res) const;
-    qint64 readNull(qint64 start, Null *res) const;
-    qint64 readNumber(qint64 start, Number *res) const;
+
     qint64 readObject(qint64 start, Object *res) const;
     qint64 readXRefTable(qint64 start, XRefTable *res) const;
-
 
     QString readNameString(qint64 *pos) const;
 
 private:
+    const char * const mData2;
+    const qint64  mSize;
     const Data    *mData;
     XRefTable     mXRefTable;
     Dict          mTrailerDict;
-    ReaderHandler *mHandler;
 };
 
 } // namespace PDF

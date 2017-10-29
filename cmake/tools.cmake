@@ -16,7 +16,9 @@ set(CMAKE_CXX_FLAGS "-Wall -Wextra")
 set(CMAKE_CXX_FLAGS_DEBUG "-g")
 set(CMAKE_CXX_FLAGS_RELEASE "-O2")
 
-
+#if (CMAKE_BUILD_TYPE STREQUAL Release)
+#  status_message("For building debug version use -DCMAKE_BUILD_TYPE=Debug option.")
+#endif()
 
 macro(setByDefault VAR_NAME VAR_VALUE)
   if (NOT DEFINED ${VAR_NAME})
