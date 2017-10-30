@@ -90,7 +90,7 @@ void PdfProcessor::open()
  ************************************************/
 quint32 PdfProcessor::pageCount()
 {
-    return mReader->find("/Root/Pages/Count").toNumber().value();
+    return mReader->find("/Root/Pages/Count").asNumber().value();
 }
 
 
@@ -103,11 +103,11 @@ void PdfProcessor::run(PDF::Writer *writer, quint32 objNumOffset)
     mObjNumOffset = objNumOffset;
     mSkippedObjects.clear();
 
-    PDF::Object catalog = mReader->getObject(mReader->trailerDict().value("Root").toLink());
+    PDF::Object catalog = mReader->getObject(mReader->trailerDict().value("Root").asLink());
     mSkippedObjects << catalog.objNum();
-    PDF::Object pages   = mReader->getObject(catalog.dict().value("Pages").toLink());
+    PDF::Object pages   = mReader->getObject(catalog.dict().value("Pages").asLink());
 
-    mPageInfo.reserve(pages.dict().value("Count").toNumber().value());
+    mPageInfo.reserve(pages.dict().value("Count").asNumber().value());
 
     PDF::Dict dict;
     walkPageTree(0, pages, dict);
@@ -134,31 +134,31 @@ void PdfProcessor::run(PDF::Writer *writer, quint32 objNumOffset)
  ************************************************/
 void fillPageInfo(PdfPageInfo *pageInfo, const PDF::Dict &pageDict, const PDF::Dict &inherited)
 {
-    const PDF::Array &mediaBox = pageDict.value("MediaBox", inherited.value("MediaBox")).toArray();
+    const PDF::Array &mediaBox = pageDict.value("MediaBox", inherited.value("MediaBox")).asArray();
     if (mediaBox.count() != 4)
         throw QString("Incorrect MediaBox rectangle");
 
-    pageInfo->mediaBox = QRectF(mediaBox.at(0).toNumber().value(),
-                                mediaBox.at(1).toNumber().value(),
-                                mediaBox.at(2).toNumber().value() - mediaBox.at(0).toNumber().value(),
-                                mediaBox.at(3).toNumber().value() - mediaBox.at(1).toNumber().value());
+    pageInfo->mediaBox = QRectF(mediaBox.at(0).asNumber().value(),
+                                mediaBox.at(1).asNumber().value(),
+                                mediaBox.at(2).asNumber().value() - mediaBox.at(0).asNumber().value(),
+                                mediaBox.at(3).asNumber().value() - mediaBox.at(1).asNumber().value());
 
-    const PDF::Array &cropBox  = pageDict.value("CropBox", inherited.value("CropBox")).toArray();
+    const PDF::Array &cropBox  = pageDict.value("CropBox", inherited.value("CropBox")).asArray();
     if (cropBox.isValid())
     {
         if (cropBox.count() != 4)
             throw QString("Incorrect CropBox rectangle");
 
-        pageInfo->cropBox = QRectF(cropBox.at(0).toNumber().value(),
-                                   cropBox.at(1).toNumber().value(),
-                                   cropBox.at(2).toNumber().value() - cropBox.at(0).toNumber().value(),
-                                   cropBox.at(3).toNumber().value() - cropBox.at(1).toNumber().value());
+        pageInfo->cropBox = QRectF(cropBox.at(0).asNumber().value(),
+                                   cropBox.at(1).asNumber().value(),
+                                   cropBox.at(2).asNumber().value() - cropBox.at(0).asNumber().value(),
+                                   cropBox.at(3).asNumber().value() - cropBox.at(1).asNumber().value());
     }
     else
     {
         pageInfo->cropBox = pageInfo->mediaBox;
     }
-    pageInfo->rotate = pageDict.value("Rotate", inherited.value("Rotate")).toNumber().value();
+    pageInfo->rotate = pageDict.value("Rotate", inherited.value("Rotate")).asNumber().value();
 
 }
 
@@ -188,10 +188,10 @@ int PdfProcessor::walkPageTree(int pageNum, const PDF::Object &page, const PDF::
         if (pageDict.contains("Rotate"))
             dict.insert("Rotate",    pageDict.value("Rotate"));
 
-        const PDF::Array &kids = pageDict.value("Kids").toArray();
+        const PDF::Array &kids = pageDict.value("Kids").asArray();
         for (int i=0; i<kids.count(); ++i)
         {
-            pageNum = walkPageTree(pageNum, mReader->getObject(kids.at(i).toLink()), dict);
+            pageNum = walkPageTree(pageNum, mReader->getObject(kids.at(i).asLink()), dict);
         }
         return pageNum;
     }
@@ -215,12 +215,12 @@ int PdfProcessor::walkPageTree(int pageNum, const PDF::Object &page, const PDF::
         switch (contents.type())
         {
         case PDF::Value::Type::Link:
-            pageInfo.xObjNums << writeContentAsXObject(contents.toLink(), page.dict(), inherited);
+            pageInfo.xObjNums << writeContentAsXObject(contents.asLink(), page.dict(), inherited);
             break;
 
         case PDF::Value::Type::Array:
-            for (int i=0; i<contents.toArray().count(); ++i)
-                pageInfo.xObjNums << writeContentAsXObject(contents.toArray().at(i).toLink(), page.dict(), inherited);
+            for (int i=0; i<contents.asArray().count(); ++i)
+                pageInfo.xObjNums << writeContentAsXObject(contents.asArray().at(i).asLink(), page.dict(), inherited);
             break;
 
         default:
@@ -334,13 +334,13 @@ void offsetValue(PDF::Value &value, const quint32 offset)
 {
     if (value.isLink())
     {
-        PDF::Link &link = value.toLink();
+        PDF::Link &link = value.asLink();
         link.setObjNum(link.objNum() + offset);
     }
 
     if (value.isArray())
     {
-        PDF::Array &arr = value.toArray();
+        PDF::Array &arr = value.asArray();
 
         for (int i=0; i<arr.count(); ++i)
         {
@@ -350,7 +350,7 @@ void offsetValue(PDF::Value &value, const quint32 offset)
 
     if (value.isDict())
     {
-        PDF::Dict &dict = value.toDict();
+        PDF::Dict &dict = value.asDict();
 
         foreach (auto &key, dict.keys())
         {

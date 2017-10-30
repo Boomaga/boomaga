@@ -323,11 +323,11 @@ qint64 Reader::readObject(qint64 start, Object *res) const
         Value v = res->dict().value("Length");
         switch (v.type()) {
         case Value::Type::Number:
-            len = v.toNumber().value();
+            len = v.asNumber().value();
             break;
 
         case Value::Type::Link:
-            len = getObject(v.toLink().objNum(), v.toLink().genNum()).value().toNumber().value();
+            len = getObject(v.asLink().objNum(), v.asLink().genNum()).value().asNumber().value();
             break;
 
         default:
@@ -436,7 +436,7 @@ const Value Reader::find(const QString &path) const
     Dict dict = trailerDict();
     foreach (const QString &obj, objects)
     {
-        dict = getObject(dict.value(obj).toLink()).dict();
+        dict = getObject(dict.value(obj).asLink()).dict();
     }
     return dict.value(val);
 }
@@ -488,7 +488,7 @@ void Reader::open()
     pos = skipSpace(pos+strlen("trailer"));
     readDict(pos, &mTrailerDict);
 
-    qint64 parentXrefPos = mTrailerDict.value("Prev").toNumber().value();
+    qint64 parentXrefPos = mTrailerDict.value("Prev").asNumber().value();
 
     while (parentXrefPos)
     {
@@ -496,7 +496,7 @@ void Reader::open()
         pos = skipSpace(pos+strlen("trailer"));
         Dict dict;
         readDict(pos, &dict);
-        parentXrefPos = dict.value("Prev").toNumber().value();
+        parentXrefPos = dict.value("Prev").asNumber().value();
     }
 }
 

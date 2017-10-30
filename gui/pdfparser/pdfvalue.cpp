@@ -120,7 +120,7 @@ Value &Value::operator =(const Value &other)
 /************************************************
  *
  ************************************************/
-const Array &Value::toArray(bool *ok) const
+const Array &Value::asArray(bool *ok) const
 {
     return valueAs<Array>(Type::Array, ok);
 }
@@ -129,7 +129,7 @@ const Array &Value::toArray(bool *ok) const
 /************************************************
  *
  ************************************************/
-Array &Value::toArray(bool *ok)
+Array &Value::asArray(bool *ok)
 {
     return valueAs<Array>(Type::Array, ok);
 }
@@ -138,7 +138,7 @@ Array &Value::toArray(bool *ok)
 /************************************************
  *
  ************************************************/
-const Bool &Value::toBool(bool *ok) const
+const Bool &Value::asBool(bool *ok) const
 {
     return valueAs<Bool>(Type::Bool, ok);
 }
@@ -147,7 +147,7 @@ const Bool &Value::toBool(bool *ok) const
 /************************************************
  *
  ************************************************/
-Bool &Value::toBool(bool *ok)
+Bool &Value::asBool(bool *ok)
 {
     return valueAs<Bool>(Type::Bool, ok);
 }
@@ -156,7 +156,7 @@ Bool &Value::toBool(bool *ok)
 /************************************************
  *
  ************************************************/
-const Dict &Value::toDict(bool *ok) const
+const Dict &Value::asDict(bool *ok) const
 {
     return valueAs<Dict>(Type::Dict, ok);
 }
@@ -165,7 +165,7 @@ const Dict &Value::toDict(bool *ok) const
 /************************************************
  *
  ************************************************/
-Dict &Value::toDict(bool *ok)
+Dict &Value::asDict(bool *ok)
 {
     return valueAs<Dict>(Type::Dict, ok);
 }
@@ -174,7 +174,7 @@ Dict &Value::toDict(bool *ok)
 /************************************************
  *
  ************************************************/
-const HexString &Value::toHexString(bool *ok) const
+const HexString &Value::asHexString(bool *ok) const
 {
     return valueAs<HexString>(Type::HexString, ok);
 }
@@ -183,7 +183,7 @@ const HexString &Value::toHexString(bool *ok) const
 /************************************************
  *
  ************************************************/
-HexString &Value::toHexString(bool *ok)
+HexString &Value::asHexString(bool *ok)
 {
     return valueAs<HexString>(Type::HexString, ok);
 }
@@ -192,7 +192,7 @@ HexString &Value::toHexString(bool *ok)
 /************************************************
  *
  ************************************************/
-const Link &Value::toLink(bool *ok) const
+const Link &Value::asLink(bool *ok) const
 {
     return valueAs<Link>(Type::Link, ok);
 }
@@ -201,7 +201,7 @@ const Link &Value::toLink(bool *ok) const
 /************************************************
  *
  ************************************************/
-Link &Value::toLink(bool *ok)
+Link &Value::asLink(bool *ok)
 {
     return valueAs<Link>(Type::Link, ok);
 }
@@ -210,7 +210,7 @@ Link &Value::toLink(bool *ok)
 /************************************************
  *
  ************************************************/
-const LiteralString &Value::toLiteralString(bool *ok) const
+const LiteralString &Value::asLiteralString(bool *ok) const
 {
     return valueAs<LiteralString>(Type::LiteralString, ok);
 }
@@ -219,7 +219,7 @@ const LiteralString &Value::toLiteralString(bool *ok) const
 /************************************************
  *
  ************************************************/
-LiteralString &Value::toLiteralString(bool *ok)
+LiteralString &Value::asLiteralString(bool *ok)
 {
     return valueAs<LiteralString>(Type::LiteralString, ok);
 }
@@ -228,7 +228,7 @@ LiteralString &Value::toLiteralString(bool *ok)
 /************************************************
  *
  ************************************************/
-const Name &Value::toName(bool *ok) const
+const Name &Value::asName(bool *ok) const
 {
     return valueAs<Name>(Type::Name, ok);
 }
@@ -237,7 +237,7 @@ const Name &Value::toName(bool *ok) const
 /************************************************
  *
  ************************************************/
-Name &Value::toName(bool *ok)
+Name &Value::asName(bool *ok)
 {
     return valueAs<Name>(Type::Name, ok);
 }
@@ -246,7 +246,7 @@ Name &Value::toName(bool *ok)
 /************************************************
  *
  ************************************************/
-const Null &Value::toNull(bool *ok) const
+const Null &Value::asNull(bool *ok) const
 {
     return valueAs<Null>(Type::Null, ok);
 }
@@ -255,7 +255,7 @@ const Null &Value::toNull(bool *ok) const
 /************************************************
  *
  ************************************************/
-Null &Value::toNull(bool *ok)
+Null &Value::asNull(bool *ok)
 {
     return valueAs<Null>(Type::Null, ok);
 }
@@ -264,7 +264,7 @@ Null &Value::toNull(bool *ok)
 /************************************************
  *
  ************************************************/
-const Number &Value::toNumber(bool *ok) const
+const Number &Value::asNumber(bool *ok) const
 {
     return valueAs<Number>(Type::Number, ok);
 }
@@ -273,7 +273,7 @@ const Number &Value::toNumber(bool *ok) const
 /************************************************
  *
  ************************************************/
-Number &Value::toNumber(bool *ok)
+Number &Value::asNumber(bool *ok)
 {
     return valueAs<Number>(Type::Number, ok);
 }
@@ -987,7 +987,7 @@ void debugValue(QDebug dbg, const Value &value, int indent = 0)
 
     case Value::Type::Array:
         dbg.nospace() << "[ ";
-        foreach (const Value v, value.toArray().values())
+        foreach (const Value v, value.asArray().values())
         {
             dbg.nospace() <<  v << " ";
         }
@@ -997,7 +997,7 @@ void debugValue(QDebug dbg, const Value &value, int indent = 0)
 
     case Value::Type::Dict:
     {
-        const QMap<QString, Value> &values = value.toDict().values();
+        const QMap<QString, Value> &values = value.asDict().values();
         dbg.nospace() << " <<\n";
         for (auto i = values.constBegin(); i != values.constEnd(); ++i)
         {
@@ -1012,23 +1012,23 @@ void debugValue(QDebug dbg, const Value &value, int indent = 0)
 
     // Trivial types
     case Value::Type::Bool:
-        dbg.space() << (value.toBool().value() ? "true" : "false");
+        dbg.space() << (value.asBool().value() ? "true" : "false");
         break;
 
     case Value::Type::HexString:
-        dbg.space() << value.toHexString().value();
+        dbg.space() << value.asHexString().value();
         break;
 
     case Value::Type::Link:
-        dbg.space() << value.toLink().objNum() << value.toLink().genNum() << "R";
+        dbg.space() << value.asLink().objNum() << value.asLink().genNum() << "R";
         break;
 
     case Value::Type::LiteralString:
-        dbg.space() << value.toLiteralString().value();
+        dbg.space() << value.asLiteralString().value();
         break;
 
     case Value::Type::Name:
-        dbg.space() << QString("/" + value.toName().value()).toLocal8Bit().data();
+        dbg.space() << QString("/" + value.asName().value()).toLocal8Bit().data();
         break;
 
     case Value::Type::Null:
@@ -1036,7 +1036,7 @@ void debugValue(QDebug dbg, const Value &value, int indent = 0)
         break;
 
     case Value::Type::Number:
-        dbg.nospace() << value.toNumber().value();
+        dbg.nospace() << value.asNumber().value();
         break;
     }
 }

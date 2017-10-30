@@ -185,7 +185,7 @@ void Writer::writeValue(const Value &value)
     case Value::Type::Array:
     {
         * mDevice << "[";
-        foreach (const Value v, value.toArray().values())
+        foreach (const Value v, value.asArray().values())
         {
             writeValue(v);
             *mDevice << " ";
@@ -198,7 +198,7 @@ void Writer::writeValue(const Value &value)
     //.....................................................
     case Value::Type::Bool:
     {
-        if (value.toBool().value())
+        if (value.asBool().value())
             *mDevice << "true";
         else
             *mDevice << "false";
@@ -210,7 +210,7 @@ void Writer::writeValue(const Value &value)
     //.....................................................
     case Value::Type::Dict:
     {
-        const QMap<QString, Value> &values = value.toDict().values();
+        const QMap<QString, Value> &values = value.asDict().values();
         *mDevice << "<<\n";
         QMap<QString, Value>::const_iterator i;
         for (i = values.constBegin(); i != values.constEnd(); ++i)
@@ -228,7 +228,7 @@ void Writer::writeValue(const Value &value)
     //.....................................................
     case Value::Type::HexString:
         mDevice->write("<");
-        mDevice->write(value.toHexString().value());
+        mDevice->write(value.asHexString().value());
         mDevice->write(">");
         break;
 
@@ -236,7 +236,7 @@ void Writer::writeValue(const Value &value)
     //.....................................................
     case Value::Type::Link:
     {
-        const Link link = value.toLink();
+        const Link link = value.asLink();
         *mDevice << link.objNum();
         *mDevice << " ";
         *mDevice << link.genNum();
@@ -248,7 +248,7 @@ void Writer::writeValue(const Value &value)
     //.....................................................
     case Value::Type::LiteralString:
         mDevice->write("(");
-        mDevice->write(value.toHexString().value());
+        mDevice->write(value.asHexString().value());
         mDevice->write(")");
         break;
 
@@ -256,7 +256,7 @@ void Writer::writeValue(const Value &value)
     //.....................................................
     case Value::Type::Name:
         mDevice->write("/");
-        mDevice->write(value.toName().value().toLatin1());
+        mDevice->write(value.asName().value().toLatin1());
         break;
 
 
@@ -268,7 +268,7 @@ void Writer::writeValue(const Value &value)
     //.....................................................
     case Value::Type::Number:
     {
-        *mDevice << value.toNumber().value();
+        *mDevice << value.asNumber().value();
         break;
     }
 

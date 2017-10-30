@@ -157,7 +157,7 @@ void Object::setGenNum(quint16 value)
  ************************************************/
 const Dict &Object::dict() const
 {
-    return d->mValue.toDict();
+    return d->mValue.asDict();
 }
 
 
@@ -166,7 +166,7 @@ const Dict &Object::dict() const
  ************************************************/
 Dict &Object::dict()
 {
-    return d->mValue.toDict();
+    return d->mValue.asDict();
 }
 
 
@@ -220,7 +220,7 @@ void Object::setStream(const QByteArray &value)
  ************************************************/
 QString Object::type() const
 {
-    return dict().value("Type").toName().value();
+    return dict().value("Type").asName().value();
 }
 
 
@@ -229,9 +229,9 @@ QString Object::type() const
  ************************************************/
 QString Object::subType() const
 {
-    QString s = dict().value("Subtype").toName().value();
+    QString s = dict().value("Subtype").asName().value();
     if (s.isEmpty())
-        return dict().value("S").toName().value();
+        return dict().value("S").asName().value();
     else
         return s;
 }

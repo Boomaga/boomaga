@@ -116,48 +116,48 @@ public:
 
     /// Converts the value to a PdfArray and returns it.
     /// If type() is not Array, an empty PdfArray will be returned.
-    const Array &toArray(bool *ok = NULL) const;
-          Array &toArray(bool *ok = NULL);
+    const Array &asArray(bool *ok = NULL) const;
+          Array &asArray(bool *ok = NULL);
 
     /// Converts the value to a PdfBool and returns it.
     /// If type() is not Bool, an empty PdfBool will be returned.
-    const Bool &toBool(bool *ok = NULL) const;
-          Bool &toBool(bool *ok = NULL);
+    const Bool &asBool(bool *ok = NULL) const;
+          Bool &asBool(bool *ok = NULL);
 
     /// Converts the value to a PdfDict and returns it.
     /// If type() is not Dict, an empty PdfDict will be returned.
-    const Dict &toDict(bool *ok = nullptr) const;
-          Dict &toDict(bool *ok = nullptr);
+    const Dict &asDict(bool *ok = nullptr) const;
+          Dict &asDict(bool *ok = nullptr);
 
     /// Converts the value to a PdfHexString and returns it.
     /// If type() is not HexString, an empty PdfHexString will be returned.
-    const HexString &toHexString(bool *ok = NULL) const;
-          HexString &toHexString(bool *ok = NULL);
+    const HexString &asHexString(bool *ok = NULL) const;
+          HexString &asHexString(bool *ok = NULL);
 
     /// Converts the value to a PdfLink and returns it.
     /// If type() is not Link, an empty PdfLink will be returned.
-    const Link &toLink(bool *ok = NULL) const;
-          Link &toLink(bool *ok = NULL);
+    const Link &asLink(bool *ok = NULL) const;
+          Link &asLink(bool *ok = NULL);
 
     /// Converts the value to a PdfLiteralString and returns it.
     /// If type() is not LiteralString, an empty PdfLiteralString will be returned.
-    const LiteralString &toLiteralString(bool *ok = NULL) const;
-          LiteralString &toLiteralString(bool *ok = NULL);
+    const LiteralString &asLiteralString(bool *ok = NULL) const;
+          LiteralString &asLiteralString(bool *ok = NULL);
 
     /// Converts the value to a PdfName and returns it.
     /// If type() is not Name, an empty PdfName will be returned.
-    const Name &toName(bool *ok = NULL) const;
-          Name &toName(bool *ok = NULL);
+    const Name &asName(bool *ok = NULL) const;
+          Name &asName(bool *ok = NULL);
 
     /// Converts the value to a PdfNull and returns it.
     /// If type() is not Null, an empty PdfNull will be returned.
-    const Null &toNull(bool *ok = NULL) const;
-          Null &toNull(bool *ok = NULL);
+    const Null &asNull(bool *ok = NULL) const;
+          Null &asNull(bool *ok = NULL);
 
     /// Converts the value to a PdfNum and returns it.
     /// If type() is not Num, an empty PdfNum will be returned.
-    const Number  &toNumber(bool *ok = NULL) const;
-          Number  &toNumber(bool *ok = NULL);
+    const Number  &asNumber(bool *ok = NULL) const;
+          Number  &asNumber(bool *ok = NULL);
 
 
     /// Returns true if the value is equal to other.
