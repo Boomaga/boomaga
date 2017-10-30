@@ -24,6 +24,7 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
+#include "math.h"
 #include "pdfreader.h"
 #include "pdfxref.h"
 #include "pdfobject.h"
@@ -584,21 +585,6 @@ qint64 Reader::skipCRLF(qint64 pos) const
 
     return 0;
 }
-
-
-/************************************************
- *
- ************************************************/
-//qint64 Reader::indexOf(char c, qint64 from) const
-//{
-//    for (qint64 i = from; i<mSize; i++)
-//    {
-//        if (mData[i] == c)
-//            return i;
-//    }
-
-//    return -1;
-//}
 
 
 /************************************************

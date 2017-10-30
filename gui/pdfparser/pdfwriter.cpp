@@ -27,7 +27,6 @@
 #include "pdfwriter.h"
 #include "pdfobject.h"
 #include "pdfvalue.h"
-#include "pdfvalue_p.h"
 #include "pdfxref.h"
 #include <climits>
 

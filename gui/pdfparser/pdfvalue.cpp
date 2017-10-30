@@ -26,9 +26,8 @@
 
 #include <assert.h>
 #include "pdfvalue.h"
-#include "pdfvalue_p.h"
 #include "pdfobject.h"
-
+#include <QThreadStorage>
 #include <QDebug>
 
 using namespace PDF;
@@ -37,18 +36,28 @@ using namespace PDF;
 //###############################################
 // PDF Value
 //###############################################
-Value::Value()
+Value::Value():
+    mType(Type::Undefined),
+    mValid(false),
+    mNumberValue(0),
+    mLinkObjNum(0),
+    mLinkGenNum(0),
+    mBoolValue(false)
 {
-    d = new ValueData(Type::Undefined);
 }
 
 
 /************************************************
  *
  ************************************************/
-Value::Value(Value::Type type)
+Value::Value(Value::Type type):
+    mType(type),
+    mValid(false),
+    mNumberValue(0),
+    mLinkObjNum(0),
+    mLinkGenNum(0),
+    mBoolValue(false)
 {
-    d = new ValueData(type);
 }
 
 
@@ -56,17 +65,15 @@ Value::Value(Value::Type type)
  *
  ************************************************/
 Value::Value(const Value &other):
-    d(other.d)
-{
-
-}
-
-
-/************************************************
- *
- ************************************************/
-Value::Value(ValueData *data):
-    d(data)
+    mType(        other.mType),
+    mValid(       other.mValid),
+    mArrayValues( other.mArrayValues),
+    mDictValues ( other.mDictValues),
+    mStringValue( other.mStringValue),
+    mNumberValue( other.mNumberValue),
+    mLinkObjNum(  other.mLinkObjNum),
+    mLinkGenNum(  other.mLinkGenNum),
+    mBoolValue(   other.mBoolValue)
 {
 
 }
@@ -77,7 +84,7 @@ Value::Value(ValueData *data):
  ************************************************/
 void Value::setValid(bool value)
 {
-    d->mValid = value;
+    mValid = value;
 }
 
 
@@ -95,64 +102,18 @@ Value::~Value()
  ************************************************/
 Value &Value::operator =(const Value &other)
 {
-    d = other.d;
+    mType        = other.mType;
+    mValid       = other.mValid;
+
+    mArrayValues = other.mArrayValues;
+    mBoolValue   = other.mBoolValue;
+    mDictValues  = other.mDictValues;
+    mStringValue = other.mStringValue;
+    mLinkObjNum  = other.mLinkObjNum;
+    mLinkGenNum  = other.mLinkGenNum;
+    mNumberValue = other.mNumberValue;
+
     return *this;
-}
-
-
-/************************************************
- *
- ************************************************/
-bool Value::isValid() const
-{
-    return d->mValid;
-}
-
-
-/************************************************
- *
- ************************************************/
-Value::Type Value::type() const
-{
-    return d->mType;
-}
-
-
-/************************************************
- *
- ************************************************/
-template <typename T>
-const T &valueAs(const Value *value, Value::Type type, bool *ok)
-{
-    if (value->type() == type)
-    {
-        if (ok) *ok = true;
-        return *(static_cast<const T*>(value));
-    }
-    else
-    {
-        if (ok) *ok = false;
-        return ValueData::emptyValue<T>();
-    }
-}
-
-
-/************************************************
- *
- ************************************************/
-template <typename T>
-T &valueAs(Value *value, Value::Type type, bool *ok)
-{
-    if (value->type() == type)
-    {
-        if (ok) *ok = true;
-        return *(static_cast<T*>(value));
-    }
-    else
-    {
-        if (ok) *ok = false;
-        return ValueData::emptyValue<T>();
-    }
 }
 
 
@@ -161,7 +122,7 @@ T &valueAs(Value *value, Value::Type type, bool *ok)
  ************************************************/
 const Array &Value::toArray(bool *ok) const
 {
-    return valueAs<Array>(this, Type::Array, ok);
+    return valueAs<Array>(Type::Array, ok);
 }
 
 
@@ -170,7 +131,7 @@ const Array &Value::toArray(bool *ok) const
  ************************************************/
 Array &Value::toArray(bool *ok)
 {
-    return valueAs<Array>(this, Type::Array, ok);
+    return valueAs<Array>(Type::Array, ok);
 }
 
 
@@ -179,7 +140,7 @@ Array &Value::toArray(bool *ok)
  ************************************************/
 const Bool &Value::toBool(bool *ok) const
 {
-    return valueAs<Bool>(this, Type::Bool, ok);
+    return valueAs<Bool>(Type::Bool, ok);
 }
 
 
@@ -188,7 +149,7 @@ const Bool &Value::toBool(bool *ok) const
  ************************************************/
 Bool &Value::toBool(bool *ok)
 {
-    return valueAs<Bool>(this, Type::Bool, ok);
+    return valueAs<Bool>(Type::Bool, ok);
 }
 
 
@@ -197,7 +158,7 @@ Bool &Value::toBool(bool *ok)
  ************************************************/
 const Dict &Value::toDict(bool *ok) const
 {
-    return valueAs<Dict>(this, Type::Dict, ok);
+    return valueAs<Dict>(Type::Dict, ok);
 }
 
 
@@ -206,7 +167,7 @@ const Dict &Value::toDict(bool *ok) const
  ************************************************/
 Dict &Value::toDict(bool *ok)
 {
-    return valueAs<Dict>(this, Type::Dict, ok);
+    return valueAs<Dict>(Type::Dict, ok);
 }
 
 
@@ -215,7 +176,7 @@ Dict &Value::toDict(bool *ok)
  ************************************************/
 const HexString &Value::toHexString(bool *ok) const
 {
-    return valueAs<HexString>(this, Type::HexString, ok);
+    return valueAs<HexString>(Type::HexString, ok);
 }
 
 
@@ -224,7 +185,7 @@ const HexString &Value::toHexString(bool *ok) const
  ************************************************/
 HexString &Value::toHexString(bool *ok)
 {
-    return valueAs<HexString>(this, Type::HexString, ok);
+    return valueAs<HexString>(Type::HexString, ok);
 }
 
 
@@ -233,7 +194,7 @@ HexString &Value::toHexString(bool *ok)
  ************************************************/
 const Link &Value::toLink(bool *ok) const
 {
-    return valueAs<Link>(this, Type::Link, ok);
+    return valueAs<Link>(Type::Link, ok);
 }
 
 
@@ -242,7 +203,7 @@ const Link &Value::toLink(bool *ok) const
  ************************************************/
 Link &Value::toLink(bool *ok)
 {
-    return valueAs<Link>(this, Type::Link, ok);
+    return valueAs<Link>(Type::Link, ok);
 }
 
 
@@ -251,7 +212,7 @@ Link &Value::toLink(bool *ok)
  ************************************************/
 const LiteralString &Value::toLiteralString(bool *ok) const
 {
-    return valueAs<LiteralString>(this, Type::LiteralString, ok);
+    return valueAs<LiteralString>(Type::LiteralString, ok);
 }
 
 
@@ -260,7 +221,7 @@ const LiteralString &Value::toLiteralString(bool *ok) const
  ************************************************/
 LiteralString &Value::toLiteralString(bool *ok)
 {
-    return valueAs<LiteralString>(this, Type::LiteralString, ok);
+    return valueAs<LiteralString>(Type::LiteralString, ok);
 }
 
 
@@ -269,7 +230,7 @@ LiteralString &Value::toLiteralString(bool *ok)
  ************************************************/
 const Name &Value::toName(bool *ok) const
 {
-    return valueAs<Name>(this, Type::Name, ok);
+    return valueAs<Name>(Type::Name, ok);
 }
 
 
@@ -278,7 +239,7 @@ const Name &Value::toName(bool *ok) const
  ************************************************/
 Name &Value::toName(bool *ok)
 {
-    return valueAs<Name>(this, Type::Name, ok);
+    return valueAs<Name>(Type::Name, ok);
 }
 
 
@@ -287,7 +248,7 @@ Name &Value::toName(bool *ok)
  ************************************************/
 const Null &Value::toNull(bool *ok) const
 {
-    return valueAs<Null>(this, Type::Null, ok);
+    return valueAs<Null>(Type::Null, ok);
 }
 
 
@@ -296,7 +257,7 @@ const Null &Value::toNull(bool *ok) const
  ************************************************/
 Null &Value::toNull(bool *ok)
 {
-    return valueAs<Null>(this, Type::Null, ok);
+    return valueAs<Null>(Type::Null, ok);
 }
 
 
@@ -305,7 +266,7 @@ Null &Value::toNull(bool *ok)
  ************************************************/
 const Number &Value::toNumber(bool *ok) const
 {
-    return valueAs<Number>(this, Type::Number, ok);
+    return valueAs<Number>(Type::Number, ok);
 }
 
 
@@ -314,7 +275,7 @@ const Number &Value::toNumber(bool *ok) const
  ************************************************/
 Number &Value::toNumber(bool *ok)
 {
-    return valueAs<Number>(this, Type::Number, ok);
+    return valueAs<Number>(Type::Number, ok);
 }
 
 
@@ -323,21 +284,21 @@ Number &Value::toNumber(bool *ok)
  ************************************************/
 bool Value::operator==(const Value &other) const
 {
-    if (d->mType != other.d->mType)
+    if (mType != other.mType)
         return false;
 
-    switch (d->mType)
+    switch (mType)
     {
     case Type::Undefined:       return true;
-    case Type::Array:           return d->mArrayValues == other.d->mArrayValues;
-    case Type::Bool:            return d->mBoolValue   == other.d->mBoolValue;
-    case Type::Dict:            return d->mDictValues  == other.d->mDictValues;
-    case Type::HexString:       return d->mStringValue == other.d->mStringValue;
-    case Type::Link:            return d->mLinkObjNum  == other.d->mLinkObjNum && d->mLinkGenNum == other.d->mLinkGenNum;
-    case Type::LiteralString:   return d->mStringValue == other.d->mStringValue;
-    case Type::Name:            return d->mStringValue == other.d->mStringValue;
+    case Type::Array:           return mArrayValues == other.mArrayValues;
+    case Type::Bool:            return mBoolValue   == other.mBoolValue;
+    case Type::Dict:            return mDictValues  == other.mDictValues;
+    case Type::HexString:       return mStringValue == other.mStringValue;
+    case Type::Link:            return mLinkObjNum  == other.mLinkObjNum && mLinkGenNum == other.mLinkGenNum;
+    case Type::LiteralString:   return mStringValue == other.mStringValue;
+    case Type::Name:            return mStringValue == other.mStringValue;
     case Type::Null:            return true;
-    case Type::Number:          return d->mNumberValue == other.d->mNumberValue;
+    case Type::Number:          return mNumberValue == other.mNumberValue;
     }
     return false;
 }
@@ -358,7 +319,7 @@ bool Value::operator!=(const Value &other) const
 Array::Array():
     Value(Type::Array)
 {
-    d->mValid = true;
+    mValid = true;
 }
 
 
@@ -375,12 +336,12 @@ Array::Array():
 Array::Array(const QRectF &rect):
     Value(Type::Array)
 {
-    d->mValid = true;
-    d->mArrayValues.resize(4);
-    d->mArrayValues[0] = PDF::Number(rect.left());
-    d->mArrayValues[1] = PDF::Number(rect.bottom());
-    d->mArrayValues[2] = PDF::Number(rect.right());
-    d->mArrayValues[3] = PDF::Number(rect.top());
+    mValid = true;
+    mArrayValues.resize(4);
+    mArrayValues[0] = PDF::Number(rect.left());
+    mArrayValues[1] = PDF::Number(rect.bottom());
+    mArrayValues[2] = PDF::Number(rect.right());
+    mArrayValues[3] = PDF::Number(rect.top());
 }
 
 
@@ -390,7 +351,7 @@ Array::Array(const QRectF &rect):
 Array::Array(const Array &other):
     Value(other)
 {
-    d->mValid = true;
+    mValid = true;
 }
 
 
@@ -399,8 +360,8 @@ Array::Array(const Array &other):
  ************************************************/
 Array &Array::operator =(const Array &other)
 {
-    d = other.d;
-    d->mValid = true;
+    Value::operator =(other);
+    mValid = true;
     return *this;
 }
 
@@ -410,8 +371,8 @@ Array &Array::operator =(const Array &other)
  ************************************************/
 const QVector<Value> Array::values() const
 {
-    assert(d->mType == Type::Array);
-    return d->mArrayValues;
+    assert(mType == Type::Array);
+    return mArrayValues;
 }
 
 
@@ -420,8 +381,8 @@ const QVector<Value> Array::values() const
  ************************************************/
 QVector<Value> &Array::values()
 {
-    assert(d->mType == Type::Array);
-    return d->mArrayValues;
+    assert(mType == Type::Array);
+    return mArrayValues;
 }
 
 
@@ -430,8 +391,8 @@ QVector<Value> &Array::values()
  ************************************************/
 void Array::append(const Value &value)
 {
-    assert(d->mType == Type::Array);
-    d->mArrayValues.append(value);
+    assert(mType == Type::Array);
+    mArrayValues.append(value);
 }
 
 
@@ -440,7 +401,7 @@ void Array::append(const Value &value)
  ************************************************/
 int Array::count(const Value &value) const
 {
-    return d->mArrayValues.count(value);
+    return mArrayValues.count(value);
 }
 
 
@@ -449,8 +410,8 @@ int Array::count(const Value &value) const
  ************************************************/
 void Array::remove(int i)
 {
-    assert(d->mType == Type::Array);
-    d->mArrayValues.remove(i);
+    assert(mType == Type::Array);
+    mArrayValues.remove(i);
 }
 
 
@@ -459,8 +420,8 @@ void Array::remove(int i)
  ************************************************/
 Array &Array::operator<<(const Value &value)
 {
-    assert(d->mType == Type::Array);
-    d->mArrayValues.operator <<(value);
+    assert(mType == Type::Array);
+    mArrayValues.operator <<(value);
     return *this;
 }
 
@@ -471,8 +432,8 @@ Array &Array::operator<<(const Value &value)
 Bool::Bool(bool value):
     Value(Type::Bool)
 {
-    d->mBoolValue = value;
-    d->mValid = true;
+    mBoolValue = value;
+    mValid = true;
 }
 
 
@@ -482,7 +443,7 @@ Bool::Bool(bool value):
 Bool::Bool(const Bool &other):
     Value(other)
 {
-    d->mValid = true;
+    mValid = true;
 }
 
 
@@ -491,8 +452,8 @@ Bool::Bool(const Bool &other):
  ************************************************/
 Bool &Bool::operator =(const Bool &other)
 {
-    d = other.d;
-    d->mValid = true;
+    Value::operator =(other);
+    mValid = true;
     return *this;
 }
 
@@ -502,8 +463,8 @@ Bool &Bool::operator =(const Bool &other)
  ************************************************/
 bool Bool::value() const
 {
-    assert(d->mType == Type::Bool);
-    return d->mBoolValue;
+    assert(mType == Type::Bool);
+    return mBoolValue;
 }
 
 
@@ -512,9 +473,9 @@ bool Bool::value() const
  ************************************************/
 void Bool::setValue(bool value)
 {
-    assert(d->mType == Type::Bool);
+    assert(mType == Type::Bool);
     if (isValid())
-        d->mBoolValue = value;
+        mBoolValue = value;
 }
 
 
@@ -524,7 +485,7 @@ void Bool::setValue(bool value)
 Dict::Dict():
     Value(Type::Dict)
 {
-    d->mValid = true;
+    mValid = true;
 }
 
 
@@ -534,7 +495,7 @@ Dict::Dict():
 Dict::Dict(const Dict &other):
     Value(other)
 {
-     d->mValid = true;
+     mValid = true;
 }
 
 
@@ -543,8 +504,8 @@ Dict::Dict(const Dict &other):
  ************************************************/
 Dict &Dict::operator =(const Dict &other)
 {
-    d = other.d;
-    d->mValid = true;
+    Value::operator =(other);
+    mValid = true;
     return *this;
 }
 
@@ -554,8 +515,8 @@ Dict &Dict::operator =(const Dict &other)
  ************************************************/
 QMap<QString, Value> Dict::values()
 {
-    assert(d->mType == Type::Dict);
-    return d->mDictValues;
+    assert(mType == Type::Dict);
+    return mDictValues;
 }
 
 
@@ -564,8 +525,8 @@ QMap<QString, Value> Dict::values()
  ************************************************/
 const QMap<QString, Value> &Dict::values() const
 {
-    assert(d->mType == Type::Dict);
-    return d->mDictValues;
+    assert(mType == Type::Dict);
+    return mDictValues;
 }
 
 
@@ -574,8 +535,8 @@ const QMap<QString, Value> &Dict::values() const
  ************************************************/
 int Dict::size() const
 {
-    assert(d->mType == Type::Dict);
-    return d->mDictValues.size();
+    assert(mType == Type::Dict);
+    return mDictValues.size();
 }
 
 
@@ -584,8 +545,8 @@ int Dict::size() const
  ************************************************/
 bool Dict::isEmpty() const
 {
-    assert(d->mType == Type::Dict);
-    return d->mDictValues.isEmpty();
+    assert(mType == Type::Dict);
+    return mDictValues.isEmpty();
 }
 
 
@@ -594,8 +555,8 @@ bool Dict::isEmpty() const
  ************************************************/
 bool Dict::contains(const QString &key) const
 {
-    assert(d->mType == Type::Dict);
-    return d->mDictValues.contains(key);
+    assert(mType == Type::Dict);
+    return mDictValues.contains(key);
 }
 
 
@@ -604,8 +565,8 @@ bool Dict::contains(const QString &key) const
  ************************************************/
 const Value Dict::value(const QString &key, const Value &defaultValue) const
 {
-    assert(d->mType == Type::Dict);
-    return d->mDictValues.value(key, defaultValue);
+    assert(mType == Type::Dict);
+    return mDictValues.value(key, defaultValue);
 }
 
 
@@ -614,8 +575,8 @@ const Value Dict::value(const QString &key, const Value &defaultValue) const
  ************************************************/
 Value &Dict::operator[](const QString &key)
 {
-    assert(d->mType == Type::Dict);
-    return d->mDictValues[key];
+    assert(mType == Type::Dict);
+    return mDictValues[key];
 }
 
 
@@ -624,8 +585,8 @@ Value &Dict::operator[](const QString &key)
  ************************************************/
 const Value Dict::operator[](const QString &key) const
 {
-    assert(d->mType == Type::Dict);
-    return d->mDictValues[key];
+    assert(mType == Type::Dict);
+    return mDictValues[key];
 }
 
 
@@ -636,8 +597,8 @@ void Dict::insert(const QString &key, const Value &value)
 {
     if (isValid())
     {
-        assert(d->mType == Type::Dict);
-        d->mDictValues.insert(key, value);
+        assert(mType == Type::Dict);
+        mDictValues.insert(key, value);
     }
 }
 
@@ -656,8 +617,8 @@ void Dict::insert(const QString &key, double value)
  ************************************************/
 QStringList Dict::keys() const
 {
-    assert(d->mType == Type::Dict);
-    QStringList res = d->mDictValues.keys();
+    assert(mType == Type::Dict);
+    QStringList res = mDictValues.keys();
     res.sort();
     return res;
 }
@@ -669,8 +630,8 @@ QStringList Dict::keys() const
 HexString::HexString(const QString &value):
     Value(Type::HexString)
 {
-    d->mValid = true;
-    d->mStringValue = value.toLocal8Bit().toHex();
+    mValid = true;
+    mStringValue = value.toLocal8Bit().toHex();
 }
 
 
@@ -680,7 +641,7 @@ HexString::HexString(const QString &value):
 HexString::HexString(const HexString &other):
     Value(other)
 {
-    d->mValid = true;
+    mValid = true;
 }
 
 
@@ -689,8 +650,8 @@ HexString::HexString(const HexString &other):
  ************************************************/
 HexString &HexString::operator =(const HexString &other)
 {
-    d = other.d;
-    d->mValid = true;
+    Value::operator =(other);
+    mValid = true;
     return *this;
 }
 
@@ -700,8 +661,8 @@ HexString &HexString::operator =(const HexString &other)
  ************************************************/
 QByteArray HexString::value() const
 {
-    assert(d->mType == Type::HexString);
-    return d->mStringValue;
+    assert(mType == Type::HexString);
+    return mStringValue;
 }
 
 
@@ -710,9 +671,9 @@ QByteArray HexString::value() const
  ************************************************/
 void HexString::setValue(const QByteArray &value)
 {
-    assert(d->mType == Type::HexString);
-    if (d->mValid)
-        d->mStringValue = value;
+    assert(mType == Type::HexString);
+    if (mValid)
+        mStringValue = value;
 }
 
 
@@ -722,9 +683,9 @@ void HexString::setValue(const QByteArray &value)
 Link::Link(quint32 objNum, quint16 genNum):
     Value(Type::Link)
 {
-    d->mLinkObjNum = objNum;
-    d->mLinkGenNum = genNum;
-    d->mValid = true;
+    mLinkObjNum = objNum;
+    mLinkGenNum = genNum;
+    mValid = true;
 }
 
 
@@ -735,9 +696,9 @@ Link::Link(quint32 objNum, quint16 genNum):
 Link::Link(const Object &obj):
     Value(Type::Link)
 {
-    d->mLinkObjNum = obj.objNum();
-    d->mLinkGenNum = obj.genNum();
-    d->mValid = true;
+    mLinkObjNum = obj.objNum();
+    mLinkGenNum = obj.genNum();
+    mValid = true;
 }
 
 
@@ -747,7 +708,7 @@ Link::Link(const Object &obj):
 Link::Link(const Link &other):
     Value(other)
 {
-    d->mValid = true;
+    mValid = true;
 }
 
 
@@ -756,8 +717,8 @@ Link::Link(const Link &other):
  ************************************************/
 Link &Link::operator =(const Link &other)
 {
-    d = other.d;
-    d->mValid = true;
+    Value::operator =(other);
+    mValid = true;
     return *this;
 }
 
@@ -767,9 +728,9 @@ Link &Link::operator =(const Link &other)
  ************************************************/
 Link &Link::operator =(const Object &obj)
 {
-    setObjNum(obj.objNum());
-    setGenNum(obj.genNum());
-    d->mValid = true;
+    mLinkObjNum = obj.objNum();
+    mLinkGenNum = obj.genNum();
+    mValid = true;
     return *this;
 }
 
@@ -779,8 +740,8 @@ Link &Link::operator =(const Object &obj)
  ************************************************/
 quint32 Link::objNum() const
 {
-    assert(d->mType == Type::Link);
-    return d->mLinkObjNum;
+    assert(mType == Type::Link);
+    return mLinkObjNum;
 }
 
 
@@ -789,9 +750,9 @@ quint32 Link::objNum() const
  ************************************************/
 void Link::setObjNum(quint32 value)
 {
-    assert(d->mType == Type::Link);
-    if (d->mValid)
-        d->mLinkObjNum = value;
+    assert(mType == Type::Link);
+    if (mValid)
+        mLinkObjNum = value;
 }
 
 
@@ -800,8 +761,8 @@ void Link::setObjNum(quint32 value)
  ************************************************/
 quint16 Link::genNum() const
 {
-    assert(d->mType == Type::Link);
-    return d->mLinkGenNum;
+    assert(mType == Type::Link);
+    return mLinkGenNum;
 }
 
 
@@ -810,9 +771,9 @@ quint16 Link::genNum() const
  ************************************************/
 void Link::setGenNum(quint16 value)
 {
-    assert(d->mType == Type::Link);
-    if (d->mValid)
-        d->mLinkGenNum = value;
+    assert(mType == Type::Link);
+    if (mValid)
+        mLinkGenNum = value;
 }
 
 
@@ -822,8 +783,8 @@ void Link::setGenNum(quint16 value)
 LiteralString::LiteralString(const QString &value):
     Value(Type::LiteralString)
 {
-    d->mValid = true;
-    d->mStringValue = value.toLocal8Bit();
+    mValid = true;
+    mStringValue = value.toLocal8Bit();
 }
 
 
@@ -833,7 +794,7 @@ LiteralString::LiteralString(const QString &value):
 LiteralString::LiteralString(const LiteralString &other):
     Value(other)
 {
-    d->mValid = true;
+    mValid = true;
 }
 
 
@@ -842,8 +803,8 @@ LiteralString::LiteralString(const LiteralString &other):
  ************************************************/
 LiteralString &LiteralString::operator =(const LiteralString &other)
 {
-    d = other.d;
-    d->mValid = true;
+    Value::operator =(other);
+    mValid = true;
     return *this;
 }
 
@@ -853,8 +814,8 @@ LiteralString &LiteralString::operator =(const LiteralString &other)
  ************************************************/
 QByteArray LiteralString::value() const
 {
-    assert(d->mType == Type::LiteralString);
-    return d->mStringValue;
+    assert(mType == Type::LiteralString);
+    return mStringValue;
 }
 
 
@@ -863,9 +824,9 @@ QByteArray LiteralString::value() const
  ************************************************/
 void LiteralString::setValue(const QByteArray &value)
 {
-    assert(d->mType == Type::LiteralString);
-    if (d->mValid)
-        d->mStringValue = value;
+    assert(mType == Type::LiteralString);
+    if (mValid)
+        mStringValue = value;
 }
 
 
@@ -875,8 +836,8 @@ void LiteralString::setValue(const QByteArray &value)
 Name::Name(const QString &name):
     Value(Type::Name)
 {
-    d->mValid = true;
-    d->mStringValue = name.toLatin1();
+    mValid = true;
+    mStringValue = name.toLatin1();
 }
 
 
@@ -886,7 +847,7 @@ Name::Name(const QString &name):
 Name::Name(const Name &other):
     Value(other)
 {
-    d->mValid = true;
+    mValid = true;
 }
 
 
@@ -895,8 +856,8 @@ Name::Name(const Name &other):
  ************************************************/
 Name &Name::operator =(const Name &other)
 {
-    d = other.d;
-    d->mValid = true;
+    Value::operator =(other);
+    mValid = true;
     return *this;
 }
 
@@ -906,8 +867,8 @@ Name &Name::operator =(const Name &other)
  ************************************************/
 QString Name::value() const
 {
-    assert(d->mType == Type::Name);
-    return d->mStringValue;
+    assert(mType == Type::Name);
+    return mStringValue;
 }
 
 
@@ -916,9 +877,9 @@ QString Name::value() const
  ************************************************/
 void Name::setValue(const QString &value)
 {
-    assert(d->mType == Type::Name);
-    if (d->mValid)
-        d->mStringValue = value.toLatin1();
+    assert(mType == Type::Name);
+    if (mValid)
+        mStringValue = value.toLatin1();
 }
 
 
@@ -928,7 +889,7 @@ void Name::setValue(const QString &value)
 Null::Null():
     Value(Type::Null)
 {
-    d->mValid = true;
+    mValid = true;
 }
 
 
@@ -938,7 +899,7 @@ Null::Null():
 Null::Null(const Null &other):
     Value(other)
 {
-    d->mValid = true;
+    mValid = true;
 }
 
 
@@ -947,8 +908,8 @@ Null::Null(const Null &other):
  ************************************************/
 Null &Null::operator =(const Null &other)
 {
-    d = other.d;
-    d->mValid = true;
+    Value::operator =(other);
+    mValid = true;
     return *this;
 }
 
@@ -959,8 +920,8 @@ Null &Null::operator =(const Null &other)
 Number::Number(double value):
     Value(Value::Type::Number)
 {
-    d->mNumberValue = value;
-    d->mValid = true;
+    mNumberValue = value;
+    mValid = true;
 }
 
 
@@ -970,7 +931,7 @@ Number::Number(double value):
 Number::Number(const Number &other):
     Value(other)
 {
-    d->mValid = true;
+    mValid = true;
 }
 
 
@@ -979,8 +940,8 @@ Number::Number(const Number &other):
  ************************************************/
 Number &Number::operator =(const Number &other)
 {
-    d = other.d;
-    d->mValid = true;
+    Value::operator =(other);
+    mValid = true;
     return *this;
 }
 
@@ -990,7 +951,7 @@ Number &Number::operator =(const Number &other)
  ************************************************/
 double Number::value() const
 {
-    return d->mNumberValue;
+    return mNumberValue;
 }
 
 
@@ -1000,7 +961,7 @@ double Number::value() const
 void Number::setValue(double value)
 {
     if (isValid())
-        d->mNumberValue = value;
+        mNumberValue = value;
 }
 
 
@@ -1088,4 +1049,46 @@ QDebug operator<<(QDebug dbg, const Value &value)
 {
     debugValue(dbg, value, 0);
     return dbg;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+template <typename T>
+const T &Value::valueAs(Value::Type type, bool *ok) const
+{
+    if (mType == type)
+    {
+        if (ok) *ok = true;
+        return *(static_cast<const T*>(this));
+    }
+    else
+    {
+        if (ok) *ok = false;
+        static QThreadStorage<T> stor;
+        stor.localData().setValid(false);
+        return stor.localData();
+    }
+}
+
+
+/************************************************
+ *
+ ************************************************/
+template <typename T>
+T &Value::valueAs(Value::Type type, bool *ok)
+{
+    if (mType == type)
+    {
+        if (ok) *ok = true;
+        return *(static_cast<T*>(this));
+    }
+    else
+    {
+        if (ok) *ok = false;
+        static QThreadStorage<T> stor;
+        stor.localData().setValid(false);
+        return stor.localData();
+    }
 }

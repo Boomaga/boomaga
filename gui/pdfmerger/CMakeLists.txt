@@ -35,7 +35,6 @@ set(MERGER_HEADERS
     pdfmergeripc.h
     ../pdfparser/pdfxref.h
     ../pdfparser/pdfvalue.h
-    ../pdfparser/pdfvalue_p.h
     ../pdfparser/pdfobject.h
     ../pdfparser/pdfreader.h
     ../pdfparser/pdfwriter.h

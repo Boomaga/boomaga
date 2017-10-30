@@ -27,7 +27,6 @@
 #include "pdfobject.h"
 #include "pdftypes.h"
 #include "pdfvalue.h"
-#include "pdfvalue_p.h"
 
 #include <QDebug>
 #include <QSharedData>

@@ -27,7 +27,6 @@
 #ifndef PDFVALUE_H
 #define PDFVALUE_H
 
-#include <QExplicitlySharedDataPointer>
 #include <QVector>
 #include <QMap>
 #include <QStringList>
@@ -55,7 +54,8 @@ class Value {
     friend class Object;
     friend class Reader;
     friend class Writer;
-    friend class ValueData;
+
+
 public:
     enum class Type {
         Undefined = 0,
@@ -77,9 +77,9 @@ public:
     Value &operator =(const Value &other);
 
     /// Returns true if the values isn't empty; otherwise returns false.
-    bool isValid() const;
+    bool isValid() const { return mValid; }
 
-    Type type() const;
+    Type type() const { return mType; }
 
     /// Returns true if the value contains a PDF array.
     inline bool isArray() const { return type() == Type::Array; }
@@ -168,9 +168,27 @@ public:
 
 protected:
     Value(Type type);
-    Value(ValueData *data);
     void setValid(bool value);
-    QSharedDataPointer<ValueData> d;
+
+    Type mType;
+    bool mValid;
+
+    QVector<Value> mArrayValues;
+    QMap<QString, Value> mDictValues;
+    QByteArray mStringValue;
+    double mNumberValue;
+    quint32 mLinkObjNum;
+    quint16 mLinkGenNum;
+    bool mBoolValue;
+
+private:
+
+    template <typename T>
+    const T &valueAs(Value::Type type, bool *ok) const;
+
+    template <typename T>
+    T &valueAs(Value::Type type, bool *ok);
+
 };
 
 
