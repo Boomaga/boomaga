@@ -41,10 +41,9 @@ using namespace PDF;
  ************************************************/
 Writer::Writer():
     mDevice(nullptr),
-    mXRefTable(new XRefTable()),
     mXRefPos(0)
 {
-
+    mXRefTable.insert(0, XRefEntry(0, 0, 65535, XRefEntry::Free));
 }
 
 
@@ -53,10 +52,9 @@ Writer::Writer():
  ************************************************/
 Writer::Writer(QIODevice *device):
     mDevice(device),
-    mXRefTable(new XRefTable()),
     mXRefPos(0)
 {
-
+    mXRefTable.insert(0, XRefEntry(0, 0, 65535, XRefEntry::Free));
 }
 
 /************************************************
@@ -64,7 +62,6 @@ Writer::Writer(QIODevice *device):
  ************************************************/
 Writer::~Writer()
 {
-    delete mXRefTable;
 }
 
 
@@ -116,29 +113,21 @@ QIODevice &operator<<(QIODevice &out, const double value)
 /************************************************
  *
  ************************************************/
-QIODevice &operator<<(QIODevice &out, const qint16 value)
+QIODevice &operator<<(QIODevice &out, const quint64 value)
 {
-    out.write(QString::number(value).toLatin1());
-    return out;
-}
+    const int BUF_SIZE(64);
+    char buf[BUF_SIZE+1];
+    buf[BUF_SIZE]=0;
+    int i(BUF_SIZE);
 
+    quint64 n = value;
+    do
+    {
+        buf[--i] = (n % 10 ) + '0';
+        n /= 10;
+    } while(n);
 
-/************************************************
- *
- ************************************************/
-QIODevice &operator<<(QIODevice &out, const quint16 value)
-{
-    out.write(QString::number(value).toLatin1());
-    return out;
-}
-
-
-/************************************************
- *
- ************************************************/
-QIODevice &operator<<(QIODevice &out, const qint32 value)
-{
-    out.write(QString::number(value).toLatin1());
+    out.write(buf + i, BUF_SIZE - i);
     return out;
 }
 
@@ -148,8 +137,16 @@ QIODevice &operator<<(QIODevice &out, const qint32 value)
  ************************************************/
 QIODevice &operator<<(QIODevice &out, const quint32 value)
 {
-    out.write(QString::number(value).toLatin1());
-    return out;
+    return operator<<(out, quint64(value));
+}
+
+
+/************************************************
+ *
+ ************************************************/
+QIODevice &operator<<(QIODevice &out, const quint16 value)
+{
+    return operator<<(out, quint64(value));
 }
 
 
@@ -158,7 +155,28 @@ QIODevice &operator<<(QIODevice &out, const quint32 value)
  ************************************************/
 QIODevice &operator<<(QIODevice &out, const qint64 value)
 {
-    out.write(QString::number(value).toLatin1());
+    const int BUF_SIZE(64);
+    char buf[BUF_SIZE+1];
+    buf[BUF_SIZE]=0;
+    int i(BUF_SIZE);
+    quint64 n(value);
+    bool neg = false;
+    if (value < 0)
+    {
+        neg = true;
+        n= -n;
+    }
+
+    do
+    {
+        buf[--i] = (n % 10 ) + '0';
+        n /= 10;
+    } while(n);
+
+    if (neg)
+        buf[--i] = '-';
+
+    out.write(buf + i, BUF_SIZE - i);
     return out;
 }
 
@@ -166,10 +184,18 @@ QIODevice &operator<<(QIODevice &out, const qint64 value)
 /************************************************
  *
  ************************************************/
-QIODevice &operator<<(QIODevice &out, const quint64 value)
+QIODevice &operator<<(QIODevice &out, const qint16 value)
 {
-    out.write(QString::number(value).toLatin1());
-    return out;
+    return operator<<(out, qint64(value));
+}
+
+
+/************************************************
+ *
+ ************************************************/
+QIODevice &operator<<(QIODevice &out, const qint32 value)
+{
+    return operator<<(out, qint64(value));
 }
 
 
@@ -300,48 +326,74 @@ void Writer::writeXrefTable()
 {
     mXRefPos = mDevice->pos();
     mDevice->write("xref\n");
-    uint start = 0;
-    uint end = 0;
-    foreach (const XRefEntry &entry, *mXRefTable)
+    auto start = mXRefTable.constBegin();
+
+    while (start != mXRefTable.constEnd())
     {
-        if (entry.type == XRefEntry::Type::Free)
-            continue;
-
-        if (entry.objNum > end+1)
+        auto it(start);
+        PDF::ObjNum prev = start.value().objNum;
+        for (; it != mXRefTable.constEnd(); ++it)
         {
-            writeXrefSection(start, end);
-            start = entry.objNum;
-        }
-        end = entry.objNum;
-    }
+            if (it.value().objNum - prev > 1)
+                break;
 
-    if (end > start)
-        writeXrefSection(start, end);
+            prev = it.value().objNum;
+        }
+
+        writeXrefSection(start, prev - start.value().objNum + 1);
+        start = it;
+    }
 }
 
 
 /************************************************
  *
  ************************************************/
-void Writer::writeXrefSection(uint from, uint to)
+void Writer::writeXrefSection(const XRefTable::const_iterator &start, quint32 count)
 {
-    mDevice->write(QString("%1 %2\n").arg(from).arg(to-from).toLatin1());
-    if (from == 0)
-    {
-        mDevice->write("0000000000 65535 f \n");
-        from++;
-    }
+    *mDevice << start.value().objNum;
+    *mDevice << " ";
+    *mDevice << count;
+    *mDevice << "\n";
 
-    auto it  = mXRefTable->find(from);
-    auto end = mXRefTable->find(to);
-    ++end;
-    while (it != end)
+    const uint bufSize = 1024 * 20;
+    char buf[bufSize];
+
+    XRefTable::const_iterator it = start;
+    for (quint32 i = 0; i<count;)
     {
-        XRefEntry &entry = it.value();
-        *mDevice << QString("%1 %2 n \n")
-                   .arg(entry.pos,    10, 10, QChar('0'))
-                   .arg(entry.genNum,  5, 10, QChar('0'));
-        ++it;
+        uint pos = 0;
+        for (; pos < bufSize && i<count; ++i)
+        {
+            const XRefEntry &entry = it.value();
+            buf[pos +  0] = (entry.pos / 1000000000) % 10 + '0';
+            buf[pos +  1] = (entry.pos / 100000000) % 10 + '0';
+            buf[pos +  2] = (entry.pos / 10000000) % 10 + '0';
+            buf[pos +  3] = (entry.pos / 1000000) % 10 + '0';
+            buf[pos +  4] = (entry.pos / 100000) % 10 + '0';
+            buf[pos +  5] = (entry.pos / 10000) % 10 + '0';
+            buf[pos +  6] = (entry.pos / 1000) % 10 + '0';
+            buf[pos +  7] = (entry.pos / 100) % 10 + '0';
+            buf[pos +  8] = (entry.pos / 10) % 10 + '0';
+            buf[pos +  9] = (entry.pos / 1) % 10 + '0';
+
+            buf[pos + 10] = ' ';
+
+            buf[pos + 11] = (entry.genNum / 10000) % 10 + '0';
+            buf[pos + 12] = (entry.genNum / 1000) % 10 + '0';
+            buf[pos + 13] = (entry.genNum / 100) % 10 + '0';
+            buf[pos + 14] = (entry.genNum / 10) % 10 + '0';
+            buf[pos + 15] = (entry.genNum / 1) % 10 + '0';
+
+            buf[pos + 16] = ' ';
+            buf[pos + 17] = 'n';
+            buf[pos + 18] = ' ';
+            buf[pos + 19] = '\n';
+
+            pos+=20;
+            ++it;
+        }
+        mDevice->write(buf, pos);
     }
 }
 
@@ -365,7 +417,7 @@ void Writer::writeTrailer(const Link &root, const Link &info)
     // Start - The total number of entries in the file’s cross-reference table,
     // as defined by the combination of the original section and all update sections.
     // Equivalently, this value is 1 greater than the highest object number used in the file.
-    trailerDict.insert("Size", mXRefTable->maxObjNum() + 1);
+    trailerDict.insert("Size", mXRefTable.maxObjNum() + 1);
 
     // Root - (Required; must be an indirect reference) The catalog dictionary for the
     // PDF document contained in the file (see Section 3.6.1, “Document Catalog”).
@@ -382,7 +434,7 @@ void Writer::writeTrailer(const Link &root, const Link &info)
     // Although this entry is optional, its absence might prevent the file from
     // functioning in some workflows that depend on files being uniquely identified.
     QCryptographicHash idHash(QCryptographicHash::Md5);
-    foreach (const XRefEntry &xref, *mXRefTable)
+    foreach (const XRefEntry &xref, mXRefTable)
     {
         idHash.addData(QString("%1 %2 %3").arg(xref.pos).arg(xref.objNum).arg(xref.genNum).toLatin1());
     }
@@ -428,7 +480,8 @@ void Writer::writeComment(const QString &comment)
 void Writer::writeObject(const Object &object)
 {
     *mDevice << "\n";
-    mXRefTable->insert(object.objNum(), XRefEntry(mDevice->pos(), object.objNum(), object.genNum(), XRefEntry::Used));
+    mXRefTable.insert(object.objNum(), XRefEntry(mDevice->pos(), object.objNum(), object.genNum(), XRefEntry::Used));
+
     *mDevice << object.objNum();
     *mDevice << " ";
     *mDevice << object.genNum();
@@ -442,6 +495,6 @@ void Writer::writeObject(const Object &object)
         mDevice->write(object.stream());
         *mDevice << "\nendstream";
     }
-    *mDevice << "\nendobj";
-    *mDevice << "\n";
+
+    *mDevice << "\nendobj\n";
 }

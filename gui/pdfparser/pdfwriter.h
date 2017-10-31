@@ -82,18 +82,18 @@ public:
     void writeTrailer(const Link &root, const Link &info);
     void writeTrailer(const Dict &trailerDict);
 
-    const XRefTable xRefTable() const { return *mXRefTable; }
+    const XRefTable xRefTable() const { return mXRefTable; }
 
     void writeComment(const QString &comment);
 
 private:
     QIODevice *mDevice;
 
-    XRefTable *mXRefTable;
+    XRefTable mXRefTable;
     qint64 mXRefPos;
 
     void writeValue(const Value &value);
-    void writeXrefSection(uint from, uint to);
+    void writeXrefSection(const XRefTable::const_iterator &start, quint32 count);
 };
 
 } // namespace PDF

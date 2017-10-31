@@ -101,29 +101,14 @@ void PdfProcessor::run(PDF::Writer *writer, quint32 objNumOffset)
 {
     mWriter = writer;
     mObjNumOffset = objNumOffset;
-    mSkippedObjects.clear();
 
     PDF::Object catalog = mReader->getObject(mReader->trailerDict().value("Root").asLink());
-    mSkippedObjects << catalog.objNum();
     PDF::Object pages   = mReader->getObject(catalog.dict().value("Pages").asLink());
 
     mPageInfo.reserve(pages.dict().value("Count").asNumber().value());
 
     PDF::Dict dict;
     walkPageTree(0, pages, dict);
-
-    foreach (const PDF::XRefEntry &xref, mReader->xRefTable())
-    {
-        if (xref.type == PDF::XRefEntry::Type::Free)
-            continue;
-
-        if (mSkippedObjects.contains(xref.objNum))
-            continue;
-
-        PDF::Object obj = mReader->getObject(xref.objNum, xref.genNum);
-        mWriter->writeObject(addOffset(obj, mObjNumOffset));
-
-    }
 
     writer = nullptr;
 }
@@ -173,7 +158,6 @@ int PdfProcessor::walkPageTree(int pageNum, const PDF::Object &page, const PDF::
     // Type = Pages .......................................
     if (page.type() == "Pages")
     {
-        mSkippedObjects << page.objNum();
         const PDF::Dict &pageDict = page.dict();
         PDF::Dict dict = inherited;
         if (pageDict.contains("Resources"))
@@ -199,8 +183,6 @@ int PdfProcessor::walkPageTree(int pageNum, const PDF::Object &page, const PDF::
     // Type = Page ........................................
     if (page.type() == "Page")
     {
-        mSkippedObjects << page.objNum();
-
         PdfPageInfo pageInfo;
         try
         {
@@ -301,7 +283,6 @@ PDF::ObjNum PdfProcessor::writeContentAsXObject(const PDF::Link &contentLink, co
     if (!contentLink.isValid())
         throw "Page has incorrect content type";
 
-    mSkippedObjects << contentLink.objNum();
     const PDF::Object content = mReader->getObject(contentLink);
     PDF::Object xObj;
     xObj.setObjNum(content.objNum());
@@ -322,7 +303,7 @@ PDF::ObjNum PdfProcessor::writeContentAsXObject(const PDF::Link &contentLink, co
     if (pageDict.contains("StructParents")) xObj.dict().insert("StructParents", pageDict.value("StructParents"));
 
     xObj.setStream(content.stream());
-    mWriter->writeObject(addOffset(xObj, mObjNumOffset));
+    addOffset(xObj);
     return xObj.objNum();
 }
 
@@ -330,12 +311,30 @@ PDF::ObjNum PdfProcessor::writeContentAsXObject(const PDF::Link &contentLink, co
 /************************************************
  *
  ************************************************/
-void offsetValue(PDF::Value &value, const quint32 offset)
+PDF::Object &PdfProcessor::addOffset(PDF::Object &obj)
+{
+    obj.setObjNum(obj.objNum() + mObjNumOffset);
+    offsetValue(obj.value());
+    mWriter->writeObject(obj);
+    return obj;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void PdfProcessor::offsetValue(PDF::Value &value)
 {
     if (value.isLink())
     {
         PDF::Link &link = value.asLink();
-        link.setObjNum(link.objNum() + offset);
+        if (!mProcessedObjects.contains(link.objNum()))
+        {
+            mProcessedObjects << link.objNum();
+            PDF::Object obj = mReader->getObject(link);
+            addOffset(obj);
+        }
+        link.setObjNum(link.objNum() + mObjNumOffset);
     }
 
     if (value.isArray())
@@ -344,7 +343,7 @@ void offsetValue(PDF::Value &value, const quint32 offset)
 
         for (int i=0; i<arr.count(); ++i)
         {
-            offsetValue(arr[i], offset);
+            offsetValue(arr[i]);
         }
     }
 
@@ -354,22 +353,7 @@ void offsetValue(PDF::Value &value, const quint32 offset)
 
         foreach (auto &key, dict.keys())
         {
-            offsetValue(dict[key], offset);
+            offsetValue(dict[key]);
         }
     }
-}
-
-
-/************************************************
- *
- ************************************************/
-PDF::Object &PdfProcessor::addOffset(PDF::Object &obj, quint32 offset)
-{
-    if (offset == 0)
-        return obj;
-
-    obj.setObjNum(obj.objNum() + offset);
-    offsetValue(obj.value(), offset);
-
-    return obj;
 }

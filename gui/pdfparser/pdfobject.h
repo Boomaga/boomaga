@@ -48,11 +48,11 @@ public:
 
     virtual ~Object();
 
-    quint32 objNum() const;
-    void setObjNum(quint32 value);
+    PDF::ObjNum objNum() const { return mObjNum; }
+    void setObjNum(PDF::ObjNum value);
 
-    quint16 genNum() const;
-    void setGenNum(quint16 value);
+    PDF::GenNum genNum() const { return mGenNum; }
+    void setGenNum(PDF::GenNum value);
 
     const Dict &dict() const;
           Dict &dict();
@@ -73,6 +73,8 @@ public:
 
 private:
     QExplicitlySharedDataPointer<ObjectData> d;
+    PDF::ObjNum mObjNum;
+    PDF::GenNum mGenNum;
 };
 
 } // namespace PDF

@@ -37,16 +37,12 @@ class PDF::ObjectData: public QSharedData
 {
 public:
     ObjectData():
-        QSharedData(),
-        mObjNum(0),
-        mGenNum(0)
+        QSharedData()
     {
     }
 
     ObjectData(const ObjectData &other):
         QSharedData(other),
-        mObjNum(other.mObjNum),
-        mGenNum(other.mGenNum),
         mType(other.mType),
         mSubType(other.mSubType),
         mValue(other.mValue)
@@ -59,16 +55,14 @@ public:
 
     ObjectData &operator =(const ObjectData &other)
     {
-        mObjNum  = other.mObjNum;
-        mGenNum  = other.mGenNum;
         mType    = other.mType;
         mSubType = other.mSubType;
         mValue   = other.mValue;
         return *this;
     }
 
-    quint32 mObjNum;
-    quint16 mGenNum;
+    //quint32 mObjNum;
+    //quint16 mGenNum;
     QString mType;
     QString mSubType;
     QString mError;
@@ -83,8 +77,8 @@ public:
 Object::Object(ObjNum objNum, GenNum genNum)
 {
     d = new ObjectData;
-    d->mObjNum = objNum;
-    d->mGenNum = genNum;
+    mObjNum = objNum;
+    mGenNum = genNum;
 }
 
 
@@ -92,7 +86,9 @@ Object::Object(ObjNum objNum, GenNum genNum)
  *
  ************************************************/
 Object::Object(const Object &other):
-    d(other.d)
+    d(other.d),
+    mObjNum(other.objNum()),
+    mGenNum(other.genNum())
 {
 }
 
@@ -103,6 +99,8 @@ Object::Object(const Object &other):
 Object &Object::operator =(const Object &other)
 {
     d = other.d;
+    mObjNum = other.mObjNum;
+    mGenNum = other.mGenNum;
     return *this;
 }
 
@@ -119,36 +117,18 @@ Object::~Object()
 /************************************************
  *
  ************************************************/
-quint32 Object::objNum() const
+void Object::setObjNum(ObjNum value)
 {
-    return d->mObjNum;
+    mObjNum = value;
 }
 
 
 /************************************************
  *
  ************************************************/
-void Object::setObjNum(quint32 value)
+void Object::setGenNum(GenNum value)
 {
-    d->mObjNum = value;
-}
-
-
-/************************************************
- *
- ************************************************/
-quint16 Object::genNum() const
-{
-    return d->mGenNum;
-}
-
-
-/************************************************
- *
- ************************************************/
-void Object::setGenNum(quint16 value)
-{
-    d->mGenNum = value;
+    mGenNum = value;
 }
 
 

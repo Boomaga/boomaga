@@ -63,13 +63,13 @@ private:
     uchar *mBuf;
     quint32 mObjNumOffset;
     PDF::Writer *mWriter;
-    QSet<PDF::ObjNum> mSkippedObjects;
     QVector<PdfPageInfo> mPageInfo;
-
+    QSet<PDF::ObjNum> mProcessedObjects;
 
     int walkPageTree(int pageNum, const PDF::Object &page, const PDF::Dict &inherited);
     PDF::ObjNum writeContentAsXObject(const PDF::Link &contentLink, const PDF::Dict &pageDict, const PDF::Dict &inherited);
-    PDF::Object &addOffset(PDF::Object &obj, quint32 offset);
+    PDF::Object &addOffset(PDF::Object &obj);
+    void offsetValue(PDF::Value &value);
 };
 
 #endif // PDFPROCESSOR_H

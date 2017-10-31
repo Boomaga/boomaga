@@ -59,6 +59,7 @@ struct XRefEntry {
     Type type;
 };
 
+
 class XRefTable: public QMap<quint32, XRefEntry>
 {
 public:

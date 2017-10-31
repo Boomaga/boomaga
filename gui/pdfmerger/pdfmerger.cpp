@@ -152,14 +152,15 @@ void PdfMerger::run(QIODevice *outDevice)
         kids.append(PDF::Link(page.objNum()));
 
         {
-            page.setValue(PDF::Dict());
-            page.dict().insert("Type",      PDF::Name("Page"));
-            page.dict().insert("Parent",    PDF::Link(pagesObj.objNum(), 0));
-            page.dict().insert("Resources", PDF::Link(xobj.objNum()));
-            page.dict().insert("MediaBox",  PDF::Array(pi.mediaBox));
-            page.dict().insert("CropBox",   PDF::Array(pi.cropBox));
-            page.dict().insert("Rotate",    PDF::Number(pi.rotate));
-            page.dict().insert("Contents",  PDF::Link(content.objNum()));
+            PDF::Dict dict;
+            dict.insert("Type",      PDF::Name("Page"));
+            dict.insert("Parent",    PDF::Link(pagesObj.objNum(), 0));
+            dict.insert("Resources", PDF::Link(xobj.objNum()));
+            dict.insert("MediaBox",  PDF::Array(pi.mediaBox));
+            dict.insert("CropBox",   PDF::Array(pi.cropBox));
+            dict.insert("Rotate",    PDF::Number(pi.rotate));
+            dict.insert("Contents",  PDF::Link(content.objNum()));
+            page.setValue(dict);
             writer.writeObject(page);
         }
 
@@ -170,7 +171,7 @@ void PdfMerger::run(QIODevice *outDevice)
             PDF::Dict dict;
             for (int c=0; c<pi.xObjNums.count(); ++c)
             {
-                dict.toDict().insert(QString("Im0_%1").arg(c),
+                dict.asDict().insert(QString("Im0_%1").arg(c),
                                      PDF::Link(pi.xObjNums.at(c)));
             }
 
