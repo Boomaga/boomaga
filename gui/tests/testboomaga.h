@@ -90,7 +90,14 @@ private slots:
 
     void testPdfNumber();
 
+    void testPdfWriter_SprintUint();
+    void testPdfWriter_SprintUint_data();
 
+    void testPdfWriter_SprintInt();
+    void testPdfWriter_SprintInt_data();
+
+    void testPdfWriter_SprintDouble();
+    void testPdfWriter_SprintDouble_data();
 
 private:
     LayoutNUp *createLayout(const QString &name);
@@ -99,7 +106,6 @@ private:
     Sheet *createSheet(int pagePerSheet, int pageRotation, QRectF  mediaBox = QRectF(), QRectF cropBox = QRectF());
     Rotation StrToRotation(const QString &str);
 };
-
 
 
 #endif // TESTBOOMAGA_H

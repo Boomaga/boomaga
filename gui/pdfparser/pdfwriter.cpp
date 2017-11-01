@@ -30,7 +30,7 @@
 #include "pdfxref.h"
 #include <climits>
 
-#include <QCryptographicHash>
+#include <QUuid>
 #include <QDebug>
 
 using namespace PDF;
@@ -57,6 +57,7 @@ Writer::Writer(QIODevice *device):
     mXRefTable.insert(0, XRefEntry(0, 0, 65535, XRefEntry::Free));
 }
 
+
 /************************************************
  *
  ************************************************/
@@ -77,125 +78,68 @@ void Writer::setDevice(QIODevice *device)
 /************************************************
  *
  ************************************************/
-QIODevice &operator<<(QIODevice &out, const char *value)
+uint sPrintUint(char *s, quint64 value)
 {
-    out.write(value);
-    return out;
-}
-
-
-/************************************************
- *
- ************************************************/
-QIODevice &operator<<(QIODevice &out, const QString &value)
-{
-    out.write(value.toLatin1());
-    return out;
-}
-
-
-/************************************************
- *
- ************************************************/
-QIODevice &operator<<(QIODevice &out, const double value)
-{
-    out.write(QString::number(qint64(value)).toLatin1());
-    if (value - qint64(value) > 0)
-    {
-        out.write(".");
-        out.write(QString::number(value-qint64(value)).toLatin1().data() + 2);
-    }
-
-    return out;
-}
-
-
-/************************************************
- *
- ************************************************/
-QIODevice &operator<<(QIODevice &out, const quint64 value)
-{
-    const int BUF_SIZE(64);
-    char buf[BUF_SIZE+1];
-    buf[BUF_SIZE]=0;
-    int i(BUF_SIZE);
-
+    uint len = value ? log10(value) + 1 : 1;
+    s[len] = '\0';
+    int i(len);
     quint64 n = value;
     do
     {
-        buf[--i] = (n % 10 ) + '0';
+        s[--i] = (n % 10 ) + '0';
         n /= 10;
     } while(n);
 
-    out.write(buf + i, BUF_SIZE - i);
-    return out;
+    return len;
 }
 
 
 /************************************************
  *
  ************************************************/
-QIODevice &operator<<(QIODevice &out, const quint32 value)
+uint sPrintInt(char *s, qint64 value)
 {
-    return operator<<(out, quint64(value));
-}
-
-
-/************************************************
- *
- ************************************************/
-QIODevice &operator<<(QIODevice &out, const quint16 value)
-{
-    return operator<<(out, quint64(value));
-}
-
-
-/************************************************
- *
- ************************************************/
-QIODevice &operator<<(QIODevice &out, const qint64 value)
-{
-    const int BUF_SIZE(64);
-    char buf[BUF_SIZE+1];
-    buf[BUF_SIZE]=0;
-    int i(BUF_SIZE);
-    quint64 n(value);
-    bool neg = false;
-    if (value < 0)
+    if (value<0)
     {
-        neg = true;
-        n= -n;
+        s[0] = '-';
+        return sPrintUint(s+1, -value) + 1;
     }
 
-    do
+    return sPrintUint(s, value);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+uint sPrintDouble(char *s, double value)
+{
+    if (value < 0)
     {
-        buf[--i] = (n % 10 ) + '0';
-        n /= 10;
-    } while(n);
+        s[0] = '-';
+        return sPrintDouble(s+1, -value) + 1;
+    }
 
-    if (neg)
-        buf[--i] = '-';
+    quint64 n = value;
+    const quint64 precision(10e10);
+    quint64 fract = value * precision - n * precision;
+    uint res = sPrintUint(s, n);
 
-    out.write(buf + i, BUF_SIZE - i);
-    return out;
-}
+    if (fract)
+    {
+        s[res++]='.';
 
+        quint64 mul = precision;
+        while (fract)
+        {
+            mul /= 10;
+            s[res++] = fract / mul + '0';
+            fract -= (fract / mul) * mul;
+        }
+    }
 
-/************************************************
- *
- ************************************************/
-QIODevice &operator<<(QIODevice &out, const qint16 value)
-{
-    return operator<<(out, qint64(value));
-}
-
-
-/************************************************
- *
- ************************************************/
-QIODevice &operator<<(QIODevice &out, const qint32 value)
-{
-    return operator<<(out, qint64(value));
+    s[res]='\0';
+    return res;
 }
 
 
@@ -210,13 +154,14 @@ void Writer::writeValue(const Value &value)
     //.....................................................
     case Value::Type::Array:
     {
-        * mDevice << "[";
+        mDevice->write("[");
         foreach (const Value v, value.asArray().values())
         {
             writeValue(v);
-            *mDevice << " ";
+            mDevice->write(" ");
         }
-        *mDevice << "]";
+        mDevice->write("]");
+
         break;
     }
 
@@ -225,9 +170,9 @@ void Writer::writeValue(const Value &value)
     case Value::Type::Bool:
     {
         if (value.asBool().value())
-            *mDevice << "true";
+            mDevice->write("true");
         else
-            *mDevice << "false";
+            mDevice->write("false");
 
         break;
     }
@@ -237,25 +182,27 @@ void Writer::writeValue(const Value &value)
     case Value::Type::Dict:
     {
         const QMap<QString, Value> &values = value.asDict().values();
-        *mDevice << "<<\n";
+        write("<<\n");
         QMap<QString, Value>::const_iterator i;
         for (i = values.constBegin(); i != values.constEnd(); ++i)
         {
-            *mDevice << "/";
-            *mDevice << i.key();
-            *mDevice << " ";
+            write('/');
+            write(i.key());
+            write(' ');
             writeValue(i.value());
-            *mDevice << "\n";
+            write('\n');
         }
-        *mDevice << ">>";
+        write(">>");
+
         break;
     }
 
     //.....................................................
     case Value::Type::HexString:
-        mDevice->write("<");
+        write('<');
         mDevice->write(value.asHexString().value());
-        mDevice->write(">");
+        write('>');
+
         break;
 
 
@@ -263,10 +210,11 @@ void Writer::writeValue(const Value &value)
     case Value::Type::Link:
     {
         const Link link = value.asLink();
-        *mDevice << link.objNum();
-        *mDevice << " ";
-        *mDevice << link.genNum();
-        *mDevice << " R";
+        write(link.objNum());
+        mDevice->write(" ");
+        write(link.genNum());
+        mDevice->write(" R");
+
         break;
     }
 
@@ -291,10 +239,11 @@ void Writer::writeValue(const Value &value)
         mDevice->write("null");
         break;
 
+
     //.....................................................
     case Value::Type::Number:
     {
-        *mDevice << value.asNumber().value();
+        write(value.asNumber().value());
         break;
     }
 
@@ -312,8 +261,9 @@ void Writer::writeValue(const Value &value)
 void Writer::writePDFHeader(int majorVersion, int minorVersion)
 {
     mDevice->write(QString("%PDF-%1.%2\n").arg(majorVersion).arg(minorVersion).toLatin1());
-    //is recommended that the header line be immediately followed by a comment line containing
-    // at least four binary characters—that is, characters whose codes are 128 or greater.
+    //is recommended that the header line be immediately followed by
+    // a comment line containing at least four binary characters—that is,
+    // characters whose codes are 128 or greater.
     // PDF Reference, 3.4.1 File Header
     mDevice->write("%\xE2\xE3\xCF\xD3\n");
 }
@@ -351,10 +301,10 @@ void Writer::writeXrefTable()
  ************************************************/
 void Writer::writeXrefSection(const XRefTable::const_iterator &start, quint32 count)
 {
-    *mDevice << start.value().objNum;
-    *mDevice << " ";
-    *mDevice << count;
-    *mDevice << "\n";
+    write(start.value().objNum);
+    write(' ');
+    write(count);
+    write('\n');
 
     const uint bufSize = 1024 * 20;
     char buf[bufSize];
@@ -401,6 +351,103 @@ void Writer::writeXrefSection(const XRefTable::const_iterator &start, quint32 co
 /************************************************
  *
  ************************************************/
+void Writer::write(const char value)
+{
+    mDevice->write(&value, 1);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Writer::write(const char *value)
+{
+    mDevice->write(value);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Writer::write(const QString &value)
+{
+    mDevice->write(value.toLocal8Bit());
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Writer::write(double value)
+{
+    uint len = sPrintDouble(mBuf, value);
+    mDevice->write(mBuf, len);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Writer::write(quint64 value)
+{
+    uint len = sPrintUint(mBuf, value);
+    mDevice->write(mBuf, len);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Writer::write(quint32 value)
+{
+    uint len = sPrintUint(mBuf, value);
+    mDevice->write(mBuf, len);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Writer::write(quint16 value)
+{
+    uint len = sPrintUint(mBuf, value);
+    mDevice->write(mBuf, len);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Writer::write(qint64 value)
+{
+    uint len = sPrintInt(mBuf, value);
+    mDevice->write(mBuf, len);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Writer::write(qint32 value)
+{
+    uint len = sPrintInt(mBuf, value);
+    mDevice->write(mBuf, len);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Writer::write(qint16 value)
+{
+    uint len = sPrintInt(mBuf, value);
+    mDevice->write(mBuf, len);
+}
+
+
+/************************************************
+ *
+ ************************************************/
 void Writer::writeTrailer(const Link &root)
 {
     writeTrailer(root, Link());
@@ -433,18 +480,12 @@ void Writer::writeTrailer(const Link &root, const Link &info)
     // The two bytestrings should be direct objects and should be unencrypted.
     // Although this entry is optional, its absence might prevent the file from
     // functioning in some workflows that depend on files being uniquely identified.
-    QCryptographicHash idHash(QCryptographicHash::Md5);
-    foreach (const XRefEntry &xref, mXRefTable)
-    {
-        idHash.addData(QString("%1 %2 %3").arg(xref.pos).arg(xref.objNum).arg(xref.genNum).toLatin1());
-    }
+    HexString uuid;
+    uuid.setValue(QUuid::createUuid().toByteArray().toHex());
 
     Array id;
-    id.append(HexString(idHash.result()));
-
-    idHash.addData("PDF parser");
-    id.append(HexString(HexString(idHash.result())));
-
+    id.append(uuid);
+    id.append(uuid);
     trailerDict.insert("ID", id);
 
     writeTrailer(trailerDict);
@@ -467,10 +508,10 @@ void Writer::writeTrailer(const Dict &trailerDict)
  ************************************************/
 void Writer::writeComment(const QString &comment)
 {
-    *mDevice << "\n%";
+    write("\n%");
     QString s = comment;
-    *mDevice << s.replace("\n", "\n%");
-    *mDevice << "\n";
+    write(s.replace("\n", "\n%"));
+    write('\n');
 }
 
 
@@ -479,22 +520,21 @@ void Writer::writeComment(const QString &comment)
  ************************************************/
 void Writer::writeObject(const Object &object)
 {
-    *mDevice << "\n";
+    write('\n');
     mXRefTable.insert(object.objNum(), XRefEntry(mDevice->pos(), object.objNum(), object.genNum(), XRefEntry::Used));
 
-    *mDevice << object.objNum();
-    *mDevice << " ";
-    *mDevice << object.genNum();
-    *mDevice << " obj\n";
-
+    write(object.objNum());
+    write(' ');
+    write(object.genNum());
+    write(" obj\n");
     writeValue(object.value());
 
     if (object.stream().length())
     {
-        *mDevice << "\nstream\n";
+        write("\nstream\n");
         mDevice->write(object.stream());
-        *mDevice << "\nendstream";
+        write("\nendstream");
     }
 
-    *mDevice << "\nendobj\n";
+    write("\nendobj\n");
 }

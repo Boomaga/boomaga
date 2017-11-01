@@ -106,11 +106,9 @@ void PdfMerger::run(QIODevice *outDevice)
     {
         proc->run(&writer, writer.xRefTable().maxObjNum());
 
+        pages << proc->pageInfo();
         for (int i=0; i< proc->pageInfo().count(); ++i)
-        {
-            pages << proc->pageInfo();
             ipc.writePageInfo(docNum, i, proc->pageInfo().at(i));
-        }
         ++docNum;
     }
     qDeleteAll(processors);

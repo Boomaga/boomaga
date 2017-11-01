@@ -86,16 +86,32 @@ public:
 
     void writeComment(const QString &comment);
 
+protected:
+    void writeValue(const Value &value);
+    void writeXrefSection(const XRefTable::const_iterator &start, quint32 count);
+
+    void write(const char value);
+    void write(const char* value);
+    void write(const QString &value);
+    void write(double value);
+    void write(quint64 value);
+    void write(quint32 value);
+    void write(quint16 value);
+    void write(qint64 value);
+    void write(qint32 value);
+    void write(qint16 value);
+
 private:
     QIODevice *mDevice;
-
     XRefTable mXRefTable;
     qint64 mXRefPos;
 
-    void writeValue(const Value &value);
-    void writeXrefSection(const XRefTable::const_iterator &start, quint32 count);
+    char mBuf[1024*1024];
 };
 
+
 } // namespace PDF
+
+
 
 #endif // PDFWRITER_H

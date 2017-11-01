@@ -37,15 +37,19 @@ set(TEST_HEADERS
     ../pdfparser/pdfvalue.h
     ../pdfparser/pdftypes.h
     ../pdfparser/pdfobject.h
-
+    ../pdfparser/pdfwriter.h
+    ../pdfparser/pdfxref.h
 )
 
 set(TEST_SOURCES
     testboomaga.cpp
     testpdfparser.cpp
+    testpdfwriter.cpp
     ../pdfparser/pdfreader.cpp
     ../pdfparser/pdfvalue.cpp
     ../pdfparser/pdfobject.cpp
+    ../pdfparser/pdfwriter.cpp
+    ../pdfparser/pdfxref.cpp
 )
 
 
