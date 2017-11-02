@@ -27,7 +27,6 @@
 #ifndef PDFOBJECT_H
 #define PDFOBJECT_H
 
-#include <QExplicitlySharedDataPointer>
 #include <QVector>
 #include "pdfvalue.h"
 
@@ -42,7 +41,7 @@ class Object
     friend class Reader;
     friend class Writer;
 public:
-    Object(ObjNum objNum = 0, GenNum genNum = 0);
+    Object(ObjNum objNum = 0, GenNum genNum = 0, const Value &value = Dict());
     Object(const Object &other);
     Object &operator =(const Object &other);
 
@@ -54,14 +53,14 @@ public:
     PDF::GenNum genNum() const { return mGenNum; }
     void setGenNum(PDF::GenNum value);
 
-    const Dict &dict() const;
-          Dict &dict();
+    const Dict &dict() const { return mValue.asDict(); }
+          Dict &dict()       { return mValue.asDict(); }
 
-    const Value &value() const;
-    Value &value();
+    const Value &value() const { return mValue; }
+    Value &value()             { return mValue; }
     void setValue(const Value &value);
 
-    QByteArray stream() const;
+    QByteArray stream() const { return mStream; }
     void setStream(const QByteArray &value);
 
     /// the Type entry identifies the type of object.
@@ -72,9 +71,10 @@ public:
     QString subType() const;
 
 private:
-    QExplicitlySharedDataPointer<ObjectData> d;
     PDF::ObjNum mObjNum;
     PDF::GenNum mGenNum;
+    Value mValue;
+    QByteArray mStream;
 };
 
 } // namespace PDF

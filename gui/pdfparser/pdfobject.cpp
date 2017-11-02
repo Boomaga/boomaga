@@ -29,56 +29,18 @@
 #include "pdfvalue.h"
 
 #include <QDebug>
-#include <QSharedData>
 
 using namespace PDF;
-
-class PDF::ObjectData: public QSharedData
-{
-public:
-    ObjectData():
-        QSharedData()
-    {
-    }
-
-    ObjectData(const ObjectData &other):
-        QSharedData(other),
-        mType(other.mType),
-        mSubType(other.mSubType),
-        mValue(other.mValue)
-    {
-    }
-
-    virtual ~ObjectData()
-    {
-    }
-
-    ObjectData &operator =(const ObjectData &other)
-    {
-        mType    = other.mType;
-        mSubType = other.mSubType;
-        mValue   = other.mValue;
-        return *this;
-    }
-
-    //quint32 mObjNum;
-    //quint16 mGenNum;
-    QString mType;
-    QString mSubType;
-    QString mError;
-    Value mValue;
-    QByteArray mStream;
-};
 
 
 /************************************************
  *
  ************************************************/
-Object::Object(ObjNum objNum, GenNum genNum)
+Object::Object(ObjNum objNum, GenNum genNum, const Value &value):
+    mObjNum(objNum),
+    mGenNum(genNum),
+    mValue(value)
 {
-    d = new ObjectData;
-    mObjNum = objNum;
-    mGenNum = genNum;
 }
 
 
@@ -86,9 +48,10 @@ Object::Object(ObjNum objNum, GenNum genNum)
  *
  ************************************************/
 Object::Object(const Object &other):
-    d(other.d),
-    mObjNum(other.objNum()),
-    mGenNum(other.genNum())
+    mObjNum( other.mObjNum),
+    mGenNum( other.mGenNum),
+    mValue(  other.mValue),
+    mStream( other.mStream)
 {
 }
 
@@ -98,9 +61,10 @@ Object::Object(const Object &other):
  ************************************************/
 Object &Object::operator =(const Object &other)
 {
-    d = other.d;
-    mObjNum = other.mObjNum;
-    mGenNum = other.mGenNum;
+    mObjNum  = other.mObjNum;
+    mGenNum  = other.mGenNum;
+    mValue   = other.mValue;
+    mStream  = other.mStream;
     return *this;
 }
 
@@ -135,54 +99,9 @@ void Object::setGenNum(GenNum value)
 /************************************************
  *
  ************************************************/
-const Dict &Object::dict() const
-{
-    return d->mValue.asDict();
-}
-
-
-/************************************************
- *
- ************************************************/
-Dict &Object::dict()
-{
-    return d->mValue.asDict();
-}
-
-
-/************************************************
- *
- ************************************************/
-const Value &Object::value() const
-{
-    return d->mValue;
-}
-
-
-/************************************************
- *
- ************************************************/
-Value &Object::value()
-{
-    return d->mValue;
-}
-
-
-/************************************************
- *
- ************************************************/
 void Object::setValue(const Value &value)
 {
-    d->mValue = value;
-}
-
-
-/************************************************
- *
- ************************************************/
-QByteArray Object::stream() const
-{
-    return d->mStream;
+    mValue = value;
 }
 
 
@@ -191,7 +110,7 @@ QByteArray Object::stream() const
  ************************************************/
 void Object::setStream(const QByteArray &value)
 {
-    d->mStream = value;
+    mStream = value;
 }
 
 

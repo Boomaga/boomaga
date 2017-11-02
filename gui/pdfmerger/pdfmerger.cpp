@@ -118,7 +118,6 @@ void PdfMerger::run(QIODevice *outDevice)
     PDF::Object catalog;
     catalog.setObjNum(1);
 
-    catalog.setValue(PDF::Dict());
     catalog.dict().insert("Type",  PDF::Name("Catalog"));
     catalog.dict().insert("Pages", PDF::Link(catalog.objNum() + 1));
     writer.writeObject(catalog);
@@ -128,14 +127,12 @@ void PdfMerger::run(QIODevice *outDevice)
 //#define DEBUG_PAGES
 #ifndef DEBUG_PAGES
     PDF::Object pagesObj(2);
-    pagesObj.setValue(PDF::Dict());
     pagesObj.dict().insert("Type",  Name("Pages"));
     pagesObj.dict().insert("Count", Number(0));
     pagesObj.dict().insert("Kids",  PDF::Array());
     writer.writeObject(pagesObj);
 #else
     PDF::Object pagesObj(2);
-    pagesObj.setValue(PDF::Dict());
     pagesObj.dict().insert("Type",  Name("Pages"));
 
 
@@ -163,7 +160,6 @@ void PdfMerger::run(QIODevice *outDevice)
         }
 
         {
-            xobj.setValue(PDF::Dict());
             xobj.dict().insert("ProcSet", PDF::Array() << PDF::Name("PDF"));
             xobj.dict().insert("XObject", PDF::Dict());
             PDF::Dict dict;
@@ -182,7 +178,6 @@ void PdfMerger::run(QIODevice *outDevice)
             for (int c=0; c<pi.xObjNums.count(); ++c)
                 stream += QString("/Im0_%1 Do ").arg(c);
 
-            content.setValue(PDF::Dict());
             content.setStream(stream.toLatin1());
             content.dict().insert("Length", PDF::Number(content.stream().length()));
             writer.writeObject(content);
