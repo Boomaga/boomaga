@@ -270,10 +270,54 @@ void Writer::writePDFHeader(int majorVersion, int minorVersion)
 
 
 /************************************************
+ * Each entry is exactly 20 bytes long, including the
+ * end-of-line marker. There are two kinds of cross-reference entries:
+ * one for objects that are in use and another for objects that have
+ * been deleted and therefore are free. Both types of entries have
+ * similar basic formats, distinguished by the keyword n
+ * (for an in-use entry) or f (for a free entry).
  *
+ * The format of an in-use entry is
+ *     nnnnnnnnnn ggggg n eol
+ * where
+ *     nnnnnnnnnn is a 10-digit byte offset
+ *     ggggg is a 5-digit generation number
+ *     n is a literal keyword identifying this as an in-use entry
+ * eol is a 2-character end-of-line sequence
+ *
+ * The cross-reference entry for a free object has essentially
+ * the same format, except that the keyword is f instead of n
+ * and the interpretation of the first item is different:
+ *     nnnnnnnnnn ggggg f eol
+ * where
+ *     nnnnnnnnnn is the 10-digit object number of the next free object
+ *     ggggg is a 5-digit generation number
+ *     f is a literal keyword identifying this as a free entry
+ *     eol is a 2-character end-of-line sequence
+ *
+ * The free entries in the cross-reference table form a linked list,
+ * with each free entry containing the object number of the next.
+ * The first entry in the table (object number 0) is always free and has
+ * a generation number of 65,535; it is the head of the linked list of
+ * free objects. The last free entry (the tail of the linked list) links
+ * back to object number 0.
  ************************************************/
 void Writer::writeXrefTable()
 {
+    // Restore free entries chain.
+    {
+        auto prev = mXRefTable.begin();
+        for (auto i = ++(mXRefTable.begin()) ; i != mXRefTable.end(); ++i)
+        {
+            if (i.value().type == XRefEntry::Free)
+            {
+                i.value().objNum = prev.value().objNum;
+                prev = i;
+            }
+        }
+    }
+
+
     mXRefPos = mDevice->pos();
     mDevice->write("xref\n");
     auto start = mXRefTable.constBegin();
@@ -336,7 +380,7 @@ void Writer::writeXrefSection(const XRefTable::const_iterator &start, quint32 co
             buf[pos + 15] = (entry.genNum / 1) % 10 + '0';
 
             buf[pos + 16] = ' ';
-            buf[pos + 17] = 'n';
+            buf[pos + 17] = (entry.type == PDF::XRefEntry::Used ? 'n' : 'f');
             buf[pos + 18] = ' ';
             buf[pos + 19] = '\n';
 

@@ -104,7 +104,7 @@ void PdfMerger::run(QIODevice *outDevice)
     int docNum = 0;
     foreach (PdfProcessor *proc, processors)
     {
-        proc->run(&writer, writer.xRefTable().maxObjNum());
+        proc->run(&writer, writer.xRefTable().maxObjNum() + 3);
 
         pages << proc->pageInfo();
         for (int i=0; i< proc->pageInfo().count(); ++i)
@@ -116,7 +116,7 @@ void PdfMerger::run(QIODevice *outDevice)
 
     // Catalog object ...........................
     PDF::Object catalog;
-    catalog.setObjNum(writer.xRefTable().maxObjNum() + 1);
+    catalog.setObjNum(1);
 
     catalog.setValue(PDF::Dict());
     catalog.dict().insert("Type",  PDF::Name("Catalog"));
@@ -127,14 +127,14 @@ void PdfMerger::run(QIODevice *outDevice)
     // Pages object .............................
 //#define DEBUG_PAGES
 #ifndef DEBUG_PAGES
-    PDF::Object pagesObj(catalog.objNum() + 1);
+    PDF::Object pagesObj(2);
     pagesObj.setValue(PDF::Dict());
     pagesObj.dict().insert("Type",  Name("Pages"));
     pagesObj.dict().insert("Count", Number(0));
     pagesObj.dict().insert("Kids",  PDF::Array());
     writer.writeObject(pagesObj);
 #else
-    PDF::Object pagesObj(catalog.objNum() + 1);
+    PDF::Object pagesObj(2);
     pagesObj.setValue(PDF::Dict());
     pagesObj.dict().insert("Type",  Name("Pages"));
 
@@ -195,7 +195,7 @@ void PdfMerger::run(QIODevice *outDevice)
 #endif
     // ..........................................
 
-    ipc.writeXRefInfo(outDevice->pos(), writer.xRefTable().maxObjNum());
+    ipc.writeXRefInfo(outDevice->pos(), writer.xRefTable().maxObjNum() + 1);
     writer.writeXrefTable();
     writer.writeTrailer(Link(catalog.objNum()));
 }
