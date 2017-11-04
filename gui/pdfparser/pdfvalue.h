@@ -336,6 +336,8 @@ public:
 
     QByteArray value() const;
     void setValue(const QByteArray &value);
+
+    QString toString() const;
 };
 
 
@@ -365,6 +367,8 @@ public:
 
     QByteArray value() const;
     void setValue(const QByteArray &value);
+
+    QString toString() const;
 };
 
 

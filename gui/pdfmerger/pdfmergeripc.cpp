@@ -194,7 +194,9 @@ void PdfMergerIPCReader::mergerStdErrReady()
  * ***********************************************/
 PdfMergerIPCWriter::PdfMergerIPCWriter(QObject *parent):
     QObject(parent),
-    mStdOut(stdout)
+    mStdOut(stdout),
+    mPageCount(0),
+    mProgresPageNum(0)
 {
 
 }
@@ -215,6 +217,7 @@ PdfMergerIPCWriter::~PdfMergerIPCWriter()
  * ***********************************************/
 void PdfMergerIPCWriter::writeAllPagesCount(int pageCount)
 {
+    mPageCount = pageCount;
     mStdOut << "A:" << pageCount << '\n';
 }
 
@@ -260,7 +263,19 @@ void PdfMergerIPCWriter::writeXRefInfo(qint64 xrefPos, qint32 freeNum)
  * ***********************************************/
 void PdfMergerIPCWriter::writeProgressStatus(int pageNum)
 {
+    mProgresPageNum = pageNum;
     mStdOut << "S:" << pageNum << '\n';
+    mStdOut.flush();
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void PdfMergerIPCWriter::writeNextProgress()
+{
+    ++mProgresPageNum;
+    mStdOut << "S:" << mProgresPageNum << '\n';
     mStdOut.flush();
 }
 

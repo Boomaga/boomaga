@@ -33,16 +33,17 @@
 #include <QFile>
 #include <QSet>
 #include "pdfparser/pdfvalue.h"
+#include "pdfparser/pdfreader.h"
 
 namespace  PDF {
-    class Reader;
     class Writer;
     class Object;
     class Dict;
 }
 
-class PdfProcessor
+class PdfProcessor: public QObject
 {
+    Q_OBJECT
 public:
     PdfProcessor(const QString &fileName, qint64 startPos = 0, qint64 endPos = 0);
     ~PdfProcessor();
@@ -54,13 +55,14 @@ public:
     void run(PDF::Writer *writer, quint32 objNumOffset);
 
     const QVector<PdfPageInfo> &pageInfo() const { return mPageInfo; }
+signals:
+    void pageReady();
+
 private:
     QString mFileName;
     qint64 mStartPos;
     qint64 mEndPos;
-    QFile mFile;
-    PDF::Reader *mReader;
-    uchar *mBuf;
+    PDF::Reader mReader;
     quint32 mObjNumOffset;
     PDF::Writer *mWriter;
     QVector<PdfPageInfo> mPageInfo;

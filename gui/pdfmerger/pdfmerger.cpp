@@ -104,6 +104,7 @@ void PdfMerger::run(QIODevice *outDevice)
     int docNum = 0;
     foreach (PdfProcessor *proc, processors)
     {
+        connect(proc, SIGNAL(pageReady()), &ipc, SLOT(writeNextProgress()));
         proc->run(&writer, writer.xRefTable().maxObjNum() + 3);
 
         pages << proc->pageInfo();

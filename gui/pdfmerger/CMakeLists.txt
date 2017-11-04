@@ -38,7 +38,6 @@ set(MERGER_HEADERS
     ../pdfparser/pdfobject.h
     ../pdfparser/pdfreader.h
     ../pdfparser/pdfwriter.h
-    ../kernel/boomagapoppler.h
 )
 
 set(MERGER_SOURCES
@@ -51,7 +50,6 @@ set(MERGER_SOURCES
     ../pdfparser/pdfobject.cpp
     ../pdfparser/pdfreader.cpp
     ../pdfparser/pdfwriter.cpp
-    ../kernel/boomagapoppler.cpp
 )
 
 

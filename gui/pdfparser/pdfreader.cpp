@@ -30,6 +30,7 @@
 #include "pdfobject.h"
 #include "pdftypes.h"
 #include "pdfvalue.h"
+#include <QFile>
 #include <QDebug>
 
 using namespace PDF;
@@ -38,10 +39,13 @@ using namespace PDF;
 /************************************************
  *
  ************************************************/
-Reader::Reader(const char * const data, quint64 size):
-    mData(data),
-    mSize(size)
+Reader::Reader():
+    mFile(nullptr),
+    mData(nullptr),
+    mSize(0),
+    mPagesCount(-1)
 {
+
 }
 
 
@@ -50,7 +54,10 @@ Reader::Reader(const char * const data, quint64 size):
  ************************************************/
 Reader::~Reader()
 {
+    if (mFile && mData)
+            mFile->unmap(const_cast<uchar*>(reinterpret_cast<const uchar*>(mData)));
 
+    delete mFile;
 }
 
 
@@ -179,6 +186,15 @@ Value Reader::readValue(qint64 *pos) const
         return Null();
     }
 
+    // Comment ........................
+    case '%':
+    {
+        while (*pos < mSize && mData[*pos] != '\n' && mData[*pos] != '\r')
+            ++(*pos);
+
+        *pos = skipSpace(*pos);
+        return readValue(pos);
+    }
     }
 
     QByteArray d(mData + *pos, qMin(mSize - *pos, 20ll));
@@ -431,6 +447,8 @@ Object Reader::getObject(uint objNum, quint16 genNum) const
 const Value Reader::find(const QString &path) const
 {
     QStringList objects = path.split('/', QString::SkipEmptyParts);
+    if (objects.first() == "Trailer")
+        objects.removeFirst();
     QString val = objects.takeLast();
 
     Dict dict = trailerDict();
@@ -439,6 +457,18 @@ const Value Reader::find(const QString &path) const
         dict = getObject(dict.value(obj).asLink()).dict();
     }
     return dict.value(val);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+quint32 Reader::pageCount()
+{
+    if (mPagesCount < 0)
+        mPagesCount = find("/Root/Pages/Count").asNumber().value();
+
+    return mPagesCount;
 }
 
 
@@ -466,7 +496,44 @@ QString Reader::readNameString(qint64 *pos) const
 /************************************************
  *
  ************************************************/
-void Reader::open()
+void Reader::open(const QString &fileName, quint64 startPos, quint64 endPos)
+{
+    mFile = new QFile(fileName);
+
+    if(!mFile->open(QFile::ReadOnly))
+        throw Error(0, QString("I can't open file \"%1\":%2").arg(fileName).arg(mFile->errorString()));
+
+    int start = startPos;
+    int end   = endPos ? endPos : mFile->size();
+
+    if (end < start)
+        throw Error(0, QString("Invalid request for %1, the start position (%2) is greater than the end (%3) one.")
+            .arg(fileName)
+            .arg(startPos)
+            .arg(endPos));
+
+    mFile->seek(start);
+    mSize  =  end - start;
+    mData  = reinterpret_cast<const char*>(mFile->map(start, mSize));
+    load();
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Reader::open(const char * const data, quint64 size)
+{
+    mData = data;
+    mSize = size;
+    load();
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Reader::load()
 {
     // Check header ...................................
     if (indexOf("%PDF-") != 0)
@@ -497,21 +564,6 @@ void Reader::open()
         Dict dict;
         readDict(pos, &dict);
         parentXrefPos = dict.value("Prev").asNumber().value();
-    }
-}
-
-/************************************************
- *
- ************************************************/
-void Reader::load()
-{
-    foreach (const XRefEntry &entry, mXRefTable)
-    {
-        if (entry.type == XRefEntry::Used)
-        {
-            Object obj = Object();
-            readObject(entry.pos, &obj);
-        }
     }
 }
 

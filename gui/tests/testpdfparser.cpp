@@ -29,173 +29,9 @@
 
 #include <QTest>
 #include "../pdfparser/pdfreader.h"
-#include "tools.h"
 #include <QDebug>
 
 using namespace PDF;
-
-
-/************************************************
- *
- ************************************************/
-void TestBoomaga::testReadName()
-{
-    QFETCH(QString, data);
-    QFETCH(int,     pos);
-    QFETCH(QString, expected);
-    QFETCH(int,     expectedPos);
-
-
-    const QByteArray byteArray = data.toLocal8Bit();
-    Reader reader(byteArray.data(), byteArray.length());
-
-    PDF::Value v;
-    qint64 newPos = pos;
-    try
-    {
-        v = reader.readValue(&newPos);
-
-        QCOMPARE(newPos, expectedPos);
-        QCOMPARE(v.isName(), true);
-        QCOMPARE(v.asName().value(), expected);
-    }
-    catch (PDF::Error& e)
-    {
-        if (expectedPos > 0)
-            FAIL_EXCEPTION(e);
-    }
-}
-
-
-/************************************************
- *
- ************************************************/
-void TestBoomaga::testReadName_data()
-{
-    QTest::addColumn<QString>("data");
-    QTest::addColumn<int>("pos");
-    QTest::addColumn<QString>("expected");
-    QTest::addColumn<int>("expectedPos");
-
-    QTest::newRow("01") << "/Name"      << 0 << ""      << -1;
-    QTest::newRow("02") << "/Name "     << 0 << "Name"  << 5;
-    QTest::newRow("03") << "/Name/Val"  << 0 << "Name"  << 5;
-}
-
-
-/************************************************
- *
- ************************************************/
-void TestBoomaga::testReadLink()
-{
-    QFETCH(QString, data);
-    QFETCH(int,     pos);
-    QFETCH(int,     expectedObjNum);
-    QFETCH(int,     expectedGenNum);
-    QFETCH(int,     expectedPos);
-
-    const QByteArray byteArray = data.toLocal8Bit();
-    Reader reader(byteArray.data(), byteArray.length());
-
-    PDF::Value v;
-    qint64 newPos = pos;
-    try
-    {
-        v = reader.readValue(&newPos);
-
-        QCOMPARE(newPos, expectedPos);
-        QCOMPARE(v.isLink(), true);
-        QCOMPARE(v.asLink().objNum(), quint32(expectedObjNum));
-        QCOMPARE(v.asLink().genNum(), quint16(expectedGenNum));
-    }
-    catch (PDF::Error& e)
-    {
-        if (expectedPos > 0)
-            FAIL_EXCEPTION(e);
-    }
-}
-
-
-/************************************************
- *
- ************************************************/
-void TestBoomaga::testReadLink_data()
-{
-    QTest::addColumn<QString>("data");
-    QTest::addColumn<int>("pos");
-    QTest::addColumn<int>("expectedObjNum");
-    QTest::addColumn<int>("expectedGenNum");
-    QTest::addColumn<int>("expectedPos");
-
-    //                      data             pos   objNum  genNum  pos
-    QTest::newRow("01") << "0 0 R"          << 0    << 0    << 0  << 5;
-    QTest::newRow("02") << "/Name 1 2 R"    << 6    << 1    << 2  << 11;
-}
-
-
-/************************************************
- *
- ************************************************/
-void TestBoomaga::testReadNum()
-{
-    QString data = QTest::currentDataTag();
-    QFETCH(double,  expected);
-    QFETCH(int,  expectedPos);
-
-    const QByteArray byteArray = data.toLocal8Bit();
-    Reader reader(byteArray.data(), byteArray.length());
-
-    PDF::Value v;
-    qint64 newPos = 0;
-    try
-    {
-        v = reader.readValue(&newPos);
-    }
-    catch (PDF::Error& e)
-    {
-        if (expectedPos > 0)
-            FAIL_EXCEPTION(e);
-    }
-
-    QCOMPARE(newPos, expectedPos);
-
-    QCOMPARE(v.isNumber(), true);
-
-    double res = v.asNumber().value();
-    QCOMPARE(res, expected);
-}
-
-
-/************************************************
- *
- ************************************************/
-void TestBoomaga::testReadNum_data()
-{
-    QTest::addColumn<double>("expected");
-    QTest::addColumn<int>("expectedPos");
-
-    //           data       expected       pos
-    QTest::newRow("1")      <<  1.0     <<  1;
-    QTest::newRow("0.2")    <<  0.2     <<  3;
-    QTest::newRow("-0.2")   << -0.2     <<  4;
-    QTest::newRow(".42")    <<  0.42    <<  3;
-    QTest::newRow("123")    <<  123.0   <<  3;
-    QTest::newRow("43445")  <<  43445.0 <<  5;
-    QTest::newRow("+17")    << +17.0    <<  3;
-    QTest::newRow("-98")    << -98.0    <<  3;
-    QTest::newRow("0")      <<  0.0     <<  1;
-
-    QTest::newRow("34.5")   <<  34.5    <<  4;
-    QTest::newRow("-3.62")  << -3.62    <<  5;
-    QTest::newRow("+123.6") <<  123.6   <<  6;
-
-    QTest::newRow("4.")      <<  4.0     <<  2;
-    QTest::newRow("-.002")   << -.002    <<  5;
-    QTest::newRow("0.0")     <<  0.0     <<  3;
-    QTest::newRow("1.0004")  <<  1.0004  <<  6;
-    QTest::newRow("42. 15")  <<  42.0    <<  3;
-    QTest::newRow("42 15")   <<  42.0    <<  2;
-}
 
 
 /************************************************
@@ -858,3 +694,78 @@ void TestBoomaga::testPdfName()
     //......................................
 
 }
+
+
+/************************************************
+ *
+ ************************************************/
+void TestBoomaga::testPdfString_toString()
+{
+    QFETCH(QString, data);
+    QFETCH(QString, expected);
+
+    if (QString(QTest::currentDataTag()).toUpper().startsWith("HEX"))
+    {
+        PDF::HexString s;
+        s.setValue(data.toLatin1());
+        QCOMPARE(s.toString(), expected);
+    }
+    else
+    {
+        PDF::LiteralString s;
+        s.setValue(data.toLatin1());
+        QCOMPARE(s.toString(), expected);
+    }
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void TestBoomaga::testPdfString_toString_data()
+{
+    QTest::addColumn<QString>("data");
+    QTest::addColumn<QString>("expected");
+
+    QTest::newRow("Hex 01") << "" << "";
+    QTest::newRow("Hex 02") << "54455354" << "TEST";
+    QTest::newRow("Hex 03") << "54 45 53 54 " << "TEST";
+    QTest::newRow("Hex 04") << " 5 4 4 5 5 3 5 4 " << "TEST";
+    QTest::newRow("Hex 05") << "D0A0D183D181D181D0BAD0B8D0B9" << "Русский";
+    QTest::newRow("Hex 06") << "d0a0d183d181d181d0bad0b8d0b9" << "Русский";
+    QTest::newRow("Hex 07") << "D0 A0 D1 83 \n D1 81 D1 81 \n D0 BA D0 B8 \n D0 B9" << "Русский";
+    QTest::newRow("Hex 08") << "5420450A53095420" << "T E\nS\tT ";
+    QTest::newRow("Hex 09") << "544553542" << "TEST ";
+
+
+    QTest::newRow("Literal 01") << "" << "";
+    QTest::newRow("Literal 02") << "Test" << "Test";
+    QTest::newRow("Literal 03") << "Strings may contain balanced parentheses ( ) and special characters ( * ! & } ^ % and so on"
+                                << "Strings may contain balanced parentheses ( ) and special characters ( * ! & } ^ % and so on";
+    QTest::newRow("Literal 04") << "\\n\\r\\t\\b\\f\\(\\)\\\\" << "\n\r\t\b\f()\\";
+    QTest::newRow("Literal 05") << "These \ntwo strings \nare the same." << "These \ntwo strings \nare the same.";
+
+    QTest::newRow("Literal 06") << "These \\ \ntwo strings \\ \nare the same." << "These  \ntwo strings  \nare the same.";
+    QTest::newRow("Literal 07") << "These \\\ntwo strings \\\nare the same." << "These two strings are the same.";
+    QTest::newRow("Literal 08") << "These \\\rtwo strings \\\rare the same." << "These two strings are the same.";
+    QTest::newRow("Literal 09") << "These \\\r\ntwo strings \\\r\nare the same." << "These two strings are the same.";
+    QTest::newRow("Literal 10") << "These \\\n\rtwo strings \\\n\rare the same." << "These two strings are the same.";
+
+    QTest::newRow("Literal 11") << "This string has an end-of-line at the end of it.\n" << "This string has an end-of-line at the end of it.\n";
+    QTest::newRow("Literal 12") << "\\053"      << "+";
+    QTest::newRow("Literal 13") << "\\53"       << "+";
+    QTest::newRow("Literal 14") << "\\0533"     << "+3";
+    QTest::newRow("Literal 15") << "\\0073"     << "\a3";
+    QTest::newRow("Literal 16") << "\\7"        << "\a";
+    QTest::newRow("Literal 17") << "\\07"       << "\a";
+    QTest::newRow("Literal 18") << "\\007"      << "\a";
+    QTest::newRow("Literal 19") << "A\\7B"      << "A\aB";
+    QTest::newRow("Literal 20") << "A\\07B"     << "A\aB";
+    QTest::newRow("Literal 21") << "A\\007B"    << "A\aB";
+    QTest::newRow("Literal 22") << "\\245"      << "\245";
+    QTest::newRow("Literal 23") << "\\8"        << "8";
+    QTest::newRow("Literal 24") << "\\9"        << "9";
+    QTest::newRow("Literal 25") << "a\\aa"      << "aaa";
+    QTest::newRow("Literal 26") << "a\\za"      << "aza";
+}
+

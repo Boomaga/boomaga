@@ -36,11 +36,10 @@
  *
  ************************************************/
 PdfProcessor::PdfProcessor(const QString &fileName, qint64 startPos, qint64 endPos):
+    QObject(),
+    mFileName(fileName),
     mStartPos(startPos),
     mEndPos(endPos),
-    mFile(fileName),
-    mReader(nullptr),
-    mBuf(nullptr),
     mObjNumOffset(0),
     mWriter(nullptr)
 {
@@ -53,10 +52,6 @@ PdfProcessor::PdfProcessor(const QString &fileName, qint64 startPos, qint64 endP
  ************************************************/
 PdfProcessor::~PdfProcessor()
 {
-    if (mBuf)
-        mFile.unmap(mBuf);
-
-    delete mReader;
 }
 
 
@@ -65,23 +60,7 @@ PdfProcessor::~PdfProcessor()
  ************************************************/
 void PdfProcessor::open()
 {
-    if(!mFile.open(QFile::ReadOnly))
-        throw QObject::tr("I can't open file \"%1\"").arg(mFileName) + "\n" + mFile.errorString();
-
-    int start = mStartPos;
-    int end   = mEndPos ? mEndPos : mFile.size();
-
-    if (end < start)
-        throw QString("Invalid request for %1, the start position (%2) is greater than the end (%3) one.")
-            .arg(mFileName)
-            .arg(mStartPos)
-            .arg(mEndPos);
-
-    mFile.seek(start);
-
-    mBuf = mFile.map(start, end - start);
-    mReader = new PDF::Reader(reinterpret_cast<const char*>(mBuf), end - start);
-    mReader->open();
+    mReader.open(mFileName, mStartPos, mEndPos);
 }
 
 
@@ -90,7 +69,7 @@ void PdfProcessor::open()
  ************************************************/
 quint32 PdfProcessor::pageCount()
 {
-    return mReader->find("/Root/Pages/Count").asNumber().value();
+    return mReader.pageCount();
 }
 
 
@@ -102,8 +81,8 @@ void PdfProcessor::run(PDF::Writer *writer, quint32 objNumOffset)
     mWriter = writer;
     mObjNumOffset = objNumOffset;
 
-    PDF::Object catalog = mReader->getObject(mReader->trailerDict().value("Root").asLink());
-    PDF::Object pages   = mReader->getObject(catalog.dict().value("Pages").asLink());
+    PDF::Object catalog = mReader.getObject(mReader.trailerDict().value("Root").asLink());
+    PDF::Object pages   = mReader.getObject(catalog.dict().value("Pages").asLink());
 
     mPageInfo.reserve(pages.dict().value("Count").asNumber().value());
 
@@ -175,7 +154,7 @@ int PdfProcessor::walkPageTree(int pageNum, const PDF::Object &page, const PDF::
         const PDF::Array &kids = pageDict.value("Kids").asArray();
         for (int i=0; i<kids.count(); ++i)
         {
-            pageNum = walkPageTree(pageNum, mReader->getObject(kids.at(i).asLink()), dict);
+            pageNum = walkPageTree(pageNum, mReader.getObject(kids.at(i).asLink()), dict);
         }
         return pageNum;
     }
@@ -210,6 +189,7 @@ int PdfProcessor::walkPageTree(int pageNum, const PDF::Object &page, const PDF::
         }
 
         mPageInfo << pageInfo;
+        emit pageReady();
 
         return pageNum + 1;
     }
@@ -283,7 +263,7 @@ PDF::ObjNum PdfProcessor::writeContentAsXObject(const PDF::Link &contentLink, co
     if (!contentLink.isValid())
         throw "Page has incorrect content type";
 
-    const PDF::Object content = mReader->getObject(contentLink);
+    const PDF::Object content = mReader.getObject(contentLink);
     PDF::Object xObj;
     xObj.setObjNum(content.objNum());
     xObj.setGenNum(content.genNum());
@@ -331,7 +311,7 @@ void PdfProcessor::offsetValue(PDF::Value &value)
         if (!mProcessedObjects.contains(link.objNum()))
         {
             mProcessedObjects << link.objNum();
-            PDF::Object obj = mReader->getObject(link);
+            PDF::Object obj = mReader.getObject(link);
             addOffset(obj);
         }
         link.setObjNum(link.objNum() + mObjNumOffset);

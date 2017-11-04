@@ -50,7 +50,6 @@ set(HEADERS
     aboutdialog/aboutdialog.h
     translations/translatorsinfo/translatorsinfo.h
     export/exporttopdf.h
-    kernel/boomagapoppler.h
     kernel/projectfile.h
     pdfmerger/pdfmergeripc.h
     configdialog/configdialog.h
@@ -61,6 +60,9 @@ set(HEADERS
     widgets/printerscombobox.h
     widgets/previewwidget.h
     widgets/subbookletview.h
+    pdfparser/pdfvalue.h
+    pdfparser/pdfreader.h
+    pdfparser/pdfobject.h
 )
 
 set(SOURCES
@@ -85,7 +87,6 @@ set(SOURCES
     aboutdialog/aboutdialog.cpp
     translations/translatorsinfo/translatorsinfo.cpp
     export/exporttopdf.cpp
-    kernel/boomagapoppler.cpp
     kernel/projectfile.cpp
     pdfmerger/pdfmergeripc.cpp
     configdialog/configdialog.cpp
@@ -96,6 +97,9 @@ set(SOURCES
     widgets/printerscombobox.cpp
     widgets/previewwidget.cpp
     widgets/subbookletview.cpp
+    pdfparser/pdfvalue.cpp
+    pdfparser/pdfreader.cpp
+    pdfparser/pdfobject.cpp
 )
 
 

@@ -26,13 +26,12 @@
 
 #include "job.h"
 #include "projectpage.h"
-#include "boomagapoppler.h"
 
 #include <QDebug>
 #include <QIODevice>
 #include <QFileInfo>
 #include "kernel/inputfile.h"
-#include "kernel/boomagapoppler.h"
+#include "pdfparser/pdfreader.h"
 #include <QSharedDataPointer>
 
 #define LOCK_CHECK          0
@@ -77,12 +76,18 @@ JobData::JobData(const QString &fileName, qint64 startPos, qint64 endPos, const 
         if (!mEndPos)
             mEndPos = fi.size();
 
-        BoomagaPDFDoc *doc = new BoomagaPDFDoc(fi.absoluteFilePath(), mStartPos, mEndPos);
-
-        if (doc->isValid())
+        try
         {
-            mTitle = doc->getMetaInfo("Title");
-            int pageCount = doc->getNumPages();
+            PDF::Reader reader;
+            reader.open(fi.absoluteFilePath(), mStartPos, mEndPos);
+
+            const PDF::Value &v = reader.find("/Trailer/Info/Title");
+            if (v.isLiteralString())
+                mTitle = v.asLiteralString().toString();
+            else if (v.isHexString())
+                mTitle = v.asHexString().toString();
+
+            int pageCount = reader.pageCount();
 
             InputFile inputFile(mFileName, mStartPos, mEndPos);
 
@@ -110,15 +115,13 @@ JobData::JobData(const QString &fileName, qint64 startPos, qint64 endPos, const 
 
             mState = Job::JobNotReady;
         }
-        else
+        catch (const PDF::Error &err)
         {
             mState = Job::JobError;
-            mErrorString = doc->errorString();
+            mErrorString = QString("Error on %1: %2").arg(err.pos()).arg(err.description());
         }
-
-        delete doc;
-        lockUnlockFile(mFileName, LOCK_CREATE);
     }
+    lockUnlockFile(mFileName, LOCK_CREATE);
 }
 
 

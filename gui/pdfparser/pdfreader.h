@@ -32,6 +32,8 @@
 #include "pdfvalue.h"
 #include "pdfxref.h"
 
+class QFile;
+
 namespace PDF {
 
 class Object;
@@ -63,16 +65,26 @@ public:
 
 class Data;
 
-
+/// The PDF::REader class provides a way to read PDF documents.
 class Reader
 {
 public:
-    Reader(const char * const data, quint64 size);
+    /// Constructs a Reader object.
+    Reader();
+
+    ///Destroys the object and frees its resources.
     virtual ~Reader();
 
-    void open();
-    void load();
+    /// Reads PDF document from the existing file, starting at position startPos until endPos.
+    /// If endPos is 0 (the default), Reader reads all bytes starting at position startPos
+    /// until the end of the file. If the fileName has no path or a relative path, the path
+    /// used will be the application's current directory path at the time of the open() call.
+    void open(const QString &fileName, quint64 startPos, quint64 endPos);
 
+    /// Reads PDF document from first size bytes of the data.
+    /// The bytes are not copied. The Reader will contain the data pointer. The caller
+    /// guarantees that data will not be deleted or modified as long as this Reader exist.
+    void open(const char * const data, quint64 size);
 
     const XRefTable &xRefTable() { return mXRefTable; }
     const Dict &trailerDict() const { return mTrailerDict; }
@@ -83,7 +95,10 @@ public:
 
     const Value find(const QString &path) const;
 
+    quint32 pageCount();
+
 protected:
+    void   load();
     Value  readValue(qint64 *pos) const;
     qint64 readArray(qint64 start, Array *res) const;
     qint64 readDict(qint64 start, Dict *res) const;
@@ -109,10 +124,12 @@ protected:
     bool compareWord(qint64 pos, const char *str) const;
 
 private:
-    const char * const mData;
-    const qint64  mSize;
-    XRefTable     mXRefTable;
-    Dict          mTrailerDict;
+    QFile      *mFile;
+    const char *mData;
+    qint64      mSize;
+    XRefTable   mXRefTable;
+    Dict        mTrailerDict;
+    int         mPagesCount;
 };
 
 } // namespace PDF

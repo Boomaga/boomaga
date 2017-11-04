@@ -7,7 +7,7 @@ install:
   - sudo apt-get update
   - sudo apt-get -y install build-essential pkg-config cmake
   - sudo apt-get -y install qtbase5-dev qttools5-dev-tools qttools5-dev
-  - sudo apt-get -y install libcups2-dev libsnappy-dev libpoppler-dev libpoppler-cpp-dev
+  - sudo apt-get -y install libcups2-dev libsnappy-dev libpoppler-cpp-dev
 
 script: 
   - mkdir build

@@ -32,9 +32,8 @@
 #include <QMap>
 #include <QVariant>
 
-
-
 #include "../boomagatypes.h"
+
 class LayoutNUp;
 class Sheet;
 class ProjectPage;
@@ -67,15 +66,6 @@ private slots:
     void test_BooklesSplit();
     void test_BooklesSplit_data();
 
-    void testReadName();
-    void testReadName_data();
-
-    void testReadLink();
-    void testReadLink_data();
-
-    void testReadNum();
-    void testReadNum_data();
-
     void testPdfArray();
 
     void testPdfBool();
@@ -89,6 +79,26 @@ private slots:
     void testPdfName();
 
     void testPdfNumber();
+
+    // PDF::Value .........................................
+    void testPdfString_toString();
+    void testPdfString_toString_data();
+
+    // PDF::Value .........................................
+
+    // PDF::Reader ........................................
+    void testPdfReader_ReadName();
+    void testPdfReader_ReadName_data();
+
+    void testPdfReader_ReadLink();
+    void testPdfReader_ReadLink_data();
+
+    void testPdfReader_ReadNum();
+    void testPdfReader_ReadNum_data();
+
+    void testPdfReader_ReadString();
+    void testPdfReader_ReadString_data();
+    // PDF::Reader ........................................
 
     void testPdfWriter_SprintUint();
     void testPdfWriter_SprintUint_data();
@@ -106,6 +116,5 @@ private:
     Sheet *createSheet(int pagePerSheet, int pageRotation, QRectF  mediaBox = QRectF(), QRectF cropBox = QRectF());
     Rotation StrToRotation(const QString &str);
 };
-
 
 #endif // TESTBOOMAGA_H

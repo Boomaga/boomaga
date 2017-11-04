@@ -44,6 +44,7 @@ set(TEST_HEADERS
 set(TEST_SOURCES
     testboomaga.cpp
     testpdfparser.cpp
+    testpdfreader.cpp
     testpdfwriter.cpp
     ../pdfparser/pdfreader.cpp
     ../pdfparser/pdfvalue.cpp

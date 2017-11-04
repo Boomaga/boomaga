@@ -31,24 +31,6 @@
 
 include(FindPkgConfig)
 
-pkg_search_module(POPPLER REQUIRED QUIET poppler)
-link_directories(${POPPLER_LIBRARY_DIRS})
-
-if(POPPLER_FOUND)
-    string(REGEX REPLACE "([0-9]+).([0-9]+).([0-9]+)" "\\1" POPPLER_MAJOR_VERSION ${POPPLER_VERSION})
-    string(REGEX REPLACE "([0-9]+).([0-9]+).([0-9]+)" "\\2" POPPLER_MINOR_VERSION ${POPPLER_VERSION})
-    string(REGEX REPLACE "([0-9]+).([0-9]+).([0-9]+)" "\\3" POPPLER_PATCH_VERSION ${POPPLER_VERSION})
-
-    math(EXPR POPPLER_VER_INT "(10000 * ${POPPLER_MAJOR_VERSION}) + (100 * ${POPPLER_MINOR_VERSION}) + (${POPPLER_PATCH_VERSION})")
-    add_definitions(-DPOPPLER_VERSION=${POPPLER_VER_INT})
-
-    pkg_search_module(POPPLERCPP REQUIRED QUIET poppler-cpp)
-    link_directories(${POPPLERCPP_LIBRARY_DIRS})
-endif()
-
-
-find_file(POPPLER_PRIV_HEADERS "PDFDoc.h" PATHS ${POPPLER_INCLUDE_DIRS} ${POPPLER_INCLUDE_DIR})
-if("${POPPLER_PRIV_HEADERS}" STREQUAL "POPPLER_PRIV_HEADERS-NOTFOUND")
-    message(FATAL_ERROR "Can't find ppoppler private headers")
-endif()
+pkg_search_module(POPPLERCPP REQUIRED QUIET poppler-cpp)
+link_directories(${POPPLERCPP_LIBRARY_DIRS})
 

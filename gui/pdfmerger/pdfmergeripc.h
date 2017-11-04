@@ -82,16 +82,20 @@ public:
     explicit PdfMergerIPCWriter(QObject *parent = 0);
     ~PdfMergerIPCWriter();
 
+public slots:
     void writeAllPagesCount(int pageCount);
     void writePageInfo(int fileNum, int pageNum, const PdfPageInfo &pageInfo);
     void writeXRefInfo(qint64 xrefPos, qint32 freeNum);
     void writeProgressStatus(int pageNum);
+    void writeNextProgress();
     void writeError(const QString &message);
     void writeWarning(const QString &message);
     void writeDebug(const QString &message);
 
 private:
     QTextStream mStdOut;
+    int mPageCount;
+    int mProgresPageNum;
 };
 
 #endif // PDFMERGERIPC_H
