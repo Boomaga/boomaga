@@ -279,7 +279,7 @@ qint64 Reader::readDict(qint64 start, Dict *res) const
  * is a 3-byte string containing the characters whose hexadecimal
  * codes are 90, 1F , and A0.
  ************************************************/
-#include <sprofiler.h>
+
 qint64 Reader::readHexString(qint64 start, String *res) const
 {
     QByteArray data;
