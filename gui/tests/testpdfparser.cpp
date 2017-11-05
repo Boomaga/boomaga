@@ -490,142 +490,78 @@ void TestBoomaga::testPdfDict()
 /************************************************
  *
  ************************************************/
-void TestBoomaga::testPdfHexString()
+void TestBoomaga::testPdfString()
 {
     {
-        HexString s;
+        PDF::String s;
         QCOMPARE(s.isValid(), true);
-        QCOMPARE(s.value(),   QByteArray(""));
+        QCOMPARE(s.value(),   QString(""));
     }
     //......................................
     {
-        HexString s("Test");
+        PDF::String s("Test");
         QCOMPARE(s.isValid(), true);
-        QCOMPARE(s.value(),   QByteArray("54657374"));
+        QCOMPARE(s.value(),   QString("Test"));
     }
     //......................................
     {
-        HexString s("First");
-        HexString &l = s;
+        PDF::String s("First");
+        PDF::String &l = s;
         QCOMPARE(l.isValid(), true);
 
-        QCOMPARE(s.value(),  QString("First").toLocal8Bit().toHex());
-        QCOMPARE(l.value(),  QString("First").toLocal8Bit().toHex());
+        QCOMPARE(s.value(),  QString("First"));
+        QCOMPARE(l.value(),  QString("First"));
 
-        s.setValue(QString("Second").toLocal8Bit().toHex());
+        s.setValue(QString("Second"));
 
-        QCOMPARE(s.value(),   QString("Second").toLocal8Bit().toHex());
-        QCOMPARE(l.value(),   QString("Second").toLocal8Bit().toHex());
+        QCOMPARE(s.value(),   QString("Second"));
+        QCOMPARE(l.value(),   QString("Second"));
     }
     //......................................
     {
-        HexString s("First");
-        HexString s2 = s;
+        PDF::String s("First");
+        PDF::String s2 = s;
         QCOMPARE(s2.isValid(), true);
 
-        QCOMPARE(s.value(),  QString("First").toLocal8Bit().toHex());
-        QCOMPARE(s2.value(), QString("First").toLocal8Bit().toHex());
+        QCOMPARE(s.value(),  QString("First"));
+        QCOMPARE(s2.value(), QString("First"));
 
-        s.setValue(QString("Second").toLocal8Bit().toHex());
+        s.setValue(QString("Second"));
 
-        QCOMPARE(s.value(),   QString("Second").toLocal8Bit().toHex());
-        QCOMPARE(s2.value(),  QString("First").toLocal8Bit().toHex());
+        QCOMPARE(s.value(),   QString("Second"));
+        QCOMPARE(s2.value(),  QString("First"));
     }
     //......................................
     {
         Value v;
-        QCOMPARE(v.asHexString().isValid(), false);
+        QCOMPARE(v.asString().isValid(), false);
 
-        HexString &l = v.asHexString();
+        PDF::String &l = v.asString();
         QCOMPARE(l.isValid(), false);
 
-        l.setValue(QString("Test").toLocal8Bit().toHex());
-        QCOMPARE(l.value(),                 QByteArray(""));
-        QCOMPARE(v.asHexString().value(),   QByteArray(""));
+        l.setValue(QString("Test"));
+        QCOMPARE(l.value(),              QString(""));
+        QCOMPARE(v.asString().value(),   QString(""));
     }
     //......................................
     {
         Value v;
-        QCOMPARE(v.asHexString().isValid(), false);
+        QCOMPARE(v.asString().isValid(), false);
 
-        HexString s = v.asHexString();
+        PDF::String s = v.asString();
         QCOMPARE(s.isValid(), true);
 
-        s.setValue(QString("Test").toLocal8Bit().toHex());
-        QCOMPARE(s.value(),                 QString("Test").toLocal8Bit().toHex());
-        QCOMPARE(v.asHexString().value(),   QByteArray(""));
+        s.setValue(QString("Test"));
+        QCOMPARE(s.value(),              QString("Test"));
+        QCOMPARE(v.asString().value(),   QString(""));
     }
     //......................................
 }
 
-void TestBoomaga::testPdfLiteralString()
-{
-    {
-        LiteralString s;
-        QCOMPARE(s.isValid(), true);
-        QCOMPARE(s.value(),   QByteArray(""));
-    }
-    //......................................
-    {
-        LiteralString s("Test");
-        QCOMPARE(s.isValid(), true);
-        QCOMPARE(s.value(),   QByteArray("Test"));
-    }
-    //......................................
-    {
-        LiteralString s("First");
-        LiteralString &l = s;
-        QCOMPARE(l.isValid(), true);
 
-        QCOMPARE(s.value(),  QString("First").toLocal8Bit());
-        QCOMPARE(l.value(),  QString("First").toLocal8Bit());
-
-        s.setValue(QString("Second").toLocal8Bit());
-
-        QCOMPARE(s.value(),   QString("Second").toLocal8Bit());
-        QCOMPARE(l.value(),   QString("Second").toLocal8Bit());
-    }
-    //......................................
-    {
-        LiteralString s("First");
-        LiteralString s2 = s;
-        QCOMPARE(s2.isValid(), true);
-
-        QCOMPARE(s.value(),  QString("First").toLocal8Bit());
-        QCOMPARE(s2.value(), QString("First").toLocal8Bit());
-
-        s.setValue(QString("Second").toLocal8Bit());
-
-        QCOMPARE(s.value(),   QString("Second").toLocal8Bit());
-        QCOMPARE(s2.value(),  QString("First").toLocal8Bit());
-    }
-    //......................................
-    {
-        Value v;
-        QCOMPARE(v.asLiteralString().isValid(), false);
-
-        LiteralString &l = v.asLiteralString();
-        QCOMPARE(l.isValid(), false);
-
-        l.setValue(QString("Test").toLocal8Bit());
-        QCOMPARE(l.value(),                 QByteArray(""));
-        QCOMPARE(v.asLiteralString().value(),   QByteArray(""));
-    }
-    //......................................
-    {
-        Value v;
-        QCOMPARE(v.asLiteralString().isValid(), false);
-
-        LiteralString s = v.asLiteralString();
-        QCOMPARE(s.isValid(), true);
-
-        s.setValue(QString("Test").toLocal8Bit());
-        QCOMPARE(s.value(),                 QString("Test").toLocal8Bit());
-        QCOMPARE(v.asLiteralString().value(),   QByteArray(""));
-    }
-    //......................................
-}
-
+/************************************************
+ *
+ ************************************************/
 void TestBoomaga::testPdfName()
 {
     {
@@ -695,77 +631,4 @@ void TestBoomaga::testPdfName()
 
 }
 
-
-/************************************************
- *
- ************************************************/
-void TestBoomaga::testPdfString_toString()
-{
-    QFETCH(QString, data);
-    QFETCH(QString, expected);
-
-    if (QString(QTest::currentDataTag()).toUpper().startsWith("HEX"))
-    {
-        PDF::HexString s;
-        s.setValue(data.toLatin1());
-        QCOMPARE(s.toString(), expected);
-    }
-    else
-    {
-        PDF::LiteralString s;
-        s.setValue(data.toLatin1());
-        QCOMPARE(s.toString(), expected);
-    }
-}
-
-
-/************************************************
- *
- ************************************************/
-void TestBoomaga::testPdfString_toString_data()
-{
-    QTest::addColumn<QString>("data");
-    QTest::addColumn<QString>("expected");
-
-    QTest::newRow("Hex 01") << "" << "";
-    QTest::newRow("Hex 02") << "54455354" << "TEST";
-    QTest::newRow("Hex 03") << "54 45 53 54 " << "TEST";
-    QTest::newRow("Hex 04") << " 5 4 4 5 5 3 5 4 " << "TEST";
-    QTest::newRow("Hex 05") << "D0A0D183D181D181D0BAD0B8D0B9" << "Русский";
-    QTest::newRow("Hex 06") << "d0a0d183d181d181d0bad0b8d0b9" << "Русский";
-    QTest::newRow("Hex 07") << "D0 A0 D1 83 \n D1 81 D1 81 \n D0 BA D0 B8 \n D0 B9" << "Русский";
-    QTest::newRow("Hex 08") << "5420450A53095420" << "T E\nS\tT ";
-    QTest::newRow("Hex 09") << "544553542" << "TEST ";
-
-
-    QTest::newRow("Literal 01") << "" << "";
-    QTest::newRow("Literal 02") << "Test" << "Test";
-    QTest::newRow("Literal 03") << "Strings may contain balanced parentheses ( ) and special characters ( * ! & } ^ % and so on"
-                                << "Strings may contain balanced parentheses ( ) and special characters ( * ! & } ^ % and so on";
-    QTest::newRow("Literal 04") << "\\n\\r\\t\\b\\f\\(\\)\\\\" << "\n\r\t\b\f()\\";
-    QTest::newRow("Literal 05") << "These \ntwo strings \nare the same." << "These \ntwo strings \nare the same.";
-
-    QTest::newRow("Literal 06") << "These \\ \ntwo strings \\ \nare the same." << "These  \ntwo strings  \nare the same.";
-    QTest::newRow("Literal 07") << "These \\\ntwo strings \\\nare the same." << "These two strings are the same.";
-    QTest::newRow("Literal 08") << "These \\\rtwo strings \\\rare the same." << "These two strings are the same.";
-    QTest::newRow("Literal 09") << "These \\\r\ntwo strings \\\r\nare the same." << "These two strings are the same.";
-    QTest::newRow("Literal 10") << "These \\\n\rtwo strings \\\n\rare the same." << "These two strings are the same.";
-
-    QTest::newRow("Literal 11") << "This string has an end-of-line at the end of it.\n" << "This string has an end-of-line at the end of it.\n";
-    QTest::newRow("Literal 12") << "\\053"      << "+";
-    QTest::newRow("Literal 13") << "\\53"       << "+";
-    QTest::newRow("Literal 14") << "\\0533"     << "+3";
-    QTest::newRow("Literal 15") << "\\0073"     << "\a3";
-    QTest::newRow("Literal 16") << "\\7"        << "\a";
-    QTest::newRow("Literal 17") << "\\07"       << "\a";
-    QTest::newRow("Literal 18") << "\\007"      << "\a";
-    QTest::newRow("Literal 19") << "A\\7B"      << "A\aB";
-    QTest::newRow("Literal 20") << "A\\07B"     << "A\aB";
-    QTest::newRow("Literal 21") << "A\\007B"    << "A\aB";
-    QTest::newRow("Literal 22") << "\\245"      << "\245";
-    QTest::newRow("Literal 23") << "\\8"        << "8";
-    QTest::newRow("Literal 24") << "\\9"        << "9";
-    QTest::newRow("Literal 25") << "a\\aa"      << "aaa";
-    QTest::newRow("Literal 26") << "a\\za"      << "aza";
-}
 

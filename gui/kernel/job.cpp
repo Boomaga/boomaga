@@ -81,12 +81,7 @@ JobData::JobData(const QString &fileName, qint64 startPos, qint64 endPos, const 
             PDF::Reader reader;
             reader.open(fi.absoluteFilePath(), mStartPos, mEndPos);
 
-            const PDF::Value &v = reader.find("/Trailer/Info/Title");
-            if (v.isLiteralString())
-                mTitle = v.asLiteralString().toString();
-            else if (v.isHexString())
-                mTitle = v.asHexString().toString();
-
+            mTitle = reader.find("/Trailer/Info/Title").asString().value();
             int pageCount = reader.pageCount();
 
             InputFile inputFile(mFileName, mStartPos, mEndPos);

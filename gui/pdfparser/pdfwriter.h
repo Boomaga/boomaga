@@ -89,6 +89,7 @@ public:
 protected:
     void writeValue(const Value &value);
     void writeXrefSection(const XRefTable::const_iterator &start, quint32 count);
+    void writeLiteralString(const String &value);
 
     void write(const char value);
     void write(const char* value);

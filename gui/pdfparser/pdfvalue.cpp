@@ -57,7 +57,8 @@ Value::Value(Value::Type type):
     mNumberValue(0),
     mLinkObjNum(0),
     mLinkGenNum(0),
-    mBoolValue(false)
+    mBoolValue(false),
+    mStringEncoding(String::HexEncoded)
 {
 }
 
@@ -74,7 +75,8 @@ Value::Value(const Value &other):
     mNumberValue( other.mNumberValue),
     mLinkObjNum(  other.mLinkObjNum),
     mLinkGenNum(  other.mLinkGenNum),
-    mBoolValue(   other.mBoolValue)
+    mBoolValue(   other.mBoolValue),
+    mStringEncoding(other.mStringEncoding)
 {
 
 }
@@ -106,13 +108,14 @@ Value &Value::operator =(const Value &other)
     mType        = other.mType;
     mValid       = other.mValid;
 
-    mArrayValues = other.mArrayValues;
-    mBoolValue   = other.mBoolValue;
-    mDictValues  = other.mDictValues;
-    mStringValue = other.mStringValue;
-    mLinkObjNum  = other.mLinkObjNum;
-    mLinkGenNum  = other.mLinkGenNum;
-    mNumberValue = other.mNumberValue;
+    mArrayValues    = other.mArrayValues;
+    mBoolValue      = other.mBoolValue;
+    mDictValues     = other.mDictValues;
+    mStringValue    = other.mStringValue;
+    mLinkObjNum     = other.mLinkObjNum;
+    mLinkGenNum     = other.mLinkGenNum;
+    mNumberValue    = other.mNumberValue;
+    mStringEncoding = other.mStringEncoding;
 
     return *this;
 }
@@ -175,24 +178,6 @@ Dict &Value::asDict(bool *ok)
 /************************************************
  *
  ************************************************/
-const HexString &Value::asHexString(bool *ok) const
-{
-    return valueAs<HexString>(Type::HexString, ok);
-}
-
-
-/************************************************
- *
- ************************************************/
-HexString &Value::asHexString(bool *ok)
-{
-    return valueAs<HexString>(Type::HexString, ok);
-}
-
-
-/************************************************
- *
- ************************************************/
 const Link &Value::asLink(bool *ok) const
 {
     return valueAs<Link>(Type::Link, ok);
@@ -205,24 +190,6 @@ const Link &Value::asLink(bool *ok) const
 Link &Value::asLink(bool *ok)
 {
     return valueAs<Link>(Type::Link, ok);
-}
-
-
-/************************************************
- *
- ************************************************/
-const LiteralString &Value::asLiteralString(bool *ok) const
-{
-    return valueAs<LiteralString>(Type::LiteralString, ok);
-}
-
-
-/************************************************
- *
- ************************************************/
-LiteralString &Value::asLiteralString(bool *ok)
-{
-    return valueAs<LiteralString>(Type::LiteralString, ok);
 }
 
 
@@ -283,6 +250,24 @@ Number &Value::asNumber(bool *ok)
 /************************************************
  *
  ************************************************/
+const String &Value::asString(bool *ok) const
+{
+    return valueAs<String>(Type::String, ok);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+String &Value::asString(bool *ok)
+{
+    return valueAs<String>(Type::String, ok);
+}
+
+
+/************************************************
+ *
+ ************************************************/
 bool Value::operator==(const Value &other) const
 {
     if (mType != other.mType)
@@ -294,12 +279,11 @@ bool Value::operator==(const Value &other) const
     case Type::Array:           return mArrayValues == other.mArrayValues;
     case Type::Bool:            return mBoolValue   == other.mBoolValue;
     case Type::Dict:            return mDictValues  == other.mDictValues;
-    case Type::HexString:       return mStringValue == other.mStringValue;
     case Type::Link:            return mLinkObjNum  == other.mLinkObjNum && mLinkGenNum == other.mLinkGenNum;
-    case Type::LiteralString:   return mStringValue == other.mStringValue;
     case Type::Name:            return mStringValue == other.mStringValue;
     case Type::Null:            return true;
     case Type::Number:          return mNumberValue == other.mNumberValue;
+    case Type::String:          return mStringValue == other.mStringValue;
     }
     return false;
 }
@@ -626,20 +610,20 @@ QStringList Dict::keys() const
 
 
 //###############################################
-// PDF Hexadecimal String
+// PDF String
 //###############################################
-HexString::HexString(const QString &value):
-    Value(Type::HexString)
+String::String(const QString &value):
+    Value(Type::String)
 {
     mValid = true;
-    mStringValue = value.toLocal8Bit().toHex();
+    mStringValue = value;
 }
 
 
 /************************************************
  *
  ************************************************/
-HexString::HexString(const HexString &other):
+String::String(const String &other):
     Value(other)
 {
     mValid = true;
@@ -649,7 +633,7 @@ HexString::HexString(const HexString &other):
 /************************************************
  *
  ************************************************/
-HexString &HexString::operator =(const HexString &other)
+String &String::operator =(const String &other)
 {
     Value::operator =(other);
     mValid = true;
@@ -660,9 +644,9 @@ HexString &HexString::operator =(const HexString &other)
 /************************************************
  *
  ************************************************/
-QByteArray HexString::value() const
+QString String::value() const
 {
-    assert(mType == Type::HexString);
+    assert(mType == Type::String);
     return mStringValue;
 }
 
@@ -670,78 +654,37 @@ QByteArray HexString::value() const
 /************************************************
  *
  ************************************************/
-void HexString::setValue(const QByteArray &value)
+void String::setValue(const QString &value)
 {
-    assert(mType == Type::HexString);
+    assert(mType == Type::String);
     if (mValid)
-        mStringValue = value;
+        mStringValue = value.toLocal8Bit();
 }
 
 
 /************************************************
- * A hexadecimal string is written as a sequence of
- * hexadecimal digits (0–9 and either A –F or a–f )
- * enclosed within angle brackets (< and >):
- *    < 4E6F762073686D6F7A206B6120706F702E >
+ *
  ************************************************/
-QString HexString::toString() const
+String::EncodingType String::encodingType() const
 {
-    QByteArray data;
-    data.reserve(mStringValue.length() + 1);
+    assert(mType == Type::String);
+    return EncodingType(mStringEncoding);
+}
 
-    bool first = true;
-    char r = 0;
-    foreach (auto c, mStringValue)
-    {
-        switch (c)
-        {
-        case '0': case '1': case '2': case '3': case '4':
-        case '5': case '6': case '7': case '8': case '9':
-        {
-            if (first)
-                r = c - '0';
-            else
-                data.append(r * 16 + c -'0');
 
-            first = !first;
-            break;
-        }
-
-        case 'A': case 'B': case 'C':
-        case 'D': case 'E': case 'F':
-        {
-            if (first)
-                r = c - 'A' + 10;
-            else
-                data.append(r * 16 + c -'A' + 10);
-
-            first = !first;
-            break;
-        }
-
-        case 'a': case 'b': case 'c':
-        case 'd': case 'e': case 'f':
-        {
-            if (first)
-                r = c - 'a' + 10;
-            else
-                data.append(r * 16 + c -'a' + 10);
-
-            first = !first;
-            break;
-        }
-        }
-    }
-
-    if (!first)
-        data.append(r * 16);
-
-    return QTextCodec::codecForUtfText(data, QTextCodec::codecForName("UTF-8"))->toUnicode(data);
+/************************************************
+ *
+ ************************************************/
+void String::setEncodingType(String::EncodingType type)
+{
+    assert(mType == Type::String);
+    if (mValid)
+        mStringEncoding = type;
 }
 
 
 //###############################################
-// PDF Literal String
+// PDF Link
 //###############################################
 Link::Link(quint32 objNum, quint16 genNum):
     Value(Type::Link)
@@ -750,7 +693,6 @@ Link::Link(quint32 objNum, quint16 genNum):
     mLinkGenNum = genNum;
     mValid = true;
 }
-
 
 
 /************************************************
@@ -837,240 +779,6 @@ void Link::setGenNum(quint16 value)
     assert(mType == Type::Link);
     if (mValid)
         mLinkGenNum = value;
-}
-
-
-//###############################################
-// PDF Literal String
-//###############################################
-LiteralString::LiteralString(const QString &value):
-    Value(Type::LiteralString)
-{
-    mValid = true;
-    mStringValue = value.toLocal8Bit();
-}
-
-
-/************************************************
- *
- ************************************************/
-LiteralString::LiteralString(const LiteralString &other):
-    Value(other)
-{
-    mValid = true;
-}
-
-
-/************************************************
- *
- ************************************************/
-LiteralString &LiteralString::operator =(const LiteralString &other)
-{
-    Value::operator =(other);
-    mValid = true;
-    return *this;
-}
-
-
-/************************************************
- *
- ************************************************/
-QByteArray LiteralString::value() const
-{
-    assert(mType == Type::LiteralString);
-    return mStringValue;
-}
-
-
-/************************************************
- *
- ************************************************/
-void LiteralString::setValue(const QByteArray &value)
-{
-    assert(mType == Type::LiteralString);
-    if (mValid)
-        mStringValue = value;
-}
-
-
-/************************************************
- * Literal Strings
- *
- * A literal string is written as an arbitrary number of characters enclosed
- * in parentheses. Any characters may appear in a string except unbalanced
- * parentheses and the backslash, which must be treated specially.
- * Balanced pairs of parentheses within a string require no special treatment.
- *
- * The following are valid literal strings:
- *  ( This is a string )
- *  ( Strings may contain newlines
- *  and such. )
- *  ( Strings may contain balanced parentheses ( ) and
- *  special characters ( * ! & } ^ % and so on ) . )
- *  ( The following is an empty string . )
- *  ( )
- *  ( It has zero ( 0 ) length . )
- *
- * Within a literal string, the backslash (\) is used as an escape character
- * for various purposes, such as to include newline characters, nonprinting
- * ASCII characters, unbalanced parentheses, or the backslash character
- * itself in the string. The character immediately following the backslash
- * determines its precise interpretation (see Table 3.2). If the character
- * following the backslash is not one of those shown in the table, the
- * backslash is ignored.
- *
- * SEQUENCE     MEANING
- *  \n          Line feed (LF)
- *  \r          Carriage return (CR)
- *  \t          Horizontal tab (HT)
- *  \b          Backspace (BS)
- *  \f          Form feed (FF)
- *  \(          Left parenthesis
- *  \)          Right parenthesis
- *  \\          Backslash
- *  \ddd        Character code ddd (octal)
- *
- * If a string is too long to be conveniently placed on a single line,
- * it may be split across multiple lines by using the backslash character at
- * the end of a line to indicate that the string continues on the following
- * line. The backslash and the end-of-line marker following it are not
- * considered part of the string. For example:
- *  ( These \
- *  two strings \
- *  are the same . )
- *  ( These two strings are the same . )
- *
- * If an end-of-line marker appears within a literal string without a
- * preceding backslash, the result is equivalent to \n (regardless of
- * whether the end-of-line marker was a carriage return, a line feed,
- * or both). For example:
- *  ( This string has an end−of−line at the end of it .
- *  )
- *  ( So does this one .\n )
- *
- * The \ddd escape sequence provides a way to represent characters outside
- * the printable ASCII character set. For example:
- *  ( This string contains \245two octal characters\307 . )
- * The number ddd may consist of one, two, or three octal digits, with
- * high-order overflow ignored. It is required that three octal digits be
- * used, with leading zeros as needed, if the next character of the string
- * is also a digit. For example, the literal
- *  ( \0053 )
- * denotes a string containing two characters, \005 (Control-E) followed
- * by the digit 3, whereas both
- *  ( \053 )
- * and
- *  ( \53 )
- * denote strings containing the single character \053, a plus sign (+).
- ************************************************/
-QString LiteralString::toString() const
-{
-    QByteArray res;
-    res.reserve(mStringValue.length());
-
-    bool esc = false;
-    for (int i=0; i<mStringValue.length(); ++i)
-    {
-        char c = mStringValue.at(i);
-        switch (c)
-        {
-
-        // Backslash .......................
-        case '\\':
-            esc = !esc;
-            if (!esc)
-                res.append(c);
-            break;
-
-        // Line feed (LF) ..................
-        case 'n':
-            res.append(esc ? '\n' : 'n');
-            esc = false;
-            break;
-
-        // Carriage return (CR) ............
-        case 'r':
-            res.append(esc ? '\r' : 'r');
-            esc = false;
-            break;
-
-        // Horizontal tab (HT) .............
-        case 't':
-            res.append(esc ? '\t' : 't');
-            esc = false;
-            break;
-
-        // Backspace (BS) ..................
-        case 'b':
-            res.append(esc ? '\b' : 'b');
-            esc = false;
-            break;
-
-        // Form feed (FF) ..................
-        case 'f':
-            res.append(esc ? '\f' : 'f');
-            esc = false;
-            break;
-
-        // Character code ddd (octal) ......
-        case '0': case '1': case '2': case '3':
-        case '4': case '5': case '6': case '7':
-            if (esc)
-            {
-                esc = false;
-                char n = c-'0';
-                int l = qMin(i+3, mStringValue.length());
-                for(++i; i<l; ++i)
-                {
-                    c = mStringValue.at(i);
-                    if (c < '0' || c > '7' )
-                        break;
-
-                    n = n * 8 + c - '0';
-                }
-                res.append(n);
-                --i;
-            }
-            else
-            {
-                res.append(c);
-            }
-            break;
-
-        case '\n':
-            if (esc)
-            {
-                if (i+1<mStringValue.length() && mStringValue.at(i+1) == '\r')
-                    ++i;
-            }
-            else
-            {
-                res.append('\n');
-            }
-            esc = false;
-            break;
-
-        case '\r':
-            if (esc)
-            {
-                if (i+1<mStringValue.length() && mStringValue.at(i+1) == '\n')
-                    ++i;
-            }
-            else
-            {
-                res.append('\r');
-            }
-            esc = false;
-            break;
-
-        default:
-            esc = false;
-            res.append(c);
-            break;
-        }
-    }
-
-    return QString::fromLocal8Bit(res);
 }
 
 
@@ -1259,16 +967,8 @@ void debugValue(QDebug dbg, const Value &value, int indent = 0)
         dbg.space() << (value.asBool().value() ? "true" : "false");
         break;
 
-    case Value::Type::HexString:
-        dbg.space() << value.asHexString().value();
-        break;
-
     case Value::Type::Link:
         dbg.space() << value.asLink().objNum() << value.asLink().genNum() << "R";
-        break;
-
-    case Value::Type::LiteralString:
-        dbg.space() << value.asLiteralString().value();
         break;
 
     case Value::Type::Name:
@@ -1281,6 +981,10 @@ void debugValue(QDebug dbg, const Value &value, int indent = 0)
 
     case Value::Type::Number:
         dbg.nospace() << value.asNumber().value();
+        break;
+
+    case Value::Type::String:
+        dbg.space() << value.asString().value();
         break;
     }
 }

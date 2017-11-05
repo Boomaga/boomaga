@@ -48,7 +48,9 @@ class LiteralString;
 class Name;
 class Null;
 class Number;
+class String;
 class Object;
+
 
 class Value {
     friend class Object;
@@ -62,12 +64,11 @@ public:
         Array,
         Bool,
         Dict,
-        HexString,
         Link,
-        LiteralString,
         Name,
         Null,
-        Number
+        Number,
+        String
     };
 
     Value();
@@ -90,14 +91,8 @@ public:
     /// Returns true if the value contains a PDF dictonary.
     inline bool isDict()  const { return type() == Type::Dict; }
 
-    /// Returns true if the value contains a PDF hexadecimal string".
-    inline bool isHexString() const { return type() == Type::HexString; }
-
     /// Returns true if the value contains a PDF link, like "01 02 R".
     inline bool isLink()  const { return type() == Type::Link; }
-
-    /// Returns true if the value contains a PDF literal string".
-    inline bool isLiteralString() const { return type() == Type::LiteralString; }
 
     /// Returns true if the value contains a PDF name.
     inline bool isName()  const { return type() == Type::Name; }
@@ -107,6 +102,9 @@ public:
 
     /// Returns true if the value contains a PDF number.
     inline bool isNumber() const { return type() == Type::Number; }
+
+    /// Returns true if the value contains a PDF string".
+    inline bool isString() const { return type() == Type::String; }
 
     /// Returns true if the value is undefined. This can happen
     /// in certain error cases as e.g. accessing a non existing key in a PdfDict.
@@ -129,20 +127,10 @@ public:
     const Dict &asDict(bool *ok = nullptr) const;
           Dict &asDict(bool *ok = nullptr);
 
-    /// Converts the value to a PdfHexString and returns it.
-    /// If type() is not HexString, an empty PdfHexString will be returned.
-    const HexString &asHexString(bool *ok = NULL) const;
-          HexString &asHexString(bool *ok = NULL);
-
     /// Converts the value to a PdfLink and returns it.
     /// If type() is not Link, an empty PdfLink will be returned.
     const Link &asLink(bool *ok = NULL) const;
           Link &asLink(bool *ok = NULL);
-
-    /// Converts the value to a PdfLiteralString and returns it.
-    /// If type() is not LiteralString, an empty PdfLiteralString will be returned.
-    const LiteralString &asLiteralString(bool *ok = NULL) const;
-          LiteralString &asLiteralString(bool *ok = NULL);
 
     /// Converts the value to a PdfName and returns it.
     /// If type() is not Name, an empty PdfName will be returned.
@@ -159,6 +147,10 @@ public:
     const Number  &asNumber(bool *ok = NULL) const;
           Number  &asNumber(bool *ok = NULL);
 
+    /// Converts the value to a PdfString and returns it.
+    /// If type() is not String, an empty PdfString will be returned.
+    const String &asString(bool *ok = NULL) const;
+          String &asString(bool *ok = NULL);
 
     /// Returns true if the value is equal to other.
     bool operator==(const Value &other) const;
@@ -175,11 +167,12 @@ protected:
 
     QVector<Value> mArrayValues;
     QMap<QString, Value> mDictValues;
-    QByteArray mStringValue;
-    double mNumberValue;
+    QString mStringValue;
+    double  mNumberValue;
     quint32 mLinkObjNum;
     quint16 mLinkGenNum;
-    bool mBoolValue;
+    bool    mBoolValue;
+    char    mStringEncoding;
 
 private:
 
@@ -269,7 +262,6 @@ public:
 };
 
 
-
 class Dict: public Value
 {
 public:
@@ -327,17 +319,25 @@ public:
 };
 
 
-class HexString: public Value
+class String: public Value
 {
 public:
-    HexString(const QString &value = "");
-    HexString(const HexString &other);
-    HexString &operator =(const HexString &other);
+    enum EncodingType
+    {
+        HexEncoded     = 0,
+        LiteralEncoded = 1
+    };
 
-    QByteArray value() const;
-    void setValue(const QByteArray &value);
+    String(const QString &value = "");
+    String(const String &other);
+    String &operator =(const String &other);
 
-    QString toString() const;
+    QString value() const;
+    void setValue(const QString &value);
+
+    EncodingType encodingType() const;
+    void setEncodingType(EncodingType type);
+
 };
 
 
@@ -355,20 +355,6 @@ public:
 
     quint16 genNum() const;
     void setGenNum(quint16 value);
-};
-
-
-class LiteralString: public Value
-{
-public:
-    LiteralString(const QString &value = "");
-    LiteralString(const LiteralString &other);
-    LiteralString &operator =(const LiteralString &other);
-
-    QByteArray value() const;
-    void setValue(const QByteArray &value);
-
-    QString toString() const;
 };
 
 

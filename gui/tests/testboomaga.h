@@ -72,17 +72,14 @@ private slots:
 
     void testPdfDict();
 
-    void testPdfHexString();
-
-    void testPdfLiteralString();
+    void testPdfString();
 
     void testPdfName();
 
     void testPdfNumber();
 
     // PDF::Value .........................................
-    void testPdfString_toString();
-    void testPdfString_toString_data();
+
 
     // PDF::Value .........................................
 
@@ -96,10 +93,15 @@ private slots:
     void testPdfReader_ReadNum();
     void testPdfReader_ReadNum_data();
 
-    void testPdfReader_ReadString();
-    void testPdfReader_ReadString_data();
+    void testPdfReader_ReadStringHex();
+    void testPdfReader_ReadStringHex_data();
+
+    void testPdfReader_ReadStringLiteral();
+    void testPdfReader_ReadStringLiteral_data();
+
     // PDF::Reader ........................................
 
+    // PDF::Writer ........................................
     void testPdfWriter_SprintUint();
     void testPdfWriter_SprintUint_data();
 
@@ -108,6 +110,13 @@ private slots:
 
     void testPdfWriter_SprintDouble();
     void testPdfWriter_SprintDouble_data();
+
+    void testPdfReader_WriteStringHex();
+    void testPdfReader_WriteStringHex_data();
+
+    void testPdfReader_WriteStringLiteral();
+    void testPdfReader_WriteStringLiteral_data();
+    // PDF::Writer ........................................
 
 private:
     LayoutNUp *createLayout(const QString &name);

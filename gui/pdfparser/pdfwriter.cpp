@@ -41,7 +41,8 @@ using namespace PDF;
  ************************************************/
 Writer::Writer():
     mDevice(nullptr),
-    mXRefPos(0)
+    mXRefPos(0),
+    mBuf{0}
 {
     mXRefTable.insert(0, XRefEntry(0, 0, 65535, XRefEntry::Free));
 }
@@ -52,7 +53,8 @@ Writer::Writer():
  ************************************************/
 Writer::Writer(QIODevice *device):
     mDevice(device),
-    mXRefPos(0)
+    mXRefPos(0),
+    mBuf{0}
 {
     mXRefTable.insert(0, XRefEntry(0, 0, 65535, XRefEntry::Free));
 }
@@ -197,14 +199,6 @@ void Writer::writeValue(const Value &value)
         break;
     }
 
-    //.....................................................
-    case Value::Type::HexString:
-        write('<');
-        mDevice->write(value.asHexString().value());
-        write('>');
-
-        break;
-
 
     //.....................................................
     case Value::Type::Link:
@@ -217,14 +211,6 @@ void Writer::writeValue(const Value &value)
 
         break;
     }
-
-
-    //.....................................................
-    case Value::Type::LiteralString:
-        mDevice->write("(");
-        mDevice->write(value.asHexString().value());
-        mDevice->write(")");
-        break;
 
 
     //.....................................................
@@ -247,6 +233,25 @@ void Writer::writeValue(const Value &value)
         break;
     }
 
+
+    //.....................................................
+    case Value::Type::String:
+    {
+        const String &s = value.asString();
+        if (s.encodingType() == String::HexEncoded)
+        {
+            write('<');
+            mDevice->write(s.value().toUtf8().toHex());
+            write('>');
+        }
+        else
+        {
+            mDevice->write("(");
+            writeLiteralString(s);
+            mDevice->write(")");
+        }
+        break;
+    }
 
     //.....................................................
     default:
@@ -391,6 +396,140 @@ void Writer::writeXrefSection(const XRefTable::const_iterator &start, quint32 co
     }
 }
 
+/************************************************
+ * Literal Strings
+ *
+ * A literal string is written as an arbitrary number of characters enclosed
+ * in parentheses. Any characters may appear in a string except unbalanced
+ * parentheses and the backslash, which must be treated specially.
+ * Balanced pairs of parentheses within a string require no special treatment.
+ *
+ * The following are valid literal strings:
+ *  ( This is a string )
+ *  ( Strings may contain newlines
+ *  and such. )
+ *  ( Strings may contain balanced parentheses ( ) and
+ *  special characters ( * ! & } ^ % and so on ) . )
+ *  ( The following is an empty string . )
+ *  ( )
+ *  ( It has zero ( 0 ) length . )
+ *
+ * Within a literal string, the backslash (\) is used as an escape character
+ * for various purposes, such as to include newline characters, nonprinting
+ * ASCII characters, unbalanced parentheses, or the backslash character
+ * itself in the string. The character immediately following the backslash
+ * determines its precise interpretation (see Table 3.2). If the character
+ * following the backslash is not one of those shown in the table, the
+ * backslash is ignored.
+ *
+ * SEQUENCE     MEANING
+ *  \n          Line feed (LF)
+ *  \r          Carriage return (CR)
+ *  \t          Horizontal tab (HT)
+ *  \b          Backspace (BS)
+ *  \f          Form feed (FF)
+ *  \(          Left parenthesis
+ *  \)          Right parenthesis
+ *  \\          Backslash
+ *  \ddd        Character code ddd (octal)
+ *
+ * If a string is too long to be conveniently placed on a single line,
+ * it may be split across multiple lines by using the backslash character at
+ * the end of a line to indicate that the string continues on the following
+ * line. The backslash and the end-of-line marker following it are not
+ * considered part of the string. For example:
+ *  ( These \
+ *  two strings \
+ *  are the same . )
+ *  ( These two strings are the same . )
+ *
+ * If an end-of-line marker appears within a literal string without a
+ * preceding backslash, the result is equivalent to \n (regardless of
+ * whether the end-of-line marker was a carriage return, a line feed,
+ * or both). For example:
+ *  ( This string has an end−of−line at the end of it .
+ *  )
+ *  ( So does this one .\n )
+ *
+ * The \ddd escape sequence provides a way to represent characters outside
+ * the printable ASCII character set. For example:
+ *  ( This string contains \245two octal characters\307 . )
+ * The number ddd may consist of one, two, or three octal digits, with
+ * high-order overflow ignored. It is required that three octal digits be
+ * used, with leading zeros as needed, if the next character of the string
+ * is also a digit. For example, the literal
+ *  ( \0053 )
+ * denotes a string containing two characters, \005 (Control-E) followed
+ * by the digit 3, whereas both
+ *  ( \053 )
+ * and
+ *  ( \53 )
+ * denote strings containing the single character \053, a plus sign (+).
+ ************************************************/
+void Writer::writeLiteralString(const PDF::String &value)
+{
+    char oct[5] = "\\000";
+
+    foreach (const char c, value.value().toUtf8())
+    {
+        switch (c)
+        {
+        // Line feed (LF) - write as is.
+        case '\n':
+            mDevice->write("\n");
+            continue;
+
+        // Carriage return (CR) - write as is.
+        case '\r':
+            mDevice->write("\r");
+            continue;
+
+        // Horizontal tab (HT) - write as is.
+        case '\t':
+            mDevice->write("\t");
+            continue;
+
+        // Backspace (BS) - write escaped
+        case '\b':
+            mDevice->write("\\b");
+            continue;
+
+        // Form feed (FF) - write escaped
+        case '\f':
+            mDevice->write("\\f");
+            continue;
+
+        // Left parenthesis - write escaped
+        case '(':
+            mDevice->write("\\(");
+            continue;
+
+        // Right parenthesis - write escaped
+        case ')':
+            mDevice->write("\\)");
+            continue;
+
+        // Backslash - write escaped
+        case '\\':
+            mDevice->write("\\\\");
+            continue;
+        }
+
+        // ASCII - write as is
+        if (uchar(c) >= ' ' && uchar(c) <= '~')
+        {
+            mDevice->write(&c, 1);
+            continue;
+        }
+
+        // Write as octal character code (\ddd)
+        oct[1] = (uchar(c) / 64) % 8 + '0';
+        oct[2] = (uchar(c) /  8) % 8 + '0';
+        oct[3] =  uchar(c)       % 8 + '0';
+        mDevice->write(oct, 4);
+    }
+}
+
 
 /************************************************
  *
@@ -524,8 +663,9 @@ void Writer::writeTrailer(const Link &root, const Link &info)
     // The two bytestrings should be direct objects and should be unencrypted.
     // Although this entry is optional, its absence might prevent the file from
     // functioning in some workflows that depend on files being uniquely identified.
-    HexString uuid;
-    uuid.setValue(QUuid::createUuid().toByteArray().toHex());
+    String uuid;
+    uuid.setEncodingType(PDF::String::HexEncoded);
+    uuid.setValue(QUuid::createUuid().toString());
 
     Array id;
     id.append(uuid);

@@ -102,8 +102,8 @@ protected:
     Value  readValue(qint64 *pos) const;
     qint64 readArray(qint64 start, Array *res) const;
     qint64 readDict(qint64 start, Dict *res) const;
-    qint64 readHexString(qint64 start, HexString *res) const;
-    qint64 readLiteralString(qint64 start, LiteralString *res) const;
+    qint64 readHexString(qint64 start, String *res) const;
+    qint64 readLiteralString(qint64 start, String *res) const;
 
     qint64 readObject(qint64 start, Object *res) const;
     qint64 readXRefTable(qint64 start, XRefTable *res) const;
