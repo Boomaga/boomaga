@@ -130,6 +130,7 @@ private:
     XRefTable   mXRefTable;
     Dict        mTrailerDict;
     int         mPagesCount;
+    QTextCodec  *mTextCodec;
 };
 
 } // namespace PDF

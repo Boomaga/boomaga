@@ -44,7 +44,8 @@ Reader::Reader():
     mFile(nullptr),
     mData(nullptr),
     mSize(0),
-    mPagesCount(-1)
+    mPagesCount(-1),
+    mTextCodec(QTextCodec::codecForName("UTF-8"))
 {
 
 }
@@ -278,6 +279,7 @@ qint64 Reader::readDict(qint64 start, Dict *res) const
  * is a 3-byte string containing the characters whose hexadecimal
  * codes are 90, 1F , and A0.
  ************************************************/
+#include <sprofiler.h>
 qint64 Reader::readHexString(qint64 start, String *res) const
 {
     QByteArray data;
@@ -335,7 +337,7 @@ qint64 Reader::readHexString(qint64 start, String *res) const
             if (!first)
                 data.append(r * 16);
 
-            res->setValue(QTextCodec::codecForUtfText(data, QTextCodec::codecForName("UTF-8"))->toUnicode(data));
+            res->setValue(QTextCodec::codecForUtfText(data, mTextCodec)->toUnicode(data));
             res->setEncodingType(String::HexEncoded);
             return pos + 1;
         }
@@ -535,7 +537,7 @@ qint64 Reader::readLiteralString(qint64 start, String *res) const
 
                 if (level == 0)
                 {
-                    res->setValue(QTextCodec::codecForUtfText(data, QTextCodec::codecForName("UTF-8"))->toUnicode(data));
+                    res->setValue(QTextCodec::codecForUtfText(data, mTextCodec)->toUnicode(data));
                     res->setEncodingType(String::LiteralEncoded);
                     return i + 1;
                 }
