@@ -846,22 +846,15 @@ qint64 Reader::readXRefTable(quint64 pos, XRefTable *res) const
             {
                 if (mData[pos + 17] == 'n')
                 {
-                    res->insert(startObjNum + i,
-                                XRefEntry(
-                                    strtoull(mData + pos,     nullptr, 10),
-                                    startObjNum + i,
-                                    strtoul(mData + pos + 11, nullptr, 10),
-                                    XRefEntry::Used));
+                    res->addUsedObject(startObjNum + i,
+                                       strtoul(data.mData + pos + 11, nullptr, 10),
+                                       strtoull(data.mData + pos,     nullptr, 10));
                 }
                 else
                 {
-                    res->insert(startObjNum + i,
-                                XRefEntry(
-                                    0,
-                                    startObjNum + i,
-                                    strtoul(mData + pos + 11, nullptr, 10),
-                                    XRefEntry::Free));
-
+                    res->addFreeObject(startObjNum + i,
+                                       strtoul(mData + pos + 11, nullptr, 10),
+                                       strtoul(mData + pos,      nullptr, 10));
                 }
             }
 
@@ -890,9 +883,18 @@ Object Reader::getObject(const Link &link) const
 Object Reader::getObject(uint objNum, quint16 genNum) const
 {
     Q_UNUSED(genNum)
+
     Object obj;
-    if (mXRefTable.value(objNum).pos)
-        readObject(mXRefTable.value(objNum).pos, &obj);
+    XRefTable::const_iterator it = mXRefTable.find(objNum);
+    if (it == mXRefTable.end())
+        return obj;
+
+//    if (it.value().type() == XRefEntry::Compressed)
+//        readObjectFromStream(it.value().streamObjNum, it.value().streamIndex, objNum, &obj);
+
+    if (it.value().pos())
+        readObject(it.value().pos(), &obj);
+
     return obj;
 }
 

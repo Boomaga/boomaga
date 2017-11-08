@@ -27,43 +27,56 @@
 #ifndef PDFXREF_H
 #define PDFXREF_H
 
+#include "pdfvalue.h"
+
 #include <QMap>
 namespace PDF {
 
 
-struct XRefEntry {
+class XRefEntry
+{
+friend class XRefTable;
+public:
     enum Type{
         Free,
-        Used
+        Used,
+        Compressed
     };
 
     XRefEntry():
-        pos(0),
-        objNum(0),
-        genNum(0),
-        type(Type::Free)
+        mPos(0),
+        mObjNum(0),
+        mGenNum(0),
+        mType(Type::Free)
     {
     }
 
-    XRefEntry(qint64  pos, quint32 objNum, quint16 genNum, Type type):
-        pos(pos),
-        objNum(objNum),
-        genNum(genNum),
-        type(type)
-    {
-    }
+    Type type() const { return mType; }
+    quint64 pos() const;
+    PDF::ObjNum objNum() const;
+    PDF::GenNum genNum() const;
+    PDF::ObjNum streamObjNum() const;
+    quint32     streamIndex() const;
 
-    qint64  pos;
-    quint32 objNum;
-    quint16 genNum;
-    Type type;
+private:
+    qint64      mPos;
+    PDF::ObjNum mObjNum;
+    PDF::GenNum mGenNum;
+    Type        mType;
 };
 
 
-class XRefTable: public QMap<quint32, XRefEntry>
+class XRefTable: public QMap<PDF::ObjNum, XRefEntry>
 {
 public:
     qint32 maxObjNum() const;
+
+    XRefEntry addFreeObject(PDF::ObjNum objNum, PDF::GenNum genNum, PDF::ObjNum nextFreeObj = 0);
+    XRefEntry addUsedObject(PDF::ObjNum objNum, PDF::GenNum genNum, quint64 pos);
+    XRefEntry addCompressedObject(PDF::ObjNum objNum, PDF::ObjNum streamObjNum, quint32 streamIndex);
+
+    // Restore free entries chain.
+    void updateFreeChain();
 };
 
 } // namespace PDF

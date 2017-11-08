@@ -45,7 +45,7 @@ Writer::Writer():
     mXRefPos(0),
     mBuf{0}
 {
-    mXRefTable.insert(0, XRefEntry(0, 0, 65535, XRefEntry::Free));
+    mXRefTable.addFreeObject(0, 65535, 0);
 }
 
 
@@ -57,7 +57,7 @@ Writer::Writer(QIODevice *device):
     mXRefPos(0),
     mBuf{0}
 {
-    mXRefTable.insert(0, XRefEntry(0, 0, 65535, XRefEntry::Free));
+    mXRefTable.addFreeObject(0, 65535, 0);
 }
 
 
@@ -311,18 +311,7 @@ void Writer::writePDFHeader(int majorVersion, int minorVersion)
 void Writer::writeXrefTable()
 {
     // Restore free entries chain.
-    {
-        auto prev = mXRefTable.begin();
-        for (auto i = ++(mXRefTable.begin()) ; i != mXRefTable.end(); ++i)
-        {
-            if (i.value().type == XRefEntry::Free)
-            {
-                i.value().objNum = prev.value().objNum;
-                prev = i;
-            }
-        }
-    }
-
+    mXRefTable.updateFreeChain();
 
     mXRefPos = mDevice->pos();
     mDevice->write("xref\n");
@@ -331,16 +320,16 @@ void Writer::writeXrefTable()
     while (start != mXRefTable.constEnd())
     {
         auto it(start);
-        PDF::ObjNum prev = start.value().objNum;
+        PDF::ObjNum prev = start.value().objNum();
         for (; it != mXRefTable.constEnd(); ++it)
         {
-            if (it.value().objNum - prev > 1)
+            if (it.value().objNum() - prev > 1)
                 break;
 
-            prev = it.value().objNum;
+            prev = it.value().objNum();
         }
 
-        writeXrefSection(start, prev - start.value().objNum + 1);
+        writeXrefSection(start, prev - start.value().objNum() + 1);
         start = it;
     }
 }
@@ -351,7 +340,7 @@ void Writer::writeXrefTable()
  ************************************************/
 void Writer::writeXrefSection(const XRefTable::const_iterator &start, quint32 count)
 {
-    write(start.value().objNum);
+    write(start.value().objNum());
     write(' ');
     write(count);
     write('\n');
@@ -366,27 +355,27 @@ void Writer::writeXrefSection(const XRefTable::const_iterator &start, quint32 co
         for (; pos < bufSize-20 && i<count; ++i)
         {
             const XRefEntry &entry = it.value();
-            buf[pos +  0] = (entry.pos / 1000000000) % 10 + '0';
-            buf[pos +  1] = (entry.pos / 100000000) % 10 + '0';
-            buf[pos +  2] = (entry.pos / 10000000) % 10 + '0';
-            buf[pos +  3] = (entry.pos / 1000000) % 10 + '0';
-            buf[pos +  4] = (entry.pos / 100000) % 10 + '0';
-            buf[pos +  5] = (entry.pos / 10000) % 10 + '0';
-            buf[pos +  6] = (entry.pos / 1000) % 10 + '0';
-            buf[pos +  7] = (entry.pos / 100) % 10 + '0';
-            buf[pos +  8] = (entry.pos / 10) % 10 + '0';
-            buf[pos +  9] = (entry.pos / 1) % 10 + '0';
+            buf[pos +  0] = (entry.pos() / 1000000000) % 10 + '0';
+            buf[pos +  1] = (entry.pos() / 100000000) % 10 + '0';
+            buf[pos +  2] = (entry.pos() / 10000000) % 10 + '0';
+            buf[pos +  3] = (entry.pos() / 1000000) % 10 + '0';
+            buf[pos +  4] = (entry.pos() / 100000) % 10 + '0';
+            buf[pos +  5] = (entry.pos() / 10000) % 10 + '0';
+            buf[pos +  6] = (entry.pos() / 1000) % 10 + '0';
+            buf[pos +  7] = (entry.pos() / 100) % 10 + '0';
+            buf[pos +  8] = (entry.pos() / 10) % 10 + '0';
+            buf[pos +  9] = (entry.pos() / 1) % 10 + '0';
 
             buf[pos + 10] = ' ';
 
-            buf[pos + 11] = (entry.genNum / 10000) % 10 + '0';
-            buf[pos + 12] = (entry.genNum / 1000) % 10 + '0';
-            buf[pos + 13] = (entry.genNum / 100) % 10 + '0';
-            buf[pos + 14] = (entry.genNum / 10) % 10 + '0';
-            buf[pos + 15] = (entry.genNum / 1) % 10 + '0';
+            buf[pos + 11] = (entry.genNum() / 10000) % 10 + '0';
+            buf[pos + 12] = (entry.genNum() / 1000) % 10 + '0';
+            buf[pos + 13] = (entry.genNum() / 100) % 10 + '0';
+            buf[pos + 14] = (entry.genNum() / 10) % 10 + '0';
+            buf[pos + 15] = (entry.genNum() / 1) % 10 + '0';
 
             buf[pos + 16] = ' ';
-            buf[pos + 17] = (entry.type == PDF::XRefEntry::Used ? 'n' : 'f');
+            buf[pos + 17] = (entry.type() == PDF::XRefEntry::Used ? 'n' : 'f');
             buf[pos + 18] = ' ';
             buf[pos + 19] = '\n';
 
@@ -706,7 +695,7 @@ void Writer::writeComment(const QString &comment)
 void Writer::writeObject(const Object &object)
 {
     write('\n');
-    mXRefTable.insert(object.objNum(), XRefEntry(mDevice->pos(), object.objNum(), object.genNum(), XRefEntry::Used));
+    mXRefTable.addUsedObject(object.objNum(), object.genNum(), mDevice->pos());
 
     write(object.objNum());
     write(' ');

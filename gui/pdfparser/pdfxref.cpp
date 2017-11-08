@@ -45,21 +45,140 @@ qint32 XRefTable::maxObjNum() const
 /************************************************
  *
  ************************************************/
+XRefEntry XRefTable::addFreeObject(ObjNum objNum, GenNum genNum, ObjNum nextFreeObj)
+{
+    XRefEntry entry;
+    entry.mObjNum = objNum;
+    entry.mGenNum = genNum;
+    entry.mType   = XRefEntry::Free;
+    entry.mPos    = nextFreeObj;
+
+    insert(objNum, entry);
+    return entry;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+XRefEntry XRefTable::addUsedObject(ObjNum objNum, GenNum genNum, quint64 pos)
+{
+    XRefEntry entry;
+    entry.mObjNum = objNum;
+    entry.mGenNum = genNum;
+    entry.mType   = XRefEntry::Used;
+    entry.mPos    = pos;
+
+    insert(objNum, entry);
+    return entry;
+}
+
+/************************************************
+ *
+ ************************************************/
+XRefEntry XRefTable::addCompressedObject(ObjNum objNum, ObjNum streamObjNum, quint32 streamIndex)
+{
+    XRefEntry entry;
+    entry.mObjNum = objNum;
+    entry.mGenNum = streamIndex;
+    entry.mType   = XRefEntry::Used;
+    entry.mPos    = streamObjNum;
+
+    insert(objNum, entry);
+    return entry;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void XRefTable::updateFreeChain()
+{
+    auto prev = begin();
+    for (auto i = ++(begin()) ; i != end(); ++i)
+    {
+        if (i.value().mType == XRefEntry::Free)
+        {
+            i.value().mPos = prev.value().mObjNum;
+            prev = i;
+        }
+    }
+}
+
+
+/************************************************
+ *
+ ************************************************/
+quint64 XRefEntry::pos() const
+{
+    return mType == Compressed ? 0 : mPos;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+ObjNum XRefEntry::objNum() const
+{
+    return mObjNum;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+GenNum XRefEntry::genNum() const
+{
+    return mType == Compressed ? 0 : mGenNum;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+ObjNum XRefEntry::streamObjNum() const
+{
+    return mType == Compressed ? mPos : 0;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+quint32 XRefEntry::streamIndex() const
+{
+    return mType == Compressed ? mGenNum : 0;
+}
+
+
+/************************************************
+ *
+ ************************************************/
 QDebug operator<<(QDebug debug, const XRefEntry &xref)
 {
-    if (xref.type == XRefEntry::Type::Free)
+    switch (xref.type())
     {
+    case XRefEntry::Type::Free:
         debug.space()
-                << xref.objNum
-                << xref.genNum
+                << xref.objNum()
+                << xref.genNum()
                 << "FREE";
-    }
-    else
-    {
+        break;
+
+    case XRefEntry::Type::Used:
         debug.space()
-                << xref.objNum
-                << xref.genNum
-                << "Pos:" << xref.pos;
+                << xref.objNum()
+                << xref.genNum()
+                << "Pos:" << xref.pos();
+        break;
+
+    case XRefEntry::Type::Compressed:
+        debug.space()
+                << xref.objNum()
+                << xref.genNum()
+                << "Stream:" << xref.streamObjNum()
+                << ":" << xref.streamIndex();
+        break;
     }
 
     return debug;
