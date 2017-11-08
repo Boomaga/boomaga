@@ -99,34 +99,15 @@ public:
 
 protected:
     void   load();
-    Value  readValue(qint64 *pos) const;
-    qint64 readArray(qint64 start, Array *res) const;
-    qint64 readDict(qint64 start, Dict *res) const;
-    qint64 readHexString(qint64 start, String *res) const;
-    qint64 readLiteralString(qint64 start, String *res) const;
+    Value  readValue(quint64 *pos) const;
 
-    qint64 readObject(qint64 start, Object *res) const;
-    qint64 readXRefTable(qint64 start, XRefTable *res) const;
-
-    QString readNameString(qint64 *pos) const;
-
-    bool isDelim(qint64 pos) const;
-    qint64 skipSpace(qint64 pos) const;
-    qint64 skipCRLF(qint64 pos) const;
-
-    qint64 indexOf(const char *str, qint64 from = 0) const;
-    qint64 indexOfBack(const char *str, qint64 from) const;
-
-    quint32 readUInt(qint64 *pos, bool *ok) const;
-    double readNum(qint64 *pos, bool *ok) const;
-
-    bool compareStr(qint64 pos, const char *str) const;
-    bool compareWord(qint64 pos, const char *str) const;
+    qint64 readObject(quint64 start, Object *res) const;
+    qint64 readXRefTable(quint64 start, XRefTable *res) const;
 
 private:
     QFile      *mFile;
     const char *mData;
-    qint64      mSize;
+    quint64     mSize;
     XRefTable   mXRefTable;
     Dict        mTrailerDict;
     int         mPagesCount;

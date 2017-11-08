@@ -29,6 +29,7 @@
 #include "pdfvalue.h"
 #include "pdfxref.h"
 #include <climits>
+#include <cmath>
 
 #include <QUuid>
 #include <QDebug>
@@ -362,7 +363,7 @@ void Writer::writeXrefSection(const XRefTable::const_iterator &start, quint32 co
     for (quint32 i = 0; i<count;)
     {
         uint pos = 0;
-        for (; pos < bufSize && i<count; ++i)
+        for (; pos < bufSize-20 && i<count; ++i)
         {
             const XRefEntry &entry = it.value();
             buf[pos +  0] = (entry.pos / 1000000000) % 10 + '0';

@@ -34,19 +34,525 @@
 #include <QTextCodec>
 #include <QDebug>
 
+
+namespace PDF {
+
+struct ReaderData
+{
+public:
+
+    ReaderData(const char *buf, const quint64 size, QTextCodec *textCodec):
+        mData(buf),
+        mSize(size),
+        mTextCodec(textCodec)
+    {
+
+    }
+
+    bool isDelim(quint64 pos) const;
+
+    const char   *mData;
+    const quint64 mSize;
+    QTextCodec  *mTextCodec;
+
+    bool compareStr(quint64 pos, const char *str) const;
+    bool compareWord(quint64 pos, const char *str) const;
+    quint64 skipSpace(quint64 pos) const;
+    qint64 skipCRLF(quint64 pos) const;
+    qint64 indexOf(const char *str, quint64 from) const;
+    qint64 indexOfBack(const char *str, quint64 from) const;
+    quint32 readUInt(quint64 *pos, bool *ok) const;
+    double readNum(quint64 *pos, bool *ok) const;
+
+    QString readNameString(quint64 *pos) const;
+    qint64 readHexString(quint64 start, String *res) const;
+    qint64 readLiteralString(qint64 start, String *res) const;
+
+    qint64 readArray(quint64 start, Array *res) const;
+    qint64 readDict(quint64 start, Dict *res) const;
+
+    Value readValue(quint64 *pos) const;
+};
+
+}
+
 using namespace PDF;
 
+/************************************************
+ *
+ ************************************************/
+bool ReaderData::isDelim(quint64 pos) const
+{
+    return isspace(mData[pos]) ||
+            strchr("()<>[]{}/%", mData[pos]);
+}
+
 
 /************************************************
  *
  ************************************************/
-Reader::Reader():
-    mFile(nullptr),
-    mData(nullptr),
-    mSize(0),
-    mPagesCount(-1),
-    mTextCodec(QTextCodec::codecForName("UTF-8"))
+bool ReaderData::compareStr(quint64 pos, const char *str) const
 {
+    size_t len = strlen(str);
+    return (mSize - pos > len) && strncmp(mData + pos, str, len) == 0;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+bool ReaderData::compareWord(quint64 pos, const char *str) const
+{
+    size_t len = strlen(str);
+    return (mSize - pos > len + 1) &&
+            strncmp(mData + pos, str, len) == 0 &&
+            isDelim(pos + len);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+quint64 ReaderData::skipSpace(quint64 pos) const
+{
+    while (pos < mSize && isspace(mData[pos]))
+        pos++;
+
+    return pos;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+qint64 ReaderData::skipCRLF(quint64 pos) const
+{
+    while (pos < mSize && (mData[pos] == '\n' || mData[pos] == '\r'))
+        pos++;
+
+    return pos;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+qint64 ReaderData::indexOf(const char *str, quint64 from) const
+{
+    size_t len = strlen(str);
+
+    for (quint64 i = from; i<mSize-len; i++)
+    {
+        if (strncmp(mData + i, str, len) == 0)
+            return i;
+    }
+
+    return -1;
+}
+
+
+
+/************************************************
+ *
+ ************************************************/
+qint64 ReaderData::indexOfBack(const char *str, quint64 from) const
+{
+    size_t len = strlen(str);
+
+    for (quint64 i = from - len + 1 ; i>0; i--)
+    {
+        if (strncmp(mData + i, str, len) == 0)
+            return i;
+    }
+
+    return -1;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+quint32 ReaderData::readUInt(quint64 *pos, bool *ok) const
+{
+    char *end;
+    quint32 res = strtoul(mData + *pos, &end, 10);
+    *ok = end != mData + *pos;
+    *pos = end - mData;
+    return res;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+double ReaderData::readNum(quint64 *pos, bool *ok) const
+{
+    const char * str = mData + *pos;
+    int sign = 1;
+    if (str[0] == '-')
+    {
+        ++str;
+        sign = -1;
+    }
+
+    char *end;
+    double res = strtoll(str, &end, 10);
+    if (end[0] == '.')
+    {
+        ++end;
+        if (isdigit(end[0]))
+        {
+            str = end;
+            long long fract = strtoll(str, &end, 10);
+            if (str < end)
+                res += fract / pow(10.0, end - str);
+        }
+    }
+    *ok = end != mData + *pos;
+    *pos = end - mData;
+    return res * sign;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+QString ReaderData::readNameString(quint64 *pos) const
+{
+    if (mData[*pos] != '/')
+        throw ParseError(*pos, QString("Invalid PDF name on pos %1").arg(*pos));
+
+    quint64 start = *pos;
+    for (++(*pos); *pos < mSize; ++(*pos))
+    {
+        if (isDelim(*pos))
+        {
+            return QString::fromLocal8Bit(mData + start + 1, *pos - start - 1);
+        }
+    }
+
+    throw ParseError(start, QString("Invalid PDF name on pos %1").arg(start));
+}
+
+
+/************************************************
+ * Strings may be written in hexadecimal form, which is useful for
+ * including arbitrary binary data in a PDF file. A hexadecimal
+ * string is written as a sequence of hexadecimal digits (0–9 and
+ * either A –F or a–f ) enclosed within angle brackets (< and >):
+ *    < 4E6F762073686D6F7A206B6120706F702E >
+ *
+ * Each pair of hexadecimal digits defines one byte of the string.
+ * White-space characters (such as space, tab, carriage return,
+ * line feed, and form feed) are ignored.
+ *
+ * If the final digit of a hexadecimal string is missing—that is,
+ * if there is an odd number of digits—the final digit is assumed
+ * to be 0. For example:
+ *     < 901FA3 >
+ * is a 3-byte string consisting of the characters whose hexadecimal
+ * codes are 90, 1F, and A3, but
+ *    < 901FA >
+ * is a 3-byte string containing the characters whose hexadecimal
+ * codes are 90, 1F , and A0.
+ ************************************************/
+qint64 ReaderData::readHexString(quint64 start, String *res) const
+{
+    QByteArray string;
+    string.reserve(1024);
+
+    bool first = true;
+    char r = 0;
+    for (quint64 pos = start+1; pos < mSize; ++pos)
+    {
+        char c = mData[pos];
+        switch (c)
+        {
+        case '0': case '1': case '2': case '3': case '4':
+        case '5': case '6': case '7': case '8': case '9':
+        {
+            if (first)
+                r = c - '0';
+            else
+                string.append(r * 16 + c -'0');
+
+            first = !first;
+            break;
+        }
+
+        case 'A': case 'B': case 'C':
+        case 'D': case 'E': case 'F':
+        {
+            if (first)
+                r = c - 'A' + 10;
+            else
+                string.append(r * 16 + c -'A' + 10);
+
+            first = !first;
+            break;
+        }
+
+        case 'a': case 'b': case 'c':
+        case 'd': case 'e': case 'f':
+        {
+            if (first)
+                r = c - 'a' + 10;
+            else
+                string.append(r * 16 + c -'a' + 10);
+
+            first = !first;
+            break;
+        }
+
+        case ' ':  case '\t': case '\n':
+        case '\v': case '\f': case '\r':
+            break;
+
+        case '>':
+        {
+            if (!first)
+                string.append(r * 16);
+
+            res->setValue(QTextCodec::codecForUtfText(string, mTextCodec)->toUnicode(string));
+            res->setEncodingType(String::HexEncoded);
+            return pos + 1;
+        }
+
+        default:
+            throw ParseError(pos, QString("Invalid PDF hexadecimal string on pos %1").arg(pos));
+        }
+    }
+
+    throw ParseError(start, "The closing hexadecimal string marker '>' was not found.");
+}
+
+
+/************************************************
+ * Literal Strings
+ *
+ * A literal string is written as an arbitrary number of characters enclosed
+ * in parentheses. Any characters may appear in a string except unbalanced
+ * parentheses and the backslash, which must be treated specially.
+ * Balanced pairs of parentheses within a string require no special treatment.
+ *
+ * The following are valid literal strings:
+ *  ( This is a string )
+ *  ( Strings may contain newlines
+ *  and such. )
+ *  ( Strings may contain balanced parentheses ( ) and
+ *  special characters ( * ! & } ^ % and so on ) . )
+ *  ( The following is an empty string . )
+ *  ( )
+ *  ( It has zero ( 0 ) length . )
+ *
+ * Within a literal string, the backslash (\) is used as an escape character
+ * for various purposes, such as to include newline characters, nonprinting
+ * ASCII characters, unbalanced parentheses, or the backslash character
+ * itself in the string. The character immediately following the backslash
+ * determines its precise interpretation (see Table 3.2). If the character
+ * following the backslash is not one of those shown in the table, the
+ * backslash is ignored.
+ *
+ * SEQUENCE     MEANING
+ *  \n          Line feed (LF)
+ *  \r          Carriage return (CR)
+ *  \t          Horizontal tab (HT)
+ *  \b          Backspace (BS)
+ *  \f          Form feed (FF)
+ *  \(          Left parenthesis
+ *  \)          Right parenthesis
+ *  \\          Backslash
+ *  \ddd        Character code ddd (octal)
+ *
+ * If a string is too long to be conveniently placed on a single line,
+ * it may be split across multiple lines by using the backslash character at
+ * the end of a line to indicate that the string continues on the following
+ * line. The backslash and the end-of-line marker following it are not
+ * considered part of the string. For example:
+ *  ( These \
+ *  two strings \
+ *  are the same . )
+ *  ( These two strings are the same . )
+ *
+ * If an end-of-line marker appears within a literal string without a
+ * preceding backslash, the result is equivalent to \n (regardless of
+ * whether the end-of-line marker was a carriage return, a line feed,
+ * or both). For example:
+ *  ( This string has an end−of−line at the end of it .
+ *  )
+ *  ( So does this one .\n )
+ *
+ * The \ddd escape sequence provides a way to represent characters outside
+ * the printable ASCII character set. For example:
+ *  ( This string contains \245two octal characters\307 . )
+ * The number ddd may consist of one, two, or three octal digits, with
+ * high-order overflow ignored. It is required that three octal digits be
+ * used, with leading zeros as needed, if the next character of the string
+ * is also a digit. For example, the literal
+ *  ( \0053 )
+ * denotes a string containing two characters, \005 (Control-E) followed
+ * by the digit 3, whereas both
+ *  ( \053 )
+ * and
+ *  ( \53 )
+ * denote strings containing the single character \053, a plus sign (+).
+ ************************************************/
+qint64 ReaderData::readLiteralString(qint64 start, String *res) const
+{
+    QByteArray data;
+    data.reserve(1024);
+
+    int level = 1;
+    bool esc = false;
+    for (quint64 i = start+1; i < mSize; ++i)
+    {
+        char c = mData[i];
+
+        switch (c)
+        {
+
+        // Backslash .......................
+        case '\\':
+            esc = !esc;
+            if (!esc)
+                data.append(c);
+            break;
+
+        // Line feed (LF) ..................
+        case 'n':
+            data.append(esc ? '\n' : 'n');
+            esc = false;
+            break;
+
+        // Carriage return (CR) ............
+        case 'r':
+            data.append(esc ? '\r' : 'r');
+            esc = false;
+            break;
+
+        // Horizontal tab (HT) .............
+        case 't':
+            data.append(esc ? '\t' : 't');
+            esc = false;
+            break;
+
+        // Backspace (BS) ..................
+        case 'b':
+            data.append(esc ? '\b' : 'b');
+            esc = false;
+            break;
+
+        // Form feed (FF) ..................
+        case 'f':
+            data.append(esc ? '\f' : 'f');
+            esc = false;
+            break;
+
+        // Character code ddd (octal) ......
+        case '0': case '1': case '2': case '3':
+        case '4': case '5': case '6': case '7':
+            if (esc)
+            {
+                esc = false;
+                char n = c-'0';
+                uint l = qMin(i+3, mSize);
+                for(++i; i<l; ++i)
+                {
+                    c = mData[i];
+                    if (c < '0' || c > '7' )
+                        break;
+
+                    n = n * 8 + c - '0';
+                }
+                data.append(n);
+                --i;
+            }
+            else
+            {
+                data.append(c);
+            }
+            break;
+
+        case '\n':
+            if (esc)
+            {
+                if (i+1<mSize && mData[i+1] == '\r')
+                    ++i;
+            }
+            else
+            {
+                data.append('\n');
+            }
+            esc = false;
+            break;
+
+        case '\r':
+            if (esc)
+            {
+                if (i+1<mSize && mData[i+1] == '\n')
+                    ++i;
+            }
+            else
+            {
+                data.append('\r');
+            }
+            esc = false;
+            break;
+
+        case '(':
+            if (!esc)
+                ++level;
+            data.append(c);
+            esc = false;
+            break;
+
+        case ')':
+            if (!esc)
+            {
+                --level;
+
+                if (level == 0)
+                {
+                    res->setValue(QTextCodec::codecForUtfText(data, mTextCodec)->toUnicode(data));
+                    res->setEncodingType(String::LiteralEncoded);
+                    return i + 1;
+                }
+            }
+            esc = false;
+            data.append(c);
+            break;
+
+        default:
+            esc = false;
+            data.append(c);
+            break;
+        }
+    }
+
+    throw ParseError(start, "The closing literal string marker ')' was not found.");
+}
+
+
+/************************************************
+ *
+ ************************************************/
+qint64 ReaderData::readArray(quint64 start, Array *res) const
+{
+    quint64 pos = skipSpace(start + 1);
+
+    while (pos < mSize)
+    {
+        if (mData[pos] == ']')
+        {
+            res->setValid(true);
+            return pos + 1;
+        }
+
+        res->append(readValue(&pos));
+        pos = skipSpace(pos);
+    }
+
+    throw ParseError(start, "The closing array marker ']' was not found.");
 
 }
 
@@ -54,19 +560,34 @@ Reader::Reader():
 /************************************************
  *
  ************************************************/
-Reader::~Reader()
+qint64 ReaderData::readDict(quint64 start, Dict *res) const
 {
-    if (mFile && mData)
-            mFile->unmap(const_cast<uchar*>(reinterpret_cast<const uchar*>(mData)));
+    quint64 pos = skipSpace(start + 2);  // skip "<<" mark
 
-    delete mFile;
+    while (pos < mSize - 1)
+    {
+        if (mData[pos]     == '>' &&
+            mData[pos + 1] == '>' )
+        {
+            res->setValid(true);
+            return pos += 2;        // skip ">>" mark
+        }
+
+        QString name = readNameString(&pos);
+        pos = skipSpace(pos);
+        res->insert(name, readValue(&pos));
+
+        pos = skipSpace(pos);
+    }
+
+    throw ParseError(start, "The closing dictionary marker '>>' was not found.");
 }
 
 
 /************************************************
  *
  ************************************************/
-Value Reader::readValue(qint64 *pos) const
+Value ReaderData::readValue(quint64 *pos) const
 {
     char c = mData[*pos];
     switch (c) {
@@ -90,7 +611,7 @@ Value Reader::readValue(qint64 *pos) const
         if (n1 != quint64(n1))
             return Number(n1);
 
-        qint64 p = *pos;
+        quint64 p = *pos;
         p = skipSpace(p);
 
         quint64 n2 = readUInt(&p, &ok);
@@ -199,390 +720,74 @@ Value Reader::readValue(qint64 *pos) const
     }
     }
 
-    QByteArray d(mData + *pos, qMin(mSize - *pos, 20ll));
+    QByteArray d(mData + *pos, qMin(mSize - *pos, 20ull));
     throw UnknownValueError(*pos, QString("Unknown object type on %1: '%2'").arg(*pos).arg(d.data()));
 }
 
 
+
 /************************************************
  *
  ************************************************/
-qint64 Reader::readArray(qint64 start, Array *res) const
+Reader::Reader():
+    mFile(nullptr),
+    mData(nullptr),
+    mSize(0),
+    mPagesCount(-1),
+    mTextCodec(QTextCodec::codecForName("UTF-8"))
 {
-    qint64 pos = start + 1;
 
-    while (pos < mSize)
-    {
-        pos = skipSpace(pos);
-
-        if (pos == mSize)
-            throw ParseError(start);
-
-        if (mData[pos] == ']')
-        {
-            res->setValid(true);
-            return pos + 1;
-        }
-
-        res->append(readValue(&pos));
-    }
-
-    throw ParseError(start, "The closing array marker ']' was not found.");
 }
 
 
 /************************************************
  *
  ************************************************/
-qint64 Reader::readDict(qint64 start, Dict *res) const
+Reader::~Reader()
 {
-    qint64 pos = start + 2;         // skip "<<" mark
+    if (mFile && mData)
+            mFile->unmap(const_cast<uchar*>(reinterpret_cast<const uchar*>(mData)));
 
-    while (pos < mSize - 1)
-    {
-        pos = skipSpace(pos);
-
-        if (mData[pos]     == '>' &&
-            mData[pos + 1] == '>' )
-        {
-            res->setValid(true);
-            return pos += 2;        // skip ">>" mark
-        }
-
-        QString name = readNameString(&pos);
-        pos = skipSpace(pos);
-        res->insert(name, readValue(&pos));
-    }
-
-    throw ParseError(start, "The closing dictionary marker '>>' was not found.");
-}
-
-
-/************************************************
- * Strings may be written in hexadecimal form, which is useful for
- * including arbitrary binary data in a PDF file. A hexadecimal
- * string is written as a sequence of hexadecimal digits (0–9 and
- * either A –F or a–f ) enclosed within angle brackets (< and >):
- *    < 4E6F762073686D6F7A206B6120706F702E >
- *
- * Each pair of hexadecimal digits defines one byte of the string.
- * White-space characters (such as space, tab, carriage return,
- * line feed, and form feed) are ignored.
- *
- * If the final digit of a hexadecimal string is missing—that is,
- * if there is an odd number of digits—the final digit is assumed
- * to be 0. For example:
- *     < 901FA3 >
- * is a 3-byte string consisting of the characters whose hexadecimal
- * codes are 90, 1F, and A3, but
- *    < 901FA >
- * is a 3-byte string containing the characters whose hexadecimal
- * codes are 90, 1F , and A0.
- ************************************************/
-
-qint64 Reader::readHexString(qint64 start, String *res) const
-{
-    QByteArray data;
-    data.reserve(1024);
-
-    bool first = true;
-    char r = 0;
-    for (qint64 pos = start+1; pos < mSize; ++pos)
-    {
-        char c = mData[pos];
-        switch (c)
-        {
-        case '0': case '1': case '2': case '3': case '4':
-        case '5': case '6': case '7': case '8': case '9':
-        {
-            if (first)
-                r = c - '0';
-            else
-                data.append(r * 16 + c -'0');
-
-            first = !first;
-            break;
-        }
-
-        case 'A': case 'B': case 'C':
-        case 'D': case 'E': case 'F':
-        {
-            if (first)
-                r = c - 'A' + 10;
-            else
-                data.append(r * 16 + c -'A' + 10);
-
-            first = !first;
-            break;
-        }
-
-        case 'a': case 'b': case 'c':
-        case 'd': case 'e': case 'f':
-        {
-            if (first)
-                r = c - 'a' + 10;
-            else
-                data.append(r * 16 + c -'a' + 10);
-
-            first = !first;
-            break;
-        }
-
-        case ' ':  case '\t': case '\n':
-        case '\v': case '\f': case '\r':
-            break;
-
-        case '>':
-        {
-            if (!first)
-                data.append(r * 16);
-
-            res->setValue(QTextCodec::codecForUtfText(data, mTextCodec)->toUnicode(data));
-            res->setEncodingType(String::HexEncoded);
-            return pos + 1;
-        }
-
-        default:
-            throw ParseError(pos, QString("Invalid PDF hexadecimal string on pos %1").arg(pos));
-        }
-    }
-
-    throw ParseError(start, "The closing hexadecimal string marker '>' was not found.");
-}
-
-
-/************************************************
- * Literal Strings
- *
- * A literal string is written as an arbitrary number of characters enclosed
- * in parentheses. Any characters may appear in a string except unbalanced
- * parentheses and the backslash, which must be treated specially.
- * Balanced pairs of parentheses within a string require no special treatment.
- *
- * The following are valid literal strings:
- *  ( This is a string )
- *  ( Strings may contain newlines
- *  and such. )
- *  ( Strings may contain balanced parentheses ( ) and
- *  special characters ( * ! & } ^ % and so on ) . )
- *  ( The following is an empty string . )
- *  ( )
- *  ( It has zero ( 0 ) length . )
- *
- * Within a literal string, the backslash (\) is used as an escape character
- * for various purposes, such as to include newline characters, nonprinting
- * ASCII characters, unbalanced parentheses, or the backslash character
- * itself in the string. The character immediately following the backslash
- * determines its precise interpretation (see Table 3.2). If the character
- * following the backslash is not one of those shown in the table, the
- * backslash is ignored.
- *
- * SEQUENCE     MEANING
- *  \n          Line feed (LF)
- *  \r          Carriage return (CR)
- *  \t          Horizontal tab (HT)
- *  \b          Backspace (BS)
- *  \f          Form feed (FF)
- *  \(          Left parenthesis
- *  \)          Right parenthesis
- *  \\          Backslash
- *  \ddd        Character code ddd (octal)
- *
- * If a string is too long to be conveniently placed on a single line,
- * it may be split across multiple lines by using the backslash character at
- * the end of a line to indicate that the string continues on the following
- * line. The backslash and the end-of-line marker following it are not
- * considered part of the string. For example:
- *  ( These \
- *  two strings \
- *  are the same . )
- *  ( These two strings are the same . )
- *
- * If an end-of-line marker appears within a literal string without a
- * preceding backslash, the result is equivalent to \n (regardless of
- * whether the end-of-line marker was a carriage return, a line feed,
- * or both). For example:
- *  ( This string has an end−of−line at the end of it .
- *  )
- *  ( So does this one .\n )
- *
- * The \ddd escape sequence provides a way to represent characters outside
- * the printable ASCII character set. For example:
- *  ( This string contains \245two octal characters\307 . )
- * The number ddd may consist of one, two, or three octal digits, with
- * high-order overflow ignored. It is required that three octal digits be
- * used, with leading zeros as needed, if the next character of the string
- * is also a digit. For example, the literal
- *  ( \0053 )
- * denotes a string containing two characters, \005 (Control-E) followed
- * by the digit 3, whereas both
- *  ( \053 )
- * and
- *  ( \53 )
- * denote strings containing the single character \053, a plus sign (+).
- ************************************************/
-qint64 Reader::readLiteralString(qint64 start, String *res) const
-{
-    QByteArray data;
-    data.reserve(1024);
-
-    int level = 1;
-    bool esc = false;
-    for (qint64 i = start+1; i < mSize; ++i)
-    {
-        char c = mData[i];
-
-        switch (c)
-        {
-
-        // Backslash .......................
-        case '\\':
-            esc = !esc;
-            if (!esc)
-                data.append(c);
-            break;
-
-        // Line feed (LF) ..................
-        case 'n':
-            data.append(esc ? '\n' : 'n');
-            esc = false;
-            break;
-
-        // Carriage return (CR) ............
-        case 'r':
-            data.append(esc ? '\r' : 'r');
-            esc = false;
-            break;
-
-        // Horizontal tab (HT) .............
-        case 't':
-            data.append(esc ? '\t' : 't');
-            esc = false;
-            break;
-
-        // Backspace (BS) ..................
-        case 'b':
-            data.append(esc ? '\b' : 'b');
-            esc = false;
-            break;
-
-        // Form feed (FF) ..................
-        case 'f':
-            data.append(esc ? '\f' : 'f');
-            esc = false;
-            break;
-
-        // Character code ddd (octal) ......
-        case '0': case '1': case '2': case '3':
-        case '4': case '5': case '6': case '7':
-            if (esc)
-            {
-                esc = false;
-                char n = c-'0';
-                int l = qMin(i+3, mSize);
-                for(++i; i<l; ++i)
-                {
-                    c = mData[i];
-                    if (c < '0' || c > '7' )
-                        break;
-
-                    n = n * 8 + c - '0';
-                }
-                data.append(n);
-                --i;
-            }
-            else
-            {
-                data.append(c);
-            }
-            break;
-
-        case '\n':
-            if (esc)
-            {
-                if (i+1<mSize && mData[i+1] == '\r')
-                    ++i;
-            }
-            else
-            {
-                data.append('\n');
-            }
-            esc = false;
-            break;
-
-        case '\r':
-            if (esc)
-            {
-                if (i+1<mSize && mData[i+1] == '\n')
-                    ++i;
-            }
-            else
-            {
-                data.append('\r');
-            }
-            esc = false;
-            break;
-
-        case '(':
-            if (!esc)
-                ++level;
-            data.append(c);
-            esc = false;
-            break;
-
-        case ')':
-            if (!esc)
-            {
-                --level;
-
-                if (level == 0)
-                {
-                    res->setValue(QTextCodec::codecForUtfText(data, mTextCodec)->toUnicode(data));
-                    res->setEncodingType(String::LiteralEncoded);
-                    return i + 1;
-                }
-            }
-            esc = false;
-            data.append(c);
-            break;
-
-        default:
-            esc = false;
-            data.append(c);
-            break;
-        }
-    }
-
-    throw ParseError(start, "The closing literal string marker ')' was not found.");
+    delete mFile;
 }
 
 
 /************************************************
  *
  ************************************************/
-qint64 Reader::readObject(qint64 start, Object *res) const
+Value Reader::readValue(quint64 *pos) const
 {
-    qint64 pos = start;
+    return ReaderData(mData, mSize, mTextCodec).readValue(pos);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+qint64 Reader::readObject(quint64 start, Object *res) const
+{
+    ReaderData data(mData, mSize, mTextCodec);
+    quint64 pos = start;
 
     bool ok;
-    res->setObjNum(readUInt(&pos, &ok));
+    res->setObjNum(data.readUInt(&pos, &ok));
     if (!ok)
         throw ParseError(pos);
 
-    pos = skipSpace(pos);
-    res->setGenNum(readUInt(&pos, &ok));
+    pos = data.skipSpace(pos);
+    res->setGenNum(data.readUInt(&pos, &ok));
     if (!ok)
         throw ParseError(pos);
 
-    pos = indexOf("obj", pos) + 3;
-    pos = skipSpace(pos);
+    pos = data.indexOf("obj", pos) + 3;
+    pos = data.skipSpace(pos);
 
-    res->setValue(readValue(&pos));
-    pos = skipSpace(pos);
+    res->setValue(data.readValue(&pos));
+    pos = data.skipSpace(pos);
 
-    if (compareWord(pos, "stream"))
+    if (data.compareWord(pos, "stream"))
     {
-        pos = skipCRLF(pos + strlen("stream"));
+        pos = data.skipCRLF(pos + strlen("stream"));
 
         qint64 len = 0;
         Value v = res->dict().value("Length");
@@ -596,12 +801,12 @@ qint64 Reader::readObject(qint64 start, Object *res) const
             break;
 
         default:
-            throw ParseError(pos, QString("Incorrect stream length in object at %1.").arg(mData[start]));
+            throw ParseError(pos, QString("Incorrect stream length in object at %1.").arg(data.mData[start]));
         }
 
-        res->setStream(QByteArray::fromRawData(mData + pos, len));
-        pos = skipSpace(pos + len);
-        if (compareWord(pos, "endstream"))
+        res->setStream(QByteArray::fromRawData(data.mData + pos, len));
+        pos = data.skipSpace(pos + len);
+        if (data.compareWord(pos, "endstream"))
             pos += strlen("endstream");
     }
 
@@ -612,26 +817,28 @@ qint64 Reader::readObject(qint64 start, Object *res) const
 /************************************************
  *
  ************************************************/
-qint64 Reader::readXRefTable(qint64 pos, XRefTable *res) const
+qint64 Reader::readXRefTable(quint64 pos, XRefTable *res) const
 {
-    pos = skipSpace(pos);
-    if (!compareWord(pos, "xref"))
-        throw ParseError(pos, "Incorrect XRef. Expected 'xref'.");
-    pos +=4;
+    ReaderData data(mData, mSize, mTextCodec);
+    pos = data.skipSpace(pos);
 
-    pos = skipSpace(pos);
+    if (!data.compareWord(pos, "xref"))
+        throw ParseError(pos, "Incorrect XRef. Expected 'xref'.");
+
+    pos +=4;
+    pos = data.skipSpace(pos);
 
     // read XRef table ..........................
     do {
         bool ok;
-        uint startObjNum = readUInt(&pos, &ok);
+        ObjNum startObjNum = data.readUInt(&pos, &ok);
         if (!ok)
             throw ParseError(pos, "Incorrect XRef. Can't read object number of the first object.");
 
-        uint cnt = readUInt(&pos, &ok);
+        uint cnt = data.readUInt(&pos, &ok);
         if (!ok)
             throw ParseError(pos, "Incorrect XRef. Can't read number of entries.");
-        pos = skipSpace(pos);
+        pos = data.skipSpace(pos);
 
         for (uint i=0; i<cnt; ++i)
         {
@@ -661,8 +868,8 @@ qint64 Reader::readXRefTable(qint64 pos, XRefTable *res) const
             pos += 20;
         }
 
-        pos = skipSpace(pos);
-    } while (!compareStr(pos, "trailer"));
+        pos = data.skipSpace(pos);
+    } while (!data.compareStr(pos, "trailer"));
 
     return pos;
 }
@@ -724,27 +931,6 @@ quint32 Reader::pageCount()
 /************************************************
  *
  ************************************************/
-QString Reader::readNameString(qint64 *pos) const
-{
-    if (mData[*pos] != '/')
-        throw ParseError(*pos, QString("Invalid PDF name on pos %1").arg(*pos));
-
-    qint64 start = *pos;
-    for (++(*pos); *pos < mSize; ++(*pos))
-    {
-        if (isDelim(*pos))
-        {
-            return QString::fromLocal8Bit(mData + start + 1, *pos - start - 1);
-        }
-    }
-
-    throw ParseError(start);
-}
-
-
-/************************************************
- *
- ************************************************/
 void Reader::open(const QString &fileName, quint64 startPos, quint64 endPos)
 {
     mFile = new QFile(fileName);
@@ -784,172 +970,36 @@ void Reader::open(const char * const data, quint64 size)
  ************************************************/
 void Reader::load()
 {
+    ReaderData data(mData, mSize, mTextCodec);
+
     // Check header ...................................
-    if (indexOf("%PDF-") != 0)
+    if (!data.compareStr(0, "%PDF-"))
         throw HeaderError(0);
 
     bool ok;
     // Get xref table position ..................
-    qint64 startXRef = indexOfBack("startxref", mSize - 1);
+    qint64 startXRef = data.indexOfBack("startxref", mSize - 1);
     if (startXRef < 0)
         throw ParseError(0, "Incorrect trailer, the marker 'startxref' was not found.");
 
-    qint64 pos = startXRef + strlen("startxref");
-    quint64 xrefPos = readUInt(&pos, &ok);
+    quint64 pos = startXRef + strlen("startxref");
+    quint64 xrefPos = data.readUInt(&pos, &ok);
     if (!ok)
         throw ParseError(pos, "Error in trailer, can't read xref position.");
 
     // Read xref table ..........................
     pos = readXRefTable(xrefPos, &mXRefTable);
-    pos = skipSpace(pos+strlen("trailer"));
-    readDict(pos, &mTrailerDict);
+    pos = data.skipSpace(pos+strlen("trailer"));
+    data.readDict(pos, &mTrailerDict);
 
     qint64 parentXrefPos = mTrailerDict.value("Prev").asNumber().value();
 
     while (parentXrefPos)
     {
         pos = readXRefTable(parentXrefPos, &mXRefTable);
-        pos = skipSpace(pos+strlen("trailer"));
+        pos = data.skipSpace(pos+strlen("trailer"));
         Dict dict;
-        readDict(pos, &dict);
+        data.readDict(pos, &dict);
         parentXrefPos = dict.value("Prev").asNumber().value();
     }
-}
-
-
-/************************************************
- *
- ************************************************/
-bool Reader::isDelim(qint64 pos) const
-{
-    return isspace(mData[pos]) ||
-            strchr("()<>[]{}/%", mData[pos]);
-}
-
-
-/************************************************
- *
- ************************************************/
-qint64 Reader::skipSpace(qint64 pos) const
-{
-    while (pos < mSize && isspace(mData[pos]))
-        pos++;
-
-    return pos;
-}
-
-
-/************************************************
- *
- ************************************************/
-qint64 Reader::indexOf(const char *str, qint64 from) const
-{
-    qint64 len = strlen(str);
-
-    for (qint64 i = from; i<mSize-len; i++)
-    {
-        if (strncmp(mData + i, str, len) == 0)
-            return i;
-    }
-
-    return -1;
-}
-
-
-/************************************************
- *
- ************************************************/
-qint64 Reader::indexOfBack(const char *str, qint64 from) const
-{
-    qint64 len = strlen(str);
-
-    for (qint64 i = from - len + 1 ; i>0; i--)
-    {
-        if (strncmp(mData + i, str, len) == 0)
-            return i;
-    }
-
-    return -1;
-}
-
-
-/************************************************
- *
- ************************************************/
-qint64 Reader::skipCRLF(qint64 pos) const
-{
-    for (; pos >= 0; ++pos)
-    {
-        if (mData[pos] != '\n' && mData[pos] != '\r')
-            return pos;
-    }
-
-    return 0;
-}
-
-
-/************************************************
- *
- ************************************************/
-quint32 Reader::readUInt(qint64 *pos, bool *ok) const
-{
-    char *end;
-    quint32 res = strtoul(mData + *pos, &end, 10);
-    *ok = end != mData + *pos;
-    *pos = end - mData;
-    return res;
-}
-
-
-/************************************************
- *
- ************************************************/
-double Reader::readNum(qint64 *pos, bool *ok) const
-{
-    const char * str = mData + *pos;
-    int sign = 1;
-    if (str[0] == '-')
-    {
-        ++str;
-        sign = -1;
-    }
-
-    char *end;
-    double res = strtoll(str, &end, 10);
-    if (end[0] == '.')
-    {
-        ++end;
-        if (isdigit(end[0]))
-        {
-            str = end;
-            long long fract = strtoll(str, &end, 10);
-            if (str < end)
-                res += fract / pow(10.0, end - str);
-        }
-    }
-    *ok = end != mData + *pos;
-    *pos = end - mData;
-    return res * sign;
-}
-
-
-/************************************************
- *
- ************************************************/
-bool Reader::compareStr(qint64 pos, const char *str) const
-{
-    int len = strlen(str);
-    return (mSize - pos > len) && strncmp(mData + pos, str, len) == 0;
-}
-
-
-/************************************************
- *
- ************************************************/
-bool Reader::compareWord(qint64 pos, const char *str) const
-{
-    int len = strlen(str);
-    return (mSize - pos > len + 1) &&
-            strncmp(mData + pos, str, len) == 0 &&
-            isDelim(pos + len);
 }

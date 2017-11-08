@@ -43,7 +43,8 @@ Value::Value():
     mNumberValue(0),
     mLinkObjNum(0),
     mLinkGenNum(0),
-    mBoolValue(false)
+    mBoolValue(false),
+    mStringEncoding(String::LiteralEncoded)
 {
 }
 
@@ -58,7 +59,7 @@ Value::Value(Value::Type type):
     mLinkObjNum(0),
     mLinkGenNum(0),
     mBoolValue(false),
-    mStringEncoding(String::HexEncoded)
+    mStringEncoding(String::LiteralEncoded)
 {
 }
 

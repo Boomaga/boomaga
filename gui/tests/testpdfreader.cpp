@@ -79,13 +79,13 @@ void TestBoomaga::testPdfReader_ReadName()
     try
     {
 
-    TestReader reader(data);
+        TestReader reader(data);
 
-    PDF::Value v;
-    qint64 newPos = pos;
+        PDF::Value v;
+        quint64 newPos = pos;
         v = reader.readValue(&newPos);
 
-        QCOMPARE(newPos, expectedPos);
+        QCOMPARE(newPos, quint64(expectedPos));
         QCOMPARE(v.isName(), true);
         QCOMPARE(v.asName().value(), expected);
     }
@@ -126,12 +126,12 @@ void TestBoomaga::testPdfReader_ReadLink()
     TestReader reader(data);
 
     PDF::Value v;
-    qint64 newPos = pos;
+    quint64 newPos = pos;
     try
     {
         v = reader.readValue(&newPos);
 
-        QCOMPARE(newPos, expectedPos);
+        QCOMPARE(newPos, quint64(expectedPos));
         QCOMPARE(v.isLink(), true);
         QCOMPARE(v.asLink().objNum(), quint32(expectedObjNum));
         QCOMPARE(v.asLink().genNum(), quint16(expectedGenNum));
@@ -180,7 +180,7 @@ void TestBoomaga::testPdfReader_ReadNum()
 
     TestReader reader(data);
     PDF::Value v;
-    qint64 newPos = 0;
+    quint64 newPos = 0;
     try
     {
         v = reader.readValue(&newPos);
@@ -191,7 +191,7 @@ void TestBoomaga::testPdfReader_ReadNum()
             FAIL_EXCEPTION(e);
     }
 
-    QCOMPARE(newPos, expectedPos);
+    QCOMPARE(newPos, quint64(expectedPos));
 
     QCOMPARE(v.isNumber(), true);
 
@@ -245,7 +245,7 @@ void TestBoomaga::testPdfReader_ReadStringHex()
     TestReader reader(data);
 
     PDF::Value v;
-    qint64 newPos = pos;
+    quint64 newPos = pos;
     try
     {
         v = reader.readValue(&newPos);
@@ -254,7 +254,7 @@ void TestBoomaga::testPdfReader_ReadStringHex()
         QCOMPARE(v.asString().value(), expected);
         QCOMPARE(v.asString().encodingType(), PDF::String::HexEncoded);
         if (expectedPos)
-            QCOMPARE(newPos, expectedPos);
+            QCOMPARE(newPos, quint64(expectedPos));
     }
     catch (PDF::Error& e)
     {
@@ -348,7 +348,7 @@ void TestBoomaga::testPdfReader_ReadStringLiteral()
     TestReader reader(data);
 
     PDF::Value v;
-    qint64 newPos = pos;
+    quint64 newPos = pos;
     try
     {
         v = reader.readValue(&newPos);
@@ -357,7 +357,7 @@ void TestBoomaga::testPdfReader_ReadStringLiteral()
         QCOMPARE(v.asString().value(), expected);
         QCOMPARE(v.asString().encodingType(), PDF::String::LiteralEncoded);
         if (expectedPos)
-            QCOMPARE(newPos, expectedPos);
+            QCOMPARE(newPos, quint64(expectedPos));
     }
     catch (PDF::Error& e)
     {
