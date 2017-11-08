@@ -73,12 +73,11 @@ include_directories(
     ${CMAKE_SOURCE_DIR}
     ${CMAKE_CURRENT_BINARY_DIR}
     ${CUPS_INCLUDE_DIR}
-    ${POPPLER_INCLUDE_DIRS}
 )
 
 
 add_executable(${PROJECT_NAME} ${MERGER_HEADERS} ${MERGER_SOURCES})
-target_link_libraries(${PROJECT_NAME} ${POPPLER_LIBRARIES} Qt5::Core Qt5::Widgets Qt5::PrintSupport)
+target_link_libraries(${PROJECT_NAME} ${LIBRARIES} Qt5::Core Qt5::Widgets Qt5::PrintSupport)
 
 install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${NONGUI_DIR})
 

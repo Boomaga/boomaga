@@ -60,6 +60,7 @@ set(HEADERS
     widgets/printerscombobox.h
     widgets/previewwidget.h
     widgets/subbookletview.h
+    pdfparser/pdfxref.h
     pdfparser/pdfvalue.h
     pdfparser/pdfreader.h
     pdfparser/pdfobject.h
@@ -97,6 +98,7 @@ set(SOURCES
     widgets/printerscombobox.cpp
     widgets/previewwidget.cpp
     widgets/subbookletview.cpp
+    pdfparser/pdfxref.cpp
     pdfparser/pdfvalue.cpp
     pdfparser/pdfreader.cpp
     pdfparser/pdfobject.cpp
@@ -160,8 +162,7 @@ include_directories(${CUPS_INCLUDE_DIR})
 set(LIBRARIES ${LIBRARIES} ${CUPS_LIBRARIES})
 
 find_package(Poppler REQUIRED QUIET)
-include_directories(${POPPLER_INCLUDE_DIRS} ${POPPLERCPP_INCLUDE_DIRS})
-set(LIBRARIES ${LIBRARIES} ${POPPLER_LIBRARIES})
+include_directories(${POPPLERCPP_INCLUDE_DIRS})
 set(LIBRARIES ${LIBRARIES} ${POPPLERCPP_LIBRARIES})
 
 
