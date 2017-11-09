@@ -102,8 +102,8 @@ protected:
     Value  readValue(quint64 *pos) const;
 
     qint64 readObject(quint64 start, Object *res) const;
-    qint64 readXRefTable(quint64 start, XRefTable *res) const;
-
+    qint64 readXRefTable(quint64 start, XRefTable *res, Dict *trailerDict) const;
+    qint64 readXRefStream(qint64 start, XRefTable *xref, Dict *trailerDict) const;
 private:
     QFile      *mFile;
     const char *mData;

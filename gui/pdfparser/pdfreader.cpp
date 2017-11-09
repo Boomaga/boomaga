@@ -24,7 +24,8 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#include "math.h"
+#include <math.h>
+#include <assert.h>
 #include "pdfreader.h"
 #include "pdfxref.h"
 #include "pdfobject.h"
@@ -72,9 +73,145 @@ public:
     qint64 readDict(quint64 start, Dict *res) const;
 
     Value readValue(quint64 *pos) const;
+    char operator[](quint64 index) const { return mData[index]; }
 };
 
+struct XRefStreamData
+{
+    struct Section {
+        PDF::ObjNum startObjNum;
+        quint32     count;
+    };
+
+    XRefStreamData(const char *buf, const quint64 size, const Dict &dict);
+    quint64 readSection(quint64 pos, Section section, XRefTable *res);
+    QVector<Section> &sections() {return mSections; }
+
+private:
+    inline quint64 readField(qint64 pos, int len) const;
+
+    const char   *mData;
+    const quint64 mSize;
+    int mField1;
+    int mField2;
+    int mField3;
+    int mEntryLen;
+    QVector<Section> mSections;
+};
+
+
+/************************************************
+ *
+ ************************************************/
+XRefStreamData::XRefStreamData(const char *buf, const quint64 size, const Dict &dict):
+    mData(buf),
+    mSize(size),
+    mField1(0),
+    mField2(0),
+    mField3(0),
+    mEntryLen(0)
+{
+    // W - An array of integers representing the size of the fields in a
+    // single cross-reference entry.
+    const Array &w = dict.value("W").asArray();
+    if (!w.isValid())
+        throw Error(0, "Incorrect XRef stream dictionary");
+
+    if (w.count()<3)
+        throw Error(0, "Incorrect XRef stream dictionary");
+
+    for (int i=0; i<w.count(); ++i)
+        mEntryLen += w.at(i).asNumber().value();
+
+    mField1 = w.at(0).asNumber();
+    mField2 = w.at(1).asNumber();
+    mField3 = w.at(2).asNumber();
+
+
+    if (!mEntryLen)
+        throw Error(0, "Incorrect XRef stream dictionary");
+
+    // Index - An array containing a pair of integers for each subsection in
+    // this section. The first integer is the first object number in the
+    // subsection; the second integer is the number of entries in the subsection
+    PDF::Array index = dict.value("Index").asArray();
+    for (int s=0; s<index.count(); s+=2)
+    {
+        mSections << Section{
+                    index.at(s).asNumber(),
+                    index.at(s+1).asNumber()};
+    }
+
+    // Default value: [0 Size].
+    if (mSections.count() == 0)
+        mSections << Section{0, dict.value("Size").asNumber()};
 }
+
+
+/************************************************
+ *
+ ************************************************/
+quint64 XRefStreamData::readSection(quint64 pos, XRefStreamData::Section section, XRefTable *res)
+{
+    quint64 end = section.count * mEntryLen;
+
+    PDF::ObjNum objNum = section.startObjNum;
+    for (; pos<end; pos+=mEntryLen)
+    {
+        int type = (mField1) ? readField(pos, mField1) : 1;
+
+        switch (type)
+        {
+
+        // Type 0 entries define the linked list of free objects
+        //  field 2 - The object number of the next free object.
+        //  field 3 - The generation number.
+        case 0:
+            res->addFreeObject(objNum,
+                               readField(pos + mField1 + mField2, mField3),
+                               readField(pos + mField1,           mField2));
+            break;
+
+        // Type 1 entries define objects that are in use but are not compressed
+        //  field 2 - The byte offset of the object
+        //  field 3 - The generation number of the object.
+        case 1:
+            res->addUsedObject(objNum,
+                               readField(pos + mField1 + mField2, mField3),
+                               readField(pos + mField1,           mField2));
+            break;
+
+        // Type 2 entries define compressed objects.
+        //  field 2 - The object number of the object stream.
+        //  field 3 - The index of this object within the object stream.
+        case 2:
+            res->addCompressedObject(objNum,
+                                     readField(pos + mField1,           mField2),
+                                     readField(pos + mField1 + mField2, mField3));
+            break;
+        }
+
+        ++objNum;
+    }
+
+    return end;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+quint64 XRefStreamData::readField(qint64 pos, int len) const
+{
+    quint64 res = 0;
+    for (int i=0; i<len; ++i)
+        res = (res << 8) + uchar(mData[pos++]);
+
+    return res;
+}
+
+
+} // namespace PDF
 
 using namespace PDF;
 
@@ -817,7 +954,7 @@ qint64 Reader::readObject(quint64 start, Object *res) const
 /************************************************
  *
  ************************************************/
-qint64 Reader::readXRefTable(quint64 pos, XRefTable *res) const
+qint64 Reader::readXRefTable(quint64 pos, XRefTable *res, Dict *trailerDict) const
 {
     ReaderData data(mData, mSize, mTextCodec);
     pos = data.skipSpace(pos);
@@ -844,7 +981,7 @@ qint64 Reader::readXRefTable(quint64 pos, XRefTable *res) const
         {
             if (!res->contains(startObjNum + i))
             {
-                if (mData[pos + 17] == 'n')
+                if (data[pos + 17] == 'n')
                 {
                     res->addUsedObject(startObjNum + i,
                                        strtoul(data.mData + pos + 11, nullptr, 10),
@@ -862,9 +999,34 @@ qint64 Reader::readXRefTable(quint64 pos, XRefTable *res) const
         }
 
         pos = data.skipSpace(pos);
-    } while (!data.compareStr(pos, "trailer"));
+    } while (!data.compareStr(pos, "t"));
 
-    return pos;
+    if (!data.compareWord(pos, "trailer"))
+        throw ParseError(pos, "Incorrect XRef. Expected 'trailer'.");
+
+    pos = data.skipSpace(pos+strlen("trailer"));
+    return data.readDict(pos, trailerDict);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+qint64 Reader::readXRefStream(qint64 start, XRefTable *xref, Dict *trailerDict) const
+{
+    Object obj;
+    quint64 res = readObject(start, &obj);
+    *trailerDict = obj.dict();
+
+    QByteArray ba = obj.decodedStream();
+
+    XRefStreamData data(ba.data(), ba.size(), obj.dict());
+    quint64 pos = 0;
+    foreach (const XRefStreamData::Section &section, data.sections())
+    {
+        pos = data.readSection(pos, section, xref);
+    }
+    return res;
 }
 
 
@@ -976,7 +1138,7 @@ void Reader::load()
 
     // Check header ...................................
     if (!data.compareStr(0, "%PDF-"))
-        throw HeaderError(0);
+        throw HeaderError(0, "Incorrect header, the marker '%PDF-' was not found.");
 
     bool ok;
     // Get xref table position ..................
@@ -990,18 +1152,34 @@ void Reader::load()
         throw ParseError(pos, "Error in trailer, can't read xref position.");
 
     // Read xref table ..........................
-    pos = readXRefTable(xrefPos, &mXRefTable);
-    pos = data.skipSpace(pos+strlen("trailer"));
-    data.readDict(pos, &mTrailerDict);
+    xrefPos = data.skipSpace(xrefPos);
+    if (data[xrefPos] == 'x')
+        readXRefTable(xrefPos, &mXRefTable, &mTrailerDict);
+
+    else if (data[xrefPos] >= '0' && data[xrefPos] <= '9')
+        readXRefStream(xrefPos, &mXRefTable, &mTrailerDict);
+
+    else
+        throw ParseError(xrefPos, "Error in trailer, unknown xref type.");
+
 
     qint64 parentXrefPos = mTrailerDict.value("Prev").asNumber().value();
-
     while (parentXrefPos)
     {
-        pos = readXRefTable(parentXrefPos, &mXRefTable);
-        pos = data.skipSpace(pos+strlen("trailer"));
         Dict dict;
-        data.readDict(pos, &dict);
+        parentXrefPos = data.skipSpace(parentXrefPos);
+        if (data[parentXrefPos] == 'x')
+            readXRefTable(parentXrefPos, &mXRefTable, &dict);
+
+        else if (data[parentXrefPos] >= '0' && data[parentXrefPos] <= '9')
+            readXRefStream(parentXrefPos, &mXRefTable, &dict);
+
+        else
+            throw ParseError(parentXrefPos, "Error in trailer, unknown xref type.");
+
         parentXrefPos = dict.value("Prev").asNumber().value();
     }
+
+    assert(mTrailerDict.value("Root").isLink());
+    assert(mTrailerDict.value("Size").isNumber());
 }

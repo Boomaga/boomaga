@@ -27,6 +27,7 @@
 #include "pdfobject.h"
 #include "pdftypes.h"
 #include "pdfvalue.h"
+#include <zlib.h>
 
 #include <QDebug>
 
@@ -117,6 +118,55 @@ void Object::setStream(const QByteArray &value)
 /************************************************
  *
  ************************************************/
+QByteArray Object::decodedStream() const
+{
+    QStringList filters;
+    const PDF::Value &v = dict().value("Filter");
+    if (v.isName())
+    {
+        filters << v.asName().value();
+    }
+    else if (v.isArray())
+    {
+        const PDF::Array &arr = v.asArray();
+        for (int i=0; i<arr.count(); ++i)
+            filters << arr.at(i).asName().value();
+    }
+
+    QByteArray res = stream();
+    foreach (const QString &filter, filters)
+    {
+        if (filter == "FlateDecode")
+        {
+            res = streamFlateDecode(res);
+            continue;
+        }
+
+        if (filter == "ASCIIHexDecode"  ||
+            filter == "ASCII85Decode"   ||
+            filter == "LZWDecode"       ||
+            filter == "FlateDecode"     ||
+            filter == "RunLengthDecode" ||
+            filter == "CCITTFaxDecode"  ||
+            filter == "JBIG2Decode"     ||
+            filter == "DCTDecode"       ||
+            filter == "JPXDecode"       ||
+            filter == "Crypt"           )
+        {
+            qWarning() << "Error: " << mObjNum << mGenNum << " obj: unsupported filter " << filter.toLocal8Bit();
+            return QByteArray();
+        }
+
+        qWarning() << "Error: " << mObjNum << mGenNum << " obj: incorrect filter" << filter.toLocal8Bit();
+        return QByteArray();
+    }
+    return res;
+}
+
+
+/************************************************
+ *
+ ************************************************/
 QString Object::type() const
 {
     return dict().value("Type").asName().value();
@@ -133,6 +183,48 @@ QString Object::subType() const
         return dict().value("S").asName().value();
     else
         return s;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+QByteArray Object::streamFlateDecode(const QByteArray &source) const
+{
+    QByteArray res;
+    // More typical zlib compression ratios are on the order of 2:1 to 5:1.
+    res.resize(source.size() * 2);
+
+    while (true)
+    {
+        uchar * dest = (uchar*)res.data();
+        uLongf destSize = res.size();
+
+        int ret = uncompress(dest, &destSize, reinterpret_cast<const uchar*>(source.data()), source.length());
+        switch (ret)
+        {
+        case Z_OK:
+            res.resize(destSize);
+            break;
+
+        case Z_MEM_ERROR:
+            qWarning("Z_MEM_ERROR: Not enough memory");
+            return QByteArray();
+
+        case Z_DATA_ERROR:
+            qWarning("Z_DATA_ERROR: Input data is corrupted");
+            return QByteArray();
+
+        case Z_BUF_ERROR:
+            res.resize(res.length() * 2);
+            continue;
+        }
+
+        break;
+    }
+
+
+    return res;
 }
 
 

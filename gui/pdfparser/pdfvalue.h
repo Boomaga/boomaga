@@ -27,6 +27,7 @@
 #ifndef PDFVALUE_H
 #define PDFVALUE_H
 
+#include <assert.h>
 #include <QVector>
 #include <QMap>
 #include <QStringList>
@@ -365,8 +366,19 @@ public:
     Name(const Name &other);
     Name &operator =(const Name &other);
 
-    QString value() const;
+    QString value() const
+    {
+        assert(mType == Type::Name);
+        return mStringValue;
+    }
+
     void setValue(const QString &value);
+
+    operator QString() const
+    {
+        assert(mType == Type::Name);
+        return mStringValue;
+    }
 };
 
 
@@ -386,8 +398,18 @@ public:
     Number(const Number &other);
     Number &operator =(const Number &other);
 
-    double value() const;
+    double value() const
+    {
+        assert(mType == Type::Number);
+        return mNumberValue;
+    }
+
     void setValue(double value);
+
+    operator double() const {
+        assert(mType == Type::Number);
+        return mNumberValue;
+    }
 };
 
 } // namespace PDF

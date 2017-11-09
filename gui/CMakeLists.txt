@@ -165,6 +165,9 @@ find_package(Poppler REQUIRED QUIET)
 include_directories(${POPPLERCPP_INCLUDE_DIRS})
 set(LIBRARIES ${LIBRARIES} ${POPPLERCPP_LIBRARIES})
 
+find_package(ZLIB REQUIRED)
+include_directories(${ZLIB_INCLUDE_DIRS})
+set(LIBRARIES ${LIBRARIES} ${ZLIB_LIBRARIES})
 
 include(translations/translatorsinfo/CMakeLists.txt)
 get_translatorsinfo_qrc(translatorsinfo_qrc)

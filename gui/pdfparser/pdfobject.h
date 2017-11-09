@@ -63,6 +63,8 @@ public:
     QByteArray stream() const { return mStream; }
     void setStream(const QByteArray &value);
 
+    QByteArray decodedStream() const;
+
     /// the Type entry identifies the type of object.
     QString type() const;
 
@@ -71,6 +73,8 @@ public:
     QString subType() const;
 
 private:
+    QByteArray streamFlateDecode(const QByteArray &source) const;
+
     PDF::ObjNum mObjNum;
     PDF::GenNum mGenNum;
     Value mValue;

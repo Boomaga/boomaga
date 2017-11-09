@@ -818,22 +818,13 @@ Name &Name::operator =(const Name &other)
 /************************************************
  *
  ************************************************/
-QString Name::value() const
-{
-    assert(mType == Type::Name);
-    return mStringValue;
-}
-
-
-/************************************************
- *
- ************************************************/
 void Name::setValue(const QString &value)
 {
     assert(mType == Type::Name);
     if (mValid)
         mStringValue = value.toLatin1();
 }
+
 
 
 //###############################################
@@ -896,15 +887,6 @@ Number &Number::operator =(const Number &other)
     Value::operator =(other);
     mValid = true;
     return *this;
-}
-
-
-/************************************************
- *
- ************************************************/
-double Number::value() const
-{
-    return mNumberValue;
 }
 
 

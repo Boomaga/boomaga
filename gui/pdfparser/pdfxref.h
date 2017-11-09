@@ -82,4 +82,5 @@ public:
 } // namespace PDF
 
 QDebug operator<<(QDebug debug, const PDF::XRefEntry &xref);
+QDebug operator<<(QDebug debug, const PDF::XRefTable &xrefTable);
 #endif // PDFXREF_H

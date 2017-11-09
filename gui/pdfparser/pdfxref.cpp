@@ -81,7 +81,7 @@ XRefEntry XRefTable::addCompressedObject(ObjNum objNum, ObjNum streamObjNum, qui
     XRefEntry entry;
     entry.mObjNum = objNum;
     entry.mGenNum = streamIndex;
-    entry.mType   = XRefEntry::Used;
+    entry.mType   = XRefEntry::Compressed;
     entry.mPos    = streamObjNum;
 
     insert(objNum, entry);
@@ -181,5 +181,18 @@ QDebug operator<<(QDebug debug, const XRefEntry &xref)
         break;
     }
 
+    return debug;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+QDebug operator<<(QDebug debug, const XRefTable &xrefTable)
+{
+    foreach (const XRefEntry &entry, xrefTable)
+    {
+        qDebug() << entry;
+    }
     return debug;
 }
