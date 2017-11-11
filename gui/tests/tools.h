@@ -51,6 +51,6 @@ QString exceptionName(const std::exception &e) {
 
 #endif
 
-#define FAIL_EXCEPTION(E) QFAIL(QString("Exception %1 at pos: %2: %3").arg(exceptionName(E)).arg(E.pos()).arg(E.description()).toLocal8Bit())
+#define FAIL_EXCEPTION(E) QFAIL(QString("Exception %1: %2").arg(exceptionName(E)).arg(E.what()).toLocal8Bit())
 
 #endif //TOOLS_H

@@ -33,9 +33,9 @@ project(boomaga_test)
 set(TEST_HEADERS
     testboomaga.h
     tools.h
+    ../pdfparser/pdferrors.h
     ../pdfparser/pdfreader.h
     ../pdfparser/pdfvalue.h
-    ../pdfparser/pdftypes.h
     ../pdfparser/pdfobject.h
     ../pdfparser/pdfwriter.h
     ../pdfparser/pdfxref.h

@@ -102,6 +102,7 @@ protected:
     Value  readValue(quint64 *pos) const;
 
     qint64 readObject(quint64 start, Object *res) const;
+    void readObjectFromStream(PDF::ObjNum objNum, Object *res, PDF::ObjNum streamObjNum, GenNum streamGenNum, quint32 stremIndex) const;
     qint64 readXRefTable(quint64 start, XRefTable *res, Dict *trailerDict) const;
     qint64 readXRefStream(qint64 start, XRefTable *xref, Dict *trailerDict) const;
 private:

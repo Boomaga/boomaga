@@ -29,7 +29,7 @@
 #include "pdfreader.h"
 #include "pdfxref.h"
 #include "pdfobject.h"
-#include "pdftypes.h"
+#include "pdferrors.h"
 #include "pdfvalue.h"
 #include <QFile>
 #include <QTextCodec>
@@ -99,6 +99,8 @@ private:
     QVector<Section> mSections;
 };
 
+} // namespace PDF
+using namespace PDF;
 
 /************************************************
  *
@@ -115,10 +117,10 @@ XRefStreamData::XRefStreamData(const char *buf, const quint64 size, const Dict &
     // single cross-reference entry.
     const Array &w = dict.value("W").asArray();
     if (!w.isValid())
-        throw Error(0, "Incorrect XRef stream dictionary");
+        throw ReaderError("Incorrect XRef stream dictionary", 0);
 
     if (w.count()<3)
-        throw Error(0, "Incorrect XRef stream dictionary");
+        throw ReaderError("Incorrect XRef stream dictionary", 0);
 
     for (int i=0; i<w.count(); ++i)
         mEntryLen += w.at(i).asNumber().value();
@@ -129,7 +131,7 @@ XRefStreamData::XRefStreamData(const char *buf, const quint64 size, const Dict &
 
 
     if (!mEntryLen)
-        throw Error(0, "Incorrect XRef stream dictionary");
+        throw ReaderError("Incorrect XRef stream dictionary", 0);
 
     // Index - An array containing a pair of integers for each subsection in
     // this section. The first integer is the first object number in the
@@ -210,10 +212,6 @@ quint64 XRefStreamData::readField(qint64 pos, int len) const
     return res;
 }
 
-
-} // namespace PDF
-
-using namespace PDF;
 
 /************************************************
  *
@@ -357,7 +355,7 @@ double ReaderData::readNum(quint64 *pos, bool *ok) const
 QString ReaderData::readNameString(quint64 *pos) const
 {
     if (mData[*pos] != '/')
-        throw ParseError(*pos, QString("Invalid PDF name on pos %1").arg(*pos));
+        throw ReaderError("Invalid PDF name, starting marker '/' was not found", *pos);
 
     quint64 start = *pos;
     for (++(*pos); *pos < mSize; ++(*pos))
@@ -368,7 +366,7 @@ QString ReaderData::readNameString(quint64 *pos) const
         }
     }
 
-    throw ParseError(start, QString("Invalid PDF name on pos %1").arg(start));
+    throw ReaderError("Invalid PDF name on pos", start);
 }
 
 
@@ -456,11 +454,11 @@ qint64 ReaderData::readHexString(quint64 start, String *res) const
         }
 
         default:
-            throw ParseError(pos, QString("Invalid PDF hexadecimal string on pos %1").arg(pos));
+            throw ReaderError("Invalid PDF hexadecimal string.", pos);
         }
     }
 
-    throw ParseError(start, "The closing hexadecimal string marker '>' was not found.");
+    throw ReaderError("The closing hexadecimal string marker '>' was not found.", start);
 }
 
 
@@ -666,7 +664,7 @@ qint64 ReaderData::readLiteralString(qint64 start, String *res) const
         }
     }
 
-    throw ParseError(start, "The closing literal string marker ')' was not found.");
+    throw ReaderError("The closing literal string marker ')' was not found.", start);
 }
 
 
@@ -689,7 +687,7 @@ qint64 ReaderData::readArray(quint64 start, Array *res) const
         pos = skipSpace(pos);
     }
 
-    throw ParseError(start, "The closing array marker ']' was not found.");
+    throw ReaderError("The closing array marker ']' was not found.", start);
 
 }
 
@@ -717,7 +715,7 @@ qint64 ReaderData::readDict(quint64 start, Dict *res) const
         pos = skipSpace(pos);
     }
 
-    throw ParseError(start, "The closing dictionary marker '>>' was not found.");
+    throw ReaderError("The closing dictionary marker '>>' was not found.", start);
 }
 
 
@@ -743,7 +741,7 @@ Value ReaderData::readValue(quint64 *pos) const
         bool ok;
         double n1 = readNum(pos, &ok);
         if (!ok)
-            throw ParseError(*pos, QString("Unexpected symbol '%1', expected a number.").arg(mData[*pos]));
+            throw ReaderError(QString("Unexpected symbol '%1', expected a number.").arg(mData[*pos]), *pos);
 
         if (n1 != quint64(n1))
             return Number(n1);
@@ -771,7 +769,7 @@ Value ReaderData::readValue(quint64 *pos) const
         bool ok;
         double n = readNum(pos, &ok);
         if (!ok)
-            throw ParseError(*pos, QString("Unexpected symbol '%1', expected a number.").arg(mData[*pos]));
+            throw ReaderError(QString("Unexpected symbol '%1', expected a number.").arg(mData[*pos]), *pos);
 
         return Number(n);
     }
@@ -833,14 +831,14 @@ Value ReaderData::readValue(quint64 *pos) const
             return Bool(true);
         }
 
-        throw ParseError(*pos, QString("Unexpected symbol '%1', expected a boolean.").arg(mData[*pos]));
+        throw ReaderError(QString("Unexpected symbol '%1', expected a boolean.").arg(mData[*pos]), *pos);
     }
 
     // None ...........................
     case 'n':
     {
         if (!compareWord(*pos, "null"))
-            throw ParseError(*pos, QString("Invalid PDF null on pos %1").arg(*pos));
+            throw ReaderError("Invalid PDF null", *pos);
 
         *pos += 4;
         return Null();
@@ -858,7 +856,7 @@ Value ReaderData::readValue(quint64 *pos) const
     }
 
     QByteArray d(mData + *pos, qMin(mSize - *pos, 20ull));
-    throw UnknownValueError(*pos, QString("Unknown object type on %1: '%2'").arg(*pos).arg(d.data()));
+    throw ReaderError(QString("Unknown object type '%1'").arg(d.data()), *pos);
 }
 
 
@@ -909,12 +907,12 @@ qint64 Reader::readObject(quint64 start, Object *res) const
     bool ok;
     res->setObjNum(data.readUInt(&pos, &ok));
     if (!ok)
-        throw ParseError(pos);
+        throw ReaderError("Can't read objNum", pos);
 
     pos = data.skipSpace(pos);
     res->setGenNum(data.readUInt(&pos, &ok));
     if (!ok)
-        throw ParseError(pos);
+        throw ReaderError("Can't read genNum", pos);
 
     pos = data.indexOf("obj", pos) + 3;
     pos = data.skipSpace(pos);
@@ -938,7 +936,7 @@ qint64 Reader::readObject(quint64 start, Object *res) const
             break;
 
         default:
-            throw ParseError(pos, QString("Incorrect stream length in object at %1.").arg(data.mData[start]));
+            throw ReaderError(QString("Incorrect stream length in object at %1.").arg(data.mData[start]), pos);
         }
 
         res->setStream(QByteArray::fromRawData(data.mData + pos, len));
@@ -952,6 +950,76 @@ qint64 Reader::readObject(quint64 start, Object *res) const
 
 
 /************************************************
+ * Additional entries specific to an object stream dictionary
+ *
+ * KEY  TYPE DESCRIPTION
+ * Type name    (Required) The type of PDF object that this dictionary
+ *              describes; must be ObjStm for an object stream.
+ *
+ * N    int     (Required) The number of compressed objects in the stream.
+ *
+ * First int    (Required) The byte offset (in the decoded stream)
+ *              of the first compressed object.
+ *
+ * Extends 	stream  (Optional) A reference to an object stream, of which
+ *                  the current object stream is considered an extension.
+ *                  Both streams are considered part of a collection of object
+ *                  streams (see below). A given collection consists of a set
+ *                  of streams whose Extends links form a directed acyclic graph.
+ *
+ ************************************************/
+void Reader::readObjectFromStream(ObjNum objNum, Object *res, ObjNum streamObjNum, GenNum streamGenNum, quint32 stremIndex) const
+{
+    Q_UNUSED(stremIndex)
+    const Object &streamObj = getObject(streamObjNum, streamGenNum);
+    QByteArray stream = streamObj.decodedStream();
+
+    ReaderData data(stream.data(), stream.size(), mTextCodec);
+
+    // The number of compressed objects in the stream.
+    uint cnt = streamObj.dict().value("N").asNumber().value();
+
+    quint32 offset = 0;
+    bool found = false;
+
+    quint64 pos = 0;
+    for (uint i=0; i<cnt; ++i)
+    {
+        bool ok;
+        ObjNum num = data.readUInt(&pos, &ok);
+        pos = data.skipSpace(pos);
+        offset = data.readUInt(&pos, &ok);
+
+        if (num == objNum)
+        {
+            found = true;
+            break;
+        }
+    }
+
+    if (found)
+    {
+        res->setObjNum(objNum);
+        res->setGenNum(0);
+        // The byte offset (in the decoded stream) of the first compressed object.
+        uint firstOffset = streamObj.dict().value("First").asNumber();
+        pos = offset + firstOffset;
+
+        pos = data.skipSpace(pos);
+        res->setValue(data.readValue(&pos));
+    }
+    else
+    {
+        const Link &extends = streamObj.dict().value("Extends").asLink();
+        if (extends.isValid())
+        {
+            readObjectFromStream(objNum, res, extends.objNum(), extends.genNum(), 0);
+        }
+    }
+}
+
+
+/************************************************
  *
  ************************************************/
 qint64 Reader::readXRefTable(quint64 pos, XRefTable *res, Dict *trailerDict) const
@@ -960,7 +1028,7 @@ qint64 Reader::readXRefTable(quint64 pos, XRefTable *res, Dict *trailerDict) con
     pos = data.skipSpace(pos);
 
     if (!data.compareWord(pos, "xref"))
-        throw ParseError(pos, "Incorrect XRef. Expected 'xref'.");
+        throw ReaderError("Incorrect XRef. Expected 'xref'.", pos);
 
     pos +=4;
     pos = data.skipSpace(pos);
@@ -970,11 +1038,11 @@ qint64 Reader::readXRefTable(quint64 pos, XRefTable *res, Dict *trailerDict) con
         bool ok;
         ObjNum startObjNum = data.readUInt(&pos, &ok);
         if (!ok)
-            throw ParseError(pos, "Incorrect XRef. Can't read object number of the first object.");
+            throw ReaderError("Incorrect XRef. Can't read object number of the first object.", pos);
 
         uint cnt = data.readUInt(&pos, &ok);
         if (!ok)
-            throw ParseError(pos, "Incorrect XRef. Can't read number of entries.");
+            throw ReaderError("Incorrect XRef. Can't read number of entries.", pos);
         pos = data.skipSpace(pos);
 
         for (uint i=0; i<cnt; ++i)
@@ -1002,7 +1070,7 @@ qint64 Reader::readXRefTable(quint64 pos, XRefTable *res, Dict *trailerDict) con
     } while (!data.compareStr(pos, "t"));
 
     if (!data.compareWord(pos, "trailer"))
-        throw ParseError(pos, "Incorrect XRef. Expected 'trailer'.");
+        throw ReaderError("Incorrect XRef. Expected 'trailer'.", pos);
 
     pos = data.skipSpace(pos+strlen("trailer"));
     return data.readDict(pos, trailerDict);
@@ -1046,18 +1114,24 @@ Object Reader::getObject(uint objNum, quint16 genNum) const
 {
     Q_UNUSED(genNum)
 
-    Object obj;
     XRefTable::const_iterator it = mXRefTable.find(objNum);
     if (it == mXRefTable.end())
-        return obj;
+        return PDF::Object();
 
-//    if (it.value().type() == XRefEntry::Compressed)
-//        readObjectFromStream(it.value().streamObjNum, it.value().streamIndex, objNum, &obj);
+    if (it.value().type() == XRefEntry::Compressed)
+    {
+        PDF::Object res;
+        readObjectFromStream(objNum, &res, it.value().streamObjNum(), 0, it.value().streamIndex());
+        return res;
+    }
+    else if (it.value().pos())
+    {
+        PDF::Object res;
+        readObject(it.value().pos(), &res);
+        return res;
+    }
 
-    if (it.value().pos())
-        readObject(it.value().pos(), &obj);
-
-    return obj;
+    return PDF::Object();
 }
 
 
@@ -1100,13 +1174,13 @@ void Reader::open(const QString &fileName, quint64 startPos, quint64 endPos)
     mFile = new QFile(fileName);
 
     if(!mFile->open(QFile::ReadOnly))
-        throw Error(0, QString("I can't open file \"%1\":%2").arg(fileName).arg(mFile->errorString()));
+        throw Error(QString("I can't open file \"%1\":%2").arg(fileName).arg(mFile->errorString()));
 
     int start = startPos;
     int end   = endPos ? endPos : mFile->size();
 
     if (end < start)
-        throw Error(0, QString("Invalid request for %1, the start position (%2) is greater than the end (%3) one.")
+        throw Error(QString("Invalid request for %1, the start position (%2) is greater than the end (%3) one.")
             .arg(fileName)
             .arg(startPos)
             .arg(endPos));
@@ -1138,18 +1212,18 @@ void Reader::load()
 
     // Check header ...................................
     if (!data.compareStr(0, "%PDF-"))
-        throw HeaderError(0, "Incorrect header, the marker '%PDF-' was not found.");
+        throw ReaderError("Incorrect header, the marker '%PDF-' was not found.", 0);
 
     bool ok;
     // Get xref table position ..................
     qint64 startXRef = data.indexOfBack("startxref", mSize - 1);
     if (startXRef < 0)
-        throw ParseError(0, "Incorrect trailer, the marker 'startxref' was not found.");
+        throw ReaderError("Incorrect trailer, the marker 'startxref' was not found.", mSize);
 
     quint64 pos = startXRef + strlen("startxref");
     quint64 xrefPos = data.readUInt(&pos, &ok);
     if (!ok)
-        throw ParseError(pos, "Error in trailer, can't read xref position.");
+        throw ReaderError("Error in trailer, can't read xref position.", pos);
 
     // Read xref table ..........................
     xrefPos = data.skipSpace(xrefPos);
@@ -1160,7 +1234,7 @@ void Reader::load()
         readXRefStream(xrefPos, &mXRefTable, &mTrailerDict);
 
     else
-        throw ParseError(xrefPos, "Error in trailer, unknown xref type.");
+        throw ReaderError("Error in trailer, unknown xref type.", xrefPos);
 
 
     qint64 parentXrefPos = mTrailerDict.value("Prev").asNumber().value();
@@ -1175,7 +1249,7 @@ void Reader::load()
             readXRefStream(parentXrefPos, &mXRefTable, &dict);
 
         else
-            throw ParseError(parentXrefPos, "Error in trailer, unknown xref type.");
+            throw ReaderError("Error in trailer, unknown xref type.", parentXrefPos);
 
         parentXrefPos = dict.value("Prev").asNumber().value();
     }

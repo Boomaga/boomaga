@@ -33,6 +33,7 @@ set(MERGER_HEADERS
     pdfmerger.h
     pdfprocessor.h
     pdfmergeripc.h
+    ../pdfparser/pdferrors.h
     ../pdfparser/pdfxref.h
     ../pdfparser/pdfvalue.h
     ../pdfparser/pdfobject.h

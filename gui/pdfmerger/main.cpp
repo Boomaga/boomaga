@@ -55,12 +55,12 @@ int main(int argc, char *argv[])
     }
     catch (const PDF::Error &err)
     {
-        QString s = err.description()
-                .replace('\r', "\\r")
-                .replace('\n', "\\n")
-                .replace('\t', "\\t")
-                .replace('\v', "\\v");
-        PdfMergerIPCWriter().writeError(QString("Error on %1: %2").arg(err.pos()).arg(s));
+        QString s = err.what();
+        s = s.replace('\r', "\\r")
+             .replace('\n', "\\n")
+             .replace('\t', "\\t")
+             .replace('\v', "\\v");
+        PdfMergerIPCWriter().writeError(s);
         return 1;
     }
 

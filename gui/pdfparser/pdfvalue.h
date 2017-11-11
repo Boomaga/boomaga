@@ -28,6 +28,7 @@
 #define PDFVALUE_H
 
 #include <assert.h>
+#include "pdferrors.h"
 #include <QVector>
 #include <QMap>
 #include <QStringList>
@@ -398,12 +399,23 @@ public:
     Number(const Number &other);
     Number &operator =(const Number &other);
 
+    /// Returns the PDF::Value as a double.
     double value() const
     {
         assert(mType == Type::Number);
         return mNumberValue;
     }
 
+    /// Returns the PDF::Value as a double.
+    /// If the Number isn't valid, returns defaultValue.
+    /// \sa isValid()
+    double value(double defaultValue) const
+    {
+        assert(mType == Type::Number);
+        return isValid() ? mNumberValue : defaultValue;
+    }
+
+    /// Sets the PDF::Number value.
     void setValue(double value);
 
     operator double() const {
@@ -415,7 +427,5 @@ public:
 } // namespace PDF
 
 QDebug operator<<(QDebug debug, const PDF::Value &value);
-
-#include "pdftypes.h"
 
 #endif // PDFVALUE_H

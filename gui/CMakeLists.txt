@@ -60,6 +60,7 @@ set(HEADERS
     widgets/printerscombobox.h
     widgets/previewwidget.h
     widgets/subbookletview.h
+    pdfparser/pdferrors.h
     pdfparser/pdfxref.h
     pdfparser/pdfvalue.h
     pdfparser/pdfreader.h

@@ -113,7 +113,7 @@ JobData::JobData(const QString &fileName, qint64 startPos, qint64 endPos, const 
         catch (const PDF::Error &err)
         {
             mState = Job::JobError;
-            mErrorString = QString("Error on %1: %2").arg(err.pos()).arg(err.description());
+            mErrorString = err.what();
         }
     }
     lockUnlockFile(mFileName, LOCK_CREATE);

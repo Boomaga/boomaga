@@ -256,7 +256,7 @@ void Writer::writeValue(const Value &value)
 
     //.....................................................
     default:
-        throw UnknownValueError(mDevice->pos(), QString("Unknown object type: '%1'").arg(int(value.type())));
+        throw Error(QString("Unknown object type: '%1'").arg(int(value.type())));
     }
 }
 
