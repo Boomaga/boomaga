@@ -53,7 +53,7 @@ public:
         mByteArray.append(QString("%1 00000 n \n").arg(obj1Pos, 10, 10, QChar('0')));
         mByteArray.append(QString("%1 00000 n \n").arg(obj2Pos, 10, 10, QChar('0')));
 
-        mByteArray.append("trailer\n<</Size 0>>\n");
+        mByteArray.append("trailer\n<</Root 1 0 R /Size 0>>\n");
         mByteArray.append(QString("startxref\n%1\n%%EOF\n").arg(xrefPos));
 
         open(mByteArray.constData(), mByteArray.length());
