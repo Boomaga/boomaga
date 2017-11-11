@@ -172,6 +172,7 @@ int PdfProcessor::walkPageTree(int pageNum, const PDF::Object &page, const PDF::
             throw QString("Error on page %1 %2: %3").arg(page.objNum()).arg(page.genNum()).arg(err);
         }
 
+
         const PDF::Value &contents = page.dict().value("Contents");
         switch (contents.type())
         {
@@ -185,7 +186,8 @@ int PdfProcessor::walkPageTree(int pageNum, const PDF::Object &page, const PDF::
             break;
 
         default:
-            throw QString("Page %1 %2 has incorrect content type.").arg(page.objNum()).arg(page.genNum());
+            if (page.dict().contains("Contents"))
+                throw QString("Page %1 %2 has incorrect content type.").arg(page.objNum()).arg(page.genNum());
         }
 
         mPageInfo << pageInfo;
