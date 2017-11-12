@@ -79,6 +79,12 @@ public:
 struct XRefStreamData
 {
     struct Section {
+        Section(PDF::ObjNum startObjNum = 0, quint32 count = 0):
+            startObjNum(startObjNum),
+            count(count)
+        {
+        }
+
         PDF::ObjNum startObjNum;
         quint32     count;
     };
@@ -113,6 +119,7 @@ XRefStreamData::XRefStreamData(const char *buf, const quint64 size, const Dict &
     mField3(0),
     mEntryLen(0)
 {
+    Q_UNUSED(mSize)
     // W - An array of integers representing the size of the fields in a
     // single cross-reference entry.
     const Array &w = dict.value("W").asArray();
@@ -139,14 +146,16 @@ XRefStreamData::XRefStreamData(const char *buf, const quint64 size, const Dict &
     PDF::Array index = dict.value("Index").asArray();
     for (int s=0; s<index.count(); s+=2)
     {
-        mSections << Section{
+        mSections << Section(
                     index.at(s).asNumber(),
-                    index.at(s+1).asNumber()};
+                    index.at(s+1).asNumber());
     }
 
     // Default value: [0 Size].
     if (mSections.count() == 0)
-        mSections << Section{0, dict.value("Size").asNumber()};
+        mSections << Section(
+                     0,
+                     dict.value("Size").asNumber());
 }
 
 

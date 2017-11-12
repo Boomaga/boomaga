@@ -58,7 +58,7 @@ class Value {
     friend class Object;
     friend class Reader;
     friend class Writer;
-    friend class ReaderData;
+    friend struct ReaderData;
 
 public:
     enum class Type {
