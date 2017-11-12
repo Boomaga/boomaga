@@ -186,9 +186,27 @@ private:
 
 };
 
+#define HIDE_VALUE_METHODS \
+using Value::isArray;   \
+using Value::isBool;    \
+using Value::isDict;    \
+using Value::isLink;    \
+using Value::isName;    \
+using Value::isNull;    \
+using Value::isNumber;  \
+using Value::isString;  \
+using Value::asArray;   \
+using Value::asBool;    \
+using Value::asDict;    \
+using Value::asLink;    \
+using Value::asName;    \
+using Value::asNull;    \
+using Value::asNumber;  \
+using Value::asString;
 
 class Array: public Value
 {
+HIDE_VALUE_METHODS
 public:
     Array();
     Array(const QRectF &rect);
@@ -241,6 +259,7 @@ public:
 
 class Bool: public Value
 {
+HIDE_VALUE_METHODS
 public:
     Bool(bool value = false);
     Bool(const Bool &other);
@@ -266,6 +285,7 @@ public:
 
 class Dict: public Value
 {
+HIDE_VALUE_METHODS
 public:
     Dict();
     Dict(const Dict &other);
@@ -323,6 +343,7 @@ public:
 
 class String: public Value
 {
+HIDE_VALUE_METHODS
 public:
     enum EncodingType
     {
@@ -345,6 +366,7 @@ public:
 
 class Link: public Value
 {
+HIDE_VALUE_METHODS
 public:
     Link(quint32 objNum = 0, quint16 genNum = 0);
     Link(const Link &other);
@@ -362,6 +384,7 @@ public:
 
 class Name: public Value
 {
+HIDE_VALUE_METHODS
 public:
     Name(const QString &name = "");
     Name(const Name &other);
@@ -385,6 +408,7 @@ public:
 
 class Null: public Value
 {
+HIDE_VALUE_METHODS
 public:
     Null();
     Null(const Null &other);
@@ -394,6 +418,7 @@ public:
 
 class Number: public Value
 {
+HIDE_VALUE_METHODS
 public:
     Number(double value = 0.0);
     Number(const Number &other);

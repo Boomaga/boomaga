@@ -472,13 +472,13 @@ void TestBoomaga::testPdfDict()
         Dict &ld = v.asDict();
         QCOMPARE(ld.isValid(),  false);
 
-        ld.asDict().insert("KEY", 11);
+        ld.insert("KEY", 11);
         QCOMPARE(ld.count(), 0);
 
         Dict d = v.asDict();
         QCOMPARE(d.isValid(),  true);
 
-        d.asDict().insert("KEY", 11);
+        d.insert("KEY", 11);
         QCOMPARE(d.count(), 1);
 
     }
