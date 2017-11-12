@@ -317,6 +317,11 @@ public:
     void insert(const QString &key, const Value &value);
     void insert(const QString &key, double value);
 
+    /// Removes the value that have the key key from the dictionary.
+    /// Returns the number of items removed which is usually 1 but
+    /// will be 0 if the key isn't in the map.
+    int remove(const QString &key);
+
     QMap<QString, Value> values();
     const QMap<QString, Value> &values() const;
 

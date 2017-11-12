@@ -55,6 +55,8 @@ public:
     void run(PDF::Writer *writer, quint32 objNumOffset);
 
     const QVector<PdfPageInfo> &pageInfo() const { return mPageInfo; }
+
+
 signals:
     void pageReady();
 
@@ -69,7 +71,7 @@ private:
     QSet<PDF::ObjNum> mProcessedObjects;
 
     int walkPageTree(int pageNum, const PDF::Object &page, const PDF::Dict &inherited);
-    PDF::ObjNum writeContentAsXObject(const PDF::Link &contentLink, const PDF::Dict &pageDict, const PDF::Dict &inherited);
+    PDF::ObjNum writePageAsXObject(const PDF::Object &page, const PDF::Dict &inherited);
     PDF::Object &addOffset(PDF::Object &obj);
     void offsetValue(PDF::Value &value);
 };

@@ -601,6 +601,20 @@ void Dict::insert(const QString &key, double value)
 /************************************************
  *
  ************************************************/
+int Dict::remove(const QString &key)
+{
+    if (isValid())
+    {
+        assert(mType == Type::Dict);
+        return mDictValues.remove(key);
+    }
+    return 0;
+}
+
+
+/************************************************
+ *
+ ************************************************/
 QStringList Dict::keys() const
 {
     assert(mType == Type::Dict);

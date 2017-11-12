@@ -166,8 +166,8 @@ void PdfMerger::run(QIODevice *outDevice)
             PDF::Dict dict;
             for (int c=0; c<pi.xObjNums.count(); ++c)
             {
-                dict.asDict().insert(QString("Im0_%1").arg(c),
-                                     PDF::Link(pi.xObjNums.at(c)));
+                dict.insert(QString("Im0_%1").arg(c),
+                            PDF::Link(pi.xObjNums.at(c)));
             }
 
             xobj.dict().insert("XObject", dict);

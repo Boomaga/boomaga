@@ -31,7 +31,7 @@
 #include <pdfparser/pdfreader.h>
 #include <pdfparser/pdfwriter.h>
 
-
+//#define SAVE_DEBUG_INFO
 /************************************************
  *
  ************************************************/
@@ -172,24 +172,7 @@ int PdfProcessor::walkPageTree(int pageNum, const PDF::Object &page, const PDF::
             throw QString("Error on page %1 %2: %3").arg(page.objNum()).arg(page.genNum()).arg(err);
         }
 
-
-        const PDF::Value &contents = page.dict().value("Contents");
-        switch (contents.type())
-        {
-        case PDF::Value::Type::Link:
-            pageInfo.xObjNums << writeContentAsXObject(contents.asLink(), page.dict(), inherited);
-            break;
-
-        case PDF::Value::Type::Array:
-            for (int i=0; i<contents.asArray().count(); ++i)
-                pageInfo.xObjNums << writeContentAsXObject(contents.asArray().at(i).asLink(), page.dict(), inherited);
-            break;
-
-        default:
-            if (page.dict().contains("Contents"))
-                throw QString("Page %1 %2 has incorrect content type.").arg(page.objNum()).arg(page.genNum());
-        }
-
+        pageInfo.xObjNums << writePageAsXObject(page, inherited);
         mPageInfo << pageInfo;
         emit pageReady();
 
@@ -260,33 +243,67 @@ int PdfProcessor::walkPageTree(int pageNum, const PDF::Object &page, const PDF::
     (including potential white space) as intended by the page’s creator. The default
     value is the page’s crop box.
  ************************************************/
-PDF::ObjNum PdfProcessor::writeContentAsXObject(const PDF::Link &contentLink, const PDF::Dict &pageDict, const PDF::Dict &inherited)
+PDF::ObjNum PdfProcessor::writePageAsXObject(const PDF::Object &page, const PDF::Dict &inherited)
 {
-    if (!contentLink.isValid())
-        throw "Page has incorrect content type";
+    const PDF::Dict &pageDict = page.dict();
 
-    const PDF::Object content = mReader.getObject(contentLink);
     PDF::Object xObj;
-    xObj.setObjNum(content.objNum());
-    xObj.setGenNum(content.genNum());
-    xObj.setValue(content.dict());
+    xObj.setObjNum(page.objNum());
+    xObj.setGenNum(page.genNum());
 
-    xObj.dict().insert("Type",     PDF::Name("XObject"));
-    xObj.dict().insert("Subtype",  PDF::Name("Form"));
-    xObj.dict().insert("FormType", PDF::Number(1));
+    PDF::Dict &dict = xObj.dict();
+    dict.insert("Type",     PDF::Name("XObject"));
+    dict.insert("Subtype",  PDF::Name("Form"));
+    dict.insert("FormType", PDF::Number(1));
 
-    xObj.dict().insert("Resources", pageDict.value("Resources", inherited.value("Resources")));
-    xObj.dict().insert("BBox", pageDict.value("CropBox",  inherited.value("CropBox",
-                               pageDict.value("MediaBox", inherited.value("MediaBox")))));
+    dict.insert("Resources", pageDict.value("Resources", inherited.value("Resources")));
+    dict.insert("BBox", pageDict.value("CropBox",  inherited.value("CropBox",
+                             pageDict.value("MediaBox", inherited.value("MediaBox")))));
 
-    if (pageDict.contains("Metadata"))      xObj.dict().insert("Metadata",      pageDict.value("Metadata"));
-    if (pageDict.contains("PieceInfo"))     xObj.dict().insert("PieceInfo",     pageDict.value("PieceInfo"));
-    if (pageDict.contains("LastModified"))  xObj.dict().insert("LastModified",  pageDict.value("LastModified"));
-    if (pageDict.contains("StructParents")) xObj.dict().insert("StructParents", pageDict.value("StructParents"));
+    if (pageDict.contains("Metadata"))      dict.insert("Metadata",      pageDict.value("Metadata"));
+    if (pageDict.contains("PieceInfo"))     dict.insert("PieceInfo",     pageDict.value("PieceInfo"));
+    if (pageDict.contains("LastModified"))  dict.insert("LastModified",  pageDict.value("LastModified"));
+    if (pageDict.contains("StructParents")) dict.insert("StructParents", pageDict.value("StructParents"));
 
-    xObj.setStream(content.stream());
-    addOffset(xObj);
-    return xObj.objNum();
+    const PDF::Value &v = pageDict.value("Contents");
+    bool ok;
+
+    // Page content is Link .....................
+    const PDF::Link &link = v.asLink(&ok);
+    if (ok)
+    {
+        const PDF::Object &content = mReader.getObject(link);
+        xObj.setStream(content.stream());
+        if (content.dict().contains("Filter"))
+            dict.insert("Filter", content.dict().value("Filter"));
+        else
+            dict.remove("Filter");
+
+        dict.insert("Length", xObj.stream().length());
+        addOffset(xObj);
+        return xObj.objNum();
+    }
+
+    // Page content is array ....................
+    const PDF::Array &arr = v.asArray(&ok);
+    if (ok)
+    {
+        QByteArray stream;
+        for (int i=0; i<arr.count(); ++i)
+        {
+            PDF::Object content = mReader.getObject(arr.at(i).asLink());
+            stream.append(content.decodedStream());
+        }
+
+        xObj.setStream(stream);
+        xObj.dict().remove("Filter");
+        xObj.dict().insert("Length", xObj.stream().length());
+
+        addOffset(xObj);
+        return xObj.objNum();
+    }
+
+    throw QString("Page %1 %2 has incorrect content type.").arg(page.objNum()).arg(page.genNum());
 }
 
 
@@ -295,6 +312,11 @@ PDF::ObjNum PdfProcessor::writeContentAsXObject(const PDF::Link &contentLink, co
  ************************************************/
 PDF::Object &PdfProcessor::addOffset(PDF::Object &obj)
 {
+    if (obj.objNum() - mObjNumOffset == 153)
+        qDebug() << "";
+#ifdef SAVE_DEBUG_INFO
+    obj.dict().insert("BoomagaFrom", PDF::String(QString("%1 %2 obj").arg(obj.objNum()).arg(obj.genNum())));
+#endif
     obj.setObjNum(obj.objNum() + mObjNumOffset);
     offsetValue(obj.value());
     mWriter->writeObject(obj);
