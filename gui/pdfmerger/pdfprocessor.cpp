@@ -257,7 +257,7 @@ PDF::ObjNum PdfProcessor::writePageAsXObject(const PDF::Object &page, const PDF:
     dict.insert("FormType", PDF::Number(1));
 
     dict.insert("Resources", pageDict.value("Resources", inherited.value("Resources")));
-    dict.insert("BBox", pageDict.value("CropBox",  inherited.value("CropBox",
+    dict.insert("BBox",      pageDict.value("CropBox",  inherited.value("CropBox",
                              pageDict.value("MediaBox", inherited.value("MediaBox")))));
 
     if (pageDict.contains("Metadata"))      dict.insert("Metadata",      pageDict.value("Metadata"));
@@ -312,8 +312,6 @@ PDF::ObjNum PdfProcessor::writePageAsXObject(const PDF::Object &page, const PDF:
  ************************************************/
 PDF::Object &PdfProcessor::addOffset(PDF::Object &obj)
 {
-    if (obj.objNum() - mObjNumOffset == 153)
-        qDebug() << "";
 #ifdef SAVE_DEBUG_INFO
     obj.dict().insert("BoomagaFrom", PDF::String(QString("%1 %2 obj").arg(obj.objNum()).arg(obj.genNum())));
 #endif
