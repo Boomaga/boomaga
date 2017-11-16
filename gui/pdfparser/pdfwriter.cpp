@@ -117,32 +117,25 @@ uint sPrintInt(char *s, qint64 value)
  ************************************************/
 uint sPrintDouble(char *s, double value)
 {
-    if (value < 0)
+    int n = sprintf(s, "%f", value);
+    if (n < 0)
+        return 0;
+
+    for (--n; n>0 && s[n] == '0'; --n)
+        s[n] = 0;
+
+    if (s[n] == '.' || s[n] == ',')
     {
-        s[0] = '-';
-        return sPrintDouble(s+1, -value) + 1;
+        s[n] = 0;
+        return n;
     }
 
-    quint64 n = value;
-    const quint64 precision(10e10);
-    quint64 fract = value * precision - n * precision;
-    uint res = sPrintUint(s, n);
+    char *c = strchr(s, ',');
+    if (c)
+        c[0] = '.';
 
-    if (fract)
-    {
-        s[res++]='.';
-
-        quint64 mul = precision;
-        while (fract)
-        {
-            mul /= 10;
-            s[res++] = fract / mul + '0';
-            fract -= (fract / mul) * mul;
-        }
-    }
-
-    s[res]='\0';
-    return res;
+    s[n+1] = 0;
+    return n+1;
 }
 
 
