@@ -512,6 +512,13 @@ Er du sikker på at du vil overskrive den?</translation>
     </message>
 </context>
 <context>
+    <name>PdfMerger</name>
+    <message>
+        <source>I can&apos;t write file &quot;%1&quot;</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
     <name>PrintDialog</name>
     <message>
         <source>Print document</source>
@@ -671,18 +678,6 @@ Er du sikker på at du vil overskrive den?</translation>
 </context>
 <context>
     <name>QObject</name>
-    <message>
-        <source>PDF file &quot;%1&quot; is damaged.</source>
-        <translation>PDF-fila &quot;%1&quot; er skadet.</translation>
-    </message>
-    <message>
-        <source>PDF file &quot;%1&quot; is encripted.</source>
-        <translation>PDF-fila &quot;%1&quot; er kryptert.</translation>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Jeg kan ikke åpne fila &quot;%1&quot;</translation>
-    </message>
     <message>
         <source>I can&apos;t read from file &apos;%1&apos;</source>
         <translation>Jeg kan ikke lese fra fila &quot;%1&quot;</translation>

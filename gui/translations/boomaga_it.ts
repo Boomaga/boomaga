@@ -512,6 +512,13 @@ Sei sicuro di volerlo sovracrivere?</translation>
     </message>
 </context>
 <context>
+    <name>PdfMerger</name>
+    <message>
+        <source>I can&apos;t write file &quot;%1&quot;</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
     <name>PrintDialog</name>
     <message>
         <source>Print document</source>
@@ -615,19 +622,19 @@ Sei sicuro di volerlo sovracrivere?</translation>
     </message>
     <message>
         <source>Settings</source>
-        <translation type="unfinished"/>
+        <translation>Impostazioni</translation>
     </message>
     <message>
         <source>Print on both sides</source>
-        <translation type="unfinished"/>
+        <translation>Stampa su entrambi i lati</translation>
     </message>
     <message>
         <source>Flip on short edge</source>
-        <translation type="unfinished"/>
+        <translation>Sfoglia sul lato corto</translation>
     </message>
     <message>
         <source>Flip on long edge</source>
-        <translation type="unfinished"/>
+        <translation>Sfoglia sul lato lungo</translation>
     </message>
 </context>
 <context>
@@ -671,18 +678,6 @@ Sei sicuro di volerlo sovracrivere?</translation>
 </context>
 <context>
     <name>QObject</name>
-    <message>
-        <source>PDF file &quot;%1&quot; is damaged.</source>
-        <translation>Il file PDF &quot;%1&quot; è danneggiato.</translation>
-    </message>
-    <message>
-        <source>PDF file &quot;%1&quot; is encripted.</source>
-        <translation>Il file PDF &quot;%1&quot; è crittografato.</translation>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Non riesco ad aprire il file &quot;%1&quot;</translation>
-    </message>
     <message>
         <source>I can&apos;t read from file &apos;%1&apos;</source>
         <translation>Non posso leggere dal file &apos;%1&apos;</translation>

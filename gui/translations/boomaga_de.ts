@@ -512,6 +512,13 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
 </context>
 <context>
+    <name>PdfMerger</name>
+    <message>
+        <source>I can&apos;t write file &quot;%1&quot;</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
     <name>PrintDialog</name>
     <message>
         <source>Print document</source>
@@ -615,19 +622,19 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
     <message>
         <source>Settings</source>
-        <translation type="unfinished"/>
+        <translation>Einstellungen</translation>
     </message>
     <message>
         <source>Print on both sides</source>
-        <translation type="unfinished"/>
+        <translation>Doppelseitiger Druck</translation>
     </message>
     <message>
         <source>Flip on short edge</source>
-        <translation type="unfinished"/>
+        <translation>An kurzer Kante umdrehen</translation>
     </message>
     <message>
         <source>Flip on long edge</source>
-        <translation type="unfinished"/>
+        <translation>An langer Kante umdrehen</translation>
     </message>
 </context>
 <context>
@@ -671,18 +678,6 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
 </context>
 <context>
     <name>QObject</name>
-    <message>
-        <source>PDF file &quot;%1&quot; is damaged.</source>
-        <translation>PDF-Datei &quot;%1&quot; ist beschädigt.</translation>
-    </message>
-    <message>
-        <source>PDF file &quot;%1&quot; is encripted.</source>
-        <translation>PDF-Datei &quot;%1&quot; ist verschlüsselt.</translation>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Datei &quot;%1&quot; konnte nicht geöffnet werden</translation>
-    </message>
     <message>
         <source>I can&apos;t read from file &apos;%1&apos;</source>
         <translation>Ich kann nicht aus der Datei &apos;%1&apos; lesen</translation>

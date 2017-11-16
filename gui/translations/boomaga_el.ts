@@ -512,6 +512,13 @@ Are you sure you want to overwrite it?</source>
     </message>
 </context>
 <context>
+    <name>PdfMerger</name>
+    <message>
+        <source>I can&apos;t write file &quot;%1&quot;</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
     <name>PrintDialog</name>
     <message>
         <source>Print document</source>
@@ -615,19 +622,19 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Settings</source>
-        <translation type="unfinished"/>
+        <translation>Ρυθμίσεις</translation>
     </message>
     <message>
         <source>Print on both sides</source>
-        <translation type="unfinished"/>
+        <translation>Εκτύπωση στις δυο πλευρές</translation>
     </message>
     <message>
         <source>Flip on short edge</source>
-        <translation type="unfinished"/>
+        <translation>Αλλαγή πλευράς σε κοντή άκρη</translation>
     </message>
     <message>
         <source>Flip on long edge</source>
-        <translation type="unfinished"/>
+        <translation>Αλλαγή πλευράς σε μακριά άκρη</translation>
     </message>
 </context>
 <context>
@@ -671,18 +678,6 @@ Are you sure you want to overwrite it?</source>
 </context>
 <context>
     <name>QObject</name>
-    <message>
-        <source>PDF file &quot;%1&quot; is damaged.</source>
-        <translation>Το αρχείο PDF «%1» είναι κατεστραμμένο.</translation>
-    </message>
-    <message>
-        <source>PDF file &quot;%1&quot; is encripted.</source>
-        <translation>Το αρχείο PDF «%1» είναι κρυπτογραφημένο.</translation>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Αδύνατο το άνοιγμα του αρχείου «%1»</translation>
-    </message>
     <message>
         <source>I can&apos;t read from file &apos;%1&apos;</source>
         <translation>Δεν μπορώ να αναγνώσω από το αρχείο «%1»</translation>

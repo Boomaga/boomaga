@@ -438,11 +438,11 @@ Ar tikrai norite pakeisti šį failą?</translation>
     </message>
     <message>
         <source>Clone job...</source>
-        <translation>Dublikuoti darbą...</translation>
+        <translation>Dubliuoti darbą...</translation>
     </message>
     <message>
         <source>Clone job</source>
-        <translation>Dublikuoti darbą</translation>
+        <translation>Dubliuoti darbą</translation>
     </message>
     <message>
         <source>Number of copies:</source>
@@ -509,6 +509,13 @@ Ar tikrai norite pakeisti šį failą?</translation>
         <source>%1 %2: Page %3</source>
         <comment>'Undo deletion' menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
         <translation>%1 %2: Puslapis %3</translation>
+    </message>
+</context>
+<context>
+    <name>PdfMerger</name>
+    <message>
+        <source>I can&apos;t write file &quot;%1&quot;</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -615,19 +622,19 @@ Ar tikrai norite pakeisti šį failą?</translation>
     </message>
     <message>
         <source>Settings</source>
-        <translation type="unfinished"/>
+        <translation>Nustatymai</translation>
     </message>
     <message>
         <source>Print on both sides</source>
-        <translation type="unfinished"/>
+        <translation>Spausdinti iš abiejų pusių</translation>
     </message>
     <message>
         <source>Flip on short edge</source>
-        <translation type="unfinished"/>
+        <translation>Apversti per trumpąjį kraštą</translation>
     </message>
     <message>
         <source>Flip on long edge</source>
-        <translation type="unfinished"/>
+        <translation>Apversti per ilgąjį kraštą</translation>
     </message>
 </context>
 <context>
@@ -671,18 +678,6 @@ Ar tikrai norite pakeisti šį failą?</translation>
 </context>
 <context>
     <name>QObject</name>
-    <message>
-        <source>PDF file &quot;%1&quot; is damaged.</source>
-        <translation>PDF failas &quot;%1&quot; yra pažeistas.</translation>
-    </message>
-    <message>
-        <source>PDF file &quot;%1&quot; is encripted.</source>
-        <translation>PDF failas &quot;%1&quot; yra užšifruotas.</translation>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Negaliu atverti failo &quot;%1&quot;</translation>
-    </message>
     <message>
         <source>I can&apos;t read from file &apos;%1&apos;</source>
         <translation>Negaliu perskaityti iš failo &apos;%1&apos;</translation>

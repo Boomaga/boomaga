@@ -7,7 +7,7 @@
     </message>
     <message>
         <source>About</source>
-        <translation>À propos de</translation>
+        <translation>À propos</translation>
     </message>
     <message>
         <source>Authors</source>
@@ -23,7 +23,7 @@
     </message>
     <message>
         <source>Version: %1</source>
-        <translation>Version : %1</translation>
+        <translation>Version : %1</translation>
     </message>
     <message>
         <source>Boomaga provides a virtual printer for CUPS. This can be used for print preview or for print booklets.</source>
@@ -35,11 +35,11 @@
     </message>
     <message>
         <source>Homepage: %1</source>
-        <translation>Page d&apos;accueil : %1</translation>
+        <translation>Page d’accueil : %1</translation>
     </message>
     <message>
         <source>License: %1</source>
-        <translation>Licence : %1</translation>
+        <translation>Licence : %1</translation>
     </message>
     <message>
         <source>If you are interested in working with our development team, &lt;a %1&gt;join us&lt;/a&gt;.</source>
@@ -47,7 +47,7 @@
     </message>
     <message>
         <source>Special thanks to:</source>
-        <translation>Remerciements particuliers à :</translation>
+        <translation>Remerciements particuliers à :</translation>
     </message>
     <message>
         <source>If you want to help translate, we will be glad to see you in our translation team on &lt;a %1&gt;Transifex server&lt;/a&gt;.</source>
@@ -55,7 +55,7 @@
     </message>
     <message>
         <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on GitHub.</source>
-        <translation>Boomaga est développé par l&apos;&lt;a %1&gt;équipe Boomaga et ses contributeurs&lt;/a&gt; sur GitHub.</translation>
+        <translation>Boomaga est développé par l’&lt;a %1&gt;équipe Boomaga et ses contributeurs&lt;/a&gt; sur GitHub.</translation>
     </message>
 </context>
 <context>
@@ -66,7 +66,7 @@
     </message>
     <message>
         <source>Divide your long booklets into smaller sub-booklets for printing.</source>
-        <translation>Divisez vos livrets longs en de plus petits, pour l&apos;impression.</translation>
+        <translation>Divisez vos livrets longs en de plus petits, pour l’impression.</translation>
     </message>
     <message>
         <source>Print as sub-booklets</source>
@@ -78,7 +78,7 @@
     </message>
     <message>
         <source>Sheets per sub-booklet:</source>
-        <translation>Feuilles dans votre sous-livret :</translation>
+        <translation>Feuilles dans votre sous-livret :</translation>
     </message>
     <message>
         <source>Autosave your jobs every time you print.</source>
@@ -90,7 +90,7 @@
     </message>
     <message>
         <source>Allow negative page margins:</source>
-        <translation>Autoriser les marges négatives :</translation>
+        <translation>Autoriser les marges négatives :</translation>
     </message>
     <message>
         <source>Select directory for saved jobs.</source>
@@ -98,7 +98,7 @@
     </message>
     <message>
         <source>Directory for saved sessions:</source>
-        <translation>Répertoire des travaux enregistrés :</translation>
+        <translation>Répertoire des travaux enregistrés :</translation>
     </message>
 </context>
 <context>
@@ -113,7 +113,7 @@
     </message>
     <message>
         <source>Output file:</source>
-        <translation>Fichier de sortie :</translation>
+        <translation>Fichier de sortie :</translation>
     </message>
     <message>
         <source>...</source>
@@ -125,7 +125,7 @@
     </message>
     <message>
         <source>Author:</source>
-        <translation>Auteur :</translation>
+        <translation>Auteur :</translation>
     </message>
     <message>
         <source> The name of the person who created the document.</source>
@@ -133,15 +133,15 @@
     </message>
     <message>
         <source>Title:</source>
-        <translation>Titre :</translation>
+        <translation>Titre :</translation>
     </message>
     <message>
         <source>Subject:</source>
-        <translation>Objet :</translation>
+        <translation>Objet :</translation>
     </message>
     <message>
         <source> The subject of the document.</source>
-        <translation>L&apos;objet du document.</translation>
+        <translation>L’objet du document.</translation>
     </message>
     <message>
         <source> Keywords associated with the document.</source>
@@ -149,7 +149,7 @@
     </message>
     <message>
         <source>Keywords:</source>
-        <translation>Mots-clefs :</translation>
+        <translation>Mots-clefs :</translation>
     </message>
     <message>
         <source>PDF files (*.pdf);;All files (*.*)</source>
@@ -157,13 +157,13 @@
     </message>
     <message>
         <source>Overwrite file?</source>
-        <translation>Écraser le fichier ?</translation>
+        <translation>Écraser le fichier ?</translation>
     </message>
     <message>
         <source>A file named &quot;%1&quot; already exists.
 Are you sure you want to overwrite it?</source>
-        <translation>Un fichier nommé « %1 » existe déjà.
-Êtes-vous sûr de vouloir l&apos;écraser ?</translation>
+        <translation>Un fichier nommé « %1 » existe déjà.
+Êtes-vous sûr de vouloir l’écraser ?</translation>
     </message>
     <message>
         <source> The document&apos;s title.</source>
@@ -210,7 +210,7 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>Print on both sides of a sheet.</source>
         <comment>MainForm::Double-sided checkbox tooltip</comment>
-        <translation>Imprimer sur les deux côtés d&apos;une feuille.</translation>
+        <translation>Imprimer sur les deux côtés d’une feuille.</translation>
     </message>
     <message>
         <source>Double-sided</source>
@@ -231,7 +231,7 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Toolbar</source>
-        <translation>Barre d&apos;outils</translation>
+        <translation>Barre d’outils</translation>
     </message>
     <message>
         <source>&amp;Print</source>
@@ -276,7 +276,7 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Print the odd pages on %1.&lt;p&gt;When finished, turn the pages, insert them into the printer&lt;br&gt;and click the Continue button.</source>
-        <translation>Imprimer les pages impaires sur %1.&lt;p&gt;Une fois terminé, tourner les pages, les insérer dans l&apos;imprimante&lt;br&gt;et cliquer sur le bouton Continue.</translation>
+        <translation>Imprimer les pages impaires sur %1.&lt;p&gt;Une fois terminé, tourner les pages, les insérer dans l’imprimante&lt;br&gt;et cliquer sur le bouton Continue.</translation>
     </message>
     <message>
         <source>Print the even pages on %1.</source>
@@ -426,7 +426,7 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Job title:</source>
-        <translation>Titre du travail :</translation>
+        <translation>Titre du travail :</translation>
     </message>
     <message>
         <source>Export the project to PDF</source>
@@ -446,7 +446,7 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Number of copies:</source>
-        <translation>Nombre de copies :</translation>
+        <translation>Nombre de copies :</translation>
     </message>
     <message>
         <source>Print with options...</source>
@@ -454,7 +454,7 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Select number of copies before printing.</source>
-        <translation>Choisir le nombre de copies avant d&apos;imprimer.</translation>
+        <translation>Choisir le nombre de copies avant d’imprimer.</translation>
     </message>
     <message>
         <source>Ctrl+Shift+P</source>
@@ -508,7 +508,14 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>%1 %2: Page %3</source>
         <comment>'Undo deletion' menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
-        <translation>%1 %2 : page %3</translation>
+        <translation>%1 %2 : page %3</translation>
+    </message>
+</context>
+<context>
+    <name>PdfMerger</name>
+    <message>
+        <source>I can&apos;t write file &quot;%1&quot;</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -519,11 +526,11 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Number of copies:</source>
-        <translation>Nombre de copies :</translation>
+        <translation>Nombre de copies :</translation>
     </message>
     <message>
         <source>Collate copies:</source>
-        <translation>Collationner les copies :</translation>
+        <translation>Collationner les copies :</translation>
     </message>
 </context>
 <context>
@@ -534,15 +541,15 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Right:</source>
-        <translation>Droite :</translation>
+        <translation>Droite :</translation>
     </message>
     <message>
         <source>Bottom:</source>
-        <translation>Bas :</translation>
+        <translation>Bas :</translation>
     </message>
     <message>
         <source>Internal:</source>
-        <translation>Interne :</translation>
+        <translation>Interne :</translation>
     </message>
     <message>
         <source>Left:</source>
@@ -607,7 +614,7 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Force grayscale</source>
-        <translation>Forcer l&apos;échelle de gris</translation>
+        <translation>Forcer l’échelle de gris</translation>
     </message>
     <message>
         <source>Force color</source>
@@ -615,19 +622,19 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Settings</source>
-        <translation type="unfinished"/>
+        <translation>Paramètres</translation>
     </message>
     <message>
         <source>Print on both sides</source>
-        <translation type="unfinished"/>
+        <translation>Imprimer sur les deux côtés</translation>
     </message>
     <message>
         <source>Flip on short edge</source>
-        <translation type="unfinished"/>
+        <translation>Inverser sur le bord court</translation>
     </message>
     <message>
         <source>Flip on long edge</source>
-        <translation type="unfinished"/>
+        <translation>Inverser sur le bord long</translation>
     </message>
 </context>
 <context>
@@ -655,7 +662,7 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
-        <translation>Je ne peux pas lire le fichier « %1 ». Soit ce n&apos;est pas un type de fichier pris en charge, soit le fichier est endommagé.</translation>
+        <translation>Je ne peux pas lire le fichier « %1 ». Soit ce n’est pas un type de fichier pris en charge, soit le fichier est endommagé.</translation>
     </message>
 </context>
 <context>
@@ -671,18 +678,6 @@ Are you sure you want to overwrite it?</source>
 </context>
 <context>
     <name>QObject</name>
-    <message>
-        <source>PDF file &quot;%1&quot; is damaged.</source>
-        <translation>Le fichier PDF « %1 » est endommagé.</translation>
-    </message>
-    <message>
-        <source>PDF file &quot;%1&quot; is encripted.</source>
-        <translation>Le fichier PDF « %1 » est chiffré.</translation>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Je ne peux pas ouvrir le fichier « %1 »</translation>
-    </message>
     <message>
         <source>I can&apos;t read from file &apos;%1&apos;</source>
         <translation>Je ne peux pas lire le fichier « %1 »</translation>

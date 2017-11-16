@@ -512,6 +512,13 @@ Are you sure you want to overwrite it?</source>
     </message>
 </context>
 <context>
+    <name>PdfMerger</name>
+    <message>
+        <source>I can&apos;t write file &quot;%1&quot;</source>
+        <translation>Не получилось записать файл: &quot;%1&quot;</translation>
+    </message>
+</context>
+<context>
     <name>PrintDialog</name>
     <message>
         <source>Print document</source>
@@ -671,18 +678,6 @@ Are you sure you want to overwrite it?</source>
 </context>
 <context>
     <name>QObject</name>
-    <message>
-        <source>PDF file &quot;%1&quot; is damaged.</source>
-        <translation>PDF файл &quot;%1&quot; поврежден.</translation>
-    </message>
-    <message>
-        <source>PDF file &quot;%1&quot; is encripted.</source>
-        <translation>Похоже, PDF файл &quot;%1&quot; зашифрован.</translation>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Не получилось открыть файл: &quot;%1&quot;</translation>
-    </message>
     <message>
         <source>I can&apos;t read from file &apos;%1&apos;</source>
         <translation>Не получилось прочитать файл: &quot;%1&quot;</translation>
