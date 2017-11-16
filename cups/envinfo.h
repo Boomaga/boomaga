@@ -37,6 +37,8 @@ public:
     explicit EnvInfo(const QString &procDir);
     EnvInfo(const EnvInfo &other);
 
+    EnvInfo &operator =(const EnvInfo &other);
+
     static EnvInfo find(const QString &xDisplay);
 
     const QString exeName() const { return mExeName; }

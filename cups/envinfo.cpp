@@ -178,7 +178,18 @@ EnvInfo::EnvInfo(const QString &procDir)
 EnvInfo::EnvInfo(const EnvInfo &other)
 {
     mExeName = other.mExeName;
-    mData = other.mData;
+    mData    = other.mData;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+EnvInfo &EnvInfo::operator =(const EnvInfo &other)
+{
+    mExeName = other.mExeName;
+    mData    = other.mData;
+    return *this;
 }
 
 
