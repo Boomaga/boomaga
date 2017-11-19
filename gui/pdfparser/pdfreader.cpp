@@ -837,7 +837,7 @@ Value ReaderData::readValue(quint64 *pos) const
         if (compareWord(*pos, "false"))
         {
             *pos += 5;
-            return Bool(true);
+            return Bool(false);
         }
 
         throw ReaderError(QString("Unexpected symbol '%1', expected a boolean.").arg(mData[*pos]), *pos);
