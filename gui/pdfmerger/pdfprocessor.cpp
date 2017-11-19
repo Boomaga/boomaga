@@ -151,7 +151,7 @@ int PdfProcessor::walkPageTree(int pageNum, const PDF::Object &page, const PDF::
         if (pageDict.contains("Rotate"))
             dict.insert("Rotate",    pageDict.value("Rotate"));
 
-        const PDF::Array &kids = pageDict.value("Kids").asArray();
+        const PDF::Array kids = pageDict.value("Kids").asArray();
         for (int i=0; i<kids.count(); ++i)
         {
             pageNum = walkPageTree(pageNum, mReader.getObject(kids.at(i).asLink()), dict);
