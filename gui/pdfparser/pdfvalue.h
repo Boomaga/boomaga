@@ -209,7 +209,6 @@ class Array: public Value
 HIDE_VALUE_METHODS
 public:
     Array();
-    Array(const QRectF &rect);
     Array(const Array &other);
     Array &operator =(const Array &other);
 

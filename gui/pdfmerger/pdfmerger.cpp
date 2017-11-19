@@ -24,7 +24,9 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#include "assert.h"
+#include <cstdlib>
+#include <assert.h>
+
 #include "pdfmerger.h"
 #include "pdfprocessor.h"
 #include "pdfparser/pdfobject.h"
@@ -125,70 +127,85 @@ void PdfMerger::run(QIODevice *outDevice)
     // ..........................................
 
     // Pages object .............................
-//#define DEBUG_PAGES
-#ifndef DEBUG_PAGES
-    PDF::Object pagesObj(2);
-    pagesObj.dict().insert("Type",  Name("Pages"));
-    pagesObj.dict().insert("Count", Number(0));
-    pagesObj.dict().insert("Kids",  PDF::Array());
-    writer.writeObject(pagesObj);
-#else
-    PDF::Object pagesObj(2);
-    pagesObj.dict().insert("Type",  Name("Pages"));
-
-
-    PDF::Array kids;
-    for (int i=0; i< pages.count(); ++i)
+    if (!std::getenv("BOOMAGAMERGER_DEBUGPAGES"))
     {
-        PdfPageInfo pi = pages.at(i);
+        PDF::Object pagesObj(2);
+        pagesObj.dict().insert("Type",  Name("Pages"));
+        pagesObj.dict().insert("Count", Number(0));
+        pagesObj.dict().insert("Kids",  PDF::Array());
+        writer.writeObject(pagesObj);
+    }
+    else
+    {
+        PDF::Object pagesObj(2);
+        pagesObj.dict().insert("Type",  Name("Pages"));
 
-        PDF::Object page(   pagesObj.objNum() + i * 3 + 1);
-        PDF::Object xobj(   pagesObj.objNum() + i * 3 + 2);
-        PDF::Object content(pagesObj.objNum() + i * 3 + 3);
-        kids.append(PDF::Link(page.objNum()));
-
+        PDF::ObjNum pageNum = writer.xRefTable().maxObjNum() + 1;
+        PDF::Array kids;
+        for (int i=0; i< pages.count(); ++i)
         {
-            PDF::Dict dict;
-            dict.insert("Type",      PDF::Name("Page"));
-            dict.insert("Parent",    PDF::Link(pagesObj.objNum(), 0));
-            dict.insert("Resources", PDF::Link(xobj.objNum()));
-            dict.insert("MediaBox",  PDF::Array(pi.mediaBox));
-            dict.insert("CropBox",   PDF::Array(pi.cropBox));
-            dict.insert("Rotate",    PDF::Number(pi.rotate));
-            dict.insert("Contents",  PDF::Link(content.objNum()));
-            page.setValue(dict);
-            writer.writeObject(page);
-        }
+            PdfPageInfo pi = pages.at(i);
 
-        {
-            xobj.dict().insert("ProcSet", PDF::Array() << PDF::Name("PDF"));
-            xobj.dict().insert("XObject", PDF::Dict());
-            PDF::Dict dict;
-            for (int c=0; c<pi.xObjNums.count(); ++c)
+            PDF::Object page(   pageNum + i * 3 + 1);
+            PDF::Object xobj(   pageNum + i * 3 + 2);
+            PDF::Object content(pageNum + i * 3 + 3);
+            kids.append(PDF::Link(page.objNum()));
+
             {
-                dict.insert(QString("Im0_%1").arg(c),
-                            PDF::Link(pi.xObjNums.at(c)));
+                PDF::Dict dict;
+                dict.insert("Type",      PDF::Name("Page"));
+                dict.insert("Parent",    PDF::Link(pagesObj.objNum(), 0));
+                dict.insert("Resources", PDF::Link(xobj.objNum()));
+
+                PDF::Array mediaBox;
+                mediaBox.append(PDF::Number(pi.mediaBox.left()));
+                mediaBox.append(PDF::Number(pi.mediaBox.top()));
+                mediaBox.append(PDF::Number(pi.mediaBox.width()));
+                mediaBox.append(PDF::Number(pi.mediaBox.height()));
+                dict.insert("MediaBox",  mediaBox);
+
+                PDF::Array cropBox;
+                cropBox.append(PDF::Number(pi.mediaBox.left()));
+                cropBox.append(PDF::Number(pi.mediaBox.top()));
+                cropBox.append(PDF::Number(pi.mediaBox.width()));
+                cropBox.append(PDF::Number(pi.mediaBox.height()));
+                dict.insert("CropBox",   cropBox);
+
+                dict.insert("Rotate",    PDF::Number(pi.rotate));
+                dict.insert("Contents",  PDF::Link(content.objNum()));
+                page.setValue(dict);
+                writer.writeObject(page);
             }
 
-            xobj.dict().insert("XObject", dict);
-            writer.writeObject(xobj);
+            {
+                xobj.dict().insert("ProcSet", PDF::Array() << PDF::Name("PDF"));
+                xobj.dict().insert("XObject", PDF::Dict());
+                PDF::Dict dict;
+                for (int c=0; c<pi.xObjNums.count(); ++c)
+                {
+                    dict.insert(QString("Im0_%1").arg(c),
+                                PDF::Link(pi.xObjNums.at(c)));
+                }
+
+                xobj.dict().insert("XObject", dict);
+                writer.writeObject(xobj);
+            }
+
+            {
+                QString stream;
+                for (int c=0; c<pi.xObjNums.count(); ++c)
+                    stream += QString("/Im0_%1 Do ").arg(c);
+
+                content.setStream(stream.toLatin1());
+                content.dict().insert("Length", PDF::Number(content.stream().length()));
+                writer.writeObject(content);
+            }
         }
 
-        {
-            QString stream;
-            for (int c=0; c<pi.xObjNums.count(); ++c)
-                stream += QString("/Im0_%1 Do ").arg(c);
-
-            content.setStream(stream.toLatin1());
-            content.dict().insert("Length", PDF::Number(content.stream().length()));
-            writer.writeObject(content);
-        }
+        pagesObj.dict().insert("Count", Number(kids.count()));
+        pagesObj.dict().insert("Kids",  kids);
+        writer.writeObject(pagesObj);
     }
-
-    pagesObj.dict().insert("Count", Number(kids.count()));
-    pagesObj.dict().insert("Kids",  kids);
-    writer.writeObject(pagesObj);
-#endif
     // ..........................................
 
     ipc.writeXRefInfo(outDevice->pos(), writer.xRefTable().maxObjNum() + 1);

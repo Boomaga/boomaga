@@ -310,28 +310,6 @@ Array::Array():
 
 
 /************************************************
- * Typically, the array takes the form
- *   [ llx lly urx ur y ]
- *  specifying the
- *   - lower-left x,
- *   - lower-left y,
- *   - upper-right x,
- *   - and upper-right y
- * coordinates of the rectangle, in that order.
- ************************************************/
-Array::Array(const QRectF &rect):
-    Value(Type::Array)
-{
-    mValid = true;
-    mArrayValues.resize(4);
-    mArrayValues[0] = PDF::Number(rect.left());
-    mArrayValues[1] = PDF::Number(rect.bottom());
-    mArrayValues[2] = PDF::Number(rect.right());
-    mArrayValues[3] = PDF::Number(rect.top());
-}
-
-
-/************************************************
  *
  ************************************************/
 Array::Array(const Array &other):
