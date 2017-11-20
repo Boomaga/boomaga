@@ -515,7 +515,7 @@ Ar tikrai norite pakeisti šį failą?</translation>
     <name>PdfMerger</name>
     <message>
         <source>I can&apos;t write file &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Nepavyksta rašyti failo &quot;%1&quot;</translation>
     </message>
 </context>
 <context>

@@ -31,7 +31,7 @@
     </message>
     <message>
         <source>Copyright: %1-%2 %3</source>
-        <translation>Tous droits réservés : %1-%2 %3</translation>
+        <translation>Tous droits réservés : %1-%2 %3</translation>
     </message>
     <message>
         <source>Homepage: %1</source>
@@ -149,7 +149,7 @@
     </message>
     <message>
         <source>Keywords:</source>
-        <translation>Mots-clefs :</translation>
+        <translation>Mots-clés :</translation>
     </message>
     <message>
         <source>PDF files (*.pdf);;All files (*.*)</source>
@@ -503,7 +503,7 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>I can&apos;t create directory &quot;%1&quot;</source>
-        <translation>Je ne peux pas créer le répertoire « %1 »</translation>
+        <translation>Je ne peux pas créer le répertoire « %1 »</translation>
     </message>
     <message>
         <source>%1 %2: Page %3</source>
@@ -515,7 +515,7 @@ Are you sure you want to overwrite it?</source>
     <name>PdfMerger</name>
     <message>
         <source>I can&apos;t write file &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Je ne peux pas écrire le fichier « %1 »</translation>
     </message>
 </context>
 <context>
@@ -553,11 +553,11 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Left:</source>
-        <translation>Gauche :</translation>
+        <translation>Gauche :</translation>
     </message>
     <message>
         <source>Top:</source>
-        <translation>Haut :</translation>
+        <translation>Haut :</translation>
     </message>
     <message>
         <source>Draw border</source>
@@ -606,7 +606,7 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Color mode:</source>
-        <translation>Mode chromatique :</translation>
+        <translation>Mode chromatique :</translation>
     </message>
     <message>
         <source>Default</source>
@@ -646,45 +646,45 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation>Je ne peux pas écrire le fichier « %1 »</translation>
+        <translation>Je ne peux pas écrire le fichier « %1 »</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
-        <translation>Je ne peux pas ouvrir le fichier « %1 » (fichier ou répertoire inexistant)</translation>
+        <translation>Je ne peux pas ouvrir le fichier « %1 » (fichier ou répertoire inexistant)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
-        <translation>Je ne peux pas ouvrir le fichier « %1 » (accès refusé)</translation>
+        <translation>Je ne peux pas ouvrir le fichier « %1 » (accès refusé)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Je ne peux pas ouvrir le fichier « %1 »</translation>
+        <translation>Je ne peux pas ouvrir le fichier « %1 »</translation>
     </message>
     <message>
         <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
-        <translation>Je ne peux pas lire le fichier « %1 ». Soit ce n’est pas un type de fichier pris en charge, soit le fichier est endommagé.</translation>
+        <translation>Je ne peux pas lire le fichier « %1 ». Soit ce n’est pas un type de fichier pris en charge, soit le fichier est endommagé.</translation>
     </message>
 </context>
 <context>
     <name>ProjectFile</name>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Je ne peux pas ouvrir le fichier « %1 »</translation>
+        <translation>Je ne peux pas ouvrir le fichier « %1 »</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation>Je ne peux pas écrire le fichier « %1 »</translation>
+        <translation>Je ne peux pas écrire le fichier « %1 »</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <source>I can&apos;t read from file &apos;%1&apos;</source>
-        <translation>Je ne peux pas lire le fichier « %1 »</translation>
+        <translation>Je ne peux pas lire le fichier « %1 »</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation>Je ne peux pas écrire le fichier « %1 »</translation>
+        <translation>Je ne peux pas écrire le fichier « %1 »</translation>
     </message>
     <message>
         <source>Untitled</source>
@@ -718,7 +718,7 @@ Are you sure you want to overwrite it?</source>
     <name>TmpPdfFile</name>
     <message>
         <source>I can&apos;t create temporary file &quot;%1&quot;</source>
-        <translation>Je ne peux pas créer le fichier temporaire « %1 »</translation>
+        <translation>Je ne peux pas créer le fichier temporaire « %1 »</translation>
     </message>
     <message>
         <source>Something is wrong. I can't find boomagamerger program.
@@ -728,11 +728,11 @@ Veuillez me réinstaller.</translation>
     </message>
     <message>
         <source>I can&apos;t read file &apos;%1&apos;</source>
-        <translation>Je ne peux pas lire le fichier « %1 »</translation>
+        <translation>Je ne peux pas lire le fichier « %1 »</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation>Je ne peux pas écrire le fichier « %1 »</translation>
+        <translation>Je ne peux pas écrire le fichier « %1 »</translation>
     </message>
 </context>
 </TS>

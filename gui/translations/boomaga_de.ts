@@ -515,7 +515,7 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     <name>PdfMerger</name>
     <message>
         <source>I can&apos;t write file &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Datei &quot;%1&quot; konnte nicht geschrieben werden</translation>
     </message>
 </context>
 <context>

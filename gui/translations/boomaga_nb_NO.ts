@@ -515,7 +515,7 @@ Er du sikker på at du vil overskrive den?</translation>
     <name>PdfMerger</name>
     <message>
         <source>I can&apos;t write file &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Jeg kan ikke skrive til fila &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
@@ -622,19 +622,19 @@ Er du sikker på at du vil overskrive den?</translation>
     </message>
     <message>
         <source>Settings</source>
-        <translation type="unfinished"/>
+        <translation>Innstillinger</translation>
     </message>
     <message>
         <source>Print on both sides</source>
-        <translation type="unfinished"/>
+        <translation>Skriv på begge sider</translation>
     </message>
     <message>
         <source>Flip on short edge</source>
-        <translation type="unfinished"/>
+        <translation>Vend om på kortsiden</translation>
     </message>
     <message>
         <source>Flip on long edge</source>
-        <translation type="unfinished"/>
+        <translation>Vend om på langsiden</translation>
     </message>
 </context>
 <context>

@@ -515,7 +515,7 @@ Are you sure you want to overwrite it?</source>
     <name>PdfMerger</name>
     <message>
         <source>I can&apos;t write file &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Αδύνατη η εγγραφή του αρχείου «%1»</translation>
     </message>
 </context>
 <context>
