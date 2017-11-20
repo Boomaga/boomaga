@@ -6,10 +6,9 @@ Prerequisites
 
 Should you wish to build the program from the sources, you would need header files for:
 
- * Qt4 or Qt5
+ * Qt5
  * cups
  * snappy
- * poppler
  * poppler-cpp
 
 
@@ -24,6 +23,6 @@ mkdir ~/boomaga/build
 cd ~/boomaga/build
 cmake ..
 
-For more information, see https://github.com/Boomaga/boomaga/wiki/Instalation page.
+For more information, see https://github.com/Boomaga/boomaga/wiki/Instalation-from-sources page.
 
 
