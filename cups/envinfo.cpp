@@ -114,22 +114,34 @@ EnvInfo::EnvInfo(const QString &procDir)
 
 #ifdef Q_OS_LINUX
 
+
 /************************************************
  *
  ************************************************/
 QString getValue(const QByteArray &data, const QString &key)
 {
-    int b = data.indexOf(key + "=");
-    if (b < 0)
-        return "";
+    int b = -1;
+    int e = -1;
+    if (data.left(key.length() + 1) ==  key + '=')
+    {
+        b = key.length() + 1;
+        e = data.indexOf('\x0', b);
+    }
+    else
+    {
+        b = data.indexOf('\0' + key + "=");
 
-    b += key.length() + 1;
-    int e = data.indexOf('\x0', b);
+        if (b < 0)
+            return "";
+
+        b += key.length() + 2;
+        e = data.indexOf('\x0', b);
+    }
+
     if (e < 0)
         return QString::fromLocal8Bit(data.right(e-b));
     else
         return QString::fromLocal8Bit(data.mid(b, e-b));
-
 }
 
 

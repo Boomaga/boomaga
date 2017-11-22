@@ -48,6 +48,9 @@ private slots:
     void initTestCase();
     void test_RotationType();
 
+    void test_envInfo_getValue();
+    void test_envInfo_getValue_data();
+
     void test_ProjectRotation();
     void test_ProjectRotation_data();
 

@@ -39,6 +39,7 @@ set(TEST_HEADERS
     ../pdfparser/pdfobject.h
     ../pdfparser/pdfwriter.h
     ../pdfparser/pdfxref.h
+    ../../cups/envinfo.h
 )
 
 set(TEST_SOURCES
@@ -51,6 +52,7 @@ set(TEST_SOURCES
     ../pdfparser/pdfobject.cpp
     ../pdfparser/pdfwriter.cpp
     ../pdfparser/pdfxref.cpp
+    ../../cups/envinfo.cpp
 )
 
 
