@@ -1,7 +1,14 @@
+[Homepage](http://www.boomaga.org) | 
+[Screenshots](http://www.boomaga.org/screenshots/) | 
+[Download](http://www.boomaga.org/download/)
+
+
+
+
 About the program
 =================
 
-Boomaga (BOOklet MAnager) is a virtual printer for viewing a document before printing it out using the
+Boomaga (**BOO**klet **MA**nager) is a virtual printer for viewing a document before printing it out using the
 physical printer.
 
 The program is very simple to work with. Running any program, click “print” and select “Boomaga” to
