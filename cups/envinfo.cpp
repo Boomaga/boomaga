@@ -123,6 +123,9 @@ QString getValue(const QByteArray &data, const QString &key)
     if (b < 0)
         return "";
 
+    if (b > 0)
+	b = data.indexOf('\x0' + key + "=") + 1;
+
     b += key.length() + 1;
     int e = data.indexOf('\x0', b);
     if (e < 0)
