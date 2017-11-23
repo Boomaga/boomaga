@@ -12,9 +12,9 @@ if (NOT CMAKE_BUILD_TYPE)
     set ( CMAKE_BUILD_TYPE Release )
 endif (NOT CMAKE_BUILD_TYPE)
 
-set(CMAKE_CXX_FLAGS "-Wall -Wextra")
-set(CMAKE_CXX_FLAGS_DEBUG "-g")
-set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG")
+set(CMAKE_CXX_FLAGS "-Wall -Wextra ${CMAKE_CXX_FLAGS}")
+set(CMAKE_CXX_FLAGS_DEBUG "-g ${CMAKE_CXX_FLAGS_DEBUG}")
+set(CMAKE_CXX_FLAGS_RELEASE "-O2 -DNDEBUG ${CMAKE_CXX_FLAGS_RELEASE}")
 
 #if (CMAKE_BUILD_TYPE STREQUAL Release)
 #  status_message("For building debug version use -DCMAKE_BUILD_TYPE=Debug option.")
