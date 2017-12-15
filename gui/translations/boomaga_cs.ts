@@ -515,7 +515,7 @@ Jste si jistý, že jej chcete přepsat?</translation>
     <name>PdfMerger</name>
     <message>
         <source>I can&apos;t write file &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Nelze zapsat soubor &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
