@@ -826,6 +826,7 @@ void TestBoomaga::test_PagePosition()
                     .arg(expected.replace("+|", "+\n|").replace("||","|\n|").replace("|+", "|\n+"));
         QFAIL(msg.toLocal8Bit());
     }
+    delete layout;
 }
 
 

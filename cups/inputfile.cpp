@@ -30,7 +30,7 @@
 #include <QProcess>
 #include <QDebug>
 
-#define BUF_SIZE 1024 * 1024 * 10
+#define BUF_SIZE (1024 * 1024 * 10)
 
 
 class InputFile

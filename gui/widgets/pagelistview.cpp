@@ -39,9 +39,9 @@
 #include "boomagatypes.h"
 
 #define RESOLUTIN 30
-#define PAGE_NUM_ROLE           Qt::UserRole + 1
-#define TOOLTIP_TEMPLATE_ROLE   Qt::UserRole + 2
-#define PREVIEWPAGE_NUM_ROLE    Qt::UserRole + 3
+#define PAGE_NUM_ROLE           (Qt::UserRole + 1)
+#define TOOLTIP_TEMPLATE_ROLE   (Qt::UserRole + 2)
+#define PREVIEWPAGE_NUM_ROLE    (Qt::UserRole + 3)
 
 #define MIN_ICON_SIZE 32
 #define MAX_ICON_SIZE 200

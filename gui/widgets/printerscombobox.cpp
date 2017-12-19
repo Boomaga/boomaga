@@ -29,9 +29,9 @@
 #include <QStandardItem>
 #include <QDebug>
 
-#define PRINTER_ITEM_TEXT_ROLE      Qt::UserRole + 1
-#define PRINTER_ITEM_PRINTER_ROLE   Qt::UserRole + 2
-#define PRINTER_ITEM_PROFILE_ROLE   Qt::UserRole + 3
+#define PRINTER_ITEM_TEXT_ROLE      (Qt::UserRole + 1)
+#define PRINTER_ITEM_PRINTER_ROLE   (Qt::UserRole + 2)
+#define PRINTER_ITEM_PROFILE_ROLE   (Qt::UserRole + 3)
 
 #define CUSTOM_PROFILE_DELEGATE
 #ifdef CUSTOM_PROFILE_DELEGATE

@@ -43,7 +43,7 @@
 #include <QMessageBox>
 #include <QDateTime>
 
-#define META_SIZE 4 * 1024
+#define META_SIZE (4 * 1024)
 
 class ProjectState
 {
