@@ -45,9 +45,16 @@
     "lxsession" << \
     "Xfce4-session"
 
-#define ENV_VARS \
+#define READ_ENV_VARS \
     "DISPLAY" << \
     "DBUS_SESSION_BUS_ADDRESS" << \
+    "XDG_CACHE_HOME" << \
+    "KDE_FULL_SESSION" << \
+    "QT_PLUGIN_PATH" << \
+    "GTK_RC_FILES" << \
+    "GTK2_RC_FILES"
+
+#define WRITE_ENV_VARS \
     "XDG_CACHE_HOME" << \
     "KDE_FULL_SESSION" << \
     "QT_PLUGIN_PATH" << \
@@ -172,7 +179,7 @@ EnvInfo::EnvInfo(const QString &procDir)
     setEnv("BOOMAGA_PROC_FILE", file.fileName());
 
     QStringList extEnv;
-    extEnv << ENV_VARS;
+    extEnv << READ_ENV_VARS;
 
     foreach (QString name, extEnv)
     {
@@ -267,12 +274,14 @@ bool EnvInfo::save(const QString &fileName) const
     if (!file.open(QFile::WriteOnly | QFile::Truncate))
         return false;
 
-    QHashIterator<QString, QString> it(mData);
-    while (it.hasNext())
+    QStringList extEnv;
+    extEnv << WRITE_ENV_VARS;
+
+    foreach (QString name, extEnv)
     {
-        it.next();
-        file.write(QString("%1=%2\n").arg(it.key(), it.value()).toLocal8Bit());
+        file.write(QString("%1=%2\n").arg(name, mData.value(name, "")).toLocal8Bit());
     }
+
     file.close();
 
     return true;
