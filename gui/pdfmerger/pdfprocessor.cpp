@@ -265,14 +265,24 @@ PDF::ObjNum PdfProcessor::writePageAsXObject(const PDF::Object &page, const PDF:
     if (pageDict.contains("LastModified"))  dict.insert("LastModified",  pageDict.value("LastModified"));
     if (pageDict.contains("StructParents")) dict.insert("StructParents", pageDict.value("StructParents"));
 
-    const PDF::Value &v = pageDict.value("Contents");
+    PDF::Value v = pageDict.value("Contents");
+    PDF::Object content;
     bool ok;
 
     // Page content is Link .....................
-    const PDF::Link &link = v.asLink(&ok);
-    if (ok)
+    while (v.isLink())
     {
-        const PDF::Object &content = mReader.getObject(link);
+        const PDF::Link &link = v.asLink(&ok);
+        if (!ok)
+            throw QString("Page %1 %2 has incorrect content type.").arg(page.objNum()).arg(page.genNum());
+
+        content = mReader.getObject(link);
+        v = content.value();
+    }
+
+    // Page content is Dict (stream) ............
+    if (v.isDict())
+    {
         xObj.setStream(content.stream());
         if (content.dict().contains("Filter"))
             dict.insert("Filter", content.dict().value("Filter"));
