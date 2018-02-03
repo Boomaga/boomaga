@@ -79,19 +79,20 @@ public:
     /// If endPos is 0 (the default), Reader reads all bytes starting at position startPos
     /// until the end of the file. If the fileName has no path or a relative path, the path
     /// used will be the application's current directory path at the time of the open() call.
-    void open(const QString &fileName, quint64 startPos, quint64 endPos);
+    void open(const QString &fileName, quint64 startPos = 0, quint64 endPos = 0);
 
     /// Reads PDF document from first size bytes of the data.
     /// The bytes are not copied. The Reader will contain the data pointer. The caller
     /// guarantees that data will not be deleted or modified as long as this Reader exist.
     void open(const char * const data, quint64 size);
 
-    const XRefTable &xRefTable() { return mXRefTable; }
+    const XRefTable &xRefTable() const { return mXRefTable; }
     const Dict &trailerDict() const { return mTrailerDict; }
     Dict trailerDict() { return mTrailerDict; }
 
     Object getObject(const Link &link) const;
     Object getObject(uint objNum, quint16 genNum) const;
+    Object getObject(const XRefEntry &xrefEntry) const;
 
     const Value find(const QString &path) const;
 

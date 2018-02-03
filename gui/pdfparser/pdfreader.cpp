@@ -1147,6 +1147,15 @@ Object Reader::getObject(uint objNum, quint16 genNum) const
 /************************************************
  *
  ************************************************/
+Object Reader::getObject(const XRefEntry &xrefEntry) const
+{
+    return getObject(xrefEntry.objNum(), xrefEntry.genNum());
+}
+
+
+/************************************************
+ *
+ ************************************************/
 const Value Reader::find(const QString &path) const
 {
     QStringList objects = path.split('/', QString::SkipEmptyParts);
@@ -1217,6 +1226,8 @@ void Reader::open(const char * const data, quint64 size)
  ************************************************/
 void Reader::load()
 {
+    mXRefTable.clear();
+    mTrailerDict.clear();
     ReaderData data(mData, mSize, mTextCodec);
 
     // Check header ...................................

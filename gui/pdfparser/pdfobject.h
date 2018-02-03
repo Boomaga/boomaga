@@ -72,6 +72,8 @@ public:
     /// identify a specialized subcategory of the general type.
     QString subType() const;
 
+    bool isValid() const { return !mValue.isUndefined(); }
+
 private:
     QByteArray streamFlateDecode(const QByteArray &source) const;
 
