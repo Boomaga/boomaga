@@ -294,6 +294,9 @@ public:
     {
     };
 
+    /// Removes all items from the dictionary.
+    void clear();
+
     /// Returns the value associated with the key key.
     /// If the dictionary contains no item with key key, the function returns defaultValue.
     /// If no defaultValue is specified, the function returns a Value with type Undefined.
