@@ -72,7 +72,7 @@ public:
     /// Constructs a Reader object.
     Reader();
 
-    ///Destroys the object and frees its resources.
+    ///Destroys the object and frees its resources, closing it if necessary.
     virtual ~Reader();
 
     /// Reads PDF document from the existing file, starting at position startPos until endPos.
@@ -86,6 +86,9 @@ public:
     /// guarantees that data will not be deleted or modified as long as this Reader exist.
     void open(const char * const data, quint64 size);
 
+    /// Closes this reader for reading.
+    void close();
+
     const XRefTable &xRefTable() const { return mXRefTable; }
     const Dict &trailerDict() const { return mTrailerDict; }
     Dict trailerDict() { return mTrailerDict; }
@@ -97,6 +100,12 @@ public:
     const Value find(const QString &path) const;
 
     quint32 pageCount();
+
+    /// Constructs a QByteArray that uses len bytes from the data,
+    /// starting at position pos. The bytes are not copied.
+    /// The caller guarantees that reader will not be closed as long
+    /// as this QByteArray and any copies of it exist.
+    QByteArray rawData(quint64 pos, quint64 len) const;
 
 protected:
     void   load();

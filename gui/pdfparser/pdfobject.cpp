@@ -221,7 +221,9 @@ void FlateDecodeStream::applyPNGPredictor()
 Object::Object(ObjNum objNum, GenNum genNum, const Value &value):
     mObjNum(objNum),
     mGenNum(genNum),
-    mValue(value)
+    mValue(value),
+    mPos(0),
+    mLen(0)
 {
 }
 
@@ -233,7 +235,9 @@ Object::Object(const Object &other):
     mObjNum( other.mObjNum),
     mGenNum( other.mGenNum),
     mValue(  other.mValue),
-    mStream( other.mStream)
+    mStream( other.mStream),
+    mPos(    other.mPos),
+    mLen(    other.mLen)
 {
 }
 
@@ -247,6 +251,8 @@ Object &Object::operator =(const Object &other)
     mGenNum  = other.mGenNum;
     mValue   = other.mValue;
     mStream  = other.mStream;
+    mPos     = other.mPos;
+    mLen     = other.mLen;
     return *this;
 }
 

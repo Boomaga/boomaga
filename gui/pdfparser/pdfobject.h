@@ -74,6 +74,9 @@ public:
 
     bool isValid() const { return !mValue.isUndefined(); }
 
+    quint64 pos() const { return mPos; }
+    quint64 len() const { return mLen; }
+
 private:
     QByteArray streamFlateDecode(const QByteArray &source) const;
 
@@ -81,6 +84,8 @@ private:
     PDF::GenNum mGenNum;
     Value mValue;
     QByteArray mStream;
+    quint64 mPos;
+    quint64 mLen;
 };
 
 } // namespace PDF

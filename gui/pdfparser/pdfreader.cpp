@@ -59,6 +59,7 @@ public:
     bool compareStr(quint64 pos, const char *str) const;
     bool compareWord(quint64 pos, const char *str) const;
     quint64 skipSpace(quint64 pos) const;
+    quint64 skipComment(quint64 pos) const;
     qint64 skipCRLF(quint64 pos) const;
     qint64 indexOf(const char *str, quint64 from) const;
     qint64 indexOfBack(const char *str, quint64 from) const;
@@ -259,8 +260,28 @@ bool ReaderData::compareWord(quint64 pos, const char *str) const
  ************************************************/
 quint64 ReaderData::skipSpace(quint64 pos) const
 {
-    while (pos < mSize && isspace(mData[pos]))
-        pos++;
+    while (pos < mSize)
+    {
+        while (pos < mSize && isspace(mData[pos]))
+            pos++;
+
+        if (mData[pos] != '%')
+            return pos;
+
+        pos = skipComment(pos);
+    }
+
+    return pos;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+quint64 ReaderData::skipComment(quint64 pos) const
+{
+    while (pos < mSize && mData[pos] != '\n' && mData[pos] != '\r')
+        ++pos;
 
     return pos;
 }
@@ -889,8 +910,7 @@ Reader::Reader():
  ************************************************/
 Reader::~Reader()
 {
-    if (mFile && mData)
-            mFile->unmap(const_cast<uchar*>(reinterpret_cast<const uchar*>(mData)));
+    close();
 
     delete mFile;
 }
@@ -954,6 +974,10 @@ qint64 Reader::readObject(quint64 start, Object *res) const
             pos += strlen("endstream");
     }
 
+    pos = data.skipSpace(pos);
+    pos += strlen("endobj");
+    res->mPos = start;
+    res->mLen = pos - start;
     return pos;
 }
 
@@ -1187,6 +1211,15 @@ quint32 Reader::pageCount()
 /************************************************
  *
  ************************************************/
+QByteArray Reader::rawData(quint64 pos, quint64 len) const
+{
+    return QByteArray::fromRawData(mData + pos, len);
+}
+
+
+/************************************************
+ *
+ ************************************************/
 void Reader::open(const QString &fileName, quint64 startPos, quint64 endPos)
 {
     mFile = new QFile(fileName);
@@ -1218,6 +1251,18 @@ void Reader::open(const char * const data, quint64 size)
     mData = data;
     mSize = size;
     load();
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Reader::close()
+{
+    if (mFile && mData)
+        mFile->unmap(const_cast<uchar*>(reinterpret_cast<const uchar*>(mData)));
+    mData = nullptr;
+    mSize = 0;
 }
 
 
