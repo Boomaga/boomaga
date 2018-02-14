@@ -29,7 +29,7 @@ cmake_minimum_required( VERSION 2.6 )
 project(boomaga)
 
 set(MAJOR_VERSION 1)
-set(MINOR_VERSION 1)
+set(MINOR_VERSION 2)
 set(PATCH_VERSION 0)
 set(FULL_VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION})
 
