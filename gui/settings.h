@@ -48,6 +48,7 @@ public:
         AutoSave,
         AutoSaveDir,
         RecentFiles,
+        RightToLeft,
 
         // Preferences **************************
         Preferences_Geometry,

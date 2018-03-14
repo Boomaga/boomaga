@@ -115,6 +115,7 @@ void ConfigDialog::loadSettings()
     ui->autoSaveGroupBox->setChecked(settings->value(Settings::AutoSave).toBool());
     ui->autoSaveDirEdit->setText(settings->value(Settings::AutoSaveDir).toString());
     ui->negativeMargins->setChecked(settings->value(Settings::AllowNegativeMargins).toBool());
+    ui->rightToLeft->setChecked(settings->value(Settings::RightToLeft).toBool());
 }
 
 
@@ -139,6 +140,7 @@ void ConfigDialog::saveSettings()
     settings->setValue(Settings::AutoSave, ui->autoSaveGroupBox->isChecked());
     settings->setValue(Settings::AutoSaveDir, ui->autoSaveDirEdit->text());
     settings->setValue(Settings::AllowNegativeMargins, ui->negativeMargins->isChecked());
+    settings->setValue(Settings::RightToLeft, ui->rightToLeft->isChecked());
 
     if (upadateProject)
         project->update();
