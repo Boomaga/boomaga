@@ -74,7 +74,7 @@ protected:
         uint row;
     };
 
-    virtual PagePosition calcPagePosition(int pageNumOnSheet, Rotation sheetRotation) const = 0;
+    virtual PagePosition calcPagePosition(int pageNumOnSheet, Rotation sheetRotation, Direction direction) const = 0;
 };
 
 
@@ -99,7 +99,7 @@ public:
 protected:
     void doFillSheets(QList<Sheet*> *sheets, bool forPreview) const;
     virtual Rotation calcPageRotation(const ProjectPage *page, Rotation sheetRotation) const override;
-    virtual PagePosition calcPagePosition(int pageNumOnSheet, Rotation sheetRotation) const override;
+    virtual PagePosition calcPagePosition(int pageNumOnSheet, Rotation sheetRotation, Direction direction) const override;
 
     int mPageCountVert;
     int mPageCountHoriz;
