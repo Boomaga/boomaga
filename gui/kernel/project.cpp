@@ -258,7 +258,8 @@ void Project::update()
         mLayout->updatePages(mPages);
         mSheetCount = mLayout->calcSheetCount();
 
-        mLayout->fillPreviewSheets(&mPreviewSheets);
+        Direction direction = settings->value(Settings::RightToLeft).toBool() ? RightToLeft : LeftToRight;
+        mLayout->fillPreviewSheets(&mPreviewSheets, direction);
 
         if (mTmpFile)
         {

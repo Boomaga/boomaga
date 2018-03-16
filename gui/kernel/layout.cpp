@@ -54,8 +54,9 @@ Layout::~Layout()
 /************************************************
 
  ************************************************/
-void Layout::fillPreviewSheets(QList<Sheet *> *sheets) const
+void Layout::fillPreviewSheets(QList<Sheet *> *sheets, Direction direction) const
 {
+    Q_UNUSED(direction);
     fillSheets(sheets);
 }
 
@@ -107,8 +108,9 @@ void LayoutNUp::fillSheets(QList<Sheet *> *sheets) const
 /************************************************
  *
  * ***********************************************/
-void LayoutNUp::fillPreviewSheets(QList<Sheet *> *sheets) const
+void LayoutNUp::fillPreviewSheets(QList<Sheet *> *sheets, Direction direction) const
 {
+    Q_UNUSED(direction);
     doFillSheets(sheets, true);
 }
 
@@ -119,7 +121,6 @@ void LayoutNUp::fillPreviewSheets(QList<Sheet *> *sheets) const
 void LayoutNUp::doFillSheets(QList<Sheet *> *sheets, bool) const
 {
     int pps = mPageCountVert * mPageCountHoriz;
-    bool rightToLeft = settings->value(Settings::RightToLeft).toBool();
 
     int i=0;
     while (i < project->pageCount())
@@ -457,20 +458,21 @@ void LayoutBooklet::fillSheets(QList<Sheet *> *sheets) const
 
 /************************************************
 
-  +-----------+  +-----------+
-  |     :     |  |     :     |
-  |  N  :  0  |  |  1  : N-1 |
-  |     :     |  |     :     |
-  +-----------+  +-----------+
-     sheet 0        sheet 1
+  Left-To-Right                 Rigth-To-Left
+  +-----------+  +-----------+  +-----------+  +-----------+
+  |     :     |  |     :     |  |     :     |  |     :     |
+  |  N  :  0  |  |  1  : N-1 |  |  0  :  N  |  | N-1 :  1  |
+  |     :     |  |     :     |  |     :     |  |     :     |
+  +-----------+  +-----------+  +-----------+  +-----------+
+     sheet 0        sheet 1        sheet 0        sheet 1
 
-  +-----------+  +-----------+
-  |     :     |  |     :     |
-  | N-3 :  3  |  |  4  : N-4 |
-  |     :     |  |     :     |
-  +-----------+  +-----------+
-     sheet 2        sheet 3
-               ...
+  +-----------+  +-----------+  +-----------+  +-----------+
+  |     :     |  |     :     |  |     :     |  |     :     |
+  | N-2 :  2  |  |  3  : N-3 |  |  2  : N-2 |  | N-3 :  3  |
+  |     :     |  |     :     |  |     :     |  |     :     |
+  +-----------+  +-----------+  +-----------+  +-----------+
+     sheet 2        sheet 3        sheet 2        sheet 3
+
  ************************************************/
 void LayoutBooklet::fillSheetsForBook(int bookStart, int bookLength, QList<Sheet *> *sheets) const
 {
@@ -525,7 +527,7 @@ void LayoutBooklet::fillSheetsForBook(int bookStart, int bookLength, QList<Sheet
 /************************************************
 
  ************************************************/
-void LayoutBooklet::fillPreviewSheets(QList<Sheet *> *sheets) const
+void LayoutBooklet::fillPreviewSheets(QList<Sheet *> *sheets, Direction direction) const
 {
     QList<BookletInfo> booklets = split(project->pages());
     foreach (BookletInfo booklet, booklets)
@@ -537,10 +539,20 @@ void LayoutBooklet::fillPreviewSheets(QList<Sheet *> *sheets) const
 
     if (sheets->count() > 1)
     {
-        sheets->first()->setHint(Sheet::HintOnlyRight, true);
-        sheets->first()->setHint(Sheet::HintDrawFold, false);
-        sheets->last()->setHint(Sheet::HintOnlyLeft, true);
-        sheets->last()->setHint(Sheet::HintDrawFold, false);
+        if (direction == LeftToRight)
+        {
+            sheets->first()->setHint(Sheet::HintOnlyRight, true);
+            sheets->first()->setHint(Sheet::HintDrawFold,  false);
+            sheets->last()->setHint(Sheet::HintOnlyLeft,   true);
+            sheets->last()->setHint(Sheet::HintDrawFold,   false);
+        }
+        else
+        {
+            sheets->first()->setHint(Sheet::HintOnlyLeft, true);
+            sheets->first()->setHint(Sheet::HintDrawFold, false);
+            sheets->last()->setHint(Sheet::HintOnlyRight, true);
+            sheets->last()->setHint(Sheet::HintDrawFold,  false);
+        }
     }
 }
 
