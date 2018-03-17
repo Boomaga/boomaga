@@ -1,0 +1,91 @@
+<!-- Generated from icons2png.sh do not edit by hand. -->
+<RCC>
+    <qresource prefix="16">
+        <file alias="print">icons/16/print.png</file>
+        <file alias="arrow-left">icons/16/arrow-left.png</file>
+        <file alias="arrow-right">icons/16/arrow-right.png</file>
+
+        <file alias="print_disable">icons/16/print_disable.png</file>
+        <file alias="arrow-left_disable">icons/16/arrow-left_disable.png</file>
+        <file alias="arrow-right_disable">icons/16/arrow-right_disable.png</file>
+
+    </qresource>
+
+    <qresource prefix="22">
+        <file alias="print">icons/22/print.png</file>
+        <file alias="arrow-left">icons/22/arrow-left.png</file>
+        <file alias="arrow-right">icons/22/arrow-right.png</file>
+
+        <file alias="print_disable">icons/22/print_disable.png</file>
+        <file alias="arrow-left_disable">icons/22/arrow-left_disable.png</file>
+        <file alias="arrow-right_disable">icons/22/arrow-right_disable.png</file>
+
+    </qresource>
+
+    <qresource prefix="32">
+        <file alias="print">icons/32/print.png</file>
+        <file alias="arrow-left">icons/32/arrow-left.png</file>
+        <file alias="arrow-right">icons/32/arrow-right.png</file>
+
+        <file alias="print_disable">icons/32/print_disable.png</file>
+        <file alias="arrow-left_disable">icons/32/arrow-left_disable.png</file>
+        <file alias="arrow-right_disable">icons/32/arrow-right_disable.png</file>
+
+    </qresource>
+
+    <qresource prefix="48">
+        <file alias="print">icons/48/print.png</file>
+        <file alias="arrow-left">icons/48/arrow-left.png</file>
+        <file alias="arrow-right">icons/48/arrow-right.png</file>
+
+        <file alias="print_disable">icons/48/print_disable.png</file>
+        <file alias="arrow-left_disable">icons/48/arrow-left_disable.png</file>
+        <file alias="arrow-right_disable">icons/48/arrow-right_disable.png</file>
+
+    </qresource>
+
+    <qresource prefix="64">
+        <file alias="print">icons/64/print.png</file>
+        <file alias="arrow-left">icons/64/arrow-left.png</file>
+        <file alias="arrow-right">icons/64/arrow-right.png</file>
+
+        <file alias="print_disable">icons/64/print_disable.png</file>
+        <file alias="arrow-left_disable">icons/64/arrow-left_disable.png</file>
+        <file alias="arrow-right_disable">icons/64/arrow-right_disable.png</file>
+
+    </qresource>
+
+    <qresource prefix="128">
+        <file alias="print">icons/128/print.png</file>
+        <file alias="arrow-left">icons/128/arrow-left.png</file>
+        <file alias="arrow-right">icons/128/arrow-right.png</file>
+
+        <file alias="print_disable">icons/128/print_disable.png</file>
+        <file alias="arrow-left_disable">icons/128/arrow-left_disable.png</file>
+        <file alias="arrow-right_disable">icons/128/arrow-right_disable.png</file>
+
+    </qresource>
+
+    <qresource prefix="256">
+        <file alias="print">icons/256/print.png</file>
+        <file alias="arrow-left">icons/256/arrow-left.png</file>
+        <file alias="arrow-right">icons/256/arrow-right.png</file>
+
+        <file alias="print_disable">icons/256/print_disable.png</file>
+        <file alias="arrow-left_disable">icons/256/arrow-left_disable.png</file>
+        <file alias="arrow-right_disable">icons/256/arrow-right_disable.png</file>
+
+    </qresource>
+
+    <qresource prefix="512">
+        <file alias="print">icons/512/print.png</file>
+        <file alias="arrow-left">icons/512/arrow-left.png</file>
+        <file alias="arrow-right">icons/512/arrow-right.png</file>
+
+        <file alias="print_disable">icons/512/print_disable.png</file>
+        <file alias="arrow-left_disable">icons/512/arrow-left_disable.png</file>
+        <file alias="arrow-right_disable">icons/512/arrow-right_disable.png</file>
+
+    </qresource>
+
+</RCC>

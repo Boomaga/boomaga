@@ -67,11 +67,19 @@ MainWindow::MainWindow(QWidget *parent):
 {
     ui->setupUi(this);
     this->setContextMenuPolicy(Qt::NoContextMenu);
+    qApp->setAttribute(Qt::AA_DontShowIconsInMenus, true);
 
-    setWindowIcon(Icon::icon(Icon::ApplicationIcon));
+    setWindowIcon(loadMainIcon("boomaga"));
     setWindowTitle(tr("Boomaga"));
 
     setStyleSheet("QListView::item { padding: 2px;}");
+
+#ifdef Q_OS_MAC
+    this->setUnifiedTitleAndToolBarOnMac(true);
+    setWindowIcon(QIcon());
+
+    ui->splitter->setStyleSheet("::handle{ border-right: 1px solid #b6b6b6;}");
+#endif
 
     initStatusBar();
     initActions();
@@ -326,17 +334,17 @@ void MainWindow::initActions()
 {
     QAction *act;
     act = ui->actionPrint;
-    act->setIcon(Icon::icon(Icon::Print));
+    act->setIcon(loadIcon("print"));
     connect(act, SIGNAL(triggered()),
             this, SLOT(print()));
 
     act = ui->actionPrintAndClose;
-    act->setIcon(Icon::icon(Icon::Print));
+    act->setIcon(loadIcon("print"));
     connect(act, SIGNAL(triggered()),
             this, SLOT(printAndClose()));
 
     act = ui->actionPrintWithOptions;
-    act->setIcon(Icon::icon(Icon::Print));
+    act->setIcon(loadIcon("print"));
     connect(act, SIGNAL(triggered()),
             this, SLOT(printWithOptions()));
 
@@ -345,37 +353,32 @@ void MainWindow::initActions()
             this, SLOT(close()));
 
     act = ui->actionPreviousSheet;
-    act->setIcon(Icon::icon(Icon::Previous));
+    act->setIcon(loadIcon("arrow-left"));
     connect(act, SIGNAL(triggered()),
             project, SLOT(prevSheet()));
 
     act = ui->actionNextSheet;
-    act->setIcon(Icon::icon(Icon::Next));
+    act->setIcon(loadIcon("arrow-right"));
     connect(act, SIGNAL(triggered()),
             project, SLOT(nextSheet()));
 
     act = ui->actionOpen;
-    act->setIcon(Icon::icon(Icon::Open));
     connect(act, SIGNAL(triggered()),
             this, SLOT(load()));
 
     act = ui->actionSave;
-    act->setIcon(Icon::icon(Icon::Save));
     connect(act, SIGNAL(triggered()),
             this, SLOT(save()));
 
     act = ui->actionSaveAs;
-    act->setIcon(Icon::icon(Icon::SaveAs));
     connect(act, SIGNAL(triggered()),
             this, SLOT(saveAs()));
 
     act = ui->actionExport;
-    act->setIcon(Icon::icon(Icon::SaveAs));
     connect(act, SIGNAL(triggered()),
             this, SLOT(exportAs()));
 
     act = ui->actionPreferences;
-    act->setIcon(Icon::icon(Icon::Configure));
     connect(act, SIGNAL(triggered()),
             this, SLOT(showConfigDialog()));
 
@@ -969,13 +972,13 @@ void MainWindow::fillJobEditMenu(const Job job, QMenu *menu)
     menu->addAction(act);
 
 
-    act = new JobAction(Icon::icon(Icon::RotateLeft), tr("Rotate job to the left"), job, menu);
+    act = new JobAction(tr("Rotate job to the left"), job, menu);
     connect(act, SIGNAL(triggered()), this, SLOT(rotateJobLeft()));
     act->setEnabled(job.pageCount());
     menu->addAction(act);
 
 
-    act = new JobAction(Icon::icon(Icon::RotateRight), tr("Rotate job to the right"), job, menu);
+    act = new JobAction(tr("Rotate job to the right"), job, menu);
     connect(act, SIGNAL(triggered()), this, SLOT(rotateJobRight()));
     act->setEnabled(job.pageCount());
     menu->addAction(act);

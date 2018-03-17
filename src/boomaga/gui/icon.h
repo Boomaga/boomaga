@@ -30,30 +30,7 @@
 #include <QIcon>
 #include <QStringList>
 
-class Icon
-{
-public:
-    enum IconName
-    {
-        ApplicationIcon,
-        RotateLeft,
-        RotateRight,
-        Print,
-        Previous,
-        Next,
-        Open,
-        Save,
-        SaveAs,
-        Configure
-    };
-
-    static QIcon icon(IconName iconName);
-
-private:
-    Icon();
-    static void iconDefs(IconName iconName, QStringList *theme, QStringList *fallBack);
-    static QIcon loadIcon(IconName iconName);
-
-};
+QIcon loadIcon(const QString &iconName, bool loadDisable = true);
+QIcon loadMainIcon(const QString &iconName);
 
 #endif // ICON_H

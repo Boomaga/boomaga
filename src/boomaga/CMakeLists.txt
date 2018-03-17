@@ -132,7 +132,7 @@ set(UI_FILES
 
 # QRC files .................
 set(RESOURCES
-    resource.qrc
+    misc/images/icons.qrc
 )
 
 # add translations ...
@@ -204,10 +204,15 @@ CREATE_DESKTOP_FILE(misc/boomaga.desktop.in ${CMAKE_CURRENT_BINARY_DIR}/boomaga.
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.boomaga.service DESTINATION ${DBUS_SERVICE_DIR})
 
-install(FILES   misc/images/boomaga_16.png   DESTINATION "share/icons/hicolor/16x16/apps"   RENAME "boomaga.png")
-install(FILES   misc/images/boomaga_32.png   DESTINATION "share/icons/hicolor/32x32/apps"   RENAME "boomaga.png")
-install(FILES   misc/images/boomaga_64.png   DESTINATION "share/icons/hicolor/64x64/apps"   RENAME "boomaga.png")
-install(FILES   misc/images/boomaga_128.png  DESTINATION "share/icons/hicolor/128x128/apps" RENAME "boomaga.png")
+
+install(FILES   misc/images/mainicon/boomaga-16x16.png   DESTINATION "share/icons/hicolor/16x16/apps"   RENAME "boomaga.png")
+install(FILES   misc/images/mainicon/boomaga-32x32.png   DESTINATION "share/icons/hicolor/32x32/apps"   RENAME "boomaga.png")
+install(FILES   misc/images/mainicon/boomaga-48x48.png   DESTINATION "share/icons/hicolor/48x48/apps"   RENAME "boomaga.png")
+install(FILES   misc/images/mainicon/boomaga-64x64.png   DESTINATION "share/icons/hicolor/64x64/apps"   RENAME "boomaga.png")
+install(FILES   misc/images/mainicon/boomaga-128x128.png DESTINATION "share/icons/hicolor/128x128/apps" RENAME "boomaga.png")
+install(FILES   misc/images/mainicon/boomaga-256x256.png DESTINATION "share/icons/hicolor/256x256/apps" RENAME "boomaga.png")
+install(FILES   misc/images/mainicon/boomaga-512x512.png DESTINATION "share/icons/hicolor/512x512/apps" RENAME "boomaga.png")
+
 install(FILES   ${CMAKE_CURRENT_BINARY_DIR}/boomaga.desktop DESTINATION "share/applications")
 install(FILES   misc/boomaga.xml        DESTINATION "share/mime/packages")
 install(FILES   misc/boomaga.1.gz       DESTINATION share/man/man1)
