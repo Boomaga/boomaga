@@ -30,36 +30,41 @@ cmake_policy(SET CMP0028 NEW)
 project(boomagaGui)
 
 set(HEADERS
+    boomagatypes.h
+    dbus.h
+    render.h
+    settings.h
+
     kernel/sheet.h
     kernel/inputfile.h
     kernel/job.h
     kernel/tmppdffile.h
     kernel/layout.h
-    render.h
+    kernel/projectfile.h
     kernel/project.h
     kernel/projectpage.h
     kernel/printer.h
     kernel/cupsprinteroptions.h
-    boomagatypes.h
-    mainwindow.h
-    actions.h
-    settings.h
-    dbus.h
-    icon.h
-    printersettings/printersettings.h
-    aboutdialog/aboutdialog.h
+        
+    gui/mainwindow.h
+    gui/actions.h
+    gui/icon.h
+    gui/aboutdialog/aboutdialog.h
+    gui/configdialog/configdialog.h
+    gui/export/exporttopdf.h
+    gui/printdialog/printdialog.h
+    gui/printersettings/printersettings.h
+    gui/widgets/pagelistview.h
+    gui/widgets/joblistview.h
+    gui/widgets/layoutradiobutton.h
+    gui/widgets/printerscombobox.h
+    gui/widgets/previewwidget.h
+    gui/widgets/subbookletview.h
+    
     translations/translatorsinfo/translatorsinfo.h
-    export/exporttopdf.h
-    kernel/projectfile.h
+
     pdfmerger/pdfmergeripc.h
-    configdialog/configdialog.h
-    printdialog/printdialog.h
-    widgets/pagelistview.h
-    widgets/joblistview.h
-    widgets/layoutradiobutton.h
-    widgets/printerscombobox.h
-    widgets/previewwidget.h
-    widgets/subbookletview.h
+    
     pdfparser/pdferrors.h
     pdfparser/pdfxref.h
     pdfparser/pdfvalue.h
@@ -69,36 +74,41 @@ set(HEADERS
 
 set(SOURCES
     main.cpp
+    boomagatypes.cpp
+    dbus.cpp
+    render.cpp
+    settings.cpp
+
     kernel/sheet.cpp
     kernel/inputfile.cpp
     kernel/job.cpp
     kernel/tmppdffile.cpp
     kernel/layout.cpp
-    render.cpp
     kernel/project.cpp
     kernel/projectpage.cpp
     kernel/cupsprinteroptions.cpp
     kernel/printer.cpp
-    boomagatypes.cpp
-    mainwindow.cpp
-    actions.cpp
-    settings.cpp
-    dbus.cpp
-    icon.cpp
-    printersettings/printersettings.cpp
-    aboutdialog/aboutdialog.cpp
-    translations/translatorsinfo/translatorsinfo.cpp
-    export/exporttopdf.cpp
     kernel/projectfile.cpp
+    
+    gui/mainwindow.cpp
+    gui/actions.cpp
+    gui/icon.cpp
+    gui/aboutdialog/aboutdialog.cpp
+    gui/configdialog/configdialog.cpp
+    gui/export/exporttopdf.cpp
+    gui/printdialog/printdialog.cpp
+    gui/printersettings/printersettings.cpp
+    gui/widgets/pagelistview.cpp
+    gui/widgets/joblistview.cpp
+    gui/widgets/layoutradiobutton.cpp
+    gui/widgets/printerscombobox.cpp
+    gui/widgets/previewwidget.cpp
+    gui/widgets/subbookletview.cpp
+    
+    translations/translatorsinfo/translatorsinfo.cpp
+
     pdfmerger/pdfmergeripc.cpp
-    configdialog/configdialog.cpp
-    printdialog/printdialog.cpp
-    widgets/pagelistview.cpp
-    widgets/joblistview.cpp
-    widgets/layoutradiobutton.cpp
-    widgets/printerscombobox.cpp
-    widgets/previewwidget.cpp
-    widgets/subbookletview.cpp
+    
     pdfparser/pdfxref.cpp
     pdfparser/pdfvalue.cpp
     pdfparser/pdfreader.cpp
@@ -194,12 +204,13 @@ CREATE_DESKTOP_FILE(misc/boomaga.desktop.in ${CMAKE_CURRENT_BINARY_DIR}/boomaga.
 
 install(FILES ${CMAKE_CURRENT_BINARY_DIR}/org.boomaga.service DESTINATION ${DBUS_SERVICE_DIR})
 
-install(FILES   images/boomaga_16.png   DESTINATION "share/icons/hicolor/16x16/apps"   RENAME "boomaga.png")
-install(FILES   images/boomaga_32.png   DESTINATION "share/icons/hicolor/32x32/apps"   RENAME "boomaga.png")
-install(FILES   images/boomaga_64.png   DESTINATION "share/icons/hicolor/64x64/apps"   RENAME "boomaga.png")
-install(FILES   images/boomaga_128.png  DESTINATION "share/icons/hicolor/128x128/apps" RENAME "boomaga.png")
+install(FILES   misc/images/boomaga_16.png   DESTINATION "share/icons/hicolor/16x16/apps"   RENAME "boomaga.png")
+install(FILES   misc/images/boomaga_32.png   DESTINATION "share/icons/hicolor/32x32/apps"   RENAME "boomaga.png")
+install(FILES   misc/images/boomaga_64.png   DESTINATION "share/icons/hicolor/64x64/apps"   RENAME "boomaga.png")
+install(FILES   misc/images/boomaga_128.png  DESTINATION "share/icons/hicolor/128x128/apps" RENAME "boomaga.png")
 install(FILES   ${CMAKE_CURRENT_BINARY_DIR}/boomaga.desktop DESTINATION "share/applications")
 install(FILES   misc/boomaga.xml        DESTINATION "share/mime/packages")
+install(FILES   misc/boomaga.1.gz       DESTINATION share/man/man1)
 
 add_subdirectory(pdfmerger)
 

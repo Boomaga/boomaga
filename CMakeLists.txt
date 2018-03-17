@@ -2,7 +2,7 @@
  # (c)LGPL2+
  #
  #
- # Copyright: 2012-2013 Boomaga team https://github.com/Boomaga
+ # Copyright: 2012-2018 Boomaga team https://github.com/Boomaga
  # Authors:
  #   Alexander Sokoloff <sokoloff.a@gmail.com>
  #
@@ -24,7 +24,8 @@
  # END_COMMON_COPYRIGHT_HEADER
 
 
-cmake_minimum_required( VERSION 2.6 )
+cmake_minimum_required(VERSION 3.0.0)
+cmake_policy(SET CMP0028 NEW)
 
 project(boomaga)
 
@@ -43,7 +44,6 @@ set (CMAKE_CXX_STANDARD 11)
 include("cmake/tools.cmake")
 status_message("boomaga ver. ${FULL_VERSION}")
 status_message(" ")
-
 
 
 find_program(CUPS_CONFIG_EXECUTABLE NAMES cups-config)
@@ -117,23 +117,7 @@ status_message("  CUPS_BACKEND_DESCRIPTION  = ${CUPS_BACKEND_DESCRIPTION}")
 status_message("  CUPS_BACKEND_MANUFACTURER = ${CUPS_BACKEND_MANUFACTURER}")
 status_message(" ")
 
-add_subdirectory(cups)
-add_subdirectory(gui)
-install(FILES boomaga.1.gz  DESTINATION share/man/man1)
-
-########## Add make dist target ################
-SET(CPACK_PACKAGE_VERSION "${FULL_VERSION}")
-SET(CPACK_SOURCE_GENERATOR "TBZ2")
-SET(CPACK_SOURCE_PACKAGE_FILE_NAME "boomaga-${CPACK_PACKAGE_VERSION}")
-SET(CPACK_IGNORE_FILES
-    \\\\.git
-    build
-    CMakeLists.txt.user
-    \\\\~
-)
-SET(CPACK_SOURCE_IGNORE_FILES ${CPACK_IGNORE_FILES})
-INCLUDE(CPack)
-# simulate autotools' "make dist"
-add_custom_target(dist COMMAND ${CMAKE_MAKE_PROGRAM} package_source)
+add_subdirectory(src/backend)
+add_subdirectory(src/boomaga)
 
 show_status()

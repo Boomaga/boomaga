@@ -23,29 +23,16 @@
  #
  # END_COMMON_COPYRIGHT_HEADER
 
-cmake_minimum_required(VERSION 3.0.0)
-cmake_policy(SET CMP0028 NEW)
 
-project(boomagabackend)
+cmake_minimum_required( VERSION 2.6 )
+
+project(backend_dbus_root)
 
 set(HEADERS
-    common.h
-    inputfile.h
-    systemd.h
-    consolekit.h
-    envinfo.h
 )
 
 set(SOURCES
     main.cpp
-    common.cpp
-    inputfile.cpp
-    systemd.cpp
-    consolekit.cpp
-    envinfo.cpp
-)
-
-set(LIBRARIES
 )
 
 
@@ -59,20 +46,27 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-find_package(Qt5 REQUIRED
-    Core
-    DBus
-)
-
 add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})
-target_link_libraries(${PROJECT_NAME} ${LIBRARIES} Qt5::Core Qt5::DBus)
+set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${INSTANCE_NAME})
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/boomagabackend
-  DESTINATION ${NONGUI_DIR}
+
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/boomaga.ppd
+               ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}.ppd
+               @ONLY)
+
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}
+  DESTINATION ${CUPS_BACKEND_DIR}
   PERMISSIONS
     OWNER_READ OWNER_WRITE OWNER_EXECUTE
-    GROUP_READ             GROUP_EXECUTE
-    WORLD_READ             WORLD_EXECUTE
 )
 
-add_subdirectory(backend)
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}.ppd
+  DESTINATION ${CUPS_PPD_DIR}
+  PERMISSIONS
+    OWNER_READ OWNER_WRITE
+    GROUP_READ
+    WORLD_READ
+)
+

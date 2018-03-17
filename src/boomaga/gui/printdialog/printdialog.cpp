@@ -26,7 +26,7 @@
 
 #include "printdialog.h"
 #include "ui_printdialog.h"
-#include "../settings.h"
+#include "settings.h"
 
 static int mCopiesSave = 1;
 

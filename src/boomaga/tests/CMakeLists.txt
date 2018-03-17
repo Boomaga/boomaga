@@ -22,8 +22,8 @@
  # Boston, MA 02110-1301 USA
  #
  # END_COMMON_COPYRIGHT_HEADER
- 
- 
+
+
 cmake_minimum_required(VERSION 3.0.0)
 cmake_policy(SET CMP0028 NEW)
 
@@ -33,13 +33,14 @@ project(boomaga_test)
 set(TEST_HEADERS
     testboomaga.h
     tools.h
+
     ../pdfparser/pdferrors.h
     ../pdfparser/pdfreader.h
     ../pdfparser/pdfvalue.h
     ../pdfparser/pdfobject.h
     ../pdfparser/pdfwriter.h
     ../pdfparser/pdfxref.h
-    ../../cups/envinfo.h
+    ../../backend/dbus/envinfo.h
 )
 
 set(TEST_SOURCES
@@ -52,7 +53,7 @@ set(TEST_SOURCES
     ../pdfparser/pdfobject.cpp
     ../pdfparser/pdfwriter.cpp
     ../pdfparser/pdfxref.cpp
-    ../../cups/envinfo.cpp
+    ../../backend/dbus/envinfo.cpp
 )
 
 

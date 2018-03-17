@@ -26,8 +26,8 @@
 
 #include "joblistview.h"
 #include "kernel/project.h"
-#include "icon.h"
-#include "../render.h"
+#include "gui/icon.h"
+#include "render.h"
 #include <QMouseEvent>
 #include <QDebug>
 #include <QPainter>

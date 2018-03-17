@@ -14,5 +14,5 @@ script:
   - cd build
   - cmake -DBUILD_TESTS=Yes ..
   - make -j8
-  - gui/tests/boomaga_test 
+  - src/boomaga/tests/boomaga_test
 

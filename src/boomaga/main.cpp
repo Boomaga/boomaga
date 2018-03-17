@@ -25,7 +25,7 @@
 
 
 #include "kernel/project.h"
-#include "mainwindow.h"
+#include "gui/mainwindow.h"
 #include "dbus.h"
 #include "kernel/job.h"
 

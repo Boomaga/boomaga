@@ -26,7 +26,7 @@
 
 #include "configdialog.h"
 #include "ui_configdialog.h"
-#include "../settings.h"
+#include "settings.h"
 #include <QDebug>
 #include <QFileDialog>
 

@@ -434,28 +434,28 @@
   <customwidget>
    <class>LayoutRadioButton</class>
    <extends>QRadioButton</extends>
-   <header location="global">widgets/layoutradiobutton.h</header>
+   <header>gui/widgets/layoutradiobutton.h</header>
   </customwidget>
   <customwidget>
    <class>PrintersComboBox</class>
    <extends>QComboBox</extends>
-   <header location="global">widgets/printerscombobox.h</header>
+   <header>gui/widgets/printerscombobox.h</header>
   </customwidget>
   <customwidget>
    <class>PreviewWidget</class>
    <extends>QFrame</extends>
-   <header location="global">widgets/previewwidget.h</header>
+   <header>gui/widgets/previewwidget.h</header>
    <container>1</container>
   </customwidget>
   <customwidget>
    <class>JobListView</class>
    <extends>QListWidget</extends>
-   <header location="global">widgets/joblistview.h</header>
+   <header>gui/widgets/joblistview.h</header>
   </customwidget>
   <customwidget>
    <class>SubBookletView</class>
    <extends>QListWidget</extends>
-   <header location="global">widgets/subbookletview.h</header>
+   <header>gui/widgets/subbookletview.h</header>
   </customwidget>
  </customwidgets>
  <resources/>

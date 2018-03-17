@@ -26,7 +26,7 @@
 
 #include "pagelistview.h"
 #include "kernel/project.h"
-#include "../render.h"
+#include "render.h"
 
 #include <QContextMenuEvent>
 #include <QMouseEvent>

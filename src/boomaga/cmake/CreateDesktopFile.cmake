@@ -21,8 +21,8 @@
  # Free Software Foundation, Inc., 51 Franklin Street, Fifth Floor,
  # Boston, MA 02110-1301 USA
  #
- # END_COMMON_COPYRIGHT_HEADER 
- 
+ # END_COMMON_COPYRIGHT_HEADER
+
 
 function(CREATE_DESKTOP_FILE _IN_FILE _OUT_FILE _TRANSLATIONS_PATTERN)
     file(GLOB ts_files ${_TRANSLATIONS_PATTERN})

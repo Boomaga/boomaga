@@ -25,7 +25,7 @@
 
 
 #include "subbookletview.h"
-#include "../kernel/project.h"
+#include "kernel/project.h"
 
 /************************************************
  *
