@@ -49,9 +49,6 @@
         </size>
        </property>
        <layout class="QVBoxLayout" name="verticalLayout_3">
-        <property name="bottomMargin">
-         <number>0</number>
-        </property>
         <item>
          <widget class="QGroupBox" name="layoutBox">
           <property name="title">
@@ -161,7 +158,16 @@
             <property name="spacing">
              <number>0</number>
             </property>
-            <property name="margin">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
              <number>0</number>
             </property>
             <item>
@@ -202,7 +208,16 @@
             <property name="spacing">
              <number>0</number>
             </property>
-            <property name="margin">
+            <property name="leftMargin">
+             <number>0</number>
+            </property>
+            <property name="topMargin">
+             <number>0</number>
+            </property>
+            <property name="rightMargin">
+             <number>0</number>
+            </property>
+            <property name="bottomMargin">
              <number>0</number>
             </property>
             <item>
@@ -263,7 +278,7 @@
      <x>0</x>
      <y>0</y>
      <width>1188</width>
-     <height>27</height>
+     <height>23</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -304,11 +319,13 @@
     <property name="title">
      <string>&amp;Edit page</string>
     </property>
+    <addaction name="actionfake"/>
    </widget>
    <widget class="QMenu" name="menuEditJob">
     <property name="title">
      <string>Edit &amp;job</string>
     </property>
+    <addaction name="actionfake"/>
    </widget>
    <addaction name="menuFile"/>
    <addaction name="menuEditPage"/>
@@ -320,6 +337,9 @@
   <widget class="QToolBar" name="toolBar">
    <property name="windowTitle">
     <string>Toolbar</string>
+   </property>
+   <property name="movable">
+    <bool>false</bool>
    </property>
    <property name="toolButtonStyle">
     <enum>Qt::ToolButtonTextUnderIcon</enum>
@@ -406,6 +426,9 @@
    <property name="text">
     <string>&amp;Preferences</string>
    </property>
+   <property name="menuRole">
+    <enum>QAction::PreferencesRole</enum>
+   </property>
   </action>
   <action name="actionExport">
    <property name="text">
@@ -427,6 +450,11 @@
    </property>
    <property name="shortcut">
     <string>Ctrl+Shift+P</string>
+   </property>
+  </action>
+  <action name="actionfake">
+   <property name="text">
+    <string>fake</string>
    </property>
   </action>
  </widget>

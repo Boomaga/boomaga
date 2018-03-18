@@ -36,7 +36,7 @@
 QIcon loadIcon(const QString &iconName, bool loadDisable)
 {
     QVector<int> sizes;
-    sizes << 16 << 22 << 32 << 48 << 64 << 128 << 256 << 512;
+    sizes << 16 << 22 << 24 << 32 << 48 << 64 << 128 << 256 << 512;
 
     QIcon res;
     foreach (int size, sizes)

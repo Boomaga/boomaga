@@ -24,9 +24,9 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 #include "render.h"
-#include <poppler/cpp/poppler-document.h>
-#include <poppler/cpp/poppler-page-renderer.h>
-#include <poppler/cpp/poppler-page.h>
+#include <poppler-document.h>
+#include <poppler-page-renderer.h>
+#include <poppler-page.h>
 #include <QDebug>
 #include <QFile>
 #include <QFileInfo>

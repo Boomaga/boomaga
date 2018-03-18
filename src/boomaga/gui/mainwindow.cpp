@@ -73,11 +73,12 @@ MainWindow::MainWindow(QWidget *parent):
     setWindowTitle(tr("Boomaga"));
 
     setStyleSheet("QListView::item { padding: 2px;}");
+    ui->toolBar->setIconSize(QSize(24, 24));
 
 #ifdef Q_OS_MAC
     this->setUnifiedTitleAndToolBarOnMac(true);
     setWindowIcon(QIcon());
-
+    ui->pagesViewTab->setTabPosition(QTabWidget::North);
     ui->splitter->setStyleSheet("::handle{ border-right: 1px solid #b6b6b6;}");
 #endif
 

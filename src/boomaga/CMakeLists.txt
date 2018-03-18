@@ -147,6 +147,8 @@ add_definitions(-DTRANSLATIONS_DIR=\"${TRANSLATIONS_DIR}\")
 
 
 #*******************************************
+include("${CMAKE_SOURCE_DIR}/cmake/macos.cmake")
+add_homebrew_qt_prefix_path()
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)

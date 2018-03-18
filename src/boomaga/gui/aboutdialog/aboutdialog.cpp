@@ -133,6 +133,9 @@ QString AboutDialog::thanksText() const
                 "%1"
                 "<ul>"
                 "<li>CUPS project (http://www.cups.org)</li>"
+                "<li>FlatIcon (https://www.flaticon.com) - main icon for application</li>"
+                "<li>Icons8 (https://icons8.com/) - icons for application</li>"
+                "</ul>"
                 ).arg(tr("Special thanks to:"));
 }
 

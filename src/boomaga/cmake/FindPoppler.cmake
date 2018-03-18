@@ -2,7 +2,7 @@
  # (c)LGPL2+
  #
  #
- # Copyright: 2012-2013 Boomaga team https://github.com/Boomaga
+ # Copyright: 2012-2018 Boomaga team https://github.com/Boomaga
  # Authors:
  #   Alexander Sokoloff <sokoloff.a@gmail.com>
  #
@@ -24,13 +24,13 @@
  # END_COMMON_COPYRIGHT_HEADER
 
 #
-# Find snappy compression library and includes. This module defines:
-#   POPPLER_INCLUDE_DIR - The directories containing snappy's headers.
-#   POPPLER_LIBRARY    - A list of snappy's libraries.
-#   POPPLER_FOUND        - Whether snappy was found.
+# Find poppler-cpp  library and includes. This module defines:
+#   POPPLERCPP_INCLUDE_DIRS - The directories containing library headers.
+#   POPPLERCPP_LIBRARY      - A list of libraries.
+#   POPPLERCPP_FOUND        - Whether library was found.
 
 include(FindPkgConfig)
 
 pkg_search_module(POPPLERCPP REQUIRED QUIET poppler-cpp)
 link_directories(${POPPLERCPP_LIBRARY_DIRS})
-
+include_directories(${POPPLERCPP_INCLUDE_DIRS})

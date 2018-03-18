@@ -59,6 +59,10 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
+
+include("${CMAKE_SOURCE_DIR}/cmake/macos.cmake")
+add_homebrew_qt_prefix_path()
+
 find_package(Qt5 REQUIRED
     Core
     DBus

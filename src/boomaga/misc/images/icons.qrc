@@ -22,6 +22,17 @@
 
     </qresource>
 
+    <qresource prefix="24">
+        <file alias="print">icons/24/print.png</file>
+        <file alias="arrow-left">icons/24/arrow-left.png</file>
+        <file alias="arrow-right">icons/24/arrow-right.png</file>
+
+        <file alias="print_disable">icons/24/print_disable.png</file>
+        <file alias="arrow-left_disable">icons/24/arrow-left_disable.png</file>
+        <file alias="arrow-right_disable">icons/24/arrow-right_disable.png</file>
+
+    </qresource>
+
     <qresource prefix="32">
         <file alias="print">icons/32/print.png</file>
         <file alias="arrow-left">icons/32/arrow-left.png</file>
