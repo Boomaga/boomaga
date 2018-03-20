@@ -54,7 +54,7 @@ public:
     virtual int calcSheetCount() const = 0;
 
     virtual void fillSheets(QList<Sheet*> *sheets) const = 0;
-    virtual void fillPreviewSheets(QList<Sheet*> *sheets) const;
+    virtual void fillPreviewSheets(QList<Sheet*> *sheets, Direction direction) const;
 
     virtual Rotation calcPageRotation(const ProjectPage *page, Rotation sheetRotation) const = 0;
     virtual TransformSpec transformSpec(const Sheet *sheet, int pageNumOnSheet, Rotation sheetRotation) const = 0;
@@ -74,7 +74,7 @@ protected:
         uint row;
     };
 
-    virtual PagePosition calcPagePosition(int pageNumOnSheet, Rotation sheetRotation) const = 0;
+    virtual PagePosition calcPagePosition(int pageNumOnSheet, Rotation sheetRotation, Direction direction) const = 0;
 };
 
 
@@ -87,7 +87,7 @@ public:
 
     virtual int calcSheetCount() const override;
     void fillSheets(QList<Sheet*> *sheets) const override;
-    void fillPreviewSheets(QList<Sheet*> *sheets) const override;
+    void fillPreviewSheets(QList<Sheet*> *sheets, Direction direction) const override;
     TransformSpec transformSpec(const Sheet *sheet, int pageNumOnSheet, Rotation sheetRotation) const override;
     virtual Rotation rotation() const override;
     virtual FlipType flipType(FlipType printerFlipType) const override;
@@ -99,7 +99,7 @@ public:
 protected:
     void doFillSheets(QList<Sheet*> *sheets, bool forPreview) const;
     virtual Rotation calcPageRotation(const ProjectPage *page, Rotation sheetRotation) const override;
-    virtual PagePosition calcPagePosition(int pageNumOnSheet, Rotation sheetRotation) const override;
+    virtual PagePosition calcPagePosition(int pageNumOnSheet, Rotation sheetRotation, Direction direction) const override;
 
     int mPageCountVert;
     int mPageCountHoriz;
@@ -116,7 +116,7 @@ public:
 
     virtual int calcSheetCount() const override;
     void fillSheets(QList<Sheet*> *sheets) const override;
-    void fillPreviewSheets(QList<Sheet*> *sheets) const override;
+    void fillPreviewSheets(QList<Sheet*> *sheets, Direction direction) const override;
 
     virtual void updatePages(QList<ProjectPage*> pages) const override;
     virtual FlipType flipType(FlipType printerFlipType) const override;

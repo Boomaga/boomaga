@@ -76,6 +76,11 @@ enum Rotation
     Rotate270 = 270
 };
 
+enum Direction
+{
+    LeftToRight = 0,
+    RightToLeft = 1
+};
 
 inline bool isLandscape(Rotation rotation)  { return (int)rotation % 180; }
 inline bool isLandscape(const QSizeF &size) { return size.width() > size.height(); }

@@ -113,6 +113,7 @@ QString Settings::keyToString(Settings::Key key) const
     case AutoSave:                      return "Project/AutoSave";
     case AutoSaveDir:                   return "Project/AutoSaveDir";
     case RecentFiles:                   return "Project/RecentFiles";
+    case RightToLeft:                   return "Project/RightToLeft";
 
     // Preferences **************************
     case Preferences_Geometry:          return "Preferences/Geometry";
@@ -175,6 +176,7 @@ void Settings::init()
 
     setDefaultValue(AllowNegativeMargins, false);
     setDefaultValue(AutoSave, false);
+    setDefaultValue(RightToLeft, qApp->layoutDirection() == Qt::RightToLeft);
 
     QString dir = QStandardPaths::writableLocation(QStandardPaths::DocumentsLocation);
     dir = shrinkHomeDir(dir);

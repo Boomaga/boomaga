@@ -54,8 +54,9 @@ Layout::~Layout()
 /************************************************
 
  ************************************************/
-void Layout::fillPreviewSheets(QList<Sheet *> *sheets) const
+void Layout::fillPreviewSheets(QList<Sheet *> *sheets, Direction direction) const
 {
+    Q_UNUSED(direction);
     fillSheets(sheets);
 }
 
@@ -107,8 +108,9 @@ void LayoutNUp::fillSheets(QList<Sheet *> *sheets) const
 /************************************************
  *
  * ***********************************************/
-void LayoutNUp::fillPreviewSheets(QList<Sheet *> *sheets) const
+void LayoutNUp::fillPreviewSheets(QList<Sheet *> *sheets, Direction direction) const
 {
+    Q_UNUSED(direction);
     doFillSheets(sheets, true);
 }
 
@@ -156,7 +158,8 @@ TransformSpec LayoutNUp::transformSpec(const Sheet *sheet, int pageNumOnSheet, R
 
     uint col, row;
     {
-        PagePosition colRow = calcPagePosition(pageNumOnSheet, sheetRotation);
+        Direction direction = settings->value(Settings::RightToLeft).toBool() ? RightToLeft : LeftToRight;
+        PagePosition colRow = calcPagePosition(pageNumOnSheet, sheetRotation, direction);
         col = colRow.col;
         row = colRow.row;
     }
@@ -268,9 +271,11 @@ Rotation LayoutNUp::calcPageRotation(const ProjectPage *page, Rotation sheetRota
  * In this place sheet is always has portrait orientation.
  * It will be rotated later based on sheet.rotation() value
  *
+ *
  *  h - mPageCountHoriz
  *  v - mPageCountVert
  *
+ *  Left-To-Right direction _________________________
  *  +------+ Rotate: 0           +------+ Rotate: 0
  *  | 0  1 | Horiz               | 0  4 | Vert
  *  | 2  3 |                     | 1  5 |
@@ -281,63 +286,133 @@ Rotation LayoutNUp::calcPageRotation(const ProjectPage *page, Rotation sheetRota
  *  +------+ Rotate: 90          +------+ Rotate: 90
  *  | 3  7 | Horiz               | 6  7 | Vert
  *  | 2  6 |                     | 4  5 |
- *  | 1  5 | r = (v-1) - i % v   | 2  3 | r = (v-1) - i / h
+ *  | 1  5 | r = (v-1)-(i%v)     | 2  3 | r = (v-1)-(i/h)
  *  | 0  4 | c = i / v           | 0  1 | c = i % h
  *  +------+                     +------+
  *
  *  +------+ Rotate: 180         +------+ Rotate: 180
  *  | 7  6 | Horiz               | 7  3 | Vert
  *  | 5  4 |                     | 6  2 |
- *  | 3  2 | r = (v-1) - R0H.r   | 5  1 | r = (v-1) - R0V.r
- *  | 1  0 | c = (h-1) - R0H.c   | 4  0 | c = (h-1) - R0V.c
+ *  | 3  2 | r = (v-1)-(i/h)     | 5  1 | r = (v-1)-(i%v)
+ *  | 1  0 | c = (h-1)-(i%h)     | 4  0 | c = (h-1)-(i/v)
  *  +------+                     +------+
  *
  *  +------+ Rotate: 270         +------+ Rotate: 270
  *  | 4  0 | Horiz               | 1  0 | Vert
  *  | 5  1 |                     | 3  2 |
- *  | 6  2 | r = (v-1) - R90H.r  | 5  4 | r = (v-1) - R90V.r
- *  | 7  3 | c = (h-1) - R90H.c  | 7  6 | c = (h-1) - R90V.c
+ *  | 6  2 | r = i % v           | 5  4 | r = i / h
+ *  | 7  3 | c = (h-1)-(i/v)     | 7  6 | c = (h-1)-(i%v)
+ *  +------+                     +------+
+ *
+ *
+ *  Right-To-Right direction _________________________
+ *  +------+ Rotate: 0           +------+ Rotate: 0
+ *  | 1  0 | Horiz               | 4  0 | Vert
+ *  | 3  2 |                     | 5  1 |
+ *  | 5  4 | r = i / h           | 6  2 | r = i % v
+ *  | 7  6 | c = (h-1)-(i%v)     | 7  3 | c = (h-1)-(i/v)
+ *  +------+                     +------+
+ *
+ *  +------+ Rotate: 90          +------+ Rotate: 90
+ *  | 0  4 | Horiz               | 0  1 | Vert
+ *  | 1  5 |                     | 2  3 |
+ *  | 2  6 | r = i % v           | 4  5 | r = i / h
+ *  | 3  7 | c = i / v           | 6  7 | c = i % h
+ *  +------+                     +------+
+ *
+ *  +------+ Rotate: 180         +------+ Rotate: 180
+ *  | 6  7 | Horiz               | 3  7 | Vert
+ *  | 4  5 |                     | 2  6 |
+ *  | 2  3 | r = (v-1)-(i/h)     | 1  5 | r = (v-1)-(i%v)
+ *  | 0  1 | c = i % h           | 0  4 | c = i / v
+ *  +------+                     +------+
+ *
+ *  +------+ Rotate: 270         +------+ Rotate: 270
+ *  | 7  3 | Horiz               | 7  6 | Vert
+ *  | 6  2 |                     | 5  4 |
+ *  | 5  1 | r = (v-1)-(i%v)     | 3  2 | r = (v-1)-(i/h)
+ *  | 4  0 | c = (h-1)-(i/v)     | 1  0 | c = (h-1)-(i%v)
  *  +------+                     +------+
  *
  ************************************************/
-Layout::PagePosition LayoutNUp::calcPagePosition(int pageNumOnSheet, Rotation sheetRotation) const
+Layout::PagePosition LayoutNUp::calcPagePosition(int pageNumOnSheet, Rotation sheetRotation, Direction direction) const
 {
-    PagePosition res;
-
-    if (isLandscape(sheetRotation))
+    if (direction == LeftToRight)
     {
-        switch (mOrientation)
-        {
-        case Qt::Horizontal:
-            res.row = (mPageCountVert - 1) - pageNumOnSheet % mPageCountVert;
-            res.col = pageNumOnSheet / mPageCountVert;
-            break;
+        // Left-To-Right direction ..................................
+        PagePosition res;
 
-        case Qt::Vertical:
-            res.row = (mPageCountVert - 1) - pageNumOnSheet / mPageCountHoriz;
-            res.col = pageNumOnSheet % mPageCountHoriz;
-            break;
+        if (isLandscape(sheetRotation))
+        {
+            switch (mOrientation)
+            {
+            case Qt::Horizontal:
+                res.row = (mPageCountVert - 1) - pageNumOnSheet % mPageCountVert;
+                res.col = pageNumOnSheet / mPageCountVert;
+                break;
+
+            case Qt::Vertical:
+                res.row = (mPageCountVert - 1) - pageNumOnSheet / mPageCountHoriz;
+                res.col = pageNumOnSheet % mPageCountHoriz;
+                break;
+            }
         }
+        else
+        {
+            switch (mOrientation)
+            {
+            case Qt::Horizontal:
+                res.row = pageNumOnSheet / mPageCountHoriz;
+                res.col = pageNumOnSheet % mPageCountHoriz;
+                break;
+
+            case Qt::Vertical:
+                res.row = pageNumOnSheet % mPageCountVert;
+                res.col = pageNumOnSheet / mPageCountVert;
+                break;
+            }
+        }
+
+        return res;
     }
     else
     {
-        switch (mOrientation)
+        // Right-To-Left direction ..................................
+        PagePosition res;
+
+        if (isLandscape(sheetRotation))
         {
-        case Qt::Horizontal:
-            res.row = pageNumOnSheet / mPageCountHoriz;
-            res.col = pageNumOnSheet % mPageCountHoriz;
-            break;
+            switch (mOrientation)
+            {
+            case Qt::Horizontal:
+                res.row = pageNumOnSheet % mPageCountVert;
+                res.col = pageNumOnSheet / mPageCountVert;
+                break;
 
-        case Qt::Vertical:
-            res.row = pageNumOnSheet % mPageCountVert;
-            res.col = pageNumOnSheet / mPageCountVert;
-            break;
+            case Qt::Vertical:
+                res.row = pageNumOnSheet / mPageCountHoriz;
+                res.col = pageNumOnSheet % mPageCountHoriz;
+                break;
+            }
+        }
+        else
+        {
+            switch (mOrientation)
+            {
+            case Qt::Horizontal:
+                res.row = pageNumOnSheet / mPageCountHoriz;
+                res.col = (mPageCountHoriz - 1) - pageNumOnSheet % mPageCountHoriz;
+                break;
 
+            case Qt::Vertical:
+                res.row = pageNumOnSheet % mPageCountVert;
+                res.col = (mPageCountHoriz - 1) - pageNumOnSheet / mPageCountVert;
+                break;
+            }
         }
 
+        return res;
     }
-
-    return res;
 }
 
 
@@ -383,20 +458,21 @@ void LayoutBooklet::fillSheets(QList<Sheet *> *sheets) const
 
 /************************************************
 
-  +-----------+  +-----------+
-  |     :     |  |     :     |
-  |  N  :  0  |  |  1  : N-1 |
-  |     :     |  |     :     |
-  +-----------+  +-----------+
-     sheet 0        sheet 1
+  Left-To-Right                 Rigth-To-Left
+  +-----------+  +-----------+  +-----------+  +-----------+
+  |     :     |  |     :     |  |     :     |  |     :     |
+  |  N  :  0  |  |  1  : N-1 |  |  0  :  N  |  | N-1 :  1  |
+  |     :     |  |     :     |  |     :     |  |     :     |
+  +-----------+  +-----------+  +-----------+  +-----------+
+     sheet 0        sheet 1        sheet 0        sheet 1
 
-  +-----------+  +-----------+
-  |     :     |  |     :     |
-  | N-3 :  3  |  |  4  : N-4 |
-  |     :     |  |     :     |
-  +-----------+  +-----------+
-     sheet 2        sheet 3
-               ...
+  +-----------+  +-----------+  +-----------+  +-----------+
+  |     :     |  |     :     |  |     :     |  |     :     |
+  | N-2 :  2  |  |  3  : N-3 |  |  2  : N-2 |  | N-3 :  3  |
+  |     :     |  |     :     |  |     :     |  |     :     |
+  +-----------+  +-----------+  +-----------+  +-----------+
+     sheet 2        sheet 3        sheet 2        sheet 3
+
  ************************************************/
 void LayoutBooklet::fillSheetsForBook(int bookStart, int bookLength, QList<Sheet *> *sheets) const
 {
@@ -451,7 +527,7 @@ void LayoutBooklet::fillSheetsForBook(int bookStart, int bookLength, QList<Sheet
 /************************************************
 
  ************************************************/
-void LayoutBooklet::fillPreviewSheets(QList<Sheet *> *sheets) const
+void LayoutBooklet::fillPreviewSheets(QList<Sheet *> *sheets, Direction direction) const
 {
     QList<BookletInfo> booklets = split(project->pages());
     foreach (BookletInfo booklet, booklets)
@@ -463,10 +539,20 @@ void LayoutBooklet::fillPreviewSheets(QList<Sheet *> *sheets) const
 
     if (sheets->count() > 1)
     {
-        sheets->first()->setHint(Sheet::HintOnlyRight, true);
-        sheets->first()->setHint(Sheet::HintDrawFold, false);
-        sheets->last()->setHint(Sheet::HintOnlyLeft, true);
-        sheets->last()->setHint(Sheet::HintDrawFold, false);
+        if (direction == LeftToRight)
+        {
+            sheets->first()->setHint(Sheet::HintOnlyRight, true);
+            sheets->first()->setHint(Sheet::HintDrawFold,  false);
+            sheets->last()->setHint(Sheet::HintOnlyLeft,   true);
+            sheets->last()->setHint(Sheet::HintDrawFold,   false);
+        }
+        else
+        {
+            sheets->first()->setHint(Sheet::HintOnlyLeft, true);
+            sheets->first()->setHint(Sheet::HintDrawFold, false);
+            sheets->last()->setHint(Sheet::HintOnlyRight, true);
+            sheets->last()->setHint(Sheet::HintDrawFold,  false);
+        }
     }
 }
 
