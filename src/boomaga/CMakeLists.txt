@@ -133,6 +133,7 @@ set(UI_FILES
 # QRC files .................
 set(RESOURCES
     misc/images/icons.qrc
+    misc/images/mainicon.qrc
 )
 
 # add translations ...
@@ -149,6 +150,8 @@ add_definitions(-DTRANSLATIONS_DIR=\"${TRANSLATIONS_DIR}\")
 #*******************************************
 include("${CMAKE_SOURCE_DIR}/cmake/macos.cmake")
 add_homebrew_qt_prefix_path()
+
+include("${CMAKE_SOURCE_DIR}/cmake/git_version.cmake")
 
 set(CMAKE_INCLUDE_CURRENT_DIR ON)
 set(CMAKE_AUTOMOC ON)

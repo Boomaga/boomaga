@@ -39,9 +39,6 @@
        <property name="text">
         <string notr="true"/>
        </property>
-       <property name="pixmap">
-        <pixmap resource="../resource.qrc">:/images/icon-64x64</pixmap>
-       </property>
       </widget>
      </item>
      <item>

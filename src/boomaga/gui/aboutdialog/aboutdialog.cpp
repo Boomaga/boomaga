@@ -24,22 +24,22 @@
 
 #include "aboutdialog.h"
 #include "ui_aboutdialog.h"
-//#include "aboutdialog_p.h"
 #include "translations/translatorsinfo/translatorsinfo.h"
 #include <QDebug>
 #include <QtCore/QDate>
+#include <QPainter>
 
-//AboutDialogPrivate::AboutDialogPrivate()
+
 AboutDialog::AboutDialog(QWidget *parent) :
     QDialog(parent),
     ui(new Ui::AboutDialog)
 {
-//    this->setAttribute(Qt::WA_DeleteOnClose);
     ui->setupUi(this);
 
     QString css="<style TYPE='text/css'> "
                     "body { font-family: sans-serif;} "
-                    ".name { font-size: 16pt; } "
+                    ".name { font-size: 16pt; color: #DE7907; font-weight: bold;} "
+                    ".ver { color: #D3D3D3; } "
                     "a { white-space: nowrap ;} "
                     "h2 { font-size: 10pt;} "
                     "li { line-height: 120%;} "
@@ -49,7 +49,7 @@ AboutDialog::AboutDialog(QWidget *parent) :
 
     ui->iconLabel->setFixedSize(48, 48);
     ui->iconLabel->setScaledContents(true);
-    //iconLabel->setPixmap(QPixmap(QString(SHARE_DIR) + "/graphics/razor_logo.png"));
+    ui->iconLabel->setPixmap(QPixmap(":/48/mainicon"));
 
     ui->nameLabel->setText(css + titleText());
 
@@ -66,8 +66,6 @@ AboutDialog::AboutDialog(QWidget *parent) :
     ui->translationsBrowser->setHtml(css + translationsText());
     ui->translationsBrowser->viewport()->setAutoFillBackground(false);
 
-
-    //    show();
 }
 
 
@@ -81,14 +79,30 @@ AboutDialog::~AboutDialog()
 
 
 /************************************************
+ *
+ ************************************************/
+void AboutDialog::paintEvent(QPaintEvent *)
+{
+    QRect rect(0, 0, this->width(), ui->nameLabel->pos().y() + ui->nameLabel->height() + ui->nameLabel->pos().y());
+    QPainter painter(this);
+    painter.fillRect(rect, QColor::fromRgb(0x404040));
+}
+
+
+/************************************************
 
  ************************************************/
 QString AboutDialog::titleText() const
 {
-    return QString("<div class=name>%1</div><div class=ver>%2</div>").arg(
-                "Boomaga",
-                tr("Version: %1").arg(FULL_VERSION));
-
+#ifdef GIT_BRANCH
+    QString ver = QString("%1 %2 <a href='https://github.com/Boomaga/boomaga/commit/%3'>%3</a>")
+            .arg(FULL_VERSION, GIT_BRANCH, GIT_COMMIT_HASH);
+#else
+    QString ver = QString("%1").arg(FULL_VERSION);
+#endif
+    return QString("<div class=name>%1</div><div class=ver>%2</div>")
+                .arg("Boomaga")
+                .arg(tr("Version: %1").arg(ver));
 }
 
 

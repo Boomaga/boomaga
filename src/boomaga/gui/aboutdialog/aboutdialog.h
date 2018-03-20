@@ -44,6 +44,9 @@ public:
     explicit AboutDialog(QWidget *parent = 0);
     ~AboutDialog();
 
+protected:
+    void paintEvent(QPaintEvent *event) override;
+
 private:
     Ui::AboutDialog *ui;
     static AboutDialog *mInstance;
