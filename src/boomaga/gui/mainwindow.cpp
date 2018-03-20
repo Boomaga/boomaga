@@ -354,12 +354,18 @@ void MainWindow::initActions()
             this, SLOT(close()));
 
     act = ui->actionPreviousSheet;
-    act->setIcon(loadIcon("arrow-left"));
+    if (qApp->layoutDirection() == Qt::LeftToRight)
+        act->setIcon(loadIcon("arrow-left"));
+    else
+        act->setIcon(loadIcon("arrow-right"));
     connect(act, SIGNAL(triggered()),
             project, SLOT(prevSheet()));
 
     act = ui->actionNextSheet;
-    act->setIcon(loadIcon("arrow-right"));
+    if (qApp->layoutDirection() == Qt::LeftToRight)
+        act->setIcon(loadIcon("arrow-right"));
+    else
+        act->setIcon(loadIcon("arrow-left"));
     connect(act, SIGNAL(triggered()),
             project, SLOT(nextSheet()));
 
