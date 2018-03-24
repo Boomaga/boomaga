@@ -100,6 +100,10 @@
         <source>Directory for saved sessions:</source>
         <translation>Katalogas, skirtas įrašytiems seansams:</translation>
     </message>
+    <message>
+        <source>Right-to-left direction</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>ExportToPdf</name>

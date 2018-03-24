@@ -454,7 +454,7 @@
   </action>
   <action name="actionfake">
    <property name="text">
-    <string>fake</string>
+    <string notr="true">fake</string>
    </property>
   </action>
  </widget>

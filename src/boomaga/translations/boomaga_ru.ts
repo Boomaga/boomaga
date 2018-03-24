@@ -100,6 +100,10 @@
         <source>Directory for saved sessions:</source>
         <translation>Директория для сохраненных сессий:</translation>
     </message>
+    <message>
+        <source>Right-to-left direction</source>
+        <translation>Располагать справа налево </translation>
+    </message>
 </context>
 <context>
     <name>ExportToPdf</name>

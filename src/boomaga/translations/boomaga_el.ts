@@ -100,6 +100,10 @@
         <source>Directory for saved sessions:</source>
         <translation>Κατάλογος των αποθηκευμένων συνεδριών:</translation>
     </message>
+    <message>
+        <source>Right-to-left direction</source>
+        <translation type="unfinished"/>
+    </message>
 </context>
 <context>
     <name>ExportToPdf</name>

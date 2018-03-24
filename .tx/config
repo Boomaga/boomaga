@@ -5,18 +5,18 @@ type = QT
 
 [boomaga.gui]
 type = QT
-file_filter = gui/translations/boomaga_<lang>.ts
-source_file = gui/translations/src.boomaga.ts
+source_file = src/boomaga/translations/src.boomaga.ts
 source_lang = en
+file_filter = src/boomaga/translations/boomaga_<lang>.ts
 
 [boomaga.translators]
-source_file = gui/translations/translatorsinfo/translators.info.src
+source_file = src/boomaga/translations/translatorsinfo/translators.info.src
 source_lang = en
-file_filter = gui/translations/translatorsinfo/translators_<lang>.info
+file_filter = src/boomaga/translations/translatorsinfo/translators_<lang>.info
 type = MOZILLAPROPERTIES
 
 [boomaga.boomaga_desktop]
-source_file = gui/misc/boomaga.desktop.in
+source_file = src/boomaga/misc/boomaga.desktop.in
 source_lang = en
-file_filter = gui/translations/boomaga_<lang>.desktop
+file_filter = src/boomaga/translations/boomaga_<lang>.desktop
 type = DESKTOP

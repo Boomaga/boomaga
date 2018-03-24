@@ -102,6 +102,10 @@
         <source>Directory for saved sessions:</source>
         <translation type="unfinished"></translation>
     </message>
+    <message>
+        <source>Right-to-left direction</source>
+        <translation type="unfinished"></translation>
+    </message>
 </context>
 <context>
     <name>ExportToPdf</name>
