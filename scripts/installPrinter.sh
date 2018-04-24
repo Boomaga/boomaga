@@ -25,10 +25,18 @@
 #
 # END_COMMON_COPYRIGHT_HEADER
 
+if ! [ $(id -u) = 0 ]; then
+   echo "The script need to be run as root." >&2
+   exit 1
+fi
+
+
+
 SCHEME="boomaga"
 URI="${SCHEME}:/"
 NAME="Boomaga"
 PPD="lsb/usr/boomaga/${SCHEME}.ppd"
+
 
 while [ $# -gt 0 ]; do
   case $1 in
