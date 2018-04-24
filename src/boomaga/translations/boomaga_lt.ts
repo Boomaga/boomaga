@@ -102,7 +102,7 @@
     </message>
     <message>
         <source>Right-to-left direction</source>
-        <translation type="unfinished"/>
+        <translation>Kryptis iš dešinės į kairę</translation>
     </message>
 </context>
 <context>

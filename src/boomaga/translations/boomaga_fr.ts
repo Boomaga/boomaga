@@ -102,7 +102,7 @@
     </message>
     <message>
         <source>Right-to-left direction</source>
-        <translation type="unfinished"/>
+        <translation>De droite à gauche</translation>
     </message>
 </context>
 <context>
