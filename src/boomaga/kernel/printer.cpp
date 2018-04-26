@@ -548,19 +548,16 @@ bool Printer::print(const QList<Sheet *> &sheets, const QString &jobName, bool d
     args << "-r";                                 // The print files should be deleted after printing them
 
     // Duplex options ...........................
-    if (duplexType() == DuplexAuto)
+    if (duplexType() == DuplexAuto && duplex)
     {
-        if (duplex)
-        {
-            if (project->layout()->flipType(flipType()) == FlipType::LongEdge)
-                args << "-o sides=two-sided-long-edge";
-            else
-                args << "-o sides=two-sided-short-edge";
-        }
+        if (project->layout()->flipType(flipType()) == FlipType::LongEdge)
+            args << "-o sides=two-sided-long-edge";
         else
-        {
-            args << "-o sides=one-sided";               // Turn off duplex printing
-        }
+            args << "-o sides=two-sided-short-edge";
+    }
+    else
+    {
+        args << "-o sides=one-sided";               // Turn off duplex printing
     }
     // Duplex options ...........................
 
