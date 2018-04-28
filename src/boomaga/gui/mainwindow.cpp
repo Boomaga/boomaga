@@ -593,7 +593,6 @@ bool MainWindow::print(uint count, bool collate)
     saveAuto();
 
     bool res = true;
-    bool showDialog = project->printer()->isShowProgressDialog();
     QMessageBox *infoDialog = 0;
 
     bool split = project->doubleSided() &&
@@ -673,7 +672,7 @@ bool MainWindow::print(uint count, bool collate)
              }
 
 
-             if (showDialog && !keeper.sheets_2.count())
+             if (!keeper.sheets_2.count())
              {
                  infoDialog = showPrintDialog(tr("Print the all pages on %1.").arg(project->printer()->name()));
              }
@@ -725,8 +724,7 @@ bool MainWindow::print(uint count, bool collate)
                      keeper.sheets_2.append(new Sheet(1, 0));
              }
 
-             if (showDialog)
-                infoDialog = showPrintDialog(tr("Print the even pages on %1.").arg(project->printer()->name()));
+             infoDialog = showPrintDialog(tr("Print the even pages on %1.").arg(project->printer()->name()));
 
              res = project->printer()->print(keeper.sheets_2, "", project->doubleSided(), count, collate);
              if (!res)
@@ -739,8 +737,7 @@ bool MainWindow::print(uint count, bool collate)
     }
     else //if (split) no
     {
-        if (showDialog)
-            infoDialog = showPrintDialog(tr("Print the all pages on %1.").arg(project->printer()->name()));
+        infoDialog = showPrintDialog(tr("Print the all pages on %1.").arg(project->printer()->name()));
 
         Project::PagesOrder order;
         if (project->printer()->reverseOrder())

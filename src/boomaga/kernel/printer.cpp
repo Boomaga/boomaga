@@ -336,7 +336,6 @@ void PrinterProfile::saveSettings() const
  ************************************************/
 Printer::Printer(const QString &printerName):
     mCanChangeDuplexType(true),
-    mShowProgressDialog(true),
     mPrinterName(printerName),
     mCurrentProfileIndex(-1),
     mCurrentProfile(0)
