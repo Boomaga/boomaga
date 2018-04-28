@@ -725,21 +725,15 @@ QList<Sheet*> Project::selectSheets(Project::PagesType pages, Project::PagesOrde
     mLayout->fillSheets(&sheets);
     QList<Sheet *> res;
 
-    if (order == Project::ForwardOrder)
+    for (int i=start; i < end; i += inc)
     {
-        for (int i=start; i < end; i += inc)
-        {
-            res.append(sheets.at(i));
-            sheets[i] = 0;
-        }
-    }
-    else
-    {
-        for (int i=start; i < end; i += inc)
-        {
-            res.insert(0, sheets.at(i));
-            sheets[i] = 0;
-        }
+        Sheet *sheet = sheets.at(i);
+        sheets[i] = 0;
+
+        if (order == Project::ForwardOrder)
+            res.append(sheet);
+        else
+            res.insert(0, sheet);
     }
 
     qDeleteAll(sheets);

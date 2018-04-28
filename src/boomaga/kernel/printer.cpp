@@ -532,7 +532,7 @@ bool Printer::isSupportColor() const
 /************************************************
 
  ************************************************/
-bool Printer::print(const QList<Sheet *> &sheets, const QString &jobName, bool duplex, int numCopies, bool collate) const
+bool Printer::print(const QList<Sheet *> &sheets, const QString &jobName, bool doubleSided, int numCopies, bool collate) const
 {
 
     QString file = QString("%1/.cache/boomaga_tmp_%2-print.pdf")
@@ -548,7 +548,7 @@ bool Printer::print(const QList<Sheet *> &sheets, const QString &jobName, bool d
     args << "-r";                                 // The print files should be deleted after printing them
 
     // Duplex options ...........................
-    if (duplexType() == DuplexAuto && duplex)
+    if (duplexType() == DuplexAuto && doubleSided)
     {
         if (project->layout()->flipType(flipType()) == FlipType::LongEdge)
             args << "-o sides=two-sided-long-edge";
