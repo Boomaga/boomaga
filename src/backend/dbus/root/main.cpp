@@ -70,7 +70,7 @@ int main(int argc, char *argv[])
         return CUPS_BACKEND_FAILED;
     }
 
-    cerr << "DEBUG: [Boomaga root] run boomagabackend as UID:" << pwd->pw_uid << " GID: " << pwd->pw_gid << endl;
+    cerr << "DEBUG: [Boomaga root] run " NONGUI_DIR"/boomagabackend as UID:" << pwd->pw_uid << " GID: " << pwd->pw_gid << endl;
 
     setenv("HOME", pwd->pw_dir, 1);
 
@@ -82,6 +82,19 @@ int main(int argc, char *argv[])
     }
 
 
+    if (argc > 6)
+    {
+        // Read PDF from file
+        stdin = freopen(argv[6], "r", stdin);
+        if (stdin == nullptr)
+        {
+            cerr << "ERROR: [Boomaga root] Can't open input file " << argv[6] << ": ";
+            perror("");
+            return CUPS_BACKEND_FAILED;
+        }
+    }
+
+
     if (setuid(pwd->pw_uid) != 0)
     {
         cerr << "ERROR: [Boomaga root] Can't change UID to " << pwd->pw_uid << ": ";
@@ -89,12 +102,6 @@ int main(int argc, char *argv[])
         return CUPS_BACKEND_FAILED;
     }
 
-
-    if (argc > 6)
-    {
-        // Read PDF from file
-        stdin = freopen(argv[6], "r", stdin);
-    }
 
     execl(NONGUI_DIR "/boomagabackend", NONGUI_DIR "/boomagabackend", jobID, title, count, options, NULL);
     perror("ERROR: [Boomaga root] run boomagabackend error");
