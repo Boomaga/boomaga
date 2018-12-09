@@ -3,11 +3,7 @@ Boomaga files format specification
 
 Overview
 --------
-This is the specification for a boomaga file format.
-
-File Extensions
----------------
-A BOOMAGA file is a PJL file with extension ".boo" containing an additional PJL commands that provides information for the boomaga program.
+This is the specification for a boomaga file format. A Boomaga file is a PJL file with extension ".boo" containing an additional PJL commands that provides information for the boomaga program.
 
 
 Boomaga file structure
