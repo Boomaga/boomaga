@@ -46,6 +46,8 @@ status_message("boomaga ver. ${FULL_VERSION}")
 status_message(" ")
 
 
+set(CMAKE_MODULE_PATH "${CMAKE_SOURCE_DIR}/cmake")
+
 find_program(CUPS_CONFIG_EXECUTABLE NAMES cups-config)
 if(CUPS_CONFIG_EXECUTABLE)
     exec_program(${CUPS_CONFIG_EXECUTABLE} ARGS --serverbin OUTPUT_VARIABLE CUPS_SERVERBIN)

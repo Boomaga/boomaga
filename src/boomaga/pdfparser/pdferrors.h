@@ -46,8 +46,6 @@ public:
         return mDescription.toLocal8Bit().data();
     }
 
-    //QString description() const { return mDescription; }
-
 protected:
     QString mDescription;
 };
@@ -56,44 +54,18 @@ class ReaderError: public Error
 {
 public:
     ReaderError(const QString &description, quint64 pos):
-        Error(description),
-        mPos(pos)
+        Error(QString("Error on %1: %2").arg(pos).arg(description))
     {
     }
-
-    const char* what() const noexcept override
-    {
-        return QString("Error on %1: %2")
-                .arg(mPos)
-                .arg(mDescription)
-                .toLocal8Bit().data();
-    }
-
-private:
-    quint64 mPos;
 };
 
 class ObjectError: public Error
 {
 public:
     ObjectError(const QString &description, uint objNum, uint genNum):
-        Error(description),
-        mObjNum(objNum),
-        mGenNum(genNum)
+        Error(QString("Error in object (%1 %2 obj): %3").arg(objNum).arg(genNum).arg(description))
     {
     }
-
-    const char* what() const noexcept override
-    {
-        return QString("Error in object (%1 %2 obj): %3")
-                .arg(mObjNum).arg(mGenNum)
-                .arg(mDescription)
-                .toLocal8Bit().data();
-    }
-
-private:
-    uint mObjNum;
-    uint mGenNum;
 };
 
 } // namespace PDF

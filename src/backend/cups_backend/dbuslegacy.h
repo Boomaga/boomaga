@@ -2,7 +2,7 @@
  * (c)LGPL2+
  *
  *
- * Copyright: 2012-2016 Boomaga team https://github.com/Boomaga
+ * Copyright: 2018 Boomaga team https://github.com/Boomaga
  * Authors:
  *   Alexander Sokoloff <sokoloff.a@gmail.com>
  *
@@ -24,32 +24,15 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#ifndef SYSTEMD_H
-#define SYSTEMD_H
+#ifndef DBUSLEGACY_H
+#define DBUSLEGACY_H
 
-#include <QString>
-#include <QtDBus/QDBusObjectPath>
-#include <QtDBus/QDBusArgument>
-#include <QtDBus/QDBusInterface>
+#include <string>
+#include <vector>
 
-QString getActiveSessionDisplaySystemd();
+namespace DBusLegacy
+{
+    std::vector<std::string> findDbusAddress(__uid_t uid);
+}
 
-struct SystemdSession{
-    QString mSessionId;
-    quint32 mUserId;
-    QString mUserName;
-    QString mSeatId;
-    QDBusObjectPath mSessionPath;
-};
-Q_DECLARE_METATYPE(SystemdSession)
-
-typedef QList<SystemdSession> SystemdSessionList;
-Q_DECLARE_METATYPE(SystemdSessionList)
-
-QDBusArgument &operator<<(QDBusArgument &argument, const SystemdSession &session);
-const QDBusArgument &operator>>(const QDBusArgument &argument, SystemdSession &session);
-
-QDebug operator<<(QDebug dbg, const SystemdSession &session);
-
-
-#endif // SYSTEMD_H
+#endif // DBUSLEGACY_H

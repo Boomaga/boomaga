@@ -2,7 +2,7 @@
  * (c)LGPL2+
  *
  *
- * Copyright: 2012-2016 Boomaga team https://github.com/Boomaga
+ * Copyright: 2012-2018 Boomaga team https://github.com/Boomaga
  * Authors:
  *   Alexander Sokoloff <sokoloff.a@gmail.com>
  *
@@ -24,15 +24,17 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#ifndef CONSOLEKIT_H
-#define CONSOLEKIT_H
+#ifndef DBUSSESSIONBUS_H
+#define DBUSSESSIONBUS_H
 
 
-#include <QString>
-#include <QtDBus/QDBusObjectPath>
-#include <QtDBus/QDBusArgument>
-#include <QtDBus/QDBusInterface>
+#include <string>
+#include <vector>
 
-QString getActiveSessionDisplayConsoleKit();
+namespace DBusSessionBus {
+    std::vector<std::string> findDbusAddress(const std::string &home);
+}
 
-#endif // CONSOLEKIT_H
+
+
+#endif // DBUSSESSIONBUS_H

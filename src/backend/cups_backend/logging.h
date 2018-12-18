@@ -2,7 +2,7 @@
  * (c)LGPL2+
  *
  *
- * Copyright: 2012-2016 Boomaga team https://github.com/Boomaga
+ * Copyright: 2012-2018 Boomaga team https://github.com/Boomaga
  * Authors:
  *   Alexander Sokoloff <sokoloff.a@gmail.com>
  *
@@ -24,12 +24,13 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#ifndef INPUTFILE_H
-#define INPUTFILE_H
+#ifndef LOGGING_H
+#define LOGGING_H
 
-#include <QString>
-#include <QStringList>
+void debug(const char *str, ...);
+void info(const char *str, ...);
+void warn(const char *str, ...);
+void error(const char *str, ...);
+void fatalError(const char *str, ...);
 
-QStringList createJobFiles(const QString &jobId, const QString &outDir);
-
-#endif // INPUTFILE_H
+#endif // LOGGING_H
