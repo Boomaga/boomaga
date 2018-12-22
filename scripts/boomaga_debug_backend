@@ -1,0 +1,94 @@
+#!/bin/bash
+#
+# Ver. 0.1
+#
+# This is debugging CUPS backend for Boomaga  
+# ONLY FOR DEVELOPMENT!
+#
+
+function info() {
+    echo "INFO: Boomaga: $@" >&2
+}
+
+function warn() {
+    echo "WARNING: Boomaga: $@" >&2
+}
+
+function error() {
+    echo "ERROR: Boomaga: $@" >&2
+}
+
+
+function environment(){
+    warn "Environment __________________________________ " >&2
+
+    IFS=$'\n'
+
+    for l in `export`; do 
+        warn "  * $l" >&2
+    done
+    warn "______________________________________________ "
+}
+
+
+function lsDir(){
+    warn "Dir $1 _______________________________________ "
+
+    IFS=$'\n'
+
+    for l in `ls -l $1`; do 
+    warn "  * $l"
+    done
+    warn "______________________________________________ "
+}
+
+
+function run(){
+    warn "Run $@ _______________________________________ "
+
+    IFS=$'\n'
+
+    for l in `$@`; do 
+    warn "  * $l"
+    done
+    warn "______________________________________________ "
+
+}
+
+
+###########################################################
+# Output "device discovery" information on stdout:
+# http://www.cups.org/documentation.php/doc-1.6/man-backend.html
+# device-class device-uri "device-make-and-model" "device-info" "device-id"
+if test "$#" = "0";
+then
+  echo 'file boomaga:/ "Boomaga printer" "Boomaga" "MFG:Generic;CMD:PJL,PDF;MDL:Boomaga printer;CLS:PRINTER;DES:Virtual boomaga printer;DRV:DPDF,R1,M0;"'
+  exit 0
+fi
+
+
+jobID=$1
+user=$2
+title=$3
+count=$4
+options=$5
+inputFile=$6
+
+
+warn "Start"
+warn "ID:     $jobID"
+warn "USER    $user"
+warn "TITLE   $title"
+warn "COUNT   $count"
+warn "OPTIONS $options"
+warn "FILE    $inputFile"
+
+# Escape possible double quotes (by using a bash-specific pattern substitution
+# in parameter expansion) to construct valid cmd string.
+#title="${title//\"/\\\\\\\"}"
+
+#cmd="/usr/local/lib/boomaga/boomagabackend  ${jobID} \\\"${title}\\\" ${count} \\\"${options}\\\""
+
+
+
+environment
