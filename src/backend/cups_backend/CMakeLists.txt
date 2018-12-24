@@ -23,22 +23,15 @@
  #
  # END_COMMON_COPYRIGHT_HEADER
 
-
-#cmake_minimum_required( VERSION 2.6 )
-
 project(cups_backend)
 
 set(HEADERS
-    logging.h
-    dbussessionbus.h
-    dbuslegacy.h
+    ../../common.h
 )
 
 set(SOURCES
     main.cpp
-    logging.cpp
-    dbussessionbus.cpp
-    dbuslegacy.cpp
+    ../../common.cpp
 )
 
 include_directories(

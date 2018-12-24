@@ -2,7 +2,7 @@
  * (c)LGPL2+
  *
  *
- * Copyright: 2012-2018 Boomaga team https://github.com/Boomaga
+ * Copyright: 2018 Boomaga team https://github.com/Boomaga
  * Authors:
  *   Alexander Sokoloff <sokoloff.a@gmail.com>
  *
@@ -24,13 +24,23 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#ifndef LOGGING_H
-#define LOGGING_H
+#ifndef FINDDBUSADDRESS_H
+#define FINDDBUSADDRESS_H
 
-void debug(const char *str, ...);
-void info(const char *str, ...);
-void warn(const char *str, ...);
-void error(const char *str, ...);
-void fatalError(const char *str, ...);
+#include <QStringList>
 
-#endif // LOGGING_H
+class FindDbusAddress
+{
+public:
+   static QStringList fromSessionFiles();
+
+#ifdef Q_OS_LINUX
+   static QStringList fromProcFiles();
+#endif
+
+#ifdef Q_OS_FREEBSD
+   static QStringList fromProcStat();
+#endif
+};
+
+#endif // FINDDBUSADDRESS_H

@@ -2,7 +2,7 @@
  * (c)LGPL2+
  *
  *
- * Copyright: 2018 Boomaga team https://github.com/Boomaga
+ * Copyright: 2012-2018 Boomaga team https://github.com/Boomaga
  * Authors:
  *   Alexander Sokoloff <sokoloff.a@gmail.com>
  *
@@ -24,15 +24,25 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#ifndef DBUSLEGACY_H
-#define DBUSLEGACY_H
-
+#ifndef COMMON_H
+#define COMMON_H
 #include <string>
-#include <vector>
 
-namespace DBusLegacy
+static const int CUPS_BACKEND_OK      = 0;
+static const int CUPS_BACKEND_FAILED  = 1;
+
+class Log
 {
-    std::vector<std::string> findDbusAddress(__uid_t uid);
-}
+public:
+    static void debug(const char *str, ...);
+    static void info(const char *str, ...);
+    static void warn(const char *str, ...);
+    static void error(const char *str, ...);
+    static void fatalError(const char *str, ...);
 
-#endif // DBUSLEGACY_H
+    static std::string prefix();
+    static void setPrefix(const std::string &prefix);
+};
+
+
+#endif // COMMON_H

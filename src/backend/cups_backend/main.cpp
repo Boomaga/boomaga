@@ -24,10 +24,7 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#include "logging.h"
-#include "dbussessionbus.h"
-#include "dbuslegacy.h"
-#include "../pstream.h"
+#include "../../common.h"
 
 #include <iostream>
 #include <pwd.h>
@@ -39,9 +36,7 @@
 
 
 static const std::string CACHE_DIR  = "boomaga";
-static const int CUPS_BACKEND_OK      = 0;
-static const int CUPS_BACKEND_FAILED  = 1;
-const static int BUF_SIZE  = 4096;
+static const int BUF_SIZE  = 4096;
 
 using namespace std;
 
@@ -53,6 +48,7 @@ struct Args
     int    count;
     string options;
     string file;
+    passwd *pwd;
 };
 
 
@@ -86,12 +82,12 @@ static string mkUserDir(const char *baseDir, const string &user)
 
 
 
-    debug("Create user direcory '%s'", dir.c_str());
+    Log::debug("Create user direcory '%s'", dir.c_str());
 
     passwd *pwd = getpwnam(user.c_str());
     if (!pwd)
     {
-        error("Can't get uid for user %s", user.c_str());
+        Log::error("Can't get uid for user %s", user.c_str());
         return "";
     }
 
@@ -101,7 +97,7 @@ static string mkUserDir(const char *baseDir, const string &user)
     {
         if (errno != EEXIST)
         {
-            error("Can't create directory %s: %s", dir.c_str(), std::strerror(errno));
+            Log::error("Can't create directory %s: %s", dir.c_str(), std::strerror(errno));
             return "";
         }
     }
@@ -109,7 +105,7 @@ static string mkUserDir(const char *baseDir, const string &user)
 
     if (getmod(dir) != 0775 && chmod(dir.c_str(), 0775) != 0)
     {
-        error("Can't change mode on directory %s: %s", dir.c_str(), std::strerror(errno));
+        Log::error("Can't change mode on directory %s: %s", dir.c_str(), std::strerror(errno));
         return "";
     }
 
@@ -119,24 +115,24 @@ static string mkUserDir(const char *baseDir, const string &user)
     {
         if (errno != EEXIST)
         {
-            error("Can't create directory %s: %s", dir.c_str(), std::strerror(errno));
+            Log::error("Can't create directory %s: %s", dir.c_str(), std::strerror(errno));
             return "";
         }
     }
 
     if (getmod(dir) != 0770 && chmod(dir.c_str(), 0770) != 0)
     {
-        error("Can't change mode on directory %s: %s", dir.c_str(), std::strerror(errno));
+        Log::error("Can't change mode on directory %s: %s", dir.c_str(), std::strerror(errno));
         return "";
     }
 
     if (chown(dir.c_str(), pwd->pw_uid, -1) != 0)
     {
-        error("Can't change owner on directory %s: %s", dir.c_str(), std::strerror(errno));
+        Log::error("Can't change owner on directory %s: %s", dir.c_str(), std::strerror(errno));
         return "";
     }
 
-    debug("User directory %s saccefully created", dir.c_str());
+    Log::debug("User directory %s saccefully created", dir.c_str());
     return dir;
 }
 
@@ -144,9 +140,9 @@ static string mkUserDir(const char *baseDir, const string &user)
 /************************************************
  *
  ************************************************/
-static bool createBooFile(istream &src, const string &destFile, const Args args)
+static bool createBooFile(istream &src, const string &destFile, const Args &args)
 {
-    debug("Create job file %s", destFile.c_str());
+    Log::debug("Create job file %s", destFile.c_str());
     string header;
     getline(src, header);
 
@@ -156,7 +152,8 @@ static bool createBooFile(istream &src, const string &destFile, const Args args)
     dest << "\x1B%-12345X@PJL BOOMAGA_PROGECT\n";
     dest << "@PJL BOOMAGA META_TITLE=" << args.title << "\n";
     dest << "@PJL BOOMAGA JOB_TITLE=" << args.title << "\n";
-    // @PJL SET COPIES = 4
+    dest << "@PJL BOOMAGA CUPS_OPTIONS=" << args.options << "\n";
+    dest << "@PJL SET COPIES = " << args.count << "\n";
 
     if (header.compare(0, 5, "%PDF-") == 0)
     {
@@ -187,55 +184,19 @@ static bool createBooFile(istream &src, const string &destFile, const Args args)
 
     if (src.bad() || !dest.good())
     {
-        debug("Delete file %s", destFile.c_str());
+        Log::debug("Delete file %s", destFile.c_str());
         unlink(destFile.c_str());
-        error("Can't create job file: %s", strerror(errno));
+        Log::error("Can't create job file: %s", strerror(errno));
         return false;
     }
 
-    return true;
-}
-
-
-/************************************************
- *
- ************************************************/
-static bool dbusSend(const string& dbusAddress, const string &file, const Args &args)
-{
-    vector<string> argv;
-    argv.push_back("dbus-send");
-    argv.push_back("--session");
-    argv.push_back("--type=method_call");
-    argv.push_back("--print-reply");
-    argv.push_back("--dest=org.boomaga");
-    argv.push_back("/boomaga");
-    argv.push_back("org.boomaga.add");
-    argv.push_back("string:" + file);
-    argv.push_back("string:" + args.title);
-    argv.push_back("boolean:true");
-    argv.push_back("string:" + args.options);
-    argv.push_back("uint32:" + std::to_string(args.count));
-
-
-    setenv("DBUS_SESSION_BUS_ADDRESS", dbusAddress.c_str(), 1);
-    redi::ipstream proc;
-
-    proc.open(argv[0], argv, redi::pstream::pstdout | redi::pstream::pstderr);
-    string line;
-
-    while (getline(proc.err(), line))
+    if (chown(destFile.c_str(), args.pwd->pw_uid, -1) != 0)
     {
-        warn("dbus-send (%s) error: %s", dbusAddress.c_str(),  line.c_str());
-    }
-    proc.rdbuf()->close();
-
-    if (proc.rdbuf()->status() != 0)
-    {
-        warn("dbus-send (%s) exit: %d", dbusAddress.c_str(), proc.rdbuf()->status());
+        Log::error("Can't change owner on directory %s: %s", destFile.c_str(), std::strerror(errno));
         return false;
     }
 
-    debug("dbus-send (%s) successfully finished.", dbusAddress.c_str());
+
     return true;
 }
 
@@ -245,6 +206,7 @@ static bool dbusSend(const string& dbusAddress, const string &file, const Args &
  ************************************************/
 int main(int argc, char *argv[])
 {
+    Log::setPrefix("Boomaga backend");
     if (argc == 1)
     {
         // Output "device discovery" information on stdout:
@@ -262,9 +224,10 @@ int main(int argc, char *argv[])
 
     if (argc < 6)
     {
-        cout << "Usage: boomaga job-id user title copies options [file]" << endl;
+        cerr << "Usage: boomaga job-id user title copies options [file]" << endl;
         return CUPS_BACKEND_FAILED;
     }
+
 
     Args args;
     args.jobID   = argv[1];
@@ -274,6 +237,14 @@ int main(int argc, char *argv[])
     args.options = argv[5];
     args.file    = (argc > 6) ? argv[6] : "";
 
+
+    args.pwd = getpwnam(args.user.c_str());
+    if (!args.pwd)
+    {
+        Log::error("Can't get uid for user %s.", args.user.c_str());
+        return CUPS_BACKEND_FAILED;
+    }
+
     char *cupsCacheDir = getenv("CUPS_CACHEDIR");
     string dir = mkUserDir(cupsCacheDir ? cupsCacheDir : "/var/cache/cups", args.user);
     if (dir.empty())
@@ -281,69 +252,42 @@ int main(int argc, char *argv[])
 
     string booFile = dir + "/in_" + args.jobID + ".boo";
 
-    bool ok;
     if (argc > 6)
     {
-
         ifstream src(argv[6]);
         if (!src.is_open())
-        {
-            fatalError("Can't write job file %s: %s", argv[6], strerror(errno));
+            Log::fatalError("Can't write job file %s: %s", argv[6], strerror(errno));
+
+        if (!createBooFile(src, booFile, args))
             return CUPS_BACKEND_FAILED;
-        }
-        ok = createBooFile(src, booFile, args);
-        src.close();
     }
     else
     {
-        ok = createBooFile(std::cin, booFile, args);
-    }
-
-    if (!ok)
-        return CUPS_BACKEND_FAILED;
-
-    passwd *pwd = getpwnam(args.user.c_str());
-    if (!pwd)
-    {
-        error("Can't get uid for user %s.", args.user.c_str());
-        return CUPS_BACKEND_FAILED;
+        if (!createBooFile(std::cin, booFile, args))
+            return CUPS_BACKEND_FAILED;
     }
 
 
-    if (setgid(pwd->pw_gid) != 0)
-    {
-        error("Can't change GID to %d: %s.", pwd->pw_gid, strerror(errno));
-        return CUPS_BACKEND_FAILED;
-    }
+    if (setgid(args.pwd->pw_gid) != 0)
+        Log::fatalError("Can't change GID to %d: %s.", args.pwd->pw_gid, strerror(errno));
+
+    if (setuid(args.pwd->pw_uid) != 0)
+        Log::fatalError("Can't change UID to %d: %s.", args.pwd->pw_uid, strerror(errno));
 
 
-    if (setuid(pwd->pw_uid) != 0)
-    {
-        error("Can't change UID to %d: %s.", pwd->pw_uid, strerror(errno));
-        return CUPS_BACKEND_FAILED;
-    }
+    string path = GUI_DIR;
+    char *envPath = getenv("PATH");
+    if (envPath == nullptr)
+          path.append(":").append(envPath);
+    setenv("PATH", path.c_str(), 1);
 
+    execlp("boomaga",
+           "boomaga",
+           "--started-from-cups",
+           "--autoremove",
+           booFile.c_str(),
+           NULL);
 
-    vector<string> dbusAddresses = DBusSessionBus::findDbusAddress(pwd->pw_dir);
-
-    for (const string& addr: dbusAddresses)
-    {
-        bool ok = dbusSend(addr, booFile, args);
-        if (ok)
-            return CUPS_BACKEND_OK;
-    }
-
-
-    // Legacy method .................................
-    dbusAddresses = DBusLegacy::findDbusAddress(pwd->pw_uid);
-
-    for (const string& addr: dbusAddresses)
-    {
-       bool ok = dbusSend(addr, booFile, args);
-       if (ok)
-           return CUPS_BACKEND_OK;
-    }
-
-    error("Can't start boomaga GUI.");
+    Log::error("run boomaga GUI error: %s", strerror(errno));
     return CUPS_BACKEND_FAILED;
 }

@@ -28,6 +28,7 @@
 #include "gui/mainwindow.h"
 #include "dbus.h"
 #include "kernel/job.h"
+#include "../common.h"
 
 #include <QApplication>
 #include <QTextStream>
@@ -37,9 +38,26 @@
 #include <QFileInfo>
 #include <QLibraryInfo>
 #include <QDebug>
-#include <QProcessEnvironment>
 #include <QFile>
 #include <QDir>
+#include <iostream>
+#include <cstdlib>
+
+
+using namespace std;
+
+typedef vector<string> stringList;
+
+struct Args
+{
+    Args(int argc, char *argv[]);
+
+    bool autoRemove;
+    bool startedFromCups;
+    stringList titles;
+    stringList files;
+};
+
 
 /************************************************
 
@@ -91,6 +109,67 @@ int printError(const QString &msg)
 }
 
 
+/************************************************
+ *
+ ************************************************/
+Args::Args(int argc, char *argv[]):
+    autoRemove(false),
+    startedFromCups(false)
+{
+    for (int i = 1; i<argc; ++i)
+    {
+        const string arg = argv[i];
+
+        //*************************************************
+        if (arg == "-h" || arg == "--help")
+        {
+            printHelp();
+            exit(EXIT_SUCCESS);
+        }
+
+        //*************************************************
+        if (arg == "-V" || arg == "--version")
+        {
+            printVersion();
+            exit(EXIT_SUCCESS);
+        }
+
+        //*************************************************
+        if (arg == "-t" || arg == "--title")
+        {
+            if (i+1 < argc)
+            {
+                titles.push_back(argv[i+1]);
+                i++;
+                continue;
+            }
+            else
+            {
+                printError("'title' is missing.");
+                exit(1);
+            }
+        }
+
+        //*************************************************
+        if (arg == "--autoremove")
+        {
+            autoRemove = true;
+            continue;
+        }
+
+        //*************************************************
+        if (arg == "--started-from-cups")
+        {
+            startedFromCups = true;
+            continue;
+        }
+
+        //*************************************************
+        files.push_back(argv[i]);
+    }
+}
+
+
 
 /************************************************
  *
@@ -130,6 +209,35 @@ void readEnvFile()
  ************************************************/
 int main(int argc, char *argv[])
 {
+    Log::setPrefix("Boomaga GUI");
+
+    Args args(argc, argv);
+
+    // Start DBUS ...............................
+    if (args.startedFromCups)
+    {
+        string title;
+        auto it = args.titles.cbegin();
+        for (auto file: args.files)
+        {
+            if (it != args.titles.cend())
+            {
+                title = *it;
+                ++it;
+            }
+            else
+                title.clear();
+
+            Log::info("Start boomaga '%s' '%s' %s",
+                      file.c_str(),
+                      title.c_str(),
+                      args.autoRemove ? "autoRemove" : "");
+            BoomagaDbus::runBoomaga(QString::fromStdString(file), QString::fromStdString(title), args.autoRemove);
+        }
+        return 0;
+    }
+
+    // Start GUI ................................
     readEnvFile();
 
     QApplication application(argc, argv);
@@ -144,68 +252,25 @@ int main(int argc, char *argv[])
     application.installTranslator(&translator);
 
 
-    QStringList files;
-    QStringList titles;
-    bool autoRemove = false;
-
-    QStringList args = application.arguments();
-    for (int i=1; i < args.count(); ++i)
-    {
-        QString arg = args.at(i);
-
-        //*************************************************
-        if (arg == "-h" || arg == "--help")
-        {
-            printHelp();
-            return 0;
-        }
-
-        //*************************************************
-        if (arg == "-V" || arg == "--version")
-        {
-            printVersion();
-            return 0;
-        }
-
-        //*************************************************
-        if (arg == "-t" || arg == "--title")
-        {
-            if (i+1 < args.count())
-            {
-                titles << args.at(i+1);
-                i++;
-                continue;
-            }
-            else
-            {
-                return printError("'title' is missing.");
-            }
-        }
-
-        //*************************************************
-        if (arg == "--autoremove")
-        {
-            autoRemove = true;
-            continue;
-        }
-
-        //*************************************************
-        files << args.at(i);
-    }
-
     BoomagaDbus dbus("org.boomaga", "/boomaga");
 
     MainWindow mainWindow;
     mainWindow.show();
     application.processEvents();
 
+    QStringList files;
+    for (auto &f: args.files)
+    {
+        files << QString::fromStdString(f);
+    }
+
     JobList jobs = project->load(files, "");
     for (int i=0; i<jobs.count(); ++i)
     {
-        if (i<titles.count())
-            jobs[i].setTitle(titles.at(i));
+        if (uint(i) < args.titles.size())
+            jobs[i].setTitle(QString::fromStdString(args.titles[i]));
 
-        jobs[i].setAutoRemove(autoRemove);
+        jobs[i].setAutoRemove(args.autoRemove);
     }
 
     return application.exec();

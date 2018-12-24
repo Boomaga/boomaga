@@ -23,17 +23,37 @@
  *
  * END_COMMON_COPYRIGHT_HEADER */
 
+#include "common.h"
 #include <cstdarg>
 #include <sstream>
 #include <iostream>
 
 using namespace std;
 
+static string LogPrefix = "Boomaga";
 
 /************************************************
  *
  ************************************************/
-static void print(const char *prefix, const char *fmt, va_list args)
+string Log::prefix()
+{
+    return LogPrefix;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Log::setPrefix(const string &prefix)
+{
+    LogPrefix = prefix;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+static void print(const char *level, const char *fmt, va_list args)
 {
     char buffer[1024];
     vsnprintf(buffer,1024,fmt, args);
@@ -42,7 +62,7 @@ static void print(const char *prefix, const char *fmt, va_list args)
     stringstream str(buffer);
     while(std::getline(str, line))
     {
-        cerr << prefix << " [Boomaga] " << line << endl;
+        cerr << level << ": [" << LogPrefix << " ] " << level << ": " << line << endl;
     }
 }
 
@@ -50,11 +70,11 @@ static void print(const char *prefix, const char *fmt, va_list args)
 /************************************************
  *
  ************************************************/
-void debug(const char *str, ...)
+void Log::debug(const char *str, ...)
 {
     va_list args;
     va_start(args, str);
-    print("DEBUG:", str, args);
+    print("DEBUG", str, args);
     va_end(args);
 }
 
@@ -62,11 +82,11 @@ void debug(const char *str, ...)
 /************************************************
  *
  ************************************************/
-void info(const char *str, ...)
+void Log::info(const char *str, ...)
 {
     va_list args;
     va_start(args, str);
-    print("INFO:", str, args);
+    print("INFO", str, args);
     va_end(args);
 }
 
@@ -74,11 +94,11 @@ void info(const char *str, ...)
 /************************************************
  *
  ************************************************/
-void warn(const char *str, ...)
+void Log::warn(const char *str, ...)
 {
     va_list args;
     va_start(args, str);
-    print("WARNING:", str, args);
+    print("WARNING", str, args);
     va_end(args);
 }
 
@@ -86,11 +106,11 @@ void warn(const char *str, ...)
 /************************************************
  *
  ************************************************/
-void error(const char *str, ...)
+void Log::error(const char *str, ...)
 {
     va_list args;
     va_start(args, str);
-    print("ERROR:", str, args);
+    print("ERROR", str, args);
     va_end(args);
 }
 
@@ -98,11 +118,13 @@ void error(const char *str, ...)
 /************************************************
  *
  ************************************************/
-void fatalError(const char *str, ...)
+void Log::fatalError(const char *str, ...)
 {
     va_list args;
     va_start(args, str);
-    print("ERROR:", str, args);
+    print("ERROR", str, args);
     va_end(args);
-    exit(1);
+    exit(CUPS_BACKEND_FAILED);
 }
+
+

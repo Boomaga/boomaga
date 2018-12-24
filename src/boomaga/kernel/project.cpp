@@ -126,7 +126,7 @@ TmpPdfFile *Project::createTmpPdfFile()
 /************************************************
  *
  * ***********************************************/
-void Project::addJob(Job job)
+void Project::addJob(const Job &job)
 {
     addJobs(JobList() << job);
 }
@@ -135,7 +135,7 @@ void Project::addJob(Job job)
 /************************************************
  *
  * ***********************************************/
-void Project::addJobs(JobList jobs)
+void Project::addJobs(const JobList &jobs)
 {
     foreach (Job job, jobs)
     {

@@ -34,6 +34,8 @@ set(HEADERS
     dbus.h
     render.h
     settings.h
+    finddbusaddress.h
+    ../common.h
 
     kernel/sheet.h
     kernel/inputfile.h
@@ -78,6 +80,8 @@ set(SOURCES
     dbus.cpp
     render.cpp
     settings.cpp
+    finddbusaddress.cpp
+    ../common.cpp
 
     kernel/sheet.cpp
     kernel/inputfile.cpp

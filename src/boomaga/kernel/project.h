@@ -171,8 +171,8 @@ public slots:
 public slots:
     bool error(const QString &message) const;
 
-    void addJob(Job job);
-    void addJobs(JobList jobs);
+    void addJob(const Job &job);
+    void addJobs(const JobList &jobs);
     void removeJob(int index);
     void moveJob(int from, int to);
     void setLayout(const Layout *layout);
