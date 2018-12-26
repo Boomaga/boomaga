@@ -26,10 +26,15 @@
 
 #include "dbus.h"
 #include "kernel/project.h"
+#include "../common.h"
+#include "finddbusaddress.h"
 
 #include <QDBusConnection>
+#include <QDBusMessage>
+#include <QProcessEnvironment>
 #include <QDebug>
 
+using namespace std;
 
 /************************************************
 
@@ -81,4 +86,91 @@ void BoomagaDbus::doAdd(const QString &file, const QString &title, bool autoRemo
         job.setTitle(title);
         job.setAutoRemove(autoRemove);
     }
+}
+
+
+/************************************************
+ *
+ ************************************************/
+static bool doRunBoomaga(const QString &dbusAddress, const QList<QVariant> &args)
+{
+    QDBusConnection dbus = QDBusConnection::connectToBus(dbusAddress, "boomaga");
+    if (!dbus.isConnected())
+    {
+
+        Log::debug("[GUI] Can't connect to org.boomaga DBus %s", dbusAddress.toLocal8Bit().data());
+        return false;
+    }
+
+    QDBusMessage msg = QDBusMessage::createMethodCall(
+                "org.boomaga",
+                "/boomaga",
+                "org.boomaga",
+                "add");
+
+    msg.setArguments(args);
+
+    QDBusMessage reply = dbus.call(msg);
+    if (reply.type() != QDBusMessage::ReplyMessage)
+    {
+        Log::warn("[GUI] %s: %s",
+             reply.errorName().toLocal8Bit().constData(),
+             reply.errorMessage().toLocal8Bit().constData());
+
+        return false;
+    }
+
+    return true;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+bool BoomagaDbus::runBoomaga(const QString &file, const QString &title, bool autoRemove, const QString &options, uint count)
+{
+    QList<QVariant> args;
+    args << file;
+    args << title;
+    args << autoRemove;
+    args << options;
+    args << count;
+
+    {
+        string s;
+        foreach (auto a, args)
+            s +=  " " + a.toString().toStdString();
+        Log::debug("[GUI] Start boomaga: %s", s.c_str());
+    }
+
+    {
+        QString addr = QProcessEnvironment::systemEnvironment().value("DBUS_SESSION_BUS_ADDRESS");
+        if (!addr.isEmpty() && doRunBoomaga(addr, args))
+            return true;
+    }
+
+    foreach (auto &addr, FindDbusAddress::fromSessionFiles())
+    {
+        if (doRunBoomaga(addr, args))
+            return true;
+    }
+
+#ifdef Q_OS_LINUX
+    foreach (auto &addr, FindDbusAddress::fromProcFiles())
+    {
+        if (doRunBoomaga(addr, args))
+            return true;
+    }
+#endif
+
+#ifdef Q_OS_FREEBSD
+    foreach (auto &addr, FindDbusAddress::fromProcStat())
+    {
+        if (doRunBoomaga(addr, args))
+            return true;
+    }
+#endif
+
+    Log::error("[GUI] Can't start boomaga gui.");
+    return false;
 }

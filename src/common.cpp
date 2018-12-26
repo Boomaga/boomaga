@@ -2,7 +2,7 @@
  * (c)LGPL2+
  *
  *
- * Copyright: 2012-2016 Boomaga team https://github.com/Boomaga
+ * Copyright: 2012-2018 Boomaga team https://github.com/Boomaga
  * Authors:
  *   Alexander Sokoloff <sokoloff.a@gmail.com>
  *
@@ -23,115 +23,108 @@
  *
  * END_COMMON_COPYRIGHT_HEADER */
 
-
 #include "common.h"
-#include <QTextStream>
+#include <cstdarg>
+#include <sstream>
+#include <iostream>
 
+using namespace std;
 
-/************************************************
- *
- ************************************************/
-void print(const QString &prefix, const QString &message)
-{
-    QString msg = message.trimmed();
-    msg.replace('\n', "\n" + prefix + " [Boomaga] ");
-
-    QTextStream out(stderr);
-    out << prefix + " [Boomaga] " << msg << endl;
-}
-
-
+static string LogPrefix = "Boomaga";
 
 /************************************************
  *
  ************************************************/
-void debug(const QString &message)
+string Log::prefix()
 {
-    print("DEBUG:", message);
+    return LogPrefix;
 }
 
 
 /************************************************
  *
  ************************************************/
-void warning(const QString &message)
+void Log::setPrefix(const string &prefix)
 {
-    print("WARNING:", message);
+    LogPrefix = prefix;
 }
 
 
 /************************************************
  *
  ************************************************/
-void info(const QString &message)
+static void print(const char *level, const char *fmt, va_list args)
 {
-    print("INFO:", message);
+    char buffer[1024];
+    vsnprintf(buffer,1024,fmt, args);
+
+    string line;
+    stringstream str(buffer);
+    while(std::getline(str, line))
+    {
+        cerr << level << ": [" << LogPrefix << " ] " << level << ": " << line << endl;
+    }
 }
 
 
 /************************************************
  *
  ************************************************/
-void error(const QString &message)
+void Log::debug(const char *str, ...)
 {
-    print("ERROR:", message);
+    va_list args;
+    va_start(args, str);
+    print("DEBUG", str, args);
+    va_end(args);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Log::info(const char *str, ...)
+{
+    va_list args;
+    va_start(args, str);
+    print("INFO", str, args);
+    va_end(args);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Log::warn(const char *str, ...)
+{
+    va_list args;
+    va_start(args, str);
+    print("WARNING", str, args);
+    va_end(args);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Log::error(const char *str, ...)
+{
+    va_list args;
+    va_start(args, str);
+    print("ERROR", str, args);
+    va_end(args);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Log::fatalError(const char *str, ...)
+{
+    va_list args;
+    va_start(args, str);
+    print("ERROR", str, args);
+    va_end(args);
     exit(CUPS_BACKEND_FAILED);
 }
 
 
-#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
-/************************************************
- *
- ************************************************/
-void messageOutput(QtMsgType type, const char *message)
-{
-    switch (type) {
-    case QtDebugMsg:
-        debug(QString::fromLocal8Bit(message));
-        break;
-
-    case QtWarningMsg:
-        warning(QString::fromLocal8Bit(message));
-        break;
-
-    case QtCriticalMsg:
-        error(QString::fromLocal8Bit(message));
-        break;
-
-    case QtFatalMsg:
-        error(QString::fromLocal8Bit(message));
-        break;
-    }
-}
-
-#else
-/************************************************
- *
- ************************************************/
-void messageOutput(QtMsgType type, const QMessageLogContext&, const QString &message)
-{
-    switch (type) {
-    case QtDebugMsg:
-        debug(message);
-        break;
-
-    case QtWarningMsg:
-        warning(message);
-        break;
-
-#if (QT_VERSION >= QT_VERSION_CHECK(5, 5, 0))
-    case QtInfoMsg:
-        info(message);
-        break;
-#endif
-
-    case QtCriticalMsg:
-        error(message);
-        break;
-
-    case QtFatalMsg:
-        error(message);
-        break;
-    }
-}
-#endif

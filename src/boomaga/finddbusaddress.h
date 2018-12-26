@@ -2,7 +2,7 @@
  * (c)LGPL2+
  *
  *
- * Copyright: 2012-2016 Boomaga team https://github.com/Boomaga
+ * Copyright: 2018 Boomaga team https://github.com/Boomaga
  * Authors:
  *   Alexander Sokoloff <sokoloff.a@gmail.com>
  *
@@ -24,12 +24,23 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#ifndef INPUTFILE_H
-#define INPUTFILE_H
+#ifndef FINDDBUSADDRESS_H
+#define FINDDBUSADDRESS_H
 
-#include <QString>
 #include <QStringList>
 
-QStringList createJobFiles(const QString &jobId, const QString &outDir);
+class FindDbusAddress
+{
+public:
+   static QStringList fromSessionFiles();
 
-#endif // INPUTFILE_H
+#ifdef Q_OS_LINUX
+   static QStringList fromProcFiles();
+#endif
+
+#ifdef Q_OS_FREEBSD
+   static QStringList fromProcStat();
+#endif
+};
+
+#endif // FINDDBUSADDRESS_H

@@ -24,5 +24,18 @@
  # END_COMMON_COPYRIGHT_HEADER
 
 
-add_subdirectory(dbus)
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/boomaga.ppd
+               ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}.ppd
+               @ONLY)
 
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}.ppd
+  DESTINATION ${CUPS_PPD_DIR}
+  PERMISSIONS
+    OWNER_READ OWNER_WRITE
+    GROUP_READ
+    WORLD_READ
+)
+
+
+add_subdirectory(cups_backend)

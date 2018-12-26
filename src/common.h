@@ -2,7 +2,7 @@
  * (c)LGPL2+
  *
  *
- * Copyright: 2012-2016 Boomaga team https://github.com/Boomaga
+ * Copyright: 2012-2018 Boomaga team https://github.com/Boomaga
  * Authors:
  *   Alexander Sokoloff <sokoloff.a@gmail.com>
  *
@@ -24,32 +24,25 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#ifndef SYSTEMD_H
-#define SYSTEMD_H
+#ifndef COMMON_H
+#define COMMON_H
+#include <string>
 
-#include <QString>
-#include <QtDBus/QDBusObjectPath>
-#include <QtDBus/QDBusArgument>
-#include <QtDBus/QDBusInterface>
+static const int CUPS_BACKEND_OK      = 0;
+static const int CUPS_BACKEND_FAILED  = 1;
 
-QString getActiveSessionDisplaySystemd();
+class Log
+{
+public:
+    static void debug(const char *str, ...);
+    static void info(const char *str, ...);
+    static void warn(const char *str, ...);
+    static void error(const char *str, ...);
+    static void fatalError(const char *str, ...);
 
-struct SystemdSession{
-    QString mSessionId;
-    quint32 mUserId;
-    QString mUserName;
-    QString mSeatId;
-    QDBusObjectPath mSessionPath;
+    static std::string prefix();
+    static void setPrefix(const std::string &prefix);
 };
-Q_DECLARE_METATYPE(SystemdSession)
-
-typedef QList<SystemdSession> SystemdSessionList;
-Q_DECLARE_METATYPE(SystemdSessionList)
-
-QDBusArgument &operator<<(QDBusArgument &argument, const SystemdSession &session);
-const QDBusArgument &operator>>(const QDBusArgument &argument, SystemdSession &session);
-
-QDebug operator<<(QDebug dbg, const SystemdSession &session);
 
 
-#endif // SYSTEMD_H
+#endif // COMMON_H

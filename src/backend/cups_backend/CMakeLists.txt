@@ -23,22 +23,16 @@
  #
  # END_COMMON_COPYRIGHT_HEADER
 
-
-cmake_minimum_required( VERSION 2.6 )
-
-project(backend_dbus_root)
+project(cups_backend)
 
 set(HEADERS
+    ../../common.h
 )
 
 set(SOURCES
     main.cpp
+    ../../common.cpp
 )
-
-
-if(CMAKE_COMPILER_IS_GNUCXX)
-    add_definitions (-Wall -pedantic)
-endif()
 
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
@@ -46,27 +40,17 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
+
 add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})
-set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME ${INSTANCE_NAME})
+target_link_libraries(${PROJECT_NAME})
+set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "boomaga")
 
 
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/boomaga.ppd
-               ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}.ppd
-               @ONLY)
-
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}
+install(FILES "${CMAKE_CURRENT_BINARY_DIR}/boomaga"
   DESTINATION ${CUPS_BACKEND_DIR}
   PERMISSIONS
     OWNER_READ OWNER_WRITE OWNER_EXECUTE
 )
 
 
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/${INSTANCE_NAME}.ppd
-  DESTINATION ${CUPS_PPD_DIR}
-  PERMISSIONS
-    OWNER_READ OWNER_WRITE
-    GROUP_READ
-    WORLD_READ
-)
 
