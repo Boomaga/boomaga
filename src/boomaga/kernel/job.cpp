@@ -326,7 +326,7 @@ void Job::removePage(ProjectPage *page)
 /************************************************
 
  ************************************************/
-void Job::removePages(const QList<ProjectPage*> pages)
+void Job::removePages(const QList<ProjectPage*> &pages)
 {
     foreach (ProjectPage *page, pages)
     {

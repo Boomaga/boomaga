@@ -50,7 +50,7 @@ public:
 
 public slots:
     QImage renderSheet(int sheetNum);
-    QImage renderPage(int sheetNum, const QRectF pageRect, int pageNum);
+    QImage renderPage(int sheetNum, const QRectF &pageRect, int pageNum);
 
 signals:
     void sheetReady(QImage, int sheetNum);

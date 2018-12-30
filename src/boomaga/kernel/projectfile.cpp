@@ -261,7 +261,7 @@ void ProjectFile::load(const QString &fileName)
                     }
 
                     mJobs << job;
-                    title = "";
+                    title.clear();
                     pagesSpec.clear();
                 }
             }

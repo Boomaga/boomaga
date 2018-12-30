@@ -69,7 +69,7 @@ private slots:
     void updateProgressBar(int value, int all);
 
     void showPreviewContextMenu(Sheet *sheet, ProjectPage *page);
-    void showJobViewContextMenu(Job job);
+    void showJobViewContextMenu(const Job &job);
     void showEditPageMainMenu();
     void showEditJobMainMenu();
     void deletePage();
@@ -127,7 +127,7 @@ private:
 
     void addToRecentFiles(const QString &file);
     void fillPageEditMenu(ProjectPage *page, QMenu *menu);
-    void fillJobEditMenu(const Job job, QMenu *menu);
+    void fillJobEditMenu(const Job &job, QMenu *menu);
 };
 
 #endif // MAINWINDOW_H

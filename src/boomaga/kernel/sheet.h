@@ -49,8 +49,8 @@ public:
     Q_DECLARE_FLAGS(Hints, Hint)
 
     Hints hints() const { return mHints; }
-    void setHints(Hints value);
-    void setHint(Hint hint, bool enable);
+    void setHints(const Sheet::Hints &value);
+    void setHint(const Hint &hint, bool enable);
 
     explicit Sheet(int count, int sheetNum);
     virtual ~Sheet();

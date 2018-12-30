@@ -135,7 +135,7 @@ void RenderCache::cancelSheet(int sheetNum)
 /************************************************
  *
  ************************************************/
-void RenderCache::onSheetReady(QImage img, int sheetNum)
+void RenderCache::onSheetReady(const QImage &img, int sheetNum)
 {
     mItems.insert(sheetNum, img);
     emit sheetReady(img, sheetNum);
@@ -242,7 +242,7 @@ int PreviewWidget::pageAt(const QPoint &point) const
 /************************************************
  *
  ************************************************/
-void PreviewWidget::drawShadow(QPainter &painter, QRectF rect)
+void PreviewWidget::drawShadow(QPainter &painter, const QRectF &rect)
 {
     // Shadow width
     int width = qBound(4, int(qMax(rect.height(), rect.width())) / 100, 7);
@@ -535,7 +535,7 @@ void PreviewWidget::paintEvent(QPaintEvent *)
 /************************************************
  *
  ************************************************/
-void PreviewWidget::sheetImageReady(QImage image, int sheetNum)
+void PreviewWidget::sheetImageReady(const QImage &image, int sheetNum)
 {
     int curSheet = project->currentSheetNum();
     if (sheetNum >= qMin(mDisplayedSheetNum, curSheet) &&

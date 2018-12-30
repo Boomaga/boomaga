@@ -172,7 +172,7 @@ void PdfMergerIPCReader::mergerOutputReady()
             qDebug() << data.at(1);
         }
 
-        line = "";
+        line.clear();
     }
 
     mBuf.remove(0, i);

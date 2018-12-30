@@ -60,7 +60,7 @@ public:
 
     bool isValid() const { return mValid; }
 
-    PdfPageInfo pageInfo(InputFile file, int pageNum);
+    PdfPageInfo pageInfo(const InputFile &file, int pageNum);
 
 signals:
     void merged();

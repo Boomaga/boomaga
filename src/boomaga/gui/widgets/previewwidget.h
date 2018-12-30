@@ -51,7 +51,7 @@ signals:
     void sheetReady(QImage img, int sheetNum);
 
 private slots:
-    void onSheetReady(QImage img, int sheetNum);
+    void onSheetReady(const QImage &img, int sheetNum);
 
 private:
     QHash<int, QImage> mItems;
@@ -83,7 +83,7 @@ protected:
     void mousePressEvent(QMouseEvent *event);
 
 private slots:
-    void sheetImageReady(QImage image, int sheetNum);
+    void sheetImageReady(const QImage &image, int sheetNum);
 
 private:
     QImage mImage;
@@ -95,7 +95,7 @@ private:
     RenderCache *mRender;
     int mWheelDelta;
 
-    void drawShadow(QPainter &painter, QRectF rect);
+    void drawShadow(QPainter &painter, const QRectF &rect);
 };
 
 #endif // PREVIEWWIDGET_H

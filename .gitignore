@@ -18,3 +18,4 @@ CMakeLists.txt.user*
 /clang_check
 *.pro.user
 *.pro.user.*
+PVS.*

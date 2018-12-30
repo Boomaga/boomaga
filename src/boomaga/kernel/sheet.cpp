@@ -112,7 +112,7 @@ ProjectPage *Sheet::lastVisiblePage() const
 /************************************************
 
  ************************************************/
-void Sheet::setHints(Sheet::Hints value)
+void Sheet::setHints(const Sheet::Hints &value)
 {
     mHints = value;
 }
@@ -121,7 +121,7 @@ void Sheet::setHints(Sheet::Hints value)
 /************************************************
 
  ************************************************/
-void Sheet::setHint(Sheet::Hint hint, bool enable)
+void Sheet::setHint(const Sheet::Hint &hint, bool enable)
 {
     if (enable)
         mHints = mHints | hint;

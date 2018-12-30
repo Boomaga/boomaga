@@ -417,6 +417,7 @@ void TmpPdfFile::getPageStream(QString *out, const Sheet *sheet) const
         {
 
             TransformSpec spec = project->layout()->transformSpec(sheet, i, project->rotation());
+            QRectF paperRect = printer->paperRect();
 
             double dx = 0;
             double dy = 0;
@@ -425,22 +426,22 @@ void TmpPdfFile::getPageStream(QString *out, const Sheet *sheet) const
             {
             case NoRotate:
                 dx = spec.rect.left();
-                dy = printer->paperRect().height() - spec.rect.bottom();
+                dy = paperRect.height() - spec.rect.bottom();
                 break;
 
             case Rotate90:
                 dx = spec.rect.left();
-                dy = printer->paperRect().height() - spec.rect.top();
+                dy = paperRect.height() - spec.rect.top();
                 break;
 
             case Rotate180:
                 dx = spec.rect.right();
-                dy = printer->paperRect().height() - spec.rect.top();
+                dy = paperRect.height() - spec.rect.top();
                 break;
 
             case Rotate270:
                 dx = spec.rect.right();
-                dy = printer->paperRect().height() - spec.rect.bottom();
+                dy = paperRect.height() - spec.rect.bottom();
                 break;
             }
 
@@ -534,7 +535,7 @@ void TmpPdfFile::ipcXRefInfo(qint64 xrefPos, qint32 freeNum)
 /************************************************
  *
  * ***********************************************/
-PdfPageInfo TmpPdfFile::pageInfo(InputFile file, int pageNum)
+PdfPageInfo TmpPdfFile::pageInfo(const InputFile &file, int pageNum)
 {
     return mPagesInfo.value(QString("%1:%2").arg(mInputFiles.indexOf(file)).arg(pageNum));
 }

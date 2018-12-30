@@ -365,13 +365,13 @@ TranslatorsInfo::TranslatorsInfo()
             QString contact = getValue(src, QString("translator_%1_contact").arg(i));
 
             if (nameEnglish.startsWith(QString("Translator %1. ").arg(i)))
-                nameEnglish = "";
+                nameEnglish.clear();
 
             if (nameNative.startsWith(QString("Translator %1. ").arg(i)))
-                nameNative = "";
+                nameNative.clear();
 
             if (contact.startsWith(QString("Translator %1. ").arg(i)))
-                contact = "";
+                contact.clear();
 
             if (nameEnglish.isEmpty())
                 nameEnglish = nameNative;

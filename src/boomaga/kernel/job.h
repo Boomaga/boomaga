@@ -69,7 +69,7 @@ public:
 
     void addPage(ProjectPage *page);
     void removePage(ProjectPage *page);
-    void removePages(const QList<ProjectPage*> pages);
+    void removePages(const QList<ProjectPage *> &pages);
 
     ProjectPage *takePage(ProjectPage *page);
 

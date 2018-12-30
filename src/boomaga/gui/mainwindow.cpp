@@ -846,7 +846,7 @@ void MainWindow::showPreviewContextMenu(Sheet*, ProjectPage *page)
 /************************************************
 
  ************************************************/
-void MainWindow::showJobViewContextMenu(Job job)
+void MainWindow::showJobViewContextMenu(const Job &job)
 {
     QMenu menu;
     fillJobEditMenu(job, &menu);
@@ -989,7 +989,7 @@ void MainWindow::fillPageEditMenu(ProjectPage *page, QMenu *menu)
 /************************************************
  *
  * ***********************************************/
-void MainWindow::fillJobEditMenu(const Job job, QMenu *menu)
+void MainWindow::fillJobEditMenu(const Job &job, QMenu *menu)
 {
     JobAction *act;
 

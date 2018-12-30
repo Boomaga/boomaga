@@ -120,7 +120,7 @@ QImage RenderWorker::renderSheet(int sheetNum)
 /************************************************
  *
  ************************************************/
-QImage RenderWorker::renderPage(int sheetNum, const QRectF pageRect, int pageNum)
+QImage RenderWorker::renderPage(int sheetNum, const QRectF &pageRect, int pageNum)
 {
     if (!mPopplerDoc)
         return QImage();
