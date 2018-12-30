@@ -29,10 +29,15 @@ cmake_policy(SET CMP0028 NEW)
 
 project(boomaga)
 
-set(MAJOR_VERSION 1)
-set(MINOR_VERSION 3)
+set(MAJOR_VERSION 2)
+set(MINOR_VERSION 0)
 set(PATCH_VERSION 0)
+set(BETA_VERSION beta1)
 set(FULL_VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION})
+if (BETA_VERSION)
+    set(FULL_VERSION ${FULL_VERSION}-${BETA_VERSION})
+endif()
+
 
 add_definitions(-DMAJOR_VERSION=\"${MAJOR_VERSION}\")
 add_definitions(-DMINOR_VERSION=\"${MINOR_VERSION}\")
@@ -81,17 +86,16 @@ add_definitions(-DNONGUI_DIR=\"${NONGUI_DIR}\")
 
 ###########################################################
 
-setByDefault(INSTANCE_NAME      "boomaga")
-setFirstUpper(CUPS_BACKEND_NAME "${INSTANCE_NAME}")
+setFirstUpper(CUPS_BACKEND_NAME "boomaga")
 
-setByDefault(CUPS_BACKEND_URI   "${INSTANCE_NAME}:/")
+setByDefault(CUPS_BACKEND_URI   "boomaga:/")
 setByDefault(CUPS_BACKEND_INFO  "${CUPS_BACKEND_NAME}")
 setByDefault(CUPS_BACKEND_MODEL "${CUPS_BACKEND_NAME} printer")
-setByDefault(CUPS_BACKEND_DESCRIPTION  "Virtual ${INSTANCE_NAME} printer")
+setByDefault(CUPS_BACKEND_DESCRIPTION  "Virtual boomaga printer")
 setByDefault(CUPS_BACKEND_MANUFACTURER "Generic")
 
-setByDefault(GUI_PROGRAM    ${GUI_DIR}/${INSTANCE_NAME})
-setByDefault(GUI_SHARE_DIR  ${CMAKE_INSTALL_PREFIX}/share/${INSTANCE_NAME})
+setByDefault(GUI_PROGRAM    ${GUI_DIR}/boomaga)
+setByDefault(GUI_SHARE_DIR  ${CMAKE_INSTALL_PREFIX}/share/boomaga)
 
 setByDefault(CUPS_BACKEND_DIR   "${DEF_CUPS_BACKEND_DIR}")
 setByDefault(CUPS_FILTER_DIR    "${DEF_CUPS_FILTER_DIR}")
@@ -111,7 +115,6 @@ status_message("  DBUS_MACINE_ID_DIR   =  ${DBUS_MACINE_ID_DIR}")
 status_message("  DBUS_SERVICE_DIR     =  ${DBUS_SERVICE_DIR}")
 status_message(" ")
 status_message(" You can change the following options using cmake options:")
-status_message("  INSTANCE_NAME        =  ${INSTANCE_NAME}")
 status_message("  CUPS_BACKEND_URI     =  ${CUPS_BACKEND_URI}")
 status_message("  CUPS_BACKEND_INFO    =  ${CUPS_BACKEND_INFO}")
 status_message("  CUPS_BACKEND_MODEL   =  ${CUPS_BACKEND_MODEL}")

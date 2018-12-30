@@ -34,16 +34,16 @@ set(SOURCES
     ../../common.cpp
 )
 
-include_directories(
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_SOURCE_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}
-)
-
 
 add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})
 target_link_libraries(${PROJECT_NAME})
 set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "boomaga")
+
+target_include_directories(${PROJECT_NAME} PRIVATE
+    ${CMAKE_CURRENT_SOURCE_DIR}
+    ${CMAKE_SOURCE_DIR}
+    ${CMAKE_CURRENT_BINARY_DIR}
+)
 
 
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/boomaga"
@@ -52,5 +52,16 @@ install(FILES "${CMAKE_CURRENT_BINARY_DIR}/boomaga"
     OWNER_READ OWNER_WRITE OWNER_EXECUTE
 )
 
+configure_file(${CMAKE_CURRENT_SOURCE_DIR}/boomaga.ppd
+               ${CMAKE_CURRENT_BINARY_DIR}/boomaga.ppd
+               @ONLY)
 
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/boomaga.ppd
+  DESTINATION ${CUPS_PPD_DIR}
+  PERMISSIONS
+    OWNER_READ OWNER_WRITE
+    GROUP_READ
+    WORLD_READ
+)
 
