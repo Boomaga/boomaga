@@ -102,7 +102,7 @@
     </message>
     <message>
         <source>Right-to-left direction</source>
-        <translation type="unfinished"/>
+        <translation>Розміщувати справа наліво</translation>
     </message>
 </context>
 <context>
@@ -727,7 +727,7 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>Something is wrong. I can't find boomagamerger program.
 Please reinstall me.</source>
-        <translation>Невдача знову спіткала українських спортсменів... Не вдалося знати програму boomagameter. Спробуйте перевстановити мене.</translation>
+        <translation>Невдача спіткала радянських спортсменів на старті... Не вдалося знати програму boomagameter. Спробуйте перевстановити мене.</translation>
     </message>
     <message>
         <source>I can&apos;t read file &apos;%1&apos;</source>
