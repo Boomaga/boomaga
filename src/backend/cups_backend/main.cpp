@@ -129,46 +129,19 @@ static string mkUserDir(const string &baseDir, const string &user)
 /************************************************
  *
  ************************************************/
-static bool createBooFile(istream &src, const string &destFile, const Args &args)
+static bool createJobFile(istream &src, const string &destFile, const Args &args)
 {
     Log::debug("Create job file %s", destFile.c_str());
-    string header;
-    getline(src, header);
-
 
     ofstream dest(destFile, ios::binary | ios::trunc);
-
-    dest << "\x1B%-12345X@PJL BOOMAGA_PROGECT\n";
-    dest << "@PJL BOOMAGA META_TITLE=" << args.title << "\n";
-    dest << "@PJL BOOMAGA JOB_TITLE=" << args.title << "\n";
-    dest << "@PJL BOOMAGA CUPS_OPTIONS=" << args.options << "\n";
-    dest << "@PJL SET COPIES = " << args.count << "\n";
-
-    if (header.compare(0, 5, "%PDF-") == 0)
-    {
-        dest << "@PJL ENTER LANGUAGE=PDF\n";
-    }
-    else if (header.compare(0, 5, "%!PS-Adobe-") == 0)
-    {
-        dest << "@PJL ENTER LANGUAGE=POSTSCRIPT\n";
-    }
-
-    bool lf = true;
-    dest << header << endl;
-    char buf[BUF_SIZE];
-    do {
-        src.read(&buf[0], BUF_SIZE);
-        if (src.gcount())
-            lf = buf[src.gcount() - 1] == '\n';
-        dest.write(&buf[0], src.gcount());
-    } while (src.gcount() > 0);
-
-    if (!lf)
-        dest << "\n";
-
-    dest << "\x1B%-12345X@PJL\n";
-    dest << "@PJL EOJ\n";
-    dest << "\x1B%-12345X";
+    dest << "\x1B CUPS_BOOMAGA\n";
+    dest << "JOB="     << escapeString(args.jobID)   << "\n";
+    dest << "USER="    << escapeString(args.user)    << "\n";
+    dest << "TITLE="   << escapeString(args.title)   << "\n";
+    dest << "COUNT="   << args.count                 << "\n";
+    dest << "OPTIONS=" << escapeString(args.options) << "\n";
+    dest << "CUPS_BOOMAGA_DATA\n";
+    dest << src.rdbuf();
     dest.close();
 
     if (src.bad() || !dest.good())
@@ -184,7 +157,6 @@ static bool createBooFile(istream &src, const string &destFile, const Args &args
         Log::error("Can't change owner on directory %s: %s", destFile.c_str(), std::strerror(errno));
         return false;
     }
-
 
     return true;
 }
@@ -269,12 +241,12 @@ int main(int argc, char *argv[])
         if (!src.is_open())
             Log::fatalError("Can't write job file %s: %s", argv[6], strerror(errno));
 
-        if (!createBooFile(src, booFile, args))
+        if (!createJobFile(src, booFile, args))
             return CUPS_BACKEND_FAILED;
     }
     else
     {
-        if (!createBooFile(std::cin, booFile, args))
+        if (!createJobFile(std::cin, booFile, args))
             return CUPS_BACKEND_FAILED;
     }
 
@@ -310,7 +282,6 @@ int main(int argc, char *argv[])
     execlp("boomaga",
            "boomaga",
            "--started-from-cups",
-           "--autoremove",
            booFile.c_str(),
            NULL);
 

@@ -40,10 +40,11 @@ public:
     static bool runBoomaga(const QString &file, const QString &title,bool autoRemove = false, const QString &options = "", uint count = 1);
 
 public slots:
-    void add(const QString &file, const QString &title,bool autoRemove = false, const QString &options = "", uint count = 1);
+    void add(const QString &file, const QString &title, bool autoRemove, const QString &options = "", uint count = 1);
+    void add(const QString &file, const QString &title, const QString &options = "", uint count = 1);
 
 private slots:
-    void doAdd(const QString &file, const QString &title,bool autoRemove, const QString &options, uint count);
+    void doAdd(const QString &file, const QString &title, const QString &options, uint count);
 };
 
 

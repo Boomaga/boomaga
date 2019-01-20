@@ -60,12 +60,21 @@ BoomagaDbus::~BoomagaDbus()
  ************************************************/
 void BoomagaDbus::add(const QString &file, const QString &title, bool autoRemove, const QString &options, uint count)
 {
+    Q_UNUSED(autoRemove); // 20.01.2019 We keep this method for compatability
+    add(file, title, options, count);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void BoomagaDbus::add(const QString &file, const QString &title, const QString &options, uint count)
+{
     QMetaObject::invokeMethod(this,
                               "doAdd",
                               Qt::QueuedConnection,
                               Q_ARG(QString, file),
                               Q_ARG(QString, title),
-                              Q_ARG(bool, autoRemove),
                               Q_ARG(QString, options),
                               Q_ARG(uint, count));
 }
@@ -74,7 +83,7 @@ void BoomagaDbus::add(const QString &file, const QString &title, bool autoRemove
 /************************************************
 
  ************************************************/
-void BoomagaDbus::doAdd(const QString &file, const QString &title, bool autoRemove, const QString &options, uint count)
+void BoomagaDbus::doAdd(const QString &file, const QString &title, const QString &options, uint count)
 {
     QStringList files;
     for (uint i=0; i<count; ++i)
@@ -84,7 +93,6 @@ void BoomagaDbus::doAdd(const QString &file, const QString &title, bool autoRemo
     foreach (Job job, jobs)
     {
         job.setTitle(title);
-        job.setAutoRemove(autoRemove);
     }
 }
 

@@ -78,6 +78,9 @@ private slots:
 
     void testPdfNumber();
 
+    void testEscapeString();
+    void testEscapeString_data();
+
     // PDF::Value .........................................
 
 

@@ -37,8 +37,6 @@
 #define LOCK_CHECK          0
 #define LOCK_CREATE         100
 #define LOCK_DESTROY       -1
-#define LOCK_TO_REMOVE     -99
-#define LOCK_TO_NOTREMOVE   99
 
 class JobData: public QSharedData
 {
@@ -53,7 +51,6 @@ public:
     QString mTitle;
     Job::State mState;
     QString mErrorString;
-    bool mAutoRemove;
 
     static int lockUnlockFile(const QString &file, int lock);
     ProjectPage *takePage(ProjectPage *page);
@@ -67,8 +64,7 @@ JobData::JobData(const QString &fileName, qint64 startPos, qint64 endPos, const 
     mFileName(fileName),
     mStartPos(startPos),
     mEndPos(endPos),
-    mState(Job::JobEmpty),
-    mAutoRemove(false)
+    mState(Job::JobEmpty)
 {
     if (!fileName.isEmpty())
     {
@@ -397,33 +393,6 @@ Job::State Job::state() const
 QString Job::errorString() const
 {
     return mData->mErrorString;
-}
-
-
-/************************************************
-
- ************************************************/
-bool Job::autoRemove() const
-{
-    return mData->mAutoRemove;
-}
-
-
-/************************************************
-
- ************************************************/
-void Job::setAutoRemove(bool value)
-{
-    if (!mData->mFileName.isEmpty())
-    {
-        if (!mData->mAutoRemove && value)
-            mData->lockUnlockFile(mData->mFileName, LOCK_TO_REMOVE);
-
-        else if (mData->mAutoRemove && !value)
-            mData->lockUnlockFile(mData->mFileName, LOCK_TO_NOTREMOVE);
-    }
-    mData->mAutoRemove = value;
-
 }
 
 

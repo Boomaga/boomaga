@@ -243,7 +243,7 @@ void ProjectFile::load(const QString &fileName)
                     Job job(fileName, pages, startPos, endPos);
                     job.setTitle(title);
 
-                    for (int i=0; i<pagesSpec.count(); ++i)
+                    for (int i=0; i<qMin(pagesSpec.count(), job.pageCount()); ++i)
                     {
                         PageSpec spec = pagesSpec.at(i);
                         if (spec.isblank())

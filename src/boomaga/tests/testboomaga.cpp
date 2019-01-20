@@ -33,6 +33,7 @@
 #include <QStringList>
 #include <QList>
 #include <QTemporaryFile>
+#include <QUrl>
 
 #define protected public
 #include "../kernel/layout.h"
@@ -42,6 +43,7 @@
 #include "../boomagatypes.h"
 #include "../kernel/projectpage.h"
 #include "../settings.h"
+#include "../../common.h"
 
 #define COMPARE(actual, expected) \
     do {\
@@ -1145,6 +1147,36 @@ void TestBoomaga::test_BooklesSplit_data()
     QTest::newRow("booklet: 4 pps: 1 2M 3 4 5 6 7 8 9 10 11 12 13 14 15 16 17 18") << "1 2 10 18";
     QTest::newRow("booklet: 4 pps: 1 2M 3 4 5 6M 7 8 9 10 11 12 13 14 15 16 17 18") << "1 2 6 14";
     QTest::newRow("booklet: 4 pps: 1 2M 3 4 5 6 7 8 9 10M 11 12 13 14 15 16 17 18") << "1 2 10 18";
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void TestBoomaga::testEscapeString()
+{
+    QFETCH(QString, in);
+    QString escaped  = QString::fromStdString(escapeString(in.toStdString()));
+    QString expected = QUrl::fromPercentEncoding(escaped.toLocal8Bit());
+    QCOMPARE(in, expected);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void TestBoomaga::testEscapeString_data()
+{
+    QTest::addColumn<QString>("in");
+    QTest::newRow("1") << "";
+    QTest::newRow("2") << "1234567890";
+    QTest::newRow("3") << "Multi\nline";
+    QTest::newRow("3") << " '\"\\\" {}()\t\r\b\x0 ";
+    QTest::newRow("4") << "qwertyuiopasdfghjklzxcvbnm";
+    QTest::newRow("5") << "QWERTYUIOPASDFGHJKLZXCVBNM";
+    QTest::newRow("6") << "`-=;'\\,./";
+    QTest::newRow("7") << "йцукенгшщзхъфывапролджэячсмитьбюё";
+    QTest::newRow("8") << "ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮЁ";
 }
 
 

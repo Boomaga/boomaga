@@ -16,7 +16,6 @@ FILE=$(readlink -e "${FILE}")
 #
 # string file
 # string title
-# bool   autoRemove
 # string options
 # uint   count
 dbus-send \
@@ -26,7 +25,6 @@ dbus-send \
 	--dest=org.boomaga /boomaga org.boomaga.add \
 	string:"${FILE}" \
 	string:'title' \
-	boolean:false \
 	string:'options' \
 	uint32:1
 

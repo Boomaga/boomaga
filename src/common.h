@@ -47,5 +47,6 @@ public:
     static void setWriteTime(bool value);
 };
 
+std::string escapeString(const std::string &str);
 
 #endif // COMMON_H

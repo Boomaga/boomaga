@@ -81,8 +81,6 @@ public:
     State state() const;
     QString errorString() const;
 
-    bool autoRemove() const;
-    void setAutoRemove(bool value);
     ProjectPage *insertBlankPage(int before);
 
     Job clone();

@@ -52,7 +52,6 @@ struct Args
 {
     Args(int argc, char *argv[]);
 
-    bool autoRemove;
     bool startedFromCups;
     stringList titles;
     stringList files;
@@ -77,7 +76,6 @@ void printHelp()
     out << "  -h, --help              Show help about options" << endl;
     out << "  -t, --title <title>     The job name/title" << endl;
     out << "  -V, --version           Print program version" << endl;
-    out << "      --autoremove        Automatically delete the input file" << endl;
     out << endl;
 
     out << "Arguments:" << endl;
@@ -113,7 +111,6 @@ int printError(const QString &msg)
  *
  ************************************************/
 Args::Args(int argc, char *argv[]):
-    autoRemove(false),
     startedFromCups(false)
 {
     for (int i = 1; i<argc; ++i)
@@ -150,12 +147,6 @@ Args::Args(int argc, char *argv[]):
             }
         }
 
-        //*************************************************
-        if (arg == "--autoremove")
-        {
-            autoRemove = true;
-            continue;
-        }
 
         //*************************************************
         if (arg == "--started-from-cups")
@@ -228,11 +219,10 @@ int main(int argc, char *argv[])
             else
                 title.clear();
 
-            Log::info("Start boomaga '%s' '%s' %s",
+            Log::info("Start boomaga '%s' '%s'",
                       file.c_str(),
-                      title.c_str(),
-                      args.autoRemove ? "autoRemove" : "");
-            BoomagaDbus::runBoomaga(QString::fromStdString(file), QString::fromStdString(title), args.autoRemove);
+                      title.c_str());
+            BoomagaDbus::runBoomaga(QString::fromStdString(file), QString::fromStdString(title));
         }
         return 0;
     }
@@ -269,8 +259,6 @@ int main(int argc, char *argv[])
     {
         if (uint(i) < args.titles.size())
             jobs[i].setTitle(QString::fromStdString(args.titles[i]));
-
-        jobs[i].setAutoRemove(args.autoRemove);
     }
 
     return application.exec();

@@ -132,6 +132,15 @@ T* findExistingForm()
     return 0;
 }
 
+class BoomagaError: public std::runtime_error
+{
+public:
+    explicit BoomagaError(const char *msg): std::runtime_error(msg){}
+    explicit BoomagaError(const std::string &msg): std::runtime_error(msg){}
+    explicit BoomagaError(const QString &msg): std::runtime_error(msg.toStdString()){}
+};
+
+
 QString safeFileName(const QString &str);
 
 QString expandHomeDir(const QString &fileName);

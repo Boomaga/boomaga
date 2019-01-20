@@ -33,7 +33,10 @@
 #include "sheet.h"
 #include "layout.h"
 #include "projectfile.h"
+#include "pstopdf.h"
 
+#include <unistd.h>
+#include <fstream>
 #include <QCoreApplication>
 #include <QString>
 #include <QStringList>
@@ -42,8 +45,25 @@
 #include <QFile>
 #include <QMessageBox>
 #include <QDateTime>
+#include <QUuid>
+#include <QUrl>
 
 #define META_SIZE (4 * 1024)
+
+using namespace  std;
+
+/************************************************
+ *
+ ************************************************/
+static QString genTmpFileName()
+{
+    return QString("%1%2boomaga_in%3.%4")
+            .arg(boomagaChacheDir())
+            .arg(QDir::separator())
+            .arg(QUuid::createUuid().toString())
+            .arg(AUTOREMOVE_EXT);
+}
+
 
 class ProjectState
 {
@@ -101,6 +121,14 @@ Project::~Project()
  ************************************************/
 void Project::free()
 {
+    for (const Job &job: mJobs)
+    {
+        if (job.inputFile().fileName().endsWith(AUTOREMOVE_EXT))
+        {
+            QFile(job.inputFile().fileName()).remove();
+        }
+    }
+
     mJobs.clear();
     delete mTmpFile;
 }
@@ -156,8 +184,20 @@ void Project::addJobs(const JobList &jobs)
 void Project::removeJob(int index)
 {
     stopMerging();
+
+    QString fileName = mJobs.at(index).inputFile().fileName();
     mJobs.removeAt(index);
     update();
+
+    if (fileName.endsWith(AUTOREMOVE_EXT))
+    {
+        bool remove = true;
+        for (const Job &job: mJobs)
+            remove = remove && job.inputFile().fileName() != fileName;
+
+        if (remove)
+            QFile(fileName).remove();
+    }
 
     mLastTmpFile = createTmpPdfFile();
     mLastTmpFile->merge();
@@ -1065,41 +1105,39 @@ JobList Project::load(const QStringList &fileNames, const QString &options)
         QByteArray mark = file.read(30);
         file.close();
 
-        // Read PDF ..................................
-        if (mark.startsWith("%PDF-"))
+        try
         {
-            BackendOptions opts = BackendOptions(options);
-            Job job = Job(fileName, opts.pages());
+            // Read CUPS_BOOMAGA .........................
+            if (mark.startsWith("\x1B CUPS_BOOMAGA"))
+                jobs << loadCupsBOO(fileName, options);
 
-            if (!job.errorString().isEmpty())
-                errors << job.errorString();
+            // Read PDF ..................................
+            else if (mark.startsWith("%PDF-"))
+                jobs << loadPDF(fileName, options);
 
-            if (job.state() != Job::JobError)
-                jobs << job;
+            // Read BOO ..................................
+            else if (mark.startsWith("\x1B%-12345X@PJL BOOMAGA_PROGECT"))
+                jobs << loadBOO(fileName, options);
+
+            // Unknown format ............................
+            else
+                throw BoomagaError(tr("I can't read file \"%1\" either because it's not a supported file type, or because the file has been damaged.")
+                                   .arg(file.fileName()).toStdString());
         }
-
-
-        // Read BOO ..................................
-        else if (mark.startsWith("\x1B%-12345X@PJL BOOMAGA_PROGECT"))
+        catch (const BoomagaError &err)
         {
-            try
-            {
-                ProjectFile file;
-                file.load(fileName);
-                jobs << file.jobs();
-                project->setMetadata(file.metaData());
-            }
-            catch (const QString &err)
-            {
-                errors << err;
-            }
+            errors << err.what();
         }
-
-        // Unknown format ............................
-        else
+        catch (const QString &err)
         {
-            errors << tr("I can't read file \"%1\" either because it's not a supported file type, or because the file has been damaged.").arg(file.fileName());
+            errors << err;
         }
+    }
+
+    foreach(QString fileName, fileNames)
+    {
+        if (fileName.endsWith(AUTOREMOVE_EXT))
+            QFile(fileName).remove();
     }
 
     if (!jobs.isEmpty())
@@ -1110,6 +1148,119 @@ JobList Project::load(const QStringList &fileNames, const QString &options)
 
     return jobs;
 }
+
+/************************************************
+ *
+ ************************************************/
+static QString copyToCache(const QString &src)
+{
+    QString srcFile  = QFileInfo(src).absoluteFilePath();
+    QString name = QString("boomaga_in%1.%2")
+            .arg(QUuid::createUuid().toString())
+            .arg(AUTOREMOVE_EXT);
+    QString res = QDir(boomagaChacheDir()).filePath(name);
+
+    if (srcFile == res)
+        return res;
+
+    if (link(srcFile.toLocal8Bit().data(), res.toLocal8Bit().data()) == 0)
+        return res;
+
+    if (QFile::copy(srcFile, res))
+        return res;
+
+    throw BoomagaError(Project::tr("I can't write to file '%1'").arg(res).toStdString());
+}
+
+
+/************************************************
+ *
+ ************************************************/
+JobList Project::loadPDF(const QString &fileName, const QString &options)
+{
+    BackendOptions opts = BackendOptions(options);
+    Job job = Job(fileName, opts.pages());
+
+    if (!job.errorString().isEmpty())
+        throw BoomagaError(job.errorString().toStdString());
+
+    if (job.state() != Job::JobError)
+        return JobList() << job;
+
+    return JobList();
+}
+
+
+/************************************************
+ *
+ ************************************************/
+JobList Project::loadBOO(const QString &fileName, const QString &)
+{
+    ProjectFile file;
+    file.load(fileName);
+    setMetadata(file.metaData());
+    return file.jobs();
+}
+
+
+/************************************************
+ *
+ ************************************************/
+JobList Project::loadCupsBOO(const QString &fileName, const QString &)
+{
+    ifstream in(fileName.toLocal8Bit().data());
+    if (!in.is_open())
+        throw BoomagaError(tr("I can't open file \"%1\"").arg(fileName)
+                           + "\n" + strerror(errno));
+
+    QString title;
+    QString options;
+
+    while (in)
+    {
+        string line;
+        getline(in, line);
+
+        if (line.compare(0, 6, "TITLE=") == 0)
+        {
+            title = QUrl::fromPercentEncoding(line.c_str()).mid(6);
+            continue;
+        }
+
+        if (line.compare(0, 8, "OPTIONS=") == 0)
+        {
+            options = QUrl::fromPercentEncoding(line.c_str()).mid(8);
+            continue;
+        }
+
+        if (line.compare(0, 17, "CUPS_BOOMAGA_DATA") == 0)
+            break;
+    }
+
+    auto pos = in.tellg();
+    string line;
+    getline(in, line);
+
+    if (line.compare(0, 5, "%PDF-") == 0)
+    {
+        QString outFileName = genTmpFileName();
+        ofstream out(outFileName.toStdString(), ios::binary | ios::trunc);
+        if (!out)
+            throw BoomagaError(tr("I can't write to file '%1'").arg(outFileName)
+                                + "\n" + strerror(errno));
+
+        in.seekg(pos);
+        out << in.rdbuf();
+        out.close();
+        return loadPDF(outFileName, options);
+    }
+
+    throw BoomagaError(tr("I can't read file \"%1\" either because it's not a supported file type, "
+                          "or because the file has been damaged.")
+                       .arg(fileName));
+}
+
+
 
 
 /************************************************

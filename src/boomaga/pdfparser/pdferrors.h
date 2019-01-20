@@ -29,32 +29,26 @@
 
 #include <QtGlobal>
 #include <QString>
+#include <stdexcept>
 
 namespace PDF {
 
-class Error: public std::exception
+class Error: public std::runtime_error
 {
 public:
-    Error(const QString &description):
-        std::exception(),
-        mDescription(description)
-    {
-    }
-
-    const char* what() const noexcept override
-    {
-        return mDescription.toLocal8Bit().data();
-    }
-
-protected:
-    QString mDescription;
+    explicit Error(const char *msg): std::runtime_error(msg){}
+    explicit Error(const std::string &msg): std::runtime_error(msg){}
+    explicit Error(const QString &msg): std::runtime_error(msg.toStdString()){}
 };
+
 
 class ReaderError: public Error
 {
 public:
     ReaderError(const QString &description, quint64 pos):
-        Error(QString("Error on %1: %2").arg(pos).arg(description))
+        Error(QString("Error on %1: %2").arg(pos)
+              .arg(description)
+              .toStdString())
     {
     }
 };
@@ -63,7 +57,11 @@ class ObjectError: public Error
 {
 public:
     ObjectError(const QString &description, uint objNum, uint genNum):
-        Error(QString("Error in object (%1 %2 obj): %3").arg(objNum).arg(genNum).arg(description))
+        Error(QString("Error in object (%1 %2 obj): %3")
+              .arg(objNum)
+              .arg(genNum)
+              .arg(description)
+              .toStdString())
     {
     }
 };

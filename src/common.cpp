@@ -27,6 +27,7 @@
 #include <cstdarg>
 #include <sstream>
 #include <iostream>
+#include <iomanip>
 #include <unistd.h>
 
 using namespace std;
@@ -178,3 +179,29 @@ void Log::fatalError(const char *str, ...)
 }
 
 
+/************************************************
+ *
+ ************************************************/
+string escapeString(const string &str)
+{
+    ostringstream res;
+    res.fill('0');
+    res << hex;
+
+    for (auto c: str)
+    {
+        if (isalnum(c) ||
+            c == '-'   || c == '_' ||
+            c == '.'   || c == '~' )
+        {
+            res << c;
+            continue;
+        }
+
+        res << uppercase;
+        res << '%' << std::setw(2) << int((unsigned char) c);
+        res << nouppercase;
+    }
+
+    return res.str();
+}
