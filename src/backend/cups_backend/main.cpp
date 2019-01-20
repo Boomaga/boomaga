@@ -35,7 +35,6 @@
 #include <string>
 
 
-static const std::string CACHE_DIR  = "boomaga";
 static const int BUF_SIZE  = 4096;
 
 using namespace std;
@@ -70,19 +69,9 @@ static int getmod(const string &file)
 /************************************************
  *
  ************************************************/
-static string mkUserDir(const char *baseDir, const string &user)
+static string mkUserDir(const string &baseDir, const string &user)
 {
-    string dir(baseDir);
-
-    int n = dir.rfind('/', dir.length() - 2);
-    if (n>-1)
-        dir.resize(n);
-
-    dir.append("/" + CACHE_DIR);
-
-
-
-    Log::debug("Create user direcory '%s'", dir.c_str());
+    Log::debug("Create user direcory %s", baseDir.c_str());
 
     passwd *pwd = getpwnam(user.c_str());
     if (!pwd)
@@ -93,24 +82,24 @@ static string mkUserDir(const char *baseDir, const string &user)
 
 
     // Base .....................................
-    if (mkdir(dir.c_str(), 0775) != 0)
+    if (mkdir(baseDir.c_str(), 0775) != 0)
     {
         if (errno != EEXIST)
         {
-            Log::error("Can't create directory %s: %s", dir.c_str(), std::strerror(errno));
+            Log::error("Can't create directory %s: %s", baseDir.c_str(), std::strerror(errno));
             return "";
         }
     }
 
 
-    if (getmod(dir) != 0775 && chmod(dir.c_str(), 0775) != 0)
+    if (getmod(baseDir) != 0775 && chmod(baseDir.c_str(), 0775) != 0)
     {
-        Log::error("Can't change mode on directory %s: %s", dir.c_str(), std::strerror(errno));
+        Log::error("Can't change mode on directory %s: %s", baseDir.c_str(), std::strerror(errno));
         return "";
     }
 
     // User .....................................
-    dir.append("/" + user);
+    string dir = baseDir + "/" + user;
     if (mkdir(dir.c_str(), 0770) != 0)
     {
         if (errno != EEXIST)
@@ -202,6 +191,19 @@ static bool createBooFile(istream &src, const string &destFile, const Args &args
 
 
 /************************************************
+ *
+ ************************************************/
+string dirname(const string &path)
+{
+    int n = path.rfind('/', path.length() - 2);
+    if (n>-1)
+        return path.substr(0, n);
+
+    return path;
+}
+
+
+/************************************************
  * http://www.cups.org/documentation.php/doc-1.6/api-filter.html
  ************************************************/
 int main(int argc, char *argv[])
@@ -217,7 +219,8 @@ int main(int argc, char *argv[])
                   << CUPS_BACKEND_URI << " "
                   << "\"" CUPS_BACKEND_MODEL "\" "
                   << "\"" CUPS_BACKEND_INFO  "\" "
-                  << "\"" "MFG:" CUPS_BACKEND_MANUFACTURER ";CMD:PJL,PDF;MDL:" CUPS_BACKEND_MODEL ";CLS:PRINTER;DES:" CUPS_BACKEND_DESCRIPTION ";DRV:DPDF,R1,M0;" "\""
+                  << "\"" "MFG:" CUPS_BACKEND_MANUFACTURER ";CMD:PJL,PDF;MDL:"
+                  << CUPS_BACKEND_MODEL ";CLS:PRINTER;DES:" CUPS_BACKEND_DESCRIPTION ";DRV:DPDF,R1,M0;" "\""
                   << endl;
         return CUPS_BACKEND_OK;
     }
@@ -245,12 +248,20 @@ int main(int argc, char *argv[])
         return CUPS_BACKEND_FAILED;
     }
 
+#ifdef __APPLE__
+    const string baseDir = MAC_SPOOL_DIR;
+#else
     char *cupsCacheDir = getenv("CUPS_CACHEDIR");
-    string dir = mkUserDir(cupsCacheDir ? cupsCacheDir : "/var/cache/cups", args.user);
+    const string baseDir = cupsCacheDir ?
+                dirname(cupsCacheDir) + "/boomaga" :
+                "/var/cache/boomaga";
+#endif
+
+    string dir = mkUserDir(baseDir, args.user);
     if (dir.empty())
         return CUPS_BACKEND_FAILED;
 
-    string booFile = dir + "/in_" + args.jobID + ".boo";
+    string booFile = dir + "/in_" + args.jobID + ".boo." + AUTOREMOVE_EXT;
 
     if (argc > 6)
     {
@@ -267,7 +278,22 @@ int main(int argc, char *argv[])
             return CUPS_BACKEND_FAILED;
     }
 
+#ifdef __APPLE__
+    // Start agent from Boomaga.app
 
+    string startFile = dir + "/.start";
+    ofstream dest(startFile, ios::binary | ios::trunc);
+    dest << time(nullptr);
+    dest.close();
+
+    if (getmod(startFile) != 0664 && chmod(startFile.c_str(), 0664) != 0)
+    {
+        Log::error("Can't change mode on file %s: %s", startFile.c_str(), std::strerror(errno));
+        return CUPS_BACKEND_FAILED;
+    }
+
+    return CUPS_BACKEND_OK;
+#else
     if (setgid(args.pwd->pw_gid) != 0)
         Log::fatalError("Can't change GID to %d: %s.", args.pwd->pw_gid, strerror(errno));
 
@@ -277,7 +303,7 @@ int main(int argc, char *argv[])
 
     string path = GUI_DIR;
     char *envPath = getenv("PATH");
-    if (envPath == nullptr)
+    if (envPath != nullptr)
           path.append(":").append(envPath);
     setenv("PATH", path.c_str(), 1);
 
@@ -290,4 +316,6 @@ int main(int argc, char *argv[])
 
     Log::error("run boomaga GUI error: %s", strerror(errno));
     return CUPS_BACKEND_FAILED;
+#endif
+
 }

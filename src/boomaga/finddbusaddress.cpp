@@ -122,6 +122,7 @@ QStringList FindDbusAddress::fromSessionFiles()
 }
 
 
+#ifdef Q_OS_LINUX
 /************************************************
  *
  ************************************************/
@@ -162,6 +163,7 @@ QStringList FindDbusAddress::fromProcFiles()
     }
     return ret;
 }
+#endif
 
 
 #ifdef Q_OS_FREEBSD

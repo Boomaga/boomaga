@@ -42,6 +42,9 @@ public:
 
     static std::string prefix();
     static void setPrefix(const std::string &prefix);
+
+    static bool writeTime();
+    static void setWriteTime(bool value);
 };
 
 

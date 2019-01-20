@@ -68,6 +68,10 @@ if(${CMAKE_SYSTEM_NAME} STREQUAL "Linux")
   set(DEF_CUPS_PPD_DIR /usr/share/ppd/boomaga)
   set(DEF_DBUS_MACINE_ID_DIR /var/lib/dbus)
   set(DEF_DBUS_SERVICE_DIR ${CMAKE_INSTALL_PREFIX}/share/dbus-1/services)
+  set(USE_DBUS TRUE)
+  set(GUI_DIR ${CMAKE_INSTALL_PREFIX}/bin)
+  set(NONGUI_DIR ${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}/boomaga)
+  #set(CUPS_FILES_DIR "/var/cache/boomaga")
 
 # FreeBSD *************************************
 elseif(${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
@@ -75,14 +79,32 @@ elseif(${CMAKE_SYSTEM_NAME} STREQUAL "FreeBSD")
   set(DEF_CUPS_PPD_DIR /usr/local/share/cups/model)
   set(DEF_DBUS_MACINE_ID_DIR /var/db/dbus)
   set(DEF_DBUS_SERVICE_DIR ${CMAKE_INSTALL_PREFIX}/share/dbus-1/services)
+  set(USE_DBUS TRUE)
+  set(GUI_DIR ${CMAKE_INSTALL_PREFIX}/bin)
+  set(NONGUI_DIR ${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}/boomaga)
+
+# MacOS ***************************************
+elseif(${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
+
+  set(MAC_APP_ID    "io.github.Boomaga")
+  set(MAC_SPOOL_DIR "/var/spool/${MAC_APP_ID}")
+
+  set(DEF_CUPS_PPD_DIR ${CMAKE_INSTALL_PREFIX}/Library/Printers/PPDs/Contents/Resources)
+  set(GUI_DIR    ${CMAKE_INSTALL_PREFIX}/Applications/Boomaga.app/Contents/MacOS)
+  set(NONGUI_DIR ${CMAKE_INSTALL_PREFIX}/Applications/Boomaga.app/Contents/MacOS)
+  set(USE_DBUS FALSE)
 
 endif()
 
-set(GUI_DIR ${CMAKE_INSTALL_PREFIX}/bin)
-add_definitions(-DGUI_DIR=\"${GUI_DIR}\")
+set(AUTOREMOVE_EXT "autoremove")
+add_definitions(-DAUTOREMOVE_EXT=\"${AUTOREMOVE_EXT}\")
 
-set(NONGUI_DIR ${CMAKE_INSTALL_PREFIX}/lib${LIB_SUFFIX}/boomaga)
+add_definitions(-DGUI_DIR=\"${GUI_DIR}\")
 add_definitions(-DNONGUI_DIR=\"${NONGUI_DIR}\")
+
+if (USE_DBUS)
+  add_definitions(-DUSE_DBUS=1)
+endif()
 
 ###########################################################
 

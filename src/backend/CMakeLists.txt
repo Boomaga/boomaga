@@ -26,3 +26,7 @@
 
 
 add_subdirectory(cups_backend)
+
+if(${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
+    add_subdirectory(macos_agent)
+endif()

@@ -26,7 +26,7 @@
 #include "boomagatypes.h"
 #include <QDebug>
 #include <QDir>
-
+#include <QStandardPaths>
 
 /************************************************
 
@@ -150,4 +150,15 @@ QString shrinkHomeDir(const QString &fileName)
 
     return res;
 
+}
+
+
+/************************************************
+ *
+ ************************************************/
+QString boomagaChacheDir()
+{
+    QString res = QStandardPaths::writableLocation(QStandardPaths::GenericCacheLocation);
+    res = expandHomeDir(res);
+    return res;
 }

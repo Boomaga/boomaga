@@ -31,7 +31,9 @@
 #include <pdfparser/pdfreader.h>
 #include <pdfparser/pdfwriter.h>
 
+#define PDF_BOXFIELDS_COUNT 4
 //#define SAVE_DEBUG_INFO
+
 /************************************************
  *
  ************************************************/
@@ -99,7 +101,7 @@ void PdfProcessor::run(PDF::Writer *writer, quint32 objNumOffset)
 void fillPageInfo(PdfPageInfo *pageInfo, const PDF::Dict &pageDict, const PDF::Dict &inherited)
 {
     const PDF::Array &mediaBox = pageDict.value("MediaBox", inherited.value("MediaBox")).asArray();
-    if (mediaBox.count() != 4)
+    if (mediaBox.count() != PDF_BOXFIELDS_COUNT)
         throw QString("Incorrect MediaBox rectangle");
 
     pageInfo->mediaBox = QRectF(mediaBox.at(0).asNumber().value(),
@@ -110,7 +112,7 @@ void fillPageInfo(PdfPageInfo *pageInfo, const PDF::Dict &pageDict, const PDF::D
     const PDF::Array &cropBox  = pageDict.value("CropBox", inherited.value("CropBox")).asArray();
     if (cropBox.isValid())
     {
-        if (cropBox.count() != 4)
+        if (cropBox.count() != PDF_BOXFIELDS_COUNT)
             throw QString("Incorrect CropBox rectangle");
 
         pageInfo->cropBox = QRectF(cropBox.at(0).asNumber().value(),

@@ -1,6 +1,7 @@
 #!/bin/sh
 BUILD_DIR=../build
 INSTALL_DIR=$(readlink -e "${BUILD_DIR}")/OUT
+INSTALL_DIR=${BUILD_DIR}/OUT
 
 echo "BUILD DIR:   ${BUILD_DIR}"
 echo "INSTALL DIR: ${INSTALL_DIR}"

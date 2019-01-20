@@ -27,17 +27,19 @@
 #include <cstdarg>
 #include <sstream>
 #include <iostream>
+#include <unistd.h>
 
 using namespace std;
 
-static string LogPrefix = "Boomaga";
+static string mLogPrefix = "Boomaga";
+static bool mWriteTime = false;
 
 /************************************************
  *
  ************************************************/
 string Log::prefix()
 {
-    return LogPrefix;
+    return mLogPrefix;
 }
 
 
@@ -46,7 +48,44 @@ string Log::prefix()
  ************************************************/
 void Log::setPrefix(const string &prefix)
 {
-    LogPrefix = prefix;
+    mLogPrefix = prefix;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+bool Log::writeTime()
+{
+    return mWriteTime;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Log::setWriteTime(bool value)
+{
+    mWriteTime = value;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+static void printTime()
+{
+    static int n;
+
+    char buff[21];
+    time_t timer;
+    struct tm* tm_info;
+    time(&timer);
+    tm_info = localtime(&timer);
+    strftime(buff, 20, "%Y-%m-%d %H:%M:%S", tm_info);
+    cerr << buff << " ";
+    cerr << "[" << getpid() << "] ";
+    cerr << "(" << ++n << ") ";
 }
 
 
@@ -60,9 +99,20 @@ static void print(const char *level, const char *fmt, va_list args)
 
     string line;
     stringstream str(buffer);
-    while(std::getline(str, line))
+    if (mWriteTime)
     {
-        cerr << level << ": [" << LogPrefix << " ] " << level << ": " << line << endl;
+        while(std::getline(str, line))
+        {
+            printTime();
+            cerr << "[" << mLogPrefix << "] " << level << ": " << line << endl;
+        }
+    }
+    else
+    {
+        while(std::getline(str, line))
+        {
+            cerr << level << ": [" << mLogPrefix << "] " << level << ": " << line << endl;
+        }
     }
 }
 

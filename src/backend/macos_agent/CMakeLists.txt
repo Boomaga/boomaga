@@ -2,7 +2,7 @@
  # (c)LGPL2+
  #
  #
- # Copyright: 2012-2016 Boomaga team https://github.com/Boomaga
+ # Copyright: 2012-2018 Boomaga team https://github.com/Boomaga
  # Authors:
  #   Alexander Sokoloff <sokoloff.a@gmail.com>
  #
@@ -23,48 +23,33 @@
  #
  # END_COMMON_COPYRIGHT_HEADER
 
-project(cups_backend)
+cmake_minimum_required(VERSION 3.0.0)
+cmake_policy(SET CMP0028 NEW)
+
+project(agent)
+
+set(MAC_APP_ID    "io.github.Boomaga")
+add_definitions(-DMAC_APP_ID=\"${MAC_APP_ID}\")
 
 set(HEADERS
     ../../common.h
 )
 
 set(SOURCES
-    main.cpp
-    ../../common.cpp
+  main.cpp
+  ../../common.cpp
 )
-
-
-
-add_definitions(-DMAC_SPOOL_DIR=\"${MAC_SPOOL_DIR}\")
 
 add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES})
-target_link_libraries(${PROJECT_NAME})
-set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "boomaga")
+set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "agent")
 
 target_include_directories(${PROJECT_NAME} PRIVATE
-    ${CMAKE_CURRENT_SOURCE_DIR}
-    ${CMAKE_SOURCE_DIR}
-    ${CMAKE_CURRENT_BINARY_DIR}
+  ${CMAKE_CURRENT_SOURCE_DIR}
+  ${CMAKE_SOURCE_DIR}
+  ${CMAKE_CURRENT_BINARY_DIR}
 )
 
+configure_file(plist.in agent.plist @ONLY)
 
-install(FILES "${CMAKE_CURRENT_BINARY_DIR}/boomaga"
-  DESTINATION ${CUPS_BACKEND_DIR}
-  PERMISSIONS
-    OWNER_READ OWNER_WRITE OWNER_EXECUTE
-)
-
-configure_file(${CMAKE_CURRENT_SOURCE_DIR}/boomaga.ppd
-               ${CMAKE_CURRENT_BINARY_DIR}/boomaga.ppd
-               @ONLY)
-
-
-install(FILES ${CMAKE_CURRENT_BINARY_DIR}/boomaga.ppd
-  DESTINATION ${CUPS_PPD_DIR}
-  PERMISSIONS
-    OWNER_READ OWNER_WRITE
-    GROUP_READ
-    WORLD_READ
-)
-
+install(TARGETS ${PROJECT_NAME}   RUNTIME DESTINATION Applications/Boomaga.app/Contents/MacOS)
+install(FILES agent.plist         DESTINATION Library/LaunchAgents/${MAC_APP_ID}.agent.plist)
