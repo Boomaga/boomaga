@@ -33,7 +33,6 @@
 #include "sheet.h"
 #include "layout.h"
 #include "projectfile.h"
-#include "pstopdf.h"
 
 #include <unistd.h>
 #include <fstream>
