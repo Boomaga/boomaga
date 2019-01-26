@@ -39,7 +39,7 @@
 #include "../kernel/layout.h"
 #include "../kernel/project.h"
 #include "../kernel/sheet.h"
-#include "../kernel/projectfile.h"
+#include "../kernel/boofile.h"
 #include "../boomagatypes.h"
 #include "../kernel/projectpage.h"
 #include "../settings.h"
@@ -1005,7 +1005,7 @@ void TestBoomaga::test_BackendOptions_data()
 /************************************************
  *
  * ***********************************************/
-void TestBoomaga::test_ProjectFilePageSpec()
+void TestBoomaga::test_BooFilePageSpec()
 {
     QString string = QTest::currentDataTag();
     QFETCH(QString, direction);
@@ -1016,7 +1016,7 @@ void TestBoomaga::test_ProjectFilePageSpec()
 
     if (direction == ">")
     {
-        ProjectFile::PageSpec spec(string);
+        BooFile::PageSpec spec(string);
 
         QCOMPARE(spec.pageNum(), pageNum);
         QCOMPARE(spec.isHidden(), hidden);
@@ -1024,7 +1024,7 @@ void TestBoomaga::test_ProjectFilePageSpec()
     }
     else
     {
-        ProjectFile::PageSpec spec(pageNum,
+        BooFile::PageSpec spec(pageNum,
                                    hidden,
                                    (Rotation)rotation,
                                    startBooklet);
@@ -1037,7 +1037,7 @@ void TestBoomaga::test_ProjectFilePageSpec()
 /************************************************
  *
  * ***********************************************/
-void TestBoomaga::test_ProjectFilePageSpec_data()
+void TestBoomaga::test_BooFilePageSpec_data()
 {
     QTest::addColumn<QString>("direction");
     QTest::addColumn<int>("pageNum");

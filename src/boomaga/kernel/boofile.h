@@ -24,8 +24,8 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#ifndef PROJECTFILE_H
-#define PROJECTFILE_H
+#ifndef BOOFILE_H
+#define BOOFILE_H
 
 #include <QObject>
 #include <QList>
@@ -84,12 +84,12 @@ private:
  *
  ************************************************/
 
-class ProjectFile : public QObject
+class BooFile : public QObject
 {
     Q_OBJECT
 public:
-    explicit ProjectFile(QObject *parent = 0);
-    virtual ~ProjectFile();
+    explicit BooFile(QObject *parent = 0);
+    virtual ~BooFile();
 
     void load(const QString &fileName);
     void save(const QString &fileName);
@@ -135,4 +135,4 @@ private:
     void writeCommand(QFile *out, const QString &command, const QList<int> &data);
 };
 
-#endif // PROJECTFILE_H
+#endif // BOOFILE_H

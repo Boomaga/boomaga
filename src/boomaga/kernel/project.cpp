@@ -32,7 +32,7 @@
 #include "tmppdffile.h"
 #include "sheet.h"
 #include "layout.h"
-#include "projectfile.h"
+#include "boofile.h"
 #include "pstopdf.h"
 
 #include <unistd.h>
@@ -1205,7 +1205,7 @@ JobList Project::loadPDF(const QString &fileName, const QString &options)
  ************************************************/
 JobList Project::loadBOO(const QString &fileName, const QString &)
 {
-    ProjectFile file;
+    BooFile file;
     file.load(fileName);
     setMetadata(file.metaData());
     return file.jobs();
@@ -1299,7 +1299,7 @@ JobList Project::loadCupsBOO(const QString &fileName, const QString &)
  ************************************************/
 void Project::save(const QString &fileName)
 {
-    ProjectFile file;
+    BooFile file;
     file.setMetadata(mMetaData);
     file.setJobs(mJobs);
     file.save(fileName);

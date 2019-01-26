@@ -60,8 +60,8 @@ private slots:
     void test_BackendOptions();
     void test_BackendOptions_data();
 
-    void test_ProjectFilePageSpec();
-    void test_ProjectFilePageSpec_data();
+    void test_BooFilePageSpec();
+    void test_BooFilePageSpec_data();
 
     void test_BooklesSplit();
     void test_BooklesSplit_data();

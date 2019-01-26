@@ -46,7 +46,7 @@ set(HEADERS
     kernel/job.h
     kernel/tmppdffile.h
     kernel/layout.h
-    kernel/projectfile.h
+    kernel/boofile.h
     kernel/project.h
     kernel/projectpage.h
     kernel/printer.h
@@ -97,7 +97,7 @@ set(SOURCES
     kernel/projectpage.cpp
     kernel/cupsprinteroptions.cpp
     kernel/printer.cpp
-    kernel/projectfile.cpp
+    kernel/boofile.cpp
     kernel/pstopdf.cpp
     
     gui/mainwindow.cpp

@@ -24,7 +24,7 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#include "projectfile.h"
+#include "boofile.h"
 
 #include <QFileInfo>
 #include <QDebug>
@@ -39,7 +39,7 @@
 /************************************************
  *
  ************************************************/
-ProjectFile::PageSpec::PageSpec(int pageNum, bool hidden, Rotation rotation, bool startBooklet):
+BooFile::PageSpec::PageSpec(int pageNum, bool hidden, Rotation rotation, bool startBooklet):
     mPageNum(pageNum),
     mHidden(hidden),
     mRotation(rotation),
@@ -51,7 +51,7 @@ ProjectFile::PageSpec::PageSpec(int pageNum, bool hidden, Rotation rotation, boo
 /************************************************
  *
  ************************************************/
-ProjectFile::PageSpec::PageSpec(const QString &spec)
+BooFile::PageSpec::PageSpec(const QString &spec)
 {
     bool ok;
     // In the file pages are numbered starting with 1 not 0.
@@ -73,7 +73,7 @@ ProjectFile::PageSpec::PageSpec(const QString &spec)
 /************************************************
  *
  ************************************************/
-QString ProjectFile::PageSpec::asString()
+QString BooFile::PageSpec::asString()
 {
     QString res;
 
@@ -111,7 +111,7 @@ QString ProjectFile::PageSpec::asString()
 /************************************************
  *
  * ***********************************************/
-QList<ProjectFile::PageSpec> ProjectFile::PageSpec::readPagesSpec(const QString &str)
+QList<BooFile::PageSpec> BooFile::PageSpec::readPagesSpec(const QString &str)
 {
     QList<PageSpec> res;
 
@@ -127,7 +127,7 @@ QList<ProjectFile::PageSpec> ProjectFile::PageSpec::readPagesSpec(const QString 
 /************************************************
 
  ************************************************/
-ProjectFile::ProjectFile(QObject *parent) :
+BooFile::BooFile(QObject *parent) :
     QObject(parent)
 {
 }
@@ -136,7 +136,7 @@ ProjectFile::ProjectFile(QObject *parent) :
 /************************************************
 
  ************************************************/
-ProjectFile::~ProjectFile()
+BooFile::~BooFile()
 {
     mJobs.clear();
 }
@@ -145,7 +145,7 @@ ProjectFile::~ProjectFile()
 /************************************************
 
  ************************************************/
-void ProjectFile::load(const QString &fileName)
+void BooFile::load(const QString &fileName)
 {
     mJobs.clear();
 
@@ -281,7 +281,7 @@ void ProjectFile::load(const QString &fileName)
 /************************************************
 
  ************************************************/
-void ProjectFile::save(const QString &fileName)
+void BooFile::save(const QString &fileName)
 {
     QString filePath = QFileInfo(fileName).absoluteFilePath();
 
@@ -372,7 +372,7 @@ void ProjectFile::save(const QString &fileName)
 /************************************************
 
  ************************************************/
-QByteArray ProjectFile::readJobPDF(const Job &job)
+QByteArray BooFile::readJobPDF(const Job &job)
 {
     QFile file(job.inputFile().fileName());
     if(!file.open(QFile::ReadOnly))
@@ -393,7 +393,7 @@ QByteArray ProjectFile::readJobPDF(const Job &job)
 /************************************************
 
  ************************************************/
-void ProjectFile::write(QFile *out, const QByteArray &data)
+void BooFile::write(QFile *out, const QByteArray &data)
 {
     if (out->write(data) < 0)
         throw QObject::tr("I can't write to file '%1'").arg(out->fileName()) + "\n" + out->errorString();
@@ -404,7 +404,7 @@ void ProjectFile::write(QFile *out, const QByteArray &data)
 /************************************************
 
  ************************************************/
-void ProjectFile::writeCommand(QFile *out, const QString &command, const QString &data)
+void BooFile::writeCommand(QFile *out, const QString &command, const QString &data)
 {
 #if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
     QString v = Qt::escape(data);
@@ -418,7 +418,7 @@ void ProjectFile::writeCommand(QFile *out, const QString &command, const QString
 /************************************************
 
  ************************************************/
-void ProjectFile::writeCommand(QFile *out, const QString &command, const QList<int> &data)
+void BooFile::writeCommand(QFile *out, const QString &command, const QList<int> &data)
 {
     QStringList sl;
     for(int i=0; i<data.count(); ++i)
