@@ -31,7 +31,6 @@
 #include "kernel/job.h"
 #include "kernel/printer.h"
 #include "kernel/layout.h"
-#include "kernel/inputfile.h"
 #include "printersettings/printersettings.h"
 #include "aboutdialog/aboutdialog.h"
 #include "actions.h"

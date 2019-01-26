@@ -30,7 +30,6 @@
 #include <QDebug>
 #include <QIODevice>
 #include <QFileInfo>
-#include "kernel/inputfile.h"
 #include "pdfparser/pdfreader.h"
 #include <QSharedDataPointer>
 
@@ -80,8 +79,6 @@ JobData::JobData(const QString &fileName, qint64 startPos, qint64 endPos, const 
             mTitle = reader.find("/Trailer/Info/Title").asString().value();
             int pageCount = reader.pageCount();
 
-            InputFile inputFile(mFileName, mStartPos, mEndPos);
-
             if (pages && !pages->isEmpty())
             {
                 foreach (int p, *pages)
@@ -94,14 +91,14 @@ JobData::JobData(const QString &fileName, qint64 startPos, qint64 endPos, const 
                         continue;
                     }
 
-                    mPages << new ProjectPage(inputFile, p);
+                    mPages << new ProjectPage(p);
                 }
 
             }
             else
             {
                 for (int i=0; i< pageCount; ++i)
-                    mPages << new ProjectPage(inputFile, i);
+                    mPages << new ProjectPage(i);
             }
 
             mState = Job::JobNotReady;
@@ -370,11 +367,29 @@ void Job::setTitle(const QString &title)
 
 
 /************************************************
-
+ *
  ************************************************/
-InputFile Job::inputFile() const
+QString Job::fileName() const
 {
-    return InputFile(mData->mFileName, mData->mStartPos, mData->mEndPos);
+    return mData->mFileName;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+qint64 Job::fileStartPos() const
+{
+    return mData->mStartPos;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+qint64 Job::fileEndPos() const
+{
+    return mData->mEndPos;
 }
 
 

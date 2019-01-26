@@ -36,7 +36,6 @@
 
 #include "project.h"
 #include "job.h"
-#include "inputfile.h"
 #include "sheet.h"
 #include "layout.h"
 #include "render.h"
@@ -82,6 +81,7 @@ QString TmpPdfFile::genFileName()
  ************************************************/
 TmpPdfFile::TmpPdfFile(const JobList &jobs, QObject *parent):
     QObject(parent),
+    mJobs(jobs),
     mMerger(0),
     mValid(false)
 {
@@ -90,9 +90,6 @@ TmpPdfFile::TmpPdfFile(const JobList &jobs, QObject *parent):
     mFirstFreeNum = 0;
 
     mFileName = genFileName();
-
-    foreach (Job job, jobs)
-        mInputFiles << job.inputFile();
 }
 
 
@@ -133,11 +130,11 @@ void TmpPdfFile::merge()
             project, SLOT(error(QString)));
 
     QStringList args;
-    foreach (const InputFile file, mInputFiles)
+    foreach (const Job &job, mJobs)
     {
-        args << file.fileName();
-        args << QString("%1").arg(file.startPos());
-        args << QString("%1").arg(file.endPos());
+        args << job.fileName();
+        args << QString("%1").arg(job.fileStartPos());
+        args << QString("%1").arg(job.fileEndPos());
     }
 
     args << mFileName;
@@ -535,7 +532,7 @@ void TmpPdfFile::ipcXRefInfo(qint64 xrefPos, qint32 freeNum)
 /************************************************
  *
  * ***********************************************/
-PdfPageInfo TmpPdfFile::pageInfo(const InputFile &file, int pageNum)
+PdfPageInfo TmpPdfFile::pageInfo(const Job &job, int pageNum)
 {
-    return mPagesInfo.value(QString("%1:%2").arg(mInputFiles.indexOf(file)).arg(pageNum));
+    return mPagesInfo.value(QString("%1:%2").arg(mJobs.indexOf(job)).arg(pageNum));
 }

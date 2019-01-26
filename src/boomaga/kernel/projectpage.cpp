@@ -47,9 +47,8 @@ ProjectPage::ProjectPage(QObject *parent):
 /************************************************
  *
  ************************************************/
-ProjectPage::ProjectPage(const InputFile &inputFile, int jobPageNum, QObject *parent):
+ProjectPage::ProjectPage(int jobPageNum, QObject *parent):
     QObject(parent),
-    mInputFile(inputFile),
     mJobPageNum(jobPageNum),
     mPageNum(-1),
     mSheet(0),
@@ -137,7 +136,6 @@ void ProjectPage::setAutoStartSubBooklet(bool value)
 ProjectPage *ProjectPage::clone(QObject *parent)
 {
     ProjectPage *res = new ProjectPage(parent);
-    res->mInputFile = mInputFile;
     res->mJobPageNum = mJobPageNum;
     res->mPdfInfo = mPdfInfo;
     res->setVisible(mVisible);

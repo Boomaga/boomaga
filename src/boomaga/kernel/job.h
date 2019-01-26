@@ -30,7 +30,6 @@
 #include <QList>
 #include <QObject>
 #include <QString>
-#include "inputfile.h"
 
 #include <QExplicitlySharedDataPointer>
 
@@ -76,7 +75,9 @@ public:
     QString title(bool human = true) const;
     void setTitle(const QString &title);
 
-    InputFile inputFile() const;
+    QString fileName() const;
+    qint64 fileStartPos() const;
+    qint64 fileEndPos() const;
 
     State state() const;
     QString errorString() const;

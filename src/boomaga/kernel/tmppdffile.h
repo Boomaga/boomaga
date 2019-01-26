@@ -52,15 +52,13 @@ public:
     void updateSheets(QList<Sheet *> &sheets);
     void stop();
 
-    QList<InputFile> inputFiles() const  { return  mInputFiles; }
-
     QString fileName() const { return mFileName; }
 
     bool writeDocument(const QList<Sheet*> &sheets, QIODevice *out);
 
     bool isValid() const { return mValid; }
 
-    PdfPageInfo pageInfo(const InputFile &file, int pageNum);
+    PdfPageInfo pageInfo(const Job &job, int pageNum);
 
 signals:
     void merged();
@@ -78,7 +76,7 @@ private:
 
     static QString genFileName();
 
-    QList<InputFile> mInputFiles;
+    JobList mJobs;
     QHash<QString, PdfPageInfo> mPagesInfo;
 
     QString mFileName;

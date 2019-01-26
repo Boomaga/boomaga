@@ -291,7 +291,7 @@ void BooFile::save(const QString &fileName)
     for (int i=0; i<mJobs.count(); ++i)
     {
         const Job &job = mJobs.at(i);
-        if (job.inputFile().fileName() == filePath)
+        if (job.fileName() == filePath)
         {
             documents[i] = readJobPDF(job);
         }
@@ -374,17 +374,17 @@ void BooFile::save(const QString &fileName)
  ************************************************/
 QByteArray BooFile::readJobPDF(const Job &job)
 {
-    QFile file(job.inputFile().fileName());
+    QFile file(job.fileName());
     if(!file.open(QFile::ReadOnly))
     {
         throw QObject::tr("I can't read from file '%1'")
-                .arg(job.inputFile().fileName()) +
+                .arg(job.fileName()) +
                 "\n" +
                 file.errorString();
     }
 
-    file.seek(job.inputFile().startPos());
-    QByteArray res = file.read(job.inputFile().length());
+    file.seek(job.fileStartPos());
+    QByteArray res = file.read(job.fileEndPos() - job.fileStartPos());
     file.close();
     return res;
 }

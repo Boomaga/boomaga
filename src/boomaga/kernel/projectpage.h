@@ -28,7 +28,6 @@
 #define PROJECTPAGE_H
 
 #include <QObject>
-#include "inputfile.h"
 #include <QRectF>
 #include "boomagatypes.h"
 #include "../pdfmerger/pdfmergeripc.h"
@@ -41,10 +40,9 @@ class ProjectPage : public QObject
     friend class Project;
 public:
     explicit ProjectPage(QObject *parent = 0);
-    explicit ProjectPage(const InputFile &inputFile, int jobPageNum, QObject *parent = 0);
+    explicit ProjectPage(int jobPageNum, QObject *parent = 0);
     virtual ~ProjectPage();
 
-    InputFile inputFile() const { return mInputFile; }
     int jobPageNum() const { return mJobPageNum; }
     int pageNum() const { return mPageNum; }
     Sheet *sheet() const { return mSheet; }
@@ -79,7 +77,6 @@ protected:
 
 private:
     Q_DISABLE_COPY(ProjectPage)
-    InputFile mInputFile;
     int mJobPageNum;
     int mPageNum;
     Sheet *mSheet;

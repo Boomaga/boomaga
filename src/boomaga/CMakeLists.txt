@@ -42,7 +42,6 @@ set(HEADERS
     ../common.h
 
     kernel/sheet.h
-    kernel/inputfile.h
     kernel/job.h
     kernel/tmppdffile.h
     kernel/layout.h
@@ -89,7 +88,6 @@ set(SOURCES
     ../common.cpp
 
     kernel/sheet.cpp
-    kernel/inputfile.cpp
     kernel/job.cpp
     kernel/tmppdffile.cpp
     kernel/layout.cpp

@@ -28,7 +28,6 @@
 #include "settings.h"
 #include "job.h"
 
-#include "inputfile.h"
 #include "tmppdffile.h"
 #include "sheet.h"
 #include "layout.h"
@@ -123,9 +122,9 @@ void Project::free()
 {
     for (const Job &job: mJobs)
     {
-        if (job.inputFile().fileName().endsWith(AUTOREMOVE_EXT))
+        if (job.fileName().endsWith(AUTOREMOVE_EXT))
         {
-            QFile(job.inputFile().fileName()).remove();
+            QFile(job.fileName()).remove();
         }
     }
 
@@ -185,7 +184,7 @@ void Project::removeJob(int index)
 {
     stopMerging();
 
-    QString fileName = mJobs.at(index).inputFile().fileName();
+    QString fileName = mJobs.at(index).fileName();
     mJobs.removeAt(index);
     update();
 
@@ -193,7 +192,7 @@ void Project::removeJob(int index)
     {
         bool remove = true;
         for (const Job &job: mJobs)
-            remove = remove && job.inputFile().fileName() != fileName;
+            remove = remove && job.fileName() != fileName;
 
         if (remove)
             QFile(fileName).remove();
@@ -229,12 +228,12 @@ void Project::tmpFileMerged()
         return;
     }
 
-    foreach (Job job, mJobs)
+    foreach (const Job &job, mJobs)
     {
         for (int p=0; p<job.pageCount(); ++p)
         {
             ProjectPage *page = job.page(p);
-            page->setPdfInfo(tmpPdf->pageInfo(job.inputFile(), page->jobPageNum()));
+            page->setPdfInfo(tmpPdf->pageInfo(job, page->jobPageNum()));
         }
 
     }
