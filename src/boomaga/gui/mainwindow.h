@@ -39,6 +39,7 @@ class Printer;
 class QMessageBox;
 class ExportToPDFPrinter;
 class Sheet;
+class ProjectLongTask;
 
 namespace Ui {
 class MainWindow;
@@ -99,7 +100,7 @@ private slots:
     void fillRecentFiles();
     void loadAuto();
 
-    void psToPdfStarted();
+    void longTaskStarted(const ProjectLongTask *task);
 
 protected:
     void closeEvent(QCloseEvent *event);

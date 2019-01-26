@@ -1133,20 +1133,12 @@ JobList Project::load(const QStringList &fileNames, const QString &options)
             // Read PostScript ...........................
             else if (mark.startsWith("%!PS-Adobe-"))
             {
-                try
-                {
-                    QString outFileName = genTmpFileName();
-                    PsToPdf psToPdf;
-                    emit psToPdfStarted();
-                    psToPdf.execute(fileName.toStdString(), outFileName.toStdString());
-                    emit psToPdfFinished();
-                    jobs << loadPDF(outFileName, options);
-                }
-                catch (...)
-                {
-                    emit psToPdfFinished();
-                    throw;
-                }
+                ProjectLongTask task(tr("Converting Postscript to PDF:", "Progressbar text"));
+                QString outFileName = genTmpFileName();
+                PsToPdf psToPdf;
+                emit longTaskStarted(&task);
+                psToPdf.execute(fileName.toStdString(), outFileName.toStdString());
+                jobs << loadPDF(outFileName, options);
             }
 
             // Unknown format ............................
@@ -1269,20 +1261,12 @@ JobList Project::loadCupsBOO(const QString &fileName, const QString &)
     // Read PostScript ...........................
     if (line.compare(0, 11, "%!PS-Adobe-") == 0)
     {
-        try
-        {
-            QString outFileName = genTmpFileName();
-            PsToPdf psToPdf;
-            emit psToPdfStarted();
-            psToPdf.execute(in, outFileName.toStdString());
-            emit psToPdfFinished();
-            return loadPDF(outFileName, options);
-        }
-        catch (...)
-        {
-            emit psToPdfFinished();
-            throw;
-        }
+        QString outFileName = genTmpFileName();
+        ProjectLongTask task(tr("Converting Postscript to PDF:", "Progressbar text"));
+        PsToPdf psToPdf;
+        emit longTaskStarted(&task);
+        psToPdf.execute(in, outFileName.toStdString());
+        return loadPDF(outFileName, options);
     }
 
 
@@ -1303,4 +1287,24 @@ void Project::save(const QString &fileName)
     file.setMetadata(mMetaData);
     file.setJobs(mJobs);
     file.save(fileName);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+ProjectLongTask::ProjectLongTask(const QString &title, QObject *parent):
+    QObject(parent),
+    mTitle(title)
+{
+
+}
+
+
+/************************************************
+ *
+ ************************************************/
+ProjectLongTask::~ProjectLongTask()
+{
+    emit finished();
 }

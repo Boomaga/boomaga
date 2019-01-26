@@ -184,9 +184,8 @@ MainWindow::MainWindow(QWidget *parent):
     connect(ui->menuEditJob, SIGNAL(aboutToShow()),
             this, SLOT(showEditJobMainMenu()));
 
-    connect(project, SIGNAL(psToPdfStarted()),
-            this , SLOT(psToPdfStarted()));
-
+    connect(project, SIGNAL(longTaskStarted(const ProjectLongTask*)),
+            this , SLOT(longTaskStarted(const ProjectLongTask*)));
 
     ui->preview->setFocusPolicy(Qt::StrongFocus);
     ui->preview->setFocus();
@@ -1480,7 +1479,7 @@ void MainWindow::loadAuto()
 /************************************************
  *
  ************************************************/
-void MainWindow::psToPdfStarted()
+void MainWindow::longTaskStarted(const ProjectLongTask *task)
 {
     QLabel *label = new QLabel(this);
     QProgressBar *progressBar = new QProgressBar(this);
@@ -1490,14 +1489,15 @@ void MainWindow::psToPdfStarted()
                                QSizePolicy::Maximum);
 
 
-    label->setText(tr("Converting Postscript to PDF:", "Progressbar text"));
+    label->setText(task->title());
 
     ui->statusbar->insertWidget(0, label);
     ui->statusbar->insertWidget(1, progressBar);
 
-    connect(project, &Project::psToPdfFinished, [this, label, progressBar]()
+    connect(task, &ProjectLongTask::finished, [this, label, progressBar]()
     {
         label->deleteLater();
         progressBar->deleteLater();
     });
+
 }

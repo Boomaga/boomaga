@@ -80,6 +80,22 @@ private:
     void addDictItem(QByteArray &out, const QString &key, const QDateTime &value) const;
 };
 
+class ProjectLongTask: public QObject
+{
+    Q_OBJECT
+public:
+    explicit ProjectLongTask(const QString &title, QObject *parent = 0);
+    virtual ~ProjectLongTask();
+
+    QString title() const { return mTitle; }
+
+signals:
+    void finished();
+
+private:
+    QString mTitle;
+};
+
 
 class Project : public QObject
 {
@@ -149,10 +165,6 @@ public:
     ProjectPage *prevVisiblePage(ProjectPage *current) const;
     ProjectPage *nextVisiblePage(ProjectPage *current) const;
 
-signals:
-    void psToPdfStarted();
-    void psToPdfFinished();
-
 public slots:
     JobList load(const QString &fileName, const QString &options = "");
     JobList load(const QStringList &fileNames, const QString &options = "");
@@ -192,6 +204,7 @@ signals:
     void currentPageChanged(int page);
     void currentSheetChanged(Sheet *sheet);
     void currentSheetChanged(int sheet);
+    void longTaskStarted(const ProjectLongTask *task);
 
 protected:
     Rotation calcRotation(const QList<ProjectPage *> &pages, const Layout *layout) const;
