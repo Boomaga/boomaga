@@ -66,7 +66,7 @@ private slots:
 
     void showAboutDialog();
 
-    void updateProgressBar(int value, int all);
+    void updateProgressBar(int value, int total);
 
     void showPreviewContextMenu(Sheet *sheet, ProjectPage *page);
     void showJobViewContextMenu(const Job &job);
@@ -98,6 +98,8 @@ private slots:
 
     void fillRecentFiles();
     void loadAuto();
+
+    void psToPdfStarted();
 
 protected:
     void closeEvent(QCloseEvent *event);

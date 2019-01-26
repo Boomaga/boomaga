@@ -51,6 +51,7 @@ set(HEADERS
     kernel/projectpage.h
     kernel/printer.h
     kernel/cupsprinteroptions.h
+    kernel/pstopdf.h
         
     gui/mainwindow.h
     gui/actions.h
@@ -97,6 +98,7 @@ set(SOURCES
     kernel/cupsprinteroptions.cpp
     kernel/printer.cpp
     kernel/projectfile.cpp
+    kernel/pstopdf.cpp
     
     gui/mainwindow.cpp
     gui/actions.cpp

@@ -1069,6 +1069,7 @@ JobList Project::load(const QStringList &fileNames, const QString &options)
     stopMerging();
     QStringList errors;
 
+    QStringList delFiles;
     JobList jobs;
     foreach(QString fileName, fileNames)
     {
@@ -1109,15 +1110,44 @@ JobList Project::load(const QStringList &fileNames, const QString &options)
         {
             // Read CUPS_BOOMAGA .........................
             if (mark.startsWith("\x1B CUPS_BOOMAGA"))
+            {
                 jobs << loadCupsBOO(fileName, options);
+            }
+
 
             // Read PDF ..................................
             else if (mark.startsWith("%PDF-"))
+            {
                 jobs << loadPDF(fileName, options);
+            }
+
 
             // Read BOO ..................................
             else if (mark.startsWith("\x1B%-12345X@PJL BOOMAGA_PROGECT"))
+            {
                 jobs << loadBOO(fileName, options);
+                delFiles << fileName;
+            }
+
+
+            // Read PostScript ...........................
+            else if (mark.startsWith("%!PS-Adobe-"))
+            {
+                try
+                {
+                    QString outFileName = genTmpFileName();
+                    PsToPdf psToPdf;
+                    emit psToPdfStarted();
+                    psToPdf.execute(fileName.toStdString(), outFileName.toStdString());
+                    emit psToPdfFinished();
+                    jobs << loadPDF(outFileName, options);
+                }
+                catch (...)
+                {
+                    emit psToPdfFinished();
+                    throw;
+                }
+            }
 
             // Unknown format ............................
             else
@@ -1126,18 +1156,20 @@ JobList Project::load(const QStringList &fileNames, const QString &options)
         }
         catch (const BoomagaError &err)
         {
+            qWarning() << err.what();
             errors << err.what();
         }
         catch (const QString &err)
         {
+            qWarning() << err;
             errors << err;
         }
     }
 
-    foreach(QString fileName, fileNames)
+
+    foreach(QString fileName, delFiles)
     {
-        if (fileName.endsWith(AUTOREMOVE_EXT))
-            QFile(fileName).remove();
+        QFile(fileName).remove();
     }
 
     if (!jobs.isEmpty())
@@ -1147,29 +1179,6 @@ JobList Project::load(const QStringList &fileNames, const QString &options)
         error(errors.join("\n\n"));
 
     return jobs;
-}
-
-/************************************************
- *
- ************************************************/
-static QString copyToCache(const QString &src)
-{
-    QString srcFile  = QFileInfo(src).absoluteFilePath();
-    QString name = QString("boomaga_in%1.%2")
-            .arg(QUuid::createUuid().toString())
-            .arg(AUTOREMOVE_EXT);
-    QString res = QDir(boomagaChacheDir()).filePath(name);
-
-    if (srcFile == res)
-        return res;
-
-    if (link(srcFile.toLocal8Bit().data(), res.toLocal8Bit().data()) == 0)
-        return res;
-
-    if (QFile::copy(srcFile, res))
-        return res;
-
-    throw BoomagaError(Project::tr("I can't write to file '%1'").arg(res).toStdString());
 }
 
 
@@ -1240,7 +1249,10 @@ JobList Project::loadCupsBOO(const QString &fileName, const QString &)
     auto pos = in.tellg();
     string line;
     getline(in, line);
+    in.seekg(pos);
 
+
+    // Read PDF ..................................
     if (line.compare(0, 5, "%PDF-") == 0)
     {
         QString outFileName = genTmpFileName();
@@ -1248,16 +1260,35 @@ JobList Project::loadCupsBOO(const QString &fileName, const QString &)
         if (!out)
             throw BoomagaError(tr("I can't write to file '%1'").arg(outFileName)
                                 + "\n" + strerror(errno));
-
-        in.seekg(pos);
         out << in.rdbuf();
         out.close();
         return loadPDF(outFileName, options);
     }
 
+
+    // Read PostScript ...........................
+    if (line.compare(0, 11, "%!PS-Adobe-") == 0)
+    {
+        try
+        {
+            QString outFileName = genTmpFileName();
+            PsToPdf psToPdf;
+            emit psToPdfStarted();
+            psToPdf.execute(in, outFileName.toStdString());
+            emit psToPdfFinished();
+            return loadPDF(outFileName, options);
+        }
+        catch (...)
+        {
+            emit psToPdfFinished();
+            throw;
+        }
+    }
+
+
+    // Unknown format ............................
     throw BoomagaError(tr("I can't read file \"%1\" either because it's not a supported file type, "
-                          "or because the file has been damaged.")
-                       .arg(fileName));
+                          "or because the file has been damaged.").arg(fileName));
 }
 
 

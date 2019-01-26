@@ -508,7 +508,7 @@ void TmpPdfFile::mergerFinished(int)
     mOrigFileSize = f.size();
     f.close();
 
-    emit progress(0,0);
+    emit progress(-1,-1);
     emit merged();
 }
 

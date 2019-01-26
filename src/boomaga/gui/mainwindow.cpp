@@ -184,6 +184,10 @@ MainWindow::MainWindow(QWidget *parent):
     connect(ui->menuEditJob, SIGNAL(aboutToShow()),
             this, SLOT(showEditJobMainMenu()));
 
+    connect(project, SIGNAL(psToPdfStarted()),
+            this , SLOT(psToPdfStarted()));
+
+
     ui->preview->setFocusPolicy(Qt::StrongFocus);
     ui->preview->setFocus();
 
@@ -402,6 +406,7 @@ void MainWindow::initActions()
  ************************************************/
 void MainWindow::initStatusBar()
 {
+    ui->statusbar->setStyleSheet("QStatusBar::item{ border: transparent; }");
     ui->statusbar->addPermanentWidget(&mStatusBarCurrentSheetLabel);
 
     ui->statusbar->addPermanentWidget(&mStatusBarSheetsLabel);
@@ -814,21 +819,17 @@ void MainWindow::showAboutDialog()
 /************************************************
 
  ************************************************/
-void MainWindow::updateProgressBar(int value, int all)
+void MainWindow::updateProgressBar(int value, int total)
 {
-    if (all <1 && mProgressBar.isVisible())
+    if (total < 0)
     {
         mProgressBar.hide();
         return;
     }
 
-    if (mProgressBar.maximum() != all)
-        mProgressBar.setMaximum(all);
-
+    mProgressBar.setMaximum(total);
     mProgressBar.setValue(value);
-
-    if (all > 0 && mProgressBar.isHidden())
-        mProgressBar.show();
+    mProgressBar.show();
 }
 
 
@@ -1473,4 +1474,30 @@ void MainWindow::loadAuto()
     {
         project->error(err);
     }
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void MainWindow::psToPdfStarted()
+{
+    QLabel *label = new QLabel(this);
+    QProgressBar *progressBar = new QProgressBar(this);
+    progressBar->setMaximum(0);
+    progressBar->setFixedWidth(100);
+    progressBar->setSizePolicy(mProgressBar.sizePolicy().horizontalPolicy(),
+                               QSizePolicy::Maximum);
+
+
+    label->setText(tr("Converting Postscript to PDF:", "Progressbar text"));
+
+    ui->statusbar->insertWidget(0, label);
+    ui->statusbar->insertWidget(1, progressBar);
+
+    connect(project, &Project::psToPdfFinished, [this, label, progressBar]()
+    {
+        label->deleteLater();
+        progressBar->deleteLater();
+    });
 }

@@ -128,8 +128,6 @@ public:
     void free();
 
     void save(const QString &fileName);
-    JobList load(const QString &fileName, const QString &options = "");
-    JobList load(const QStringList &fileNames, const QString &options = "");
 
     Rotation rotation() const { return mRotation; }
 
@@ -151,8 +149,14 @@ public:
     ProjectPage *prevVisiblePage(ProjectPage *current) const;
     ProjectPage *nextVisiblePage(ProjectPage *current) const;
 
+signals:
+    void psToPdfStarted();
+    void psToPdfFinished();
 
 public slots:
+    JobList load(const QString &fileName, const QString &options = "");
+    JobList load(const QStringList &fileNames, const QString &options = "");
+
     void setCurrentPage(ProjectPage *page);
     void setCurrentPage(int pageNum);
     void prevPage();
