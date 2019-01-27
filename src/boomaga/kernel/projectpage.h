@@ -30,7 +30,6 @@
 #include <QObject>
 #include <QRectF>
 #include "boomagatypes.h"
-#include "../pdfmerger/pdfmergeripc.h"
 
 class Sheet;
 

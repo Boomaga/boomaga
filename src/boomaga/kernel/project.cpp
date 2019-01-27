@@ -138,7 +138,7 @@ void Project::free()
  ************************************************/
 TmpPdfFile *Project::createTmpPdfFile()
 {
-    TmpPdfFile *res = new TmpPdfFile(mJobs, this);
+    TmpPdfFile *res = new TmpPdfFile(this);
 
     connect(res, SIGNAL(progress(int,int)),
             this, SLOT(tmpFileProgress(int,int)));
@@ -173,7 +173,7 @@ void Project::addJobs(const JobList &jobs)
     update();
 
     mLastTmpFile = createTmpPdfFile();
-    mLastTmpFile->merge();
+    mLastTmpFile->merge(mJobs);
 }
 
 
@@ -199,7 +199,7 @@ void Project::removeJob(int index)
     }
 
     mLastTmpFile = createTmpPdfFile();
-    mLastTmpFile->merge();
+    mLastTmpFile->merge(mJobs);
 }
 
 
@@ -228,15 +228,15 @@ void Project::tmpFileMerged()
         return;
     }
 
-    foreach (const Job &job, mJobs)
-    {
-        for (int p=0; p<job.pageCount(); ++p)
-        {
-            ProjectPage *page = job.page(p);
-            page->setPdfInfo(tmpPdf->pageInfo(job, page->jobPageNum()));
-        }
+//    foreach (const Job &job, mJobs)
+//    {
+//        for (int p=0; p<job.pageCount(); ++p)
+//        {
+//            ProjectPage *page = job.page(p);
+//            page->setPdfInfo(tmpPdf->pageInfo(job, page->jobPageNum()));
+//        }
 
-    }
+//    }
 
     delete mTmpFile;
     mTmpFile = mLastTmpFile;
@@ -705,7 +705,6 @@ void Project::stopMerging()
 {
     if (mLastTmpFile)
     {
-        mLastTmpFile->stop();
         mLastTmpFile->deleteLater();
         mLastTmpFile = 0;
     }

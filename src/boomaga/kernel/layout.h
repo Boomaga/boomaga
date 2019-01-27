@@ -30,7 +30,8 @@
 #include <QList>
 #include <QRectF>
 #include <QString>
-#include "project.h"
+#include "boomagatypes.h"
+#include "projectpage.h"
 
 class Sheet;
 class Project;

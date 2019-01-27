@@ -27,13 +27,13 @@
 #ifndef PDFPROCESSOR_H
 #define PDFPROCESSOR_H
 
-#include "pdfmergeripc.h"
 #include <QVector>
 #include <QString>
 #include <QFile>
 #include <QSet>
 #include "pdfparser/pdfvalue.h"
 #include "pdfparser/pdfreader.h"
+#include "boomagatypes.h"
 
 namespace  PDF {
     class Writer;

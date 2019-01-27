@@ -27,16 +27,17 @@
 #ifndef TMPPDFFILE_H
 #define TMPPDFFILE_H
 
-#include <QList>
-#include <QStringList>
-#include <QHash>
-#include "project.h"
-#include "../pdfmerger/pdfmergeripc.h"
+#include <QObject>
+#include <QVector>
+#include "boomagatypes.h"
 
-class QProcess;
 class Sheet;
 class Job;
 class JobList;
+
+namespace PDF {
+    class Writer;
+}
 
 #include "job.h"
 
@@ -45,45 +46,32 @@ class TmpPdfFile: public QObject
     Q_OBJECT
     friend class PdfMerger;
 public:
-    explicit TmpPdfFile(const JobList &jobs, QObject *parent = 0);
+    explicit TmpPdfFile(QObject *parent = 0);
     virtual ~TmpPdfFile();
 
-    void merge();
+    void merge(const JobList &jobs);
     void updateSheets(QList<Sheet *> &sheets);
-    void stop();
 
     QString fileName() const { return mFileName; }
 
     bool writeDocument(const QList<Sheet*> &sheets, QIODevice *out);
-
     bool isValid() const { return mValid; }
-
-    PdfPageInfo pageInfo(const Job &job, int pageNum);
 
 signals:
     void merged();
     void progress(int progress, int all) const;
 
-private slots:
-    void mergerFinished(int exitCode);
-
-    void ipcPageInfo(int fileNum, int pageNum, const PdfPageInfo &info);
-    void ipcXRefInfo(qint64 xrefPos, qint32 freeNum);
-
 private:
     void getPageStream(QString *out, const Sheet *sheet) const;
     void writeSheets(QIODevice *out, const QList<Sheet *> &sheets) const;
+    void writeCatalog(PDF::Writer *writer, const QVector<PdfPageInfo> &pages);
 
     static QString genFileName();
-
-    JobList mJobs;
-    QHash<QString, PdfPageInfo> mPagesInfo;
 
     QString mFileName;
     qint32 mFirstFreeNum;
     qint64 mOrigFileSize;
     qint64 mOrigXrefPos;
-    QProcess *mMerger;
     bool mValid;
 };
 

@@ -51,6 +51,7 @@ set(HEADERS
     kernel/printer.h
     kernel/cupsprinteroptions.h
     kernel/pstopdf.h
+    kernel/pdfprocessor.h
         
     gui/mainwindow.h
     gui/actions.h
@@ -68,14 +69,14 @@ set(HEADERS
     gui/widgets/subbookletview.h
     
     translations/translatorsinfo/translatorsinfo.h
-
-    pdfmerger/pdfmergeripc.h
     
     pdfparser/pdferrors.h
-    pdfparser/pdfxref.h
-    pdfparser/pdfvalue.h
-    pdfparser/pdfreader.h
     pdfparser/pdfobject.h
+    pdfparser/pdfreader.h
+    pdfparser/pdfvalue.h
+    pdfparser/pdfwriter.h
+    pdfparser/pdfxref.h
+
 )
 
 set(SOURCES
@@ -97,6 +98,7 @@ set(SOURCES
     kernel/printer.cpp
     kernel/boofile.cpp
     kernel/pstopdf.cpp
+    kernel/pdfprocessor.cpp
     
     gui/mainwindow.cpp
     gui/actions.cpp
@@ -114,13 +116,12 @@ set(SOURCES
     gui/widgets/subbookletview.cpp
     
     translations/translatorsinfo/translatorsinfo.cpp
-
-    pdfmerger/pdfmergeripc.cpp
     
-    pdfparser/pdfxref.cpp
-    pdfparser/pdfvalue.cpp
-    pdfparser/pdfreader.cpp
     pdfparser/pdfobject.cpp
+    pdfparser/pdfreader.cpp
+    pdfparser/pdfvalue.cpp
+    pdfparser/pdfwriter.cpp
+    pdfparser/pdfxref.cpp
 )
 
 
@@ -239,8 +240,5 @@ else()
     install(FILES   misc/boomaga.1.gz       DESTINATION share/man/man1)
     # Linux + BSD *****************************************
 endif()
-
-
-add_subdirectory(pdfmerger)
 
 add_tests("tests")

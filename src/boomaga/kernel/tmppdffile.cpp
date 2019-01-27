@@ -24,21 +24,17 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 #include "tmppdffile.h"
-#include <QtAlgorithms>
-#include <QDebug>
-#include <QFile>
 #include <QCryptographicHash>
-#include <QVector>
-#include <QApplication>
 #include <QDir>
-#include <QProcess>
-#include <math.h>
 
-#include "project.h"
-#include "job.h"
 #include "sheet.h"
 #include "layout.h"
-#include "render.h"
+#include "pdfprocessor.h"
+#include "pdfparser/pdfwriter.h"
+#include "pdfparser/pdfobject.h"
+#include "projectpage.h"
+#include "printer.h"
+#include "project.h"
 
 
 /************************************************
@@ -79,10 +75,8 @@ QString TmpPdfFile::genFileName()
 /************************************************
 
  ************************************************/
-TmpPdfFile::TmpPdfFile(const JobList &jobs, QObject *parent):
+TmpPdfFile::TmpPdfFile(QObject *parent):
     QObject(parent),
-    mJobs(jobs),
-    mMerger(0),
     mValid(false)
 {
     mOrigFileSize = 0;
@@ -98,7 +92,6 @@ TmpPdfFile::TmpPdfFile(const JobList &jobs, QObject *parent):
  ************************************************/
 TmpPdfFile::~TmpPdfFile()
 {
-    delete mMerger;
     QFile::remove(mFileName);
 }
 
@@ -106,66 +99,170 @@ TmpPdfFile::~TmpPdfFile()
 /************************************************
 
  ************************************************/
-void TmpPdfFile::merge()
+void TmpPdfFile::merge(const JobList &jobs)
 {
-    delete mMerger;
-    mMerger = new QProcess(this);
-
-    connect(mMerger, SIGNAL(finished(int)),
-            this, SLOT(mergerFinished(int)));
-
-
-    PdfMergerIPCReader *ipc = new PdfMergerIPCReader(mMerger, mMerger);
-
-    connect(ipc, SIGNAL(pageInfo(int,int,PdfPageInfo)),
-            this, SLOT(ipcPageInfo(int,int,PdfPageInfo)));
-
-    connect(ipc, SIGNAL(xRefInfo(qint64,qint32)),
-            this, SLOT(ipcXRefInfo(qint64,qint32)));
-
-    connect(ipc, SIGNAL(progress(int,int)),
-            this, SIGNAL(progress(int,int)), Qt::QueuedConnection);
-
-    connect(ipc, SIGNAL(error(QString)),
-            project, SLOT(error(QString)));
-
-    QStringList args;
-    foreach (const Job &job, mJobs)
+    QFile file(mFileName);
+    if (! file.open(QFile::WriteOnly | QFile::Truncate))
     {
-        args << job.fileName();
-        args << QString("%1").arg(job.fileStartPos());
-        args << QString("%1").arg(job.fileEndPos());
+        throw BoomagaError(tr("I can't write file \"%1\"")
+                           .arg(file.fileName())
+                           + "\n" + file.errorString());
     }
 
-    args << mFileName;
+    PDF::Writer writer(&file);
+    writer.writePDFHeader(1,7);
 
-    static QString boomagamerger;
+    QVector<PdfProcessor*> procs;
+    procs.reserve(jobs.count());
 
-    if (boomagamerger.isNull())
+    quint32 pagesCnt = 0;
+    foreach (const Job &job, jobs)
     {
-        QStringList dirs;
-        dirs << QApplication::applicationDirPath() + "/";
-        dirs << NONGUI_DIR  "/";
+        auto proc = new PdfProcessor(job.fileName(), job.fileStartPos(), job.fileEndPos());
+        proc->open();
+        pagesCnt += proc->pageCount();
+        procs << proc;
+    }
 
-        foreach (QString dir, dirs)
+
+    QVector<PdfPageInfo> pages;
+
+    int ready =0;
+    for (int i=0; i<jobs.count(); ++i)
+    {
+        const Job &job = jobs.at(i);
+        PdfProcessor *proc = procs.at(i);
+
+        connect(proc, &PdfProcessor::pageReady, [this, &ready, pagesCnt]()
         {
-            if (QFileInfo(dir + "boomagamerger").exists())
+            ++ready;
+            emit progress(ready, pagesCnt);
+            qApp->processEvents();
+        });
+
+        proc->run(&writer, writer.xRefTable().maxObjNum() + 3);
+
+        for (int p=0; p<proc->pageInfo().count(); ++p)
+            job.page(p)->setPdfInfo(proc->pageInfo().at(p));
+
+        pages << proc->pageInfo();
+    }
+    qDeleteAll(procs);
+
+    writeCatalog(&writer, pages);
+    file.close();
+    mValid = true;
+
+    emit progress(-1, -1);
+    emit merged();
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void TmpPdfFile::writeCatalog(PDF::Writer *writer, const QVector<PdfPageInfo> &pages)
+{
+    // Catalog object ...........................
+    PDF::Object catalog;
+    catalog.setObjNum(1);
+
+    catalog.dict().insert("Type",  PDF::Name("Catalog"));
+    catalog.dict().insert("Pages", PDF::Link(catalog.objNum() + 1));
+    writer->writeObject(catalog);
+    // ..........................................
+
+    // Pages object .............................
+    if (!std::getenv("BOOMAGAMERGER_DEBUGPAGES"))
+    {
+        PDF::Object pagesObj(2);
+        pagesObj.dict().insert("Type",  PDF::Name("Pages"));
+        pagesObj.dict().insert("Count", PDF::Number(0));
+        pagesObj.dict().insert("Kids",  PDF::Array());
+        writer->writeObject(pagesObj);
+    }
+    else
+    {
+        PDF::Object pagesObj(2);
+        pagesObj.dict().insert("Type",  PDF::Name("Pages"));
+
+        PDF::ObjNum pageNum = writer->xRefTable().maxObjNum() + 1;
+        PDF::Array kids;
+        for (int i=0; i< pages.count(); ++i)
+        {
+            PdfPageInfo pi = pages.at(i);
+
+            PDF::Object page(   pageNum + i * 3 + 1);
+            PDF::Object xobj(   pageNum + i * 3 + 2);
+            PDF::Object content(pageNum + i * 3 + 3);
+            kids.append(PDF::Link(page.objNum()));
+
             {
-                boomagamerger = dir + "boomagamerger";
-                break;
+                PDF::Dict dict;
+                dict.insert("Type",      PDF::Name("Page"));
+                dict.insert("Parent",    PDF::Link(pagesObj.objNum(), 0));
+                dict.insert("Resources", PDF::Link(xobj.objNum()));
+
+                PDF::Array mediaBox;
+                mediaBox.append(PDF::Number(pi.mediaBox.left()));
+                mediaBox.append(PDF::Number(pi.mediaBox.top()));
+                mediaBox.append(PDF::Number(pi.mediaBox.width()));
+                mediaBox.append(PDF::Number(pi.mediaBox.height()));
+                dict.insert("MediaBox",  mediaBox);
+
+                PDF::Array cropBox;
+                cropBox.append(PDF::Number(pi.mediaBox.left()));
+                cropBox.append(PDF::Number(pi.mediaBox.top()));
+                cropBox.append(PDF::Number(pi.mediaBox.width()));
+                cropBox.append(PDF::Number(pi.mediaBox.height()));
+                dict.insert("CropBox",   cropBox);
+
+                dict.insert("Rotate",    PDF::Number(pi.rotate));
+                dict.insert("Contents",  PDF::Link(content.objNum()));
+                page.setValue(dict);
+                writer->writeObject(page);
+            }
+
+            {
+                xobj.dict().insert("ProcSet", PDF::Array() << PDF::Name("PDF"));
+                xobj.dict().insert("XObject", PDF::Dict());
+                PDF::Dict dict;
+                for (int c=0; c<pi.xObjNums.count(); ++c)
+                {
+                    dict.insert(QString("Im0_%1").arg(c),
+                                PDF::Link(pi.xObjNums.at(c)));
+                }
+
+                xobj.dict().insert("XObject", dict);
+                writer->writeObject(xobj);
+            }
+
+            {
+                QString stream;
+                for (int c=0; c<pi.xObjNums.count(); ++c)
+                    stream += QString("/Im0_%1 Do ").arg(c);
+
+                content.setStream(stream.toLatin1());
+                content.dict().insert("Length", PDF::Number(content.stream().length()));
+                writer->writeObject(content);
             }
         }
+
+        pagesObj.dict().insert("Count", PDF::Number(kids.count()));
+        pagesObj.dict().insert("Kids",  kids);
+        writer->writeObject(pagesObj);
     }
+    // ..........................................
 
-    if (boomagamerger.isEmpty())
-    {
-        project->error(tr("Something is wrong. I can't find boomagamerger program.\nPlease reinstall me."));
-        return;
-    }
+    mOrigXrefPos  = writer->device()->pos();
+    mFirstFreeNum = writer->xRefTable().maxObjNum() + 1;
 
-    mMerger->start(boomagamerger, args);
+    writer->writeXrefTable();
+    writer->writeTrailer(PDF::Link(catalog.objNum()));
 
+    mOrigFileSize = writer->device()->pos();
 }
+
 
 
 /************************************************
@@ -189,15 +286,6 @@ void TmpPdfFile::updateSheets(QList<Sheet *> &sheets)
         file.resize(file.pos());
         file.close();
    }
-}
-
-
-/************************************************
-
- ************************************************/
-void TmpPdfFile::stop()
-{
-    mMerger->kill();
 }
 
 
@@ -485,54 +573,4 @@ void TmpPdfFile::getPageStream(QString *out, const Sheet *sheet) const
             *out += "Q\n";
         }
     }
-}
-
-
-/************************************************
-
- ************************************************/
-void TmpPdfFile::mergerFinished(int)
-{
-    mValid = (mMerger->exitCode() == 0 ) &&
-             (mMerger->exitStatus() == QProcess::NormalExit);
-
-    mMerger->close();
-    mMerger->deleteLater();
-    mMerger = 0;
-
-    QFile f(mFileName);
-    f.open(QFile::ReadOnly);
-    mOrigFileSize = f.size();
-    f.close();
-
-    emit progress(-1,-1);
-    emit merged();
-}
-
-
-/************************************************
- *
- * ***********************************************/
-void TmpPdfFile::ipcPageInfo(int fileNum, int pageNum, const PdfPageInfo &info)
-{
-    mPagesInfo.insert(QString("%1:%2").arg(fileNum).arg(pageNum), info);
-}
-
-
-/************************************************
- *
- * ***********************************************/
-void TmpPdfFile::ipcXRefInfo(qint64 xrefPos, qint32 freeNum)
-{
-    mOrigXrefPos = xrefPos;
-    mFirstFreeNum = freeNum;
-}
-
-
-/************************************************
- *
- * ***********************************************/
-PdfPageInfo TmpPdfFile::pageInfo(const Job &job, int pageNum)
-{
-    return mPagesInfo.value(QString("%1:%2").arg(mJobs.indexOf(job)).arg(pageNum));
 }

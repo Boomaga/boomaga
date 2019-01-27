@@ -26,6 +26,7 @@
 
 #include "sheet.h"
 #include "layout.h"
+#include "project.h"
 
 #include <QDebug>
 

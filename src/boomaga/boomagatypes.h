@@ -114,6 +114,14 @@ enum Unit {
     //UnitInch       = 2
 };
 
+struct PdfPageInfo
+{
+    PdfPageInfo(): rotate(0) {}
+    QList<uint> xObjNums;
+    QRectF      mediaBox;
+    QRectF      cropBox;
+    int         rotate;
+};
 
 //enum PaperSize { A4, B5, Letter, Legal, Executive,
 //                 A0, A1, A2, A3, A5, A6, A7, A8, A9, B0, B1,
