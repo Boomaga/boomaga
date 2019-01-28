@@ -202,12 +202,12 @@ qt5_add_resources(  QRC_SOURCES ${RESOURCES})
 qt5_add_translation(QM_FILES    ${TS_FILES})
 
 
-add_executable(${PROJECT_NAME} ${HEADERS} ${SOURCES} ${QM_FILES} ${QRC_SOURCES} ${TRANSLATORS_INFO_QRC})
-set_target_properties(${PROJECT_NAME} PROPERTIES OUTPUT_NAME "boomaga")
-target_link_libraries(${PROJECT_NAME} ${LIBRARIES} Qt5::Widgets Qt5::PrintSupport Qt5::DBus)
+add_executable(boomaga ${HEADERS} ${SOURCES} ${QM_FILES} ${QRC_SOURCES} ${TRANSLATORS_INFO_QRC})
+set_target_properties(boomaga PROPERTIES OUTPUT_NAME "boomaga")
+target_link_libraries(boomaga ${LIBRARIES} Qt5::Widgets Qt5::PrintSupport Qt5::DBus)
 
 
-install(TARGETS ${PROJECT_NAME} RUNTIME DESTINATION ${GUI_DIR})
+install(TARGETS boomaga RUNTIME DESTINATION ${GUI_DIR})
 install(FILES ${QM_FILES} DESTINATION ${TRANSLATIONS_DIR})
 
 if( ${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")

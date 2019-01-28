@@ -26,6 +26,7 @@
 #include "tmppdffile.h"
 #include <QCryptographicHash>
 #include <QDir>
+#include <cmath>
 
 #include "sheet.h"
 #include "layout.h"
