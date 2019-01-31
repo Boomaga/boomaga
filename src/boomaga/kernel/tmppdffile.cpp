@@ -27,6 +27,7 @@
 #include <QCryptographicHash>
 #include <QDir>
 #include <cmath>
+#include <QDateTime>
 
 #include "sheet.h"
 #include "layout.h"
@@ -134,11 +135,18 @@ void TmpPdfFile::merge(const JobList &jobs)
         const Job &job = jobs.at(i);
         PdfProcessor *proc = procs.at(i);
 
-        connect(proc, &PdfProcessor::pageReady, [this, &ready, pagesCnt]()
+        QDateTime prevEmit;
+        connect(proc, &PdfProcessor::pageReady, [this, &ready, pagesCnt, &prevEmit] ()
         {
             ++ready;
-            emit progress(ready, pagesCnt);
-            qApp->processEvents();
+
+            QDateTime now = QDateTime::currentDateTime();
+            if (now.toMSecsSinceEpoch() - prevEmit.toMSecsSinceEpoch() > 100)
+            {
+                prevEmit = now;
+                emit progress(ready, pagesCnt);
+                qApp->processEvents();
+            }
         });
 
         proc->run(&writer, writer.xRefTable().maxObjNum() + 3);

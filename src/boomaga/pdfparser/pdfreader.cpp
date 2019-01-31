@@ -106,8 +106,68 @@ private:
     QVector<Section> mSections;
 };
 
+class Reader::Cache{
+public:
+    Cache();
+    ~Cache();
+
+    const QByteArray getStream(PDF::ObjNum objNum, PDF::GenNum genNum) const;
+    void  setStream(PDF::ObjNum objNum, PDF::GenNum genNum, QByteArray stream);
+
+    void clear();
+
+private:
+    QHash<quint64, QByteArray> mStreams;
+};
+
+
 } // namespace PDF
 using namespace PDF;
+
+
+/************************************************
+ *
+ ************************************************/
+Reader::Cache::Cache()
+{
+}
+
+
+/************************************************
+ *
+ ************************************************/
+Reader::Cache::~Cache()
+{
+}
+
+
+/************************************************
+ *
+ ************************************************/
+const QByteArray Reader::Cache::getStream(PDF::ObjNum objNum, PDF::GenNum genNum) const
+{
+    return mStreams.value((quint64(objNum) << 32) + genNum);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Reader::Cache::setStream(ObjNum objNum, GenNum genNum, QByteArray stream)
+{
+    mStreams.insert((quint64(objNum) << 32) + genNum, stream);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Reader::Cache::clear()
+{
+    mStreams.clear();
+}
+
+
 
 /************************************************
  *
@@ -899,7 +959,8 @@ Reader::Reader():
     mData(nullptr),
     mSize(0),
     mPagesCount(-1),
-    mTextCodec(QTextCodec::codecForName("UTF-8"))
+    mTextCodec(QTextCodec::codecForName("UTF-8")),
+    mCache(new Cache())
 {
 
 }
@@ -913,6 +974,7 @@ Reader::~Reader()
     close();
 
     delete mFile;
+    delete mCache;
 }
 
 
@@ -1004,8 +1066,15 @@ qint64 Reader::readObject(quint64 start, Object *res) const
 void Reader::readObjectFromStream(ObjNum objNum, Object *res, ObjNum streamObjNum, GenNum streamGenNum, quint32 stremIndex) const
 {
     Q_UNUSED(stremIndex)
+
     const Object &streamObj = getObject(streamObjNum, streamGenNum);
-    QByteArray stream = streamObj.decodedStream();
+
+    QByteArray stream = mCache->getStream(streamObjNum, streamGenNum);
+    if (stream.isEmpty())
+    {
+        stream = streamObj.decodedStream();
+        mCache->setStream(streamObjNum, streamGenNum, stream);
+    }
 
     ReaderData data(stream.data(), stream.size(), mTextCodec);
 
@@ -1259,6 +1328,8 @@ void Reader::open(const char * const data, quint64 size)
  ************************************************/
 void Reader::close()
 {
+    mCache->clear();
+
     if (mFile && mData)
         mFile->unmap(const_cast<uchar*>(reinterpret_cast<const uchar*>(mData)));
     mData = nullptr;

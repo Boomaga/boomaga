@@ -123,6 +123,9 @@ private:
     Dict        mTrailerDict;
     int         mPagesCount;
     QTextCodec  *mTextCodec;
+
+    class Cache;
+    Cache       *mCache;
 };
 
 } // namespace PDF
