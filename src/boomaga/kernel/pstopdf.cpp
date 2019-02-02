@@ -61,7 +61,7 @@ void PsToPdf::execute(ifstream &psStream, const string &pdfFile)
 
     mProcess.start("gs", args, QProcess::ReadWrite);
     if (!mProcess.waitForStarted())
-        throw BoomagaError(tr("Can't start gs converter: \"%1\"")
+        throw BoomagaError(tr("I can't start gs converter: \"%1\"")
                            .arg("timeout"));
 
 
@@ -81,7 +81,7 @@ void PsToPdf::execute(ifstream &psStream, const string &pdfFile)
     }
 
     if (mProcess.exitCode() != 0)
-        throw BoomagaError(tr("Can't start gs converter: \"%1\"")
+        throw BoomagaError(tr("I can't start gs converter: \"%1\"")
                            .arg(QString::fromLocal8Bit(mProcess.readAllStandardError())));
 }
 

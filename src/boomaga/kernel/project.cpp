@@ -1131,7 +1131,7 @@ JobList Project::load(const QStringList &fileNames, const QString &options)
             // Read PostScript ...........................
             else if (mark.startsWith("%!PS-Adobe-"))
             {
-                ProjectLongTask task(tr("Converting Postscript to PDF:", "Progressbar text"));
+                ProjectLongTask task(tr("Converting PostScript to PDF:", "Progressbar text"));
                 QString outFileName = genTmpFileName();
                 PsToPdf psToPdf;
                 emit longTaskStarted(&task);
@@ -1260,7 +1260,7 @@ JobList Project::loadCupsBOO(const QString &fileName, const QString &)
     if (line.compare(0, 11, "%!PS-Adobe-") == 0)
     {
         QString outFileName = genTmpFileName();
-        ProjectLongTask task(tr("Converting Postscript to PDF:", "Progressbar text"));
+        ProjectLongTask task(tr("Converting PostScript to PDF:", "Progressbar text"));
         PsToPdf psToPdf;
         emit longTaskStarted(&task);
         psToPdf.execute(in, outFileName.toStdString());
