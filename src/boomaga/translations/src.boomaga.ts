@@ -674,7 +674,7 @@ Are you sure you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
-        <source>Converting Postscript to PDF:</source>
+        <source>Converting PostScript to PDF:</source>
         <comment>Progressbar text</comment>
         <translation type="unfinished"></translation>
     </message>
@@ -682,7 +682,7 @@ Are you sure you want to overwrite it?</source>
 <context>
     <name>PsToPdf</name>
     <message>
-        <source>Can&apos;t start gs converter: &quot;%1&quot;</source>
+        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
