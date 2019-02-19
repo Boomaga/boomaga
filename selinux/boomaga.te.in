@@ -1,0 +1,29 @@
+policy_module(boomaga, @FULL_VERSION@)
+
+# Declarations
+gen_require(`
+  attribute cups_domain;
+')
+ 
+type boomaga_cups_t, cups_domain;
+type boomaga_cups_exec_t;
+cups_backend(boomaga_cups_t, boomaga_cups_exec_t)
+
+permissive boomaga_cups_t;
+
+gnome_manage_generic_cache_files(boomaga_cups_t)
+gnome_read_home_config(boomaga_cups_t)
+domain_read_all_domains_state(boomaga_cups_t)
+auth_read_passwd(boomaga_cups_t)
+kernel_read_system_state(boomaga_cups_t)
+dbus_system_bus_client(boomaga_cups_t)
+dbus_session_bus_client(boomaga_cups_t)
+
+# required for access to /run/user/%{USERID}/bus socket
+# which is labeld user_tmp_t and the user listens
+# with unconfined_t.
+# with newer dbus versions the label will change
+# and there will maybe be something like
+# unconfined_dbus_session_bus_client.
+userdom_write_user_tmp_sockets(boomaga_cups_t)
+unconfined_stream_connect(boomaga_cups_t)

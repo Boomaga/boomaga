@@ -1,0 +1,1 @@
+@CUPS_BACKEND_DIR@/boomaga -- gen_context(system_u:object_r:boomaga_cups_exec_t,s0)

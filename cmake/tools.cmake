@@ -1,12 +1,3 @@
-file(GLOB cmakeFiles ${CMAKE_CURRENT_LIST_DIR}/*.cmake)
-foreach(cmakeFile ${cmakeFiles})
-    if ( NOT ${cmakeFile} STREQUAL ${CMAKE_CURRENT_LIST_FILE} )
-        INCLUDE(${cmakeFile})
-    endif()
-endforeach(cmakeFile)
-
-
-
 
 if (NOT CMAKE_BUILD_TYPE)
     set ( CMAKE_BUILD_TYPE Release )

@@ -102,11 +102,12 @@ void BoomagaDbus::doAdd(const QString &file, const QString &title, const QString
  ************************************************/
 static bool doRunBoomaga(const QString &dbusAddress, const QList<QVariant> &args)
 {
+    Log::debug("Try to start boomaga via DBus %s", dbusAddress.toLocal8Bit().data());
     QDBusConnection dbus = QDBusConnection::connectToBus(dbusAddress, "boomaga");
     if (!dbus.isConnected())
     {
 
-        Log::debug("[GUI] Can't connect to org.boomaga DBus %s", dbusAddress.toLocal8Bit().data());
+        Log::debug("Can't connect to org.boomaga DBus %s", dbusAddress.toLocal8Bit().data());
         return false;
     }
 
@@ -121,13 +122,14 @@ static bool doRunBoomaga(const QString &dbusAddress, const QList<QVariant> &args
     QDBusMessage reply = dbus.call(msg);
     if (reply.type() != QDBusMessage::ReplyMessage)
     {
-        Log::warn("[GUI] %s: %s",
+        Log::warn("Can't start boomaga  via DBus %s: %s",
              reply.errorName().toLocal8Bit().constData(),
              reply.errorMessage().toLocal8Bit().constData());
 
         return false;
     }
 
+    Log::debug("The boomaga successfully started via DBus %s", dbusAddress.toLocal8Bit().data());
     return true;
 }
 
@@ -148,7 +150,7 @@ bool BoomagaDbus::runBoomaga(const QString &file, const QString &title, bool aut
         string s;
         foreach (auto a, args)
             s +=  " " + a.toString().toStdString();
-        Log::debug("[GUI] Start boomaga: %s", s.c_str());
+        Log::debug("Start boomaga: %s", s.c_str());
     }
 
     {
@@ -179,6 +181,6 @@ bool BoomagaDbus::runBoomaga(const QString &file, const QString &title, bool aut
     }
 #endif
 
-    Log::error("[GUI] Can't start boomaga gui.");
+    Log::error("Can't start boomaga gui.");
     return false;
 }

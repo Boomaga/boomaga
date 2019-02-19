@@ -32,10 +32,10 @@ project(boomaga)
 set(MAJOR_VERSION 2)
 set(MINOR_VERSION 0)
 set(PATCH_VERSION 99)
-set(BETA_VERSION beta4)
+set(BETA_VERSION beta5)
 set(FULL_VERSION ${MAJOR_VERSION}.${MINOR_VERSION}.${PATCH_VERSION})
 if (BETA_VERSION)
-    set(FULL_VERSION ${FULL_VERSION}-${BETA_VERSION})
+    set(FULL_VERSION ${FULL_VERSION}.${BETA_VERSION})
 endif()
 
 
@@ -47,6 +47,9 @@ add_definitions(-DFULL_VERSION=\"${FULL_VERSION}\")
 set (CMAKE_CXX_STANDARD 11)
 
 include("cmake/tools.cmake")
+include("cmake/status_message.cmake")
+include("cmake/cxx_standard.cmake")
+
 status_message("boomaga ver. ${FULL_VERSION}")
 status_message(" ")
 
@@ -106,6 +109,7 @@ if (USE_DBUS)
   add_definitions(-DUSE_DBUS=1)
 endif()
 
+
 ###########################################################
 
 setFirstUpper(CUPS_BACKEND_NAME "boomaga")
@@ -146,5 +150,6 @@ status_message(" ")
 
 add_subdirectory(src/backend)
 add_subdirectory(src/boomaga)
+add_subdirectory(selinux)
 
 show_status()
