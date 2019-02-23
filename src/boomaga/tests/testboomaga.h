@@ -57,9 +57,6 @@ private slots:
     void test_PagePosition();
     void test_PagePosition_data();
 
-    void test_BackendOptions();
-    void test_BackendOptions_data();
-
     void test_BooFilePageSpec();
     void test_BooFilePageSpec_data();
 

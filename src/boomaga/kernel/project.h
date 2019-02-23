@@ -166,8 +166,8 @@ public:
     ProjectPage *nextVisiblePage(ProjectPage *current) const;
 
 public slots:
-    JobList load(const QString &fileName, const QString &options = "");
-    JobList load(const QStringList &fileNames, const QString &options = "");
+    JobList load(const QString &fileName);
+    JobList load(const QStringList &fileNames);
 
     void setCurrentPage(ProjectPage *page);
     void setCurrentPage(int pageNum);
@@ -237,9 +237,9 @@ private:
 
     TmpPdfFile *createTmpPdfFile();
     void stopMerging();
-    JobList loadPDF(const QString &fileName, const QString &options);
-    JobList loadBOO(const QString &fileName, const QString &options);
-    JobList loadCupsBOO(const QString &fileName, const QString &options);
+    JobList loadPDF(const QString &fileName);
+    JobList loadBOO(const QString &fileName);
+    JobList loadCupsBOO(const QString &fileName);
 };
 
 

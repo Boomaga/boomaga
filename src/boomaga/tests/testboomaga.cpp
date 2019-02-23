@@ -968,43 +968,6 @@ void TestBoomaga::test_PagePosition_data()
 /************************************************
  *
  * ***********************************************/
-void TestBoomaga::test_BackendOptions()
-{
-    QString options = QTest::currentDataTag();
-    QFETCH(QString, pagesExpected);
-    pagesExpected = pagesExpected.trimmed();
-
-    BackendOptions opts(options);
-    QString result;
-    for (int i=0; i<opts.pages().count(); ++i)
-    {
-        result += QString("%1 ").arg(opts.pages().at(i));
-    }
-    result = result.trimmed();
-
-    QCOMPARE(result, pagesExpected);
-}
-
-
-/************************************************
- *
- * ***********************************************/
-void TestBoomaga::test_BackendOptions_data()
-{
-    QTest::addColumn<QString>("pagesExpected");
-
-    QTest::newRow("") << "";
-    QTest::newRow("page-ranges=1,2,5") << "0 1 4";
-    QTest::newRow("page-ranges=1-5")  << "0 1 2 3 4";
-    QTest::newRow("page-ranges=17,1-5,22") << "16 0 1 2 3 4 21";
-    QTest::newRow("landscape page-ranges=17,1-5,22 media=A4") << "16 0 1 2 3 4 21";
-
-}
-
-
-/************************************************
- *
- * ***********************************************/
 void TestBoomaga::test_BooFilePageSpec()
 {
     QString string = QTest::currentDataTag();

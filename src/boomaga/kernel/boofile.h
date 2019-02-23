@@ -35,21 +35,6 @@
 
 class QFile;
 
-class BackendOptions
-{
-public:
-    explicit BackendOptions(const QString &options);
-
-    QList<int> pages() const { return mPages; }
-
-private:
-    void parsePages(const QString &value);
-
-    QList<int> mPages;
-    QHash<QString, QString> mOptions;
-};
-
-
 /************************************************
  * File format
  *

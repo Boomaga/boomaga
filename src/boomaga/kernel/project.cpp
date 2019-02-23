@@ -1053,16 +1053,16 @@ void MetaData::addDictItem(QByteArray &out, const QString &key, const QDateTime 
 /************************************************
 
  ************************************************/
-JobList Project::load(const QString &fileName, const QString &options)
+JobList Project::load(const QString &fileName)
 {
-    return load(QStringList() << fileName, options);
+    return load(QStringList() << fileName);
 }
 
 
 /************************************************
 
  ************************************************/
-JobList Project::load(const QStringList &fileNames, const QString &options)
+JobList Project::load(const QStringList &fileNames)
 {
     stopMerging();
     QStringList errors;
@@ -1109,7 +1109,7 @@ JobList Project::load(const QStringList &fileNames, const QString &options)
             // Read CUPS_BOOMAGA .........................
             if (mark.startsWith("\x1B CUPS_BOOMAGA"))
             {
-                jobs << loadCupsBOO(fileName, options);
+                jobs << loadCupsBOO(fileName);
                 if (fileName.endsWith(AUTOREMOVE_EXT))
                     delFiles << fileName;
             }
@@ -1118,14 +1118,14 @@ JobList Project::load(const QStringList &fileNames, const QString &options)
             // Read PDF ..................................
             else if (mark.startsWith("%PDF-"))
             {
-                jobs << loadPDF(fileName, options);
+                jobs << loadPDF(fileName);
             }
 
 
             // Read BOO ..................................
             else if (mark.startsWith("\x1B%-12345X@PJL BOOMAGA_PROJECT"))
             {
-                jobs << loadBOO(fileName, options);
+                jobs << loadBOO(fileName);
             }
 
 
@@ -1137,7 +1137,7 @@ JobList Project::load(const QStringList &fileNames, const QString &options)
                 PsToPdf psToPdf;
                 emit longTaskStarted(&task);
                 psToPdf.execute(fileName.toStdString(), outFileName.toStdString());
-                jobs << loadPDF(outFileName, options);
+                jobs << loadPDF(outFileName);
             }
 
             // Unknown format ............................
@@ -1176,10 +1176,9 @@ JobList Project::load(const QStringList &fileNames, const QString &options)
 /************************************************
  *
  ************************************************/
-JobList Project::loadPDF(const QString &fileName, const QString &options)
+JobList Project::loadPDF(const QString &fileName)
 {
-    BackendOptions opts = BackendOptions(options);
-    Job job = Job(fileName, opts.pages());
+    Job job = Job(fileName);
 
     if (!job.errorString().isEmpty())
         throw BoomagaError(job.errorString().toStdString());
@@ -1194,7 +1193,7 @@ JobList Project::loadPDF(const QString &fileName, const QString &options)
 /************************************************
  *
  ************************************************/
-JobList Project::loadBOO(const QString &fileName, const QString &)
+JobList Project::loadBOO(const QString &fileName)
 {
     BooFile file;
     file.load(fileName);
@@ -1206,7 +1205,7 @@ JobList Project::loadBOO(const QString &fileName, const QString &)
 /************************************************
  *
  ************************************************/
-JobList Project::loadCupsBOO(const QString &fileName, const QString &)
+JobList Project::loadCupsBOO(const QString &fileName)
 {
     ifstream in(fileName.toLocal8Bit().data());
     if (!in.is_open())
@@ -1253,7 +1252,7 @@ JobList Project::loadCupsBOO(const QString &fileName, const QString &)
                                 + "\n" + strerror(errno));
         out << in.rdbuf();
         out.close();
-        return loadPDF(outFileName, options);
+        return loadPDF(outFileName);
     }
 
 
@@ -1265,7 +1264,7 @@ JobList Project::loadCupsBOO(const QString &fileName, const QString &)
         PsToPdf psToPdf;
         emit longTaskStarted(&task);
         psToPdf.execute(in, outFileName.toStdString());
-        return loadPDF(outFileName, options);
+        return loadPDF(outFileName);
     }
 
 
