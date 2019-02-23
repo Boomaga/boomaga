@@ -58,42 +58,30 @@ BoomagaDbus::~BoomagaDbus()
 /************************************************
 
  ************************************************/
-void BoomagaDbus::add(const QString &file, const QString &title, bool autoRemove, const QString &options, uint count)
+#if MAJOR_VERSION > 3
+    #warning "Remove legacy DBUS support!!!"
+#endif
+void BoomagaDbus::add(const QString &file, const QString&, bool, const QString &, uint)
 {
-    Q_UNUSED(autoRemove); // 20.01.2019 We keep this method for compatability
-    add(file, title, options, count);
+    add(file);
 }
 
 
 /************************************************
  *
  ************************************************/
-void BoomagaDbus::add(const QString &file, const QString &title, const QString &options, uint count)
+void BoomagaDbus::add(const QString &file)
 {
-    QMetaObject::invokeMethod(this,
-                              "doAdd",
-                              Qt::QueuedConnection,
-                              Q_ARG(QString, file),
-                              Q_ARG(QString, title),
-                              Q_ARG(QString, options),
-                              Q_ARG(uint, count));
+    QMetaObject::invokeMethod(this, "doAdd", Qt::QueuedConnection, Q_ARG(QString, file));
 }
 
 
 /************************************************
 
  ************************************************/
-void BoomagaDbus::doAdd(const QString &file, const QString &title, const QString &options, uint count)
+void BoomagaDbus::doAdd(const QString &file)
 {
-    QStringList files;
-    for (uint i=0; i<count; ++i)
-        files << file;
-
-    JobList jobs = project->load(files, options);
-    foreach (Job job, jobs)
-    {
-        job.setTitle(title);
-    }
+    project->load(file);
 }
 
 
@@ -137,14 +125,10 @@ static bool doRunBoomaga(const QString &dbusAddress, const QList<QVariant> &args
 /************************************************
  *
  ************************************************/
-bool BoomagaDbus::runBoomaga(const QString &file, const QString &title, bool autoRemove, const QString &options, uint count)
+bool BoomagaDbus::runBoomaga(const QString &file)
 {
     QList<QVariant> args;
     args << file;
-    args << title;
-    args << autoRemove;
-    args << options;
-    args << count;
 
     {
         string s;

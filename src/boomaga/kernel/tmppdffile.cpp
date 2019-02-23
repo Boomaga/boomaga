@@ -277,7 +277,7 @@ void TmpPdfFile::writeCatalog(PDF::Writer *writer, const QVector<PdfPageInfo> &p
 /************************************************
 
  ************************************************/
-void TmpPdfFile::updateSheets(QList<Sheet *> &sheets)
+void TmpPdfFile::updateSheets(const QList<Sheet *> &sheets)
 {
     if (mValid)
     {

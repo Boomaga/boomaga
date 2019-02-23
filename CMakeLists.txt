@@ -39,9 +39,9 @@ if (BETA_VERSION)
 endif()
 
 
-add_definitions(-DMAJOR_VERSION=\"${MAJOR_VERSION}\")
-add_definitions(-DMINOR_VERSION=\"${MINOR_VERSION}\")
-add_definitions(-DPATCH_VERSION=\"${PATCH_VERSION}\")
+add_definitions(-DMAJOR_VERSION=${MAJOR_VERSION})
+add_definitions(-DMINOR_VERSION=${MINOR_VERSION})
+add_definitions(-DPATCH_VERSION=${PATCH_VERSION})
 add_definitions(-DFULL_VERSION=\"${FULL_VERSION}\")
 
 set (CMAKE_CXX_STANDARD 11)

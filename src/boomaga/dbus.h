@@ -37,14 +37,15 @@ public:
     BoomagaDbus(const QString &serviceName, const QString &dbusPath);
     ~BoomagaDbus();
 
-    static bool runBoomaga(const QString &file, const QString &title,bool autoRemove = false, const QString &options = "", uint count = 1);
+    static bool runBoomaga(const QString &file);
 
 public slots:
+    /// For compatibility with legacy backends. Remove after version 4.0.0.
     void add(const QString &file, const QString &title, bool autoRemove, const QString &options = "", uint count = 1);
-    void add(const QString &file, const QString &title, const QString &options = "", uint count = 1);
+    void add(const QString &file);
 
 private slots:
-    void doAdd(const QString &file, const QString &title, const QString &options, uint count);
+    void doAdd(const QString &file);
 };
 
 

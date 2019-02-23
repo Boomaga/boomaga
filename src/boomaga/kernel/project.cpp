@@ -1110,6 +1110,8 @@ JobList Project::load(const QStringList &fileNames, const QString &options)
             if (mark.startsWith("\x1B CUPS_BOOMAGA"))
             {
                 jobs << loadCupsBOO(fileName, options);
+                if (fileName.endsWith(AUTOREMOVE_EXT))
+                    delFiles << fileName;
             }
 
 
@@ -1121,10 +1123,9 @@ JobList Project::load(const QStringList &fileNames, const QString &options)
 
 
             // Read BOO ..................................
-            else if (mark.startsWith("\x1B%-12345X@PJL BOOMAGA_PROGECT"))
+            else if (mark.startsWith("\x1B%-12345X@PJL BOOMAGA_PROJECT"))
             {
                 jobs << loadBOO(fileName, options);
-                delFiles << fileName;
             }
 
 

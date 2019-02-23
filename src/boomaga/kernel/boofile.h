@@ -53,7 +53,7 @@ private:
 /************************************************
  * File format
  *
- * First line - \x1B%-12345X@PJL BOOMAGA_PROGECT
+ * First line - \x1B%-12345X@PJL BOOMAGA_PROJECT
  *
  * Project meta info:
  *  @PJL BOOMAGA META_AUTHOR="str"      - author

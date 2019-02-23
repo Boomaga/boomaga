@@ -305,7 +305,7 @@ void BooFile::save(const QString &fileName)
     }
 
 
-    write(&file, "\x1B%-12345X@PJL BOOMAGA_PROGECT\n");
+    write(&file, "\x1B%-12345X@PJL BOOMAGA_PROJECT\n");
 
 
     if (!mMetaData.author().isEmpty())

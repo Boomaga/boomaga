@@ -53,7 +53,6 @@ struct Args
     Args(int argc, char *argv[]);
 
     bool startedFromCups;
-    stringList titles;
     stringList files;
 };
 
@@ -72,9 +71,7 @@ void printHelp()
     out << endl;
 
     out << "Options:" << endl;
-    //out << "  --debug               Keep output results from scripts" << endl;
     out << "  -h, --help              Show help about options" << endl;
-    out << "  -t, --title <title>     The job name/title" << endl;
     out << "  -V, --version           Print program version" << endl;
     out << endl;
 
@@ -129,22 +126,6 @@ Args::Args(int argc, char *argv[]):
         {
             printVersion();
             exit(EXIT_SUCCESS);
-        }
-
-        //*************************************************
-        if (arg == "-t" || arg == "--title")
-        {
-            if (i+1 < argc)
-            {
-                titles.push_back(argv[i+1]);
-                i++;
-                continue;
-            }
-            else
-            {
-                printError("'title' is missing.");
-                exit(1);
-            }
         }
 
 
@@ -207,22 +188,10 @@ int main(int argc, char *argv[])
     // Start DBUS ...............................
     if (args.startedFromCups)
     {
-        string title;
-        auto it = args.titles.cbegin();
         for (auto file: args.files)
         {
-            if (it != args.titles.cend())
-            {
-                title = *it;
-                ++it;
-            }
-            else
-                title.clear();
-
-            Log::info("Start boomaga '%s' '%s'",
-                      file.c_str(),
-                      title.c_str());
-            BoomagaDbus::runBoomaga(QString::fromStdString(file), QString::fromStdString(title));
+            Log::info("Start boomaga '%s'", file.c_str());
+            BoomagaDbus::runBoomaga(QString::fromStdString(file));
         }
         return 0;
     }
@@ -254,12 +223,6 @@ int main(int argc, char *argv[])
         files << QString::fromStdString(f);
     }
 
-    JobList jobs = project->load(files, "");
-    for (int i=0; i<jobs.count(); ++i)
-    {
-        if (uint(i) < args.titles.size())
-            jobs[i].setTitle(QString::fromStdString(args.titles[i]));
-    }
-
+    project->load(files, "");
     return application.exec();
 }

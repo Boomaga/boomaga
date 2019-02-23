@@ -50,7 +50,7 @@ public:
     virtual ~TmpPdfFile();
 
     void merge(const JobList &jobs);
-    void updateSheets(QList<Sheet *> &sheets);
+    void updateSheets(const QList<Sheet *> &sheets);
 
     QString fileName() const { return mFileName; }
 

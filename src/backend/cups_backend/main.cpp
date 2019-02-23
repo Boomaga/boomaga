@@ -233,7 +233,7 @@ int main(int argc, char *argv[])
     if (dir.empty())
         return CUPS_BACKEND_FAILED;
 
-    string booFile = dir + "/in_" + args.jobID + ".boo." + AUTOREMOVE_EXT;
+    string booFile = dir + "/in_" + args.jobID + ".cboo." + AUTOREMOVE_EXT;
 
     if (argc > 6)
     {
