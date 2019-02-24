@@ -45,14 +45,18 @@ set(HEADERS
     kernel/job.h
     kernel/tmppdffile.h
     kernel/layout.h
-    kernel/boofile.h
     kernel/project.h
     kernel/projectpage.h
     kernel/printer.h
     kernel/cupsprinteroptions.h
-    kernel/pstopdf.h
     kernel/pdfprocessor.h
-        
+
+    iofiles/infile.h
+    iofiles/boofile.h
+    iofiles/pdffile.h
+    iofiles/cupsboofile.h
+    iofiles/postscriptfile.h
+
     gui/mainwindow.h
     gui/actions.h
     gui/icon.h
@@ -96,10 +100,14 @@ set(SOURCES
     kernel/projectpage.cpp
     kernel/cupsprinteroptions.cpp
     kernel/printer.cpp
-    kernel/boofile.cpp
-    kernel/pstopdf.cpp
     kernel/pdfprocessor.cpp
     
+    iofiles/infile.cpp
+    iofiles/pdffile.cpp
+    iofiles/boofile.cpp
+    iofiles/cupsboofile.cpp
+    iofiles/postscriptfile.cpp
+
     gui/mainwindow.cpp
     gui/actions.cpp
     gui/icon.cpp

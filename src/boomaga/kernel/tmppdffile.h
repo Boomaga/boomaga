@@ -66,8 +66,6 @@ private:
     void writeSheets(QIODevice *out, const QList<Sheet *> &sheets) const;
     void writeCatalog(PDF::Writer *writer, const QVector<PdfPageInfo> &pages);
 
-    static QString genFileName();
-
     QString mFileName;
     qint32 mFirstFreeNum;
     qint64 mOrigFileSize;

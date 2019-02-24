@@ -27,6 +27,7 @@
 #include <QDebug>
 #include <QDir>
 #include <QStandardPaths>
+#include <QUuid>
 
 /************************************************
 
@@ -161,4 +162,63 @@ QString boomagaChacheDir()
     QString res = QStandardPaths::writableLocation(QStandardPaths::GenericCacheLocation);
     res = expandHomeDir(res);
     return res;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void mustOpenFile(const QString &fileName, QFile *file)
+{
+    QFileInfo fi(fileName);
+
+    if (fi.filePath().isEmpty())
+        throw BoomagaError(QObject::tr("I can't open file \"%1\" (Empty file name)",
+                                       "Error message. %1 is a file name")
+                           .arg(fi.filePath()));
+
+    if (!fi.exists())
+        throw BoomagaError(QObject::tr("I can't open file \"%1\" (No such file or directory)",
+                                       "Error message. %1 is a file name")
+                           .arg(fi.filePath()));
+
+    if (!fi.isReadable())
+        throw BoomagaError(QObject::tr("I can't open file \"%1\" (Access denied)",
+                                       "Error message. %1 is a file name")
+                           .arg(fi.filePath()));
+
+
+    file->setFileName(fileName);
+    if(!file->open(QFile::ReadOnly))
+        throw BoomagaError(QObject::tr("I can't open file \"%1\"",
+                                       "Error message. %1 is a file name")
+                           .arg(fi.filePath()) +
+                           "\n" + file->errorString());
+}
+
+
+/************************************************
+ *
+ ************************************************/
+QString appUUID()
+{
+    static QString res = "boomaga-" + QUuid::createUuid().toString().mid(1, 36);
+    return res;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+QString genTmpFileName(const QString &suffix)
+{
+    static QAtomicInt num = 0;
+    ++num;
+
+    return QString("%1%2%3_%4%5")
+            .arg(boomagaChacheDir())
+            .arg(QDir::separator())
+            .arg(appUUID())
+            .arg(num, 3, 10, QChar('0'))
+            .arg(suffix);
 }

@@ -1,0 +1,7 @@
+ CUPS_BOOMAGA
+JOB=1005
+USER=user_login
+TITLE=Boomaga title
+COUNT=1
+OPTIONS=finishings=3 media=iso_a4_210x297mm number-up=1 output-bin=face-down page-ranges=1-4,7,9-12 print-color-mode=color print-quality=4 PageSize=A4
+CUPS_BOOMAGA_DATA

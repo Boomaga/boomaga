@@ -237,9 +237,6 @@ private:
 
     TmpPdfFile *createTmpPdfFile();
     void stopMerging();
-    JobList loadPDF(const QString &fileName);
-    JobList loadBOO(const QString &fileName);
-    JobList loadCupsBOO(const QString &fileName);
 };
 
 

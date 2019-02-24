@@ -27,13 +27,7 @@
 #ifndef BOOFILE_H
 #define BOOFILE_H
 
-#include <QObject>
-#include <QList>
-#include <QByteArray>
-#include "job.h"
-#include "project.h"
-
-class QFile;
+#include "infile.h"
 
 /************************************************
  * File format
@@ -68,56 +62,32 @@ class QFile;
  *  @PJL BOOMAGA JOB_PAGES="1,2::180,B,3:H:90,4:H"
  *
  ************************************************/
-
-class BooFile : public QObject
+class BooFile : public InFile
 {
     Q_OBJECT
 public:
     explicit BooFile(QObject *parent = 0);
-    virtual ~BooFile();
+    Type type() const override final { return Type::Boo; }
 
-    void load(const QString &fileName);
+    void setMetadata(const MetaData &value) { mMetaData = value; }
+    void setJobs(const JobList &value) { mJobs = value; }
     void save(const QString &fileName);
 
-    JobList jobs() const { return mJobs; }
-    void setJobs(const JobList &value) { mJobs = value; }
-
-    const MetaData metaData() const { return mMetaData; }
-    void setMetadata(const MetaData &value) { mMetaData = value; }
-
-signals:
-    
 protected:
-    class PageSpec
-    {
-    public:
-        PageSpec(int pageNum, bool hidden, Rotation rotation, bool startBooklet);
-        PageSpec(const QString &spec);
-        QString asString();
+    void read() override final;
 
-        int pageNum() const { return mPageNum; }
-        bool isHidden() const { return mHidden; }
-        bool isStartBooklet() const { return mStartBooklet; }
-        bool isblank() const { return mPageNum < 0; }
-        Rotation rotation() { return mRotation; }
-
+    struct PageSpec{
+        explicit PageSpec(int pageNum, bool hidden, Rotation rotation, bool startBooklet);
+        explicit PageSpec(const QString &str);
         static QList<PageSpec> readPagesSpec(const QString &str);
-    private:
-        int  mPageNum;
-        bool mHidden;
-        Rotation mRotation;
-        bool mStartBooklet;
-    };
-    
-private:
-    QString mFileName;
-    JobList mJobs;
-    MetaData mMetaData;
 
-    QByteArray readJobPDF(const Job &job);
-    void write(QFile *out, const QByteArray &data);
-    void writeCommand(QFile *out, const QString &command, const QString &data);
-    void writeCommand(QFile *out, const QString &command, const QList<int> &data);
+        bool isblank() const { return pageNum < 0; }
+        QString toString() const;
+        int      pageNum;
+        bool     hidden;
+        Rotation rotation;
+        bool     startBooklet;
+    };
 };
 
 #endif // BOOFILE_H

@@ -25,65 +25,78 @@
 
 
 #include "boofile.h"
-
+#include "pdffile.h"
+#include <QFile>
 #include <QFileInfo>
-#include <QDebug>
-
-
-#include <math.h>
-#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0)) // for Qt::escape
-    #include <QTextDocument>
-#endif
 
 
 /************************************************
  *
  ************************************************/
 BooFile::PageSpec::PageSpec(int pageNum, bool hidden, Rotation rotation, bool startBooklet):
-    mPageNum(pageNum),
-    mHidden(hidden),
-    mRotation(rotation),
-    mStartBooklet(startBooklet)
+    pageNum(pageNum),
+    hidden(hidden),
+    rotation(rotation),
+    startBooklet(startBooklet)
 {
-
 }
+
 
 /************************************************
  *
  ************************************************/
-BooFile::PageSpec::PageSpec(const QString &spec)
+BooFile::PageSpec::PageSpec(const QString &str):
+    pageNum(0),
+    hidden(false),
+    rotation(NoRotate),
+    startBooklet(0)
 {
     bool ok;
     // In the file pages are numbered starting with 1 not 0.
-    mPageNum = spec.section(":", 0, 0).toInt(&ok) - 1;
+    pageNum = str.section(":", 0, 0).toInt(&ok) - 1;
     if (!ok)
-        mPageNum = -1;
+        pageNum = -1;
 
-    mHidden = spec.section(":", 1, 1) == "H";
+    hidden = str.section(":", 1, 1) == "H";
 
-    QString s = spec.section(":", 2, 2);
-    if      (s == "90" ) mRotation = Rotate90;
-    else if (s == "180") mRotation = Rotate180;
-    else if (s == "270") mRotation = Rotate270;
-    else                 mRotation = NoRotate;
+    QString s = str.section(":", 2, 2);
+    if      (s == "90" ) rotation = Rotate90;
+    else if (s == "180") rotation = Rotate180;
+    else if (s == "270") rotation = Rotate270;
+    else                 rotation = NoRotate;
 
-    mStartBooklet = spec.section(":", 3, 3) == "S";
+    startBooklet = str.section(":", 3, 3) == "S";
 }
+
 
 /************************************************
  *
  ************************************************/
-QString BooFile::PageSpec::asString()
+QList<BooFile::PageSpec> BooFile::PageSpec::readPagesSpec(const QString &str)
+{
+    QList<PageSpec> res;
+
+    foreach(QString s, str.split(',', QString::SkipEmptyParts))
+        res << PageSpec(s);
+
+    return res;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+QString BooFile::PageSpec::toString() const
 {
     QString res;
 
-    if (mStartBooklet)
+    if (startBooklet)
         res = ":S" + res;
     else if (!res.isEmpty())
         res = ":" + res;
 
 
-    switch (mRotation)
+    switch (rotation)
     {
     case Rotate90:  res = ":90"  + res; break;
     case Rotate180: res = ":180" + res; break;
@@ -93,69 +106,40 @@ QString BooFile::PageSpec::asString()
             res = ":" + res;
     }
 
-    if (mHidden)
+    if (hidden)
         res = ":H" + res;
     else if (!res.isEmpty())
         res = ":" + res;
 
 
-    if (mPageNum < 0)
+    if (pageNum < 0)
         res = "B" + res;
     else
-        res = QString("%1").arg(mPageNum + 1) + res;
+        res = QString("%1").arg(pageNum + 1) + res;
 
     return res;
+}
+
+
+
+/************************************************
+ *
+ ************************************************/
+BooFile::BooFile(QObject *parent):
+    InFile(parent)
+{
 }
 
 
 /************************************************
  *
- * ***********************************************/
-QList<BooFile::PageSpec> BooFile::PageSpec::readPagesSpec(const QString &str)
-{
-    QList<PageSpec> res;
-
-    foreach(QString s, str.split(',', QString::SkipEmptyParts))
-    {
-        res << PageSpec(s);
-
-    }
-    return res;
-}
-
-
-/************************************************
-
  ************************************************/
-BooFile::BooFile(QObject *parent) :
-    QObject(parent)
+void BooFile::read()
 {
-}
+    QFile file;
+    mustOpenFile(mFileName, &file);
 
-
-/************************************************
-
- ************************************************/
-BooFile::~BooFile()
-{
-    mJobs.clear();
-}
-
-
-/************************************************
-
- ************************************************/
-void BooFile::load(const QString &fileName)
-{
-    mJobs.clear();
-
-    QFile file(fileName);
-    if(!file.open(QFile::ReadOnly))
-    {
-        throw tr("I can't open file \"%1\"").arg(fileName) + "\n" + file.errorString();
-    }
-
-    file.seek(0);
+    file.seek(mStartPos);
 
     QString metaAuthor;
     QString metaTitle;
@@ -230,34 +214,47 @@ void BooFile::load(const QString &fileName)
                             break;
 
                         endPos = file.pos() - 1;
-
                     }
 
-                    QList<int> pages;
-                    foreach(PageSpec spec, pagesSpec)
-                    {
-                        if (!spec.isblank())
-                            pages << spec.pageNum();
-                    }
+                    PdfFile pdf;
+                    pdf.load(mFileName, startPos, endPos);
 
-                    Job job(fileName, pages, startPos, endPos);
+                    Job job;
+                    job.setFileName(mFileName);
+                    job.setFilePos(startPos, endPos);
                     job.setTitle(title);
 
-                    for (int i=0; i<qMin(pagesSpec.count(), job.pageCount()); ++i)
-                    {
-                        PageSpec spec = pagesSpec.at(i);
-                        if (spec.isblank())
-                            job.insertBlankPage(i);
+                    Job pdfJob = pdf.jobs().first();
 
+                    // remove wrong pages .................
+                    {
+                        int cnt = pdfJob.pageCount();
+                        for (int i=pagesSpec.count()-1; i>=0; --i)
+                        {
+                            if (pagesSpec.at(i).pageNum >= cnt)
+                                pagesSpec.removeAt(i);
+                        }
+                    }
+
+                    QVector<int> pageNums;
+                    pageNums.reserve(pagesSpec.count());
+                    foreach(const PageSpec &spec, pagesSpec)
+                        pageNums << spec.pageNum;
+
+                    addPages(pdfJob, pageNums, &job);
+
+                    for(int i=0; i<pagesSpec.count(); ++i)
+                    {
+                        const PageSpec &spec = pagesSpec.at(i);
                         ProjectPage *page = job.page(i);
 
-                        if (spec.isHidden())
+                        if (spec.hidden)
                             page->setVisible(false);
 
-                        if (spec.isStartBooklet())
+                        if (spec.startBooklet)
                             page->setManualStartSubBooklet(true);
 
-                        page->setManualRotation(spec.rotation());
+                        page->setManualRotation(spec.rotation);
                     }
 
                     mJobs << job;
@@ -277,9 +274,49 @@ void BooFile::load(const QString &fileName)
 }
 
 
+/************************************************
+
+ ************************************************/
+static void write(QFile *out, const QByteArray &data)
+{
+    if (out->write(data) < 0)
+        throw QObject::tr("I can't write to file '%1'").arg(out->fileName()) + "\n" + out->errorString();
+}
+
 
 /************************************************
 
+ ************************************************/
+static void writeCommand(QFile *out, const QString &command, const QString &data)
+{
+    QString v = data.toHtmlEscaped();
+    write(out, QString("@PJL BOOMAGA %1=\"%2\"\n").arg(command).arg(v).toLocal8Bit());
+}
+
+
+/************************************************
+
+ ************************************************/
+static QByteArray readJobPDF(const Job &job)
+{
+    QFile file(job.fileName());
+    if(!file.open(QFile::ReadOnly))
+    {
+        throw QObject::tr("I can't read from file '%1'")
+                .arg(job.fileName()) +
+                "\n" +
+                file.errorString();
+    }
+
+    file.seek(job.fileStartPos());
+    QByteArray res = file.read(job.fileEndPos() - job.fileStartPos());
+    file.close();
+    return res;
+}
+
+
+/************************************************
+ *
  ************************************************/
 void BooFile::save(const QString &fileName)
 {
@@ -333,7 +370,7 @@ void BooFile::save(const QString &fileName)
                               page->visible() == false,
                               page->manualRotation(),
                               page->isManualStartSubBooklet()
-                             ).asString();
+                             ).toString();
         }
 
         writeCommand(&file, "JOB_PAGES", pages.join(","));
@@ -366,66 +403,4 @@ void BooFile::save(const QString &fileName)
     write(&file, "\x1B%-12345X");
 
     file.close();
-}
-
-
-/************************************************
-
- ************************************************/
-QByteArray BooFile::readJobPDF(const Job &job)
-{
-    QFile file(job.fileName());
-    if(!file.open(QFile::ReadOnly))
-    {
-        throw QObject::tr("I can't read from file '%1'")
-                .arg(job.fileName()) +
-                "\n" +
-                file.errorString();
-    }
-
-    file.seek(job.fileStartPos());
-    QByteArray res = file.read(job.fileEndPos() - job.fileStartPos());
-    file.close();
-    return res;
-}
-
-
-/************************************************
-
- ************************************************/
-void BooFile::write(QFile *out, const QByteArray &data)
-{
-    if (out->write(data) < 0)
-        throw QObject::tr("I can't write to file '%1'").arg(out->fileName()) + "\n" + out->errorString();
-}
-
-
-
-/************************************************
-
- ************************************************/
-void BooFile::writeCommand(QFile *out, const QString &command, const QString &data)
-{
-#if (QT_VERSION < QT_VERSION_CHECK(5, 0, 0))
-    QString v = Qt::escape(data);
-#else
-    QString v = data.toHtmlEscaped();
-#endif
-    write(out, QString("@PJL BOOMAGA %1=\"%2\"\n").arg(command).arg(v).toLocal8Bit());
-}
-
-
-/************************************************
-
- ************************************************/
-void BooFile::writeCommand(QFile *out, const QString &command, const QList<int> &data)
-{
-    QStringList sl;
-    for(int i=0; i<data.count(); ++i)
-    {
-        // In the file pages are numbered starting with 1 not 0.
-        sl << QString("%1").arg(data.at(i) + 1);
-    }
-
-    writeCommand(out, command, sl.join(","));
 }

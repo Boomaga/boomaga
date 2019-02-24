@@ -39,11 +39,12 @@
 #include "../kernel/layout.h"
 #include "../kernel/project.h"
 #include "../kernel/sheet.h"
-#include "../kernel/boofile.h"
+#include "iofiles/boofile.h"
 #include "../boomagatypes.h"
 #include "../kernel/projectpage.h"
 #include "../settings.h"
 #include "../../common.h"
+
 
 #define COMPARE(actual, expected) \
     do {\
@@ -62,10 +63,16 @@ do {\
  *
  * ***********************************************/
 TestBoomaga::TestBoomaga(QObject *parent):
-    QObject(parent)
+    QObject(parent),
+    mDataDir(TEST_DATA_DIR),
+    mTmpDir(TEST_OUT_DIR)
 {
 }
 
+
+/************************************************
+ *
+ ************************************************/
 void TestBoomaga::initTestCase()
 {
     QTemporaryFile *tmpFile = new QTemporaryFile(this);
@@ -981,9 +988,9 @@ void TestBoomaga::test_BooFilePageSpec()
     {
         BooFile::PageSpec spec(string);
 
-        QCOMPARE(spec.pageNum(), pageNum);
-        QCOMPARE(spec.isHidden(), hidden);
-        QCOMPARE((int)spec.rotation(), rotation);
+        QCOMPARE(spec.pageNum, pageNum);
+        QCOMPARE(spec.hidden, hidden);
+        QCOMPARE((int)spec.rotation, rotation);
     }
     else
     {
@@ -991,7 +998,7 @@ void TestBoomaga::test_BooFilePageSpec()
                                    hidden,
                                    (Rotation)rotation,
                                    startBooklet);
-        QString result = spec.asString();
+        QString result = spec.toString();
         QCOMPARE(result, string);
     }
 }
@@ -1140,6 +1147,36 @@ void TestBoomaga::testEscapeString_data()
     QTest::newRow("6") << "`-=;'\\,./";
     QTest::newRow("7") << "йцукенгшщзхъфывапролджэячсмитьбюё";
     QTest::newRow("8") << "ЙЦУКЕНГШЩЗХЪФЫВАПРОЛДЖЭЯЧСМИТЬБЮЁ";
+}
+
+
+/************************************************
+ *
+ ************************************************/
+static QString safePath(const QString &path)
+{
+    QString res = path;
+    res = res.replace(' ', '_');
+    res = res.replace('\t', '_');
+    res = res.replace('\n', '_');
+    res = res.replace('/', '_');
+    return res;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+QString TestBoomaga::dir(const QString &subTest)
+{
+    QString test    = QString::fromLocal8Bit(QTest::currentTestFunction());
+    QString subtest = subTest.isEmpty() ? QString::fromLocal8Bit(QTest::currentDataTag()) : subTest;
+
+
+    return QDir::cleanPath(QString("%1/%2/%3")
+                    .arg(TEST_OUT_DIR)
+                    .arg(safePath(test))
+                    .arg(safePath(subtest)));
 }
 
 

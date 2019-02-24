@@ -1,0 +1,27 @@
+type = BOO
+jobs count = 1
+
+[job 0]
+pageCount = 5
+
+#1,2::180,B,5:H:90,3:H
+page.0.jobPageNum = 1
+page.0.rotation   = 0
+page.0.hidden     = false
+
+page.1.jobPageNum = 2
+page.1.rotation   = 180
+page.1.hidden     = false
+
+page.2.jobPageNum = -1
+page.2.rotation   = 0
+page.2.hidden     = false
+
+
+page.3.jobPageNum = 5
+page.3.rotation   = 90
+page.3.hidden     = true
+
+page.4.jobPageNum = 3
+page.4.rotation   = 0
+page.4.hidden     = true

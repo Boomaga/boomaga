@@ -24,105 +24,81 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#include "pstopdf.h"
+#include "postscriptfile.h"
+#include "pdffile.h"
 #include "boomagatypes.h"
-#include <QString>
-#include <QDebug>
 
 #include <QProcess>
-#include <fstream>
-
-
-using namespace std;
+#include <QFile>
 
 /************************************************
  *
  ************************************************/
-PsToPdf::PsToPdf(QObject *parent):
-    QObject(parent)
+PostScriptFile::PostScriptFile(QObject *parent) :
+    InFile(parent)
 {
-
 }
 
 
 /************************************************
  *
  ************************************************/
-PsToPdf::~PsToPdf()
+void PostScriptFile::read()
 {
+    QFile psFile;
+    mustOpenFile(mFileName, &psFile);
+    psFile.seek(mStartPos);
 
+
+    QString pdfFileName = genTmpFileName("in.pdf");
+    emit startLongOperation(tr("Converting PostScript to PDF:", "Progressbar text"));
+    convertToPdf(psFile, pdfFileName);
+    emit endLongOperation();
+
+    PdfFile pdf;
+    pdf.load(pdfFileName);
+    mJobs << pdf.jobs();
 }
 
 
 /************************************************
  *
  ************************************************/
-void PsToPdf::execute(const string &psFile, const string &pdfFile)
-{
-    ifstream in(psFile);
-    if (!in.is_open())
-        throw BoomagaError(QObject::tr("I can't open file \"%1\"").arg(psFile.c_str())
-                           + "\n" + strerror(errno));
-
-    PsToPdf converter;
-    converter.execute(in, pdfFile);
-}
-
-
-/************************************************
- *
- ************************************************/
-void PsToPdf::execute(ifstream &psStream, const string &pdfFile)
+void PostScriptFile::convertToPdf(QFile &psFile, const QString &pdfFile)
 {
     QStringList args;
     args << "-dNOPAUSE";
     args << "-dBATCH";
     args << "-dSAFER";
     args << "-sDEVICE=pdfwrite";
-    args << "-sOutputFile=" + QString::fromStdString(pdfFile);
+    args << "-sOutputFile=" + pdfFile;
     args << "-q";
     args << "-c" << ".setpdfwrite";
     args << "-f" << "-";
 
 
-    mProcess.start("gs", args, QProcess::ReadWrite);
-    if (!mProcess.waitForStarted())
+    QProcess process;
+    process.start("gs", args, QProcess::ReadWrite);
+    if (!process.waitForStarted())
         throw BoomagaError(tr("I can't start gs converter: \"%1\"")
                            .arg("timeout"));
 
 
-    const size_t BUF_SIZE= 4096 * 1024;
-    char buf[BUF_SIZE];
-    while (psStream)
+    const qint64 BUF_SIZE= 4096 * 1024;
+    while (!psFile.atEnd() && psFile.pos() < mEndPos)
     {
-        psStream.read(buf, BUF_SIZE);
-        mProcess.write(buf, psStream.gcount());
+        process.write(
+            psFile.read(qMin(BUF_SIZE, mEndPos - psFile.pos())));
     }
 
-    mProcess.closeWriteChannel();
+    process.closeWriteChannel();
 
-    while (!mProcess.waitForFinished(5))
+    while (!process.waitForFinished(5))
     {
         qApp->processEvents();
     }
 
-    if (mProcess.exitCode() != 0)
+    if (process.exitCode() != 0)
         throw BoomagaError(tr("I can't start gs converter: \"%1\"")
-                           .arg(QString::fromLocal8Bit(mProcess.readAllStandardError())));
+                           .arg(QString::fromLocal8Bit(process.readAllStandardError())));
 }
-
-
-/************************************************
- *
- ************************************************/
-void PsToPdf::terminate()
-{
-     mProcess.terminate();
-    if (mProcess.waitForFinished(1000))
-        return;
-
-    mProcess.kill();
-    mProcess.waitForFinished(-1);
-}
-
-

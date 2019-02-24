@@ -78,6 +78,9 @@ private slots:
     void testEscapeString();
     void testEscapeString_data();
 
+    void testInFiles();
+    void testInFiles_data();
+
     // PDF::Value .........................................
 
 
@@ -119,6 +122,10 @@ private slots:
     // PDF::Writer ........................................
 
 private:
+    const QString mDataDir;
+    const QString mTmpDir;
+
+    QString dir(const QString &subTest = "");
     LayoutNUp *createLayout(const QString &name);
     QList<ProjectPage*> createPages(const QString &definition);
     Sheet *createSheet(const QString &definition);

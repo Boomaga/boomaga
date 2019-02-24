@@ -47,6 +47,7 @@ set(TEST_SOURCES
     testpdfparser.cpp
     testpdfreader.cpp
     testpdfwriter.cpp
+    test_infiles.cpp
     ../pdfparser/pdfreader.cpp
     ../pdfparser/pdfvalue.cpp
     ../pdfparser/pdfobject.cpp

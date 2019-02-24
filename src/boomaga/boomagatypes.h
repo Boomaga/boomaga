@@ -31,6 +31,8 @@
 #include <QRectF>
 #include <QApplication>
 
+class QFile;
+
 enum DuplexType
 {
     DuplexAuto          = 1,
@@ -148,11 +150,15 @@ public:
     explicit BoomagaError(const QString &msg): std::runtime_error(msg.toStdString()){}
 };
 
+void mustOpenFile(const QString &fileName, QFile *file);
 
 QString safeFileName(const QString &str);
 
 QString expandHomeDir(const QString &fileName);
 QString shrinkHomeDir(const QString &fileName);
 QString boomagaChacheDir();
+QString appUUID();
+QString genTmpFileName(const QString &suffix);
+
 
 #endif // BOOMAGATYPES_H

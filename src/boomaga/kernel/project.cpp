@@ -31,8 +31,8 @@
 #include "tmppdffile.h"
 #include "sheet.h"
 #include "layout.h"
-#include "boofile.h"
-#include "pstopdf.h"
+#include "iofiles/infile.h"
+#include "iofiles/boofile.h"
 
 #include <unistd.h>
 #include <fstream>
@@ -50,19 +50,6 @@
 #define META_SIZE (4 * 1024)
 
 using namespace  std;
-
-/************************************************
- *
- ************************************************/
-static QString genTmpFileName()
-{
-    return QString("%1%2boomaga_in%3.%4")
-            .arg(boomagaChacheDir())
-            .arg(QDir::separator())
-            .arg(QUuid::createUuid().toString())
-            .arg(AUTOREMOVE_EXT);
-}
-
 
 class ProjectState
 {
@@ -164,16 +151,24 @@ void Project::addJob(const Job &job)
  * ***********************************************/
 void Project::addJobs(const JobList &jobs)
 {
-    foreach (Job job, jobs)
+    try
     {
-        mJobs << job;
+        foreach (Job job, jobs)
+        {
+            mJobs << job;
+        }
+
+        stopMerging();
+        update();
+
+        mLastTmpFile = createTmpPdfFile();
+        mLastTmpFile->merge(mJobs);
     }
-
-    stopMerging();
-    update();
-
-    mLastTmpFile = createTmpPdfFile();
-    mLastTmpFile->merge(mJobs);
+    catch (BoomagaError &err)
+    {
+        qWarning() << Q_FUNC_INFO << err.what();
+        error(err.what());
+    }
 }
 
 
@@ -182,24 +177,33 @@ void Project::addJobs(const JobList &jobs)
  ************************************************/
 void Project::removeJob(int index)
 {
-    stopMerging();
-
-    QString fileName = mJobs.at(index).fileName();
-    mJobs.removeAt(index);
-    update();
-
-    if (fileName.endsWith(AUTOREMOVE_EXT))
+    try
     {
-        bool remove = true;
-        for (const Job &job: mJobs)
-            remove = remove && job.fileName() != fileName;
 
-        if (remove)
-            QFile(fileName).remove();
+        stopMerging();
+
+        QString fileName = mJobs.at(index).fileName();
+        mJobs.removeAt(index);
+        update();
+
+        if (fileName.endsWith(AUTOREMOVE_EXT))
+        {
+            bool remove = true;
+            for (const Job &job: mJobs)
+                remove = remove && job.fileName() != fileName;
+
+            if (remove)
+                QFile(fileName).remove();
+        }
+
+        mLastTmpFile = createTmpPdfFile();
+        mLastTmpFile->merge(mJobs);
     }
-
-    mLastTmpFile = createTmpPdfFile();
-    mLastTmpFile->merge(mJobs);
+    catch (BoomagaError &err)
+    {
+        qWarning() << Q_FUNC_INFO << err.what();
+        error(err.what());
+    }
 }
 
 
@@ -1071,89 +1075,38 @@ JobList Project::load(const QStringList &fileNames)
     JobList jobs;
     foreach(QString fileName, fileNames)
     {
-
-        QFileInfo fi(fileName);
-
-        if (!fi.filePath().isEmpty())
-        {
-            if (!fi.exists())
-            {
-                errors << tr("I can't open file \"%1\" (No such file or directory)")
-                          .arg(fi.filePath());
-                continue;
-            }
-
-            if (!fi.isReadable())
-            {
-                errors << tr("I can't open file \"%1\" (Access denied)")
-                          .arg(fi.filePath());
-                continue;
-            }
-        }
-
-
-        QFile file(fileName);
-        if(!file.open(QFile::ReadOnly))
-        {
-            errors << tr("I can't open file \"%1\"").arg(fileName) + "\n" + file.errorString();
-            continue;
-        }
-
-
-        file.seek(0);
-        QByteArray mark = file.read(30);
-        file.close();
-
         try
         {
-            // Read CUPS_BOOMAGA .........................
-            if (mark.startsWith("\x1B CUPS_BOOMAGA"))
+            InFile::Type fileType = InFile::getType(fileName);
+            if (fileType == InFile::Type::CupsBoo &&
+                fileName.endsWith(AUTOREMOVE_EXT))
             {
-                jobs << loadCupsBOO(fileName);
-                if (fileName.endsWith(AUTOREMOVE_EXT))
-                    delFiles << fileName;
+                QString old = fileName;
+                fileName = genTmpFileName(".cboo");
+                QFile::copy(old, fileName);
+                delFiles << old;
             }
 
+            QObject keeper;
+            InFile *parser = InFile::fromFile(fileName, &keeper);
+            connect(parser, &InFile::startLongOperation,
+                    [this, &parser](const QString &msg){
+                auto task = new ProjectLongTask(msg, parser);
+                emit longTaskStarted(task);
+            });
 
-            // Read PDF ..................................
-            else if (mark.startsWith("%PDF-"))
+            parser->load(fileName);
+            jobs << parser->jobs();
+
+            if (fileType == InFile::Type::Boo)
             {
-                jobs << loadPDF(fileName);
+                setMetadata(parser->metaData());
             }
-
-
-            // Read BOO ..................................
-            else if (mark.startsWith("\x1B%-12345X@PJL BOOMAGA_PROJECT"))
-            {
-                jobs << loadBOO(fileName);
-            }
-
-
-            // Read PostScript ...........................
-            else if (mark.startsWith("%!PS-Adobe-"))
-            {
-                ProjectLongTask task(tr("Converting PostScript to PDF:", "Progressbar text"));
-                QString outFileName = genTmpFileName();
-                PsToPdf psToPdf;
-                emit longTaskStarted(&task);
-                psToPdf.execute(fileName.toStdString(), outFileName.toStdString());
-                jobs << loadPDF(outFileName);
-            }
-
-            // Unknown format ............................
-            else
-                throw BoomagaError(tr("I can't read file \"%1\" either because it's not a supported file type, or because the file has been damaged.")
-                                   .arg(file.fileName()).toStdString());
         }
         catch (const BoomagaError &err)
         {
             qWarning() << err.what();
             errors << err.what();
-        }
-        catch (const QString &err)
-        {
-            qWarning() << err;
-            errors << err;
         }
     }
 
@@ -1171,109 +1124,6 @@ JobList Project::load(const QStringList &fileNames)
 
     return jobs;
 }
-
-
-/************************************************
- *
- ************************************************/
-JobList Project::loadPDF(const QString &fileName)
-{
-    Job job = Job(fileName);
-
-    if (!job.errorString().isEmpty())
-        throw BoomagaError(job.errorString().toStdString());
-
-    if (job.state() != Job::JobError)
-        return JobList() << job;
-
-    return JobList();
-}
-
-
-/************************************************
- *
- ************************************************/
-JobList Project::loadBOO(const QString &fileName)
-{
-    BooFile file;
-    file.load(fileName);
-    setMetadata(file.metaData());
-    return file.jobs();
-}
-
-
-/************************************************
- *
- ************************************************/
-JobList Project::loadCupsBOO(const QString &fileName)
-{
-    ifstream in(fileName.toLocal8Bit().data());
-    if (!in.is_open())
-        throw BoomagaError(tr("I can't open file \"%1\"").arg(fileName)
-                           + "\n" + strerror(errno));
-
-    QString title;
-    QString options;
-
-    while (in)
-    {
-        string line;
-        getline(in, line);
-
-        if (line.compare(0, 6, "TITLE=") == 0)
-        {
-            title = QUrl::fromPercentEncoding(line.c_str()).mid(6);
-            continue;
-        }
-
-        if (line.compare(0, 8, "OPTIONS=") == 0)
-        {
-            options = QUrl::fromPercentEncoding(line.c_str()).mid(8);
-            continue;
-        }
-
-        if (line.compare(0, 17, "CUPS_BOOMAGA_DATA") == 0)
-            break;
-    }
-
-    auto pos = in.tellg();
-    string line;
-    getline(in, line);
-    in.seekg(pos);
-
-
-    // Read PDF ..................................
-    if (line.compare(0, 5, "%PDF-") == 0)
-    {
-        QString outFileName = genTmpFileName();
-        ofstream out(outFileName.toStdString(), ios::binary | ios::trunc);
-        if (!out)
-            throw BoomagaError(tr("I can't write to file '%1'").arg(outFileName)
-                                + "\n" + strerror(errno));
-        out << in.rdbuf();
-        out.close();
-        return loadPDF(outFileName);
-    }
-
-
-    // Read PostScript ...........................
-    if (line.compare(0, 11, "%!PS-Adobe-") == 0)
-    {
-        QString outFileName = genTmpFileName();
-        ProjectLongTask task(tr("Converting PostScript to PDF:", "Progressbar text"));
-        PsToPdf psToPdf;
-        emit longTaskStarted(&task);
-        psToPdf.execute(in, outFileName.toStdString());
-        return loadPDF(outFileName);
-    }
-
-
-    // Unknown format ............................
-    throw BoomagaError(tr("I can't read file \"%1\" either because it's not a supported file type, "
-                          "or because the file has been damaged.").arg(fileName));
-}
-
-
 
 
 /************************************************

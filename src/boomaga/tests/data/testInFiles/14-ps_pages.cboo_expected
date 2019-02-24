@@ -1,0 +1,17 @@
+type = CUPSBOO
+jobs count = 1
+
+[job 0]
+pageCount = 9
+
+# page-ranges=1-4,7,9-12
+
+page.0.jobPageNum = 1
+page.1.jobPageNum = 2
+page.2.jobPageNum = 3
+page.3.jobPageNum = 4
+page.4.jobPageNum = 7
+page.5.jobPageNum = 9
+page.6.jobPageNum = 10
+page.7.jobPageNum = 11
+page.8.jobPageNum = 12

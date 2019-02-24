@@ -2,7 +2,7 @@
  * (c)LGPL2+
  *
  *
- * Copyright: 2019 Boomaga team https://github.com/Boomaga
+ * Copyright: 2012-2014 Boomaga team https://github.com/Boomaga
  * Authors:
  *   Alexander Sokoloff <sokoloff.a@gmail.com>
  *
@@ -24,26 +24,42 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#ifndef PSTOPDF_H
-#define PSTOPDF_H
+#include "pdffile.h"
+#include "pdfparser/pdfreader.h"
 
-#include <QObject>
-#include <QProcess>
-
-class PsToPdf: public QObject
+/************************************************
+ *
+ ************************************************/
+PdfFile::PdfFile(QObject *parent) :
+    InFile(parent)
 {
-    Q_OBJECT
-public:
-    PsToPdf(QObject *parent=nullptr);
-    virtual ~PsToPdf();
-    void execute(const std::string &psFile, const std::string &pdfFile);
-    void execute(std::ifstream &psStream, const std::string &pdfFile);
+}
 
-public slots:
-    void terminate();
 
-private:
-    QProcess mProcess;
-};
+/************************************************
+ *
+ ************************************************/
+void PdfFile::read()
+{
+    PDF::Reader reader;
+    try
+    {
+        reader.open(mFileName, mStartPos, mEndPos);
+    }
+    catch (PDF::Error &err)
+    {
+        throw BoomagaError(err.what());
+    }
 
-#endif // PSTOPDF_H
+    Job job;
+    job.setFileName(mFileName);
+    job.setFilePos(mStartPos, mEndPos);
+    job.setTitle(reader.find("/Trailer/Info/Title").asString().value());
+
+    int pageCount = reader.pageCount();
+    for (int i=0; i< pageCount; ++i)
+    {
+        job.addPage(new ProjectPage(i));
+    }
+    mJobs << job;
+}

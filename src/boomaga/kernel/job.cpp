@@ -40,7 +40,7 @@
 class JobData: public QSharedData
 {
 public:
-    JobData(const QString &fileName, qint64 startPos, qint64 endPos, const QList<int> *pages);
+    JobData();
     ~JobData();
 
     QString mFileName;
@@ -48,7 +48,6 @@ public:
     qint64 mEndPos;
     QList<ProjectPage*> mPages;
     QString mTitle;
-    Job::State mState;
     QString mErrorString;
 
     static int lockUnlockFile(const QString &file, int lock);
@@ -59,57 +58,11 @@ public:
 /************************************************
 
  ************************************************/
-JobData::JobData(const QString &fileName, qint64 startPos, qint64 endPos, const QList<int> *pages):
-    mFileName(fileName),
-    mStartPos(startPos),
-    mEndPos(endPos),
-    mState(Job::JobEmpty)
+JobData::JobData():
+    mFileName(""),
+    mStartPos(0),
+    mEndPos(0)
 {
-    if (!fileName.isEmpty())
-    {
-        QFileInfo fi(fileName);
-        if (!mEndPos)
-            mEndPos = fi.size();
-
-        try
-        {
-            PDF::Reader reader;
-            reader.open(fi.absoluteFilePath(), mStartPos, mEndPos);
-
-            mTitle = reader.find("/Trailer/Info/Title").asString().value();
-            int pageCount = reader.pageCount();
-
-            if (pages && !pages->isEmpty())
-            {
-                foreach (int p, *pages)
-                {
-                    if (p < 0 || p >= pageCount)
-                    {
-                        qWarning() << QString("Page %1 out of range 1..%3")
-                                      .arg(p+1)
-                                      .arg(pageCount);
-                        continue;
-                    }
-
-                    mPages << new ProjectPage(p);
-                }
-
-            }
-            else
-            {
-                for (int i=0; i< pageCount; ++i)
-                    mPages << new ProjectPage(i);
-            }
-
-            mState = Job::JobNotReady;
-        }
-        catch (const PDF::Error &err)
-        {
-            mState = Job::JobError;
-            mErrorString = err.what();
-        }
-    }
-    lockUnlockFile(mFileName, LOCK_CREATE);
 }
 
 
@@ -169,27 +122,8 @@ ProjectPage *JobData::takePage(ProjectPage *page)
 
  ************************************************/
 Job::Job():
-    mData(new JobData("", 0, 0, 0))
+    mData(new JobData())
 {
-}
-
-
-/************************************************
-
- ************************************************/
-Job::Job(const QString &fileName, qint64 startPos, qint64 endPos):
-    mData(new JobData(fileName, startPos, endPos, 0))
-{
-}
-
-
-/************************************************
- *
- * ***********************************************/
-Job::Job(const QString &fileName, const QList<int> &pages, qint64 startPos, qint64 endPos):
-    mData(new JobData(fileName, startPos, endPos, &pages))
-{
-
 }
 
 
@@ -378,6 +312,15 @@ QString Job::fileName() const
 /************************************************
  *
  ************************************************/
+void Job::setFileName(const QString &fileName)
+{
+    mData->mFileName = fileName;
+}
+
+
+/************************************************
+ *
+ ************************************************/
 qint64 Job::fileStartPos() const
 {
     return mData->mStartPos;
@@ -394,11 +337,12 @@ qint64 Job::fileEndPos() const
 
 
 /************************************************
-
+ *
  ************************************************/
-Job::State Job::state() const
+void Job::setFilePos(qint64 startPos, qint64 endPos)
 {
-    return mData->mState;
+    mData->mStartPos = startPos;
+    mData->mEndPos   = endPos;
 }
 
 
@@ -418,6 +362,17 @@ ProjectPage *Job::insertBlankPage(int before)
 {
     ProjectPage *page = new ProjectPage();
     insertPage(before, page);
+    return page;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+ProjectPage *Job::addBlankPage()
+{
+    ProjectPage *page = new ProjectPage();
+    addPage(page);
     return page;
 }
 

@@ -62,21 +62,6 @@ QIODevice &operator<<(QIODevice &out, const int value)
 /************************************************
 
  ************************************************/
-QString TmpPdfFile::genFileName()
-{
-    static int num = 0;
-    num++;
-
-    return QString("%1/.cache/boomaga_tmp_%2-%3.pdf")
-            .arg(QDir::homePath())
-            .arg(QCoreApplication::applicationPid())
-            .arg(num);
-}
-
-
-/************************************************
-
- ************************************************/
 TmpPdfFile::TmpPdfFile(QObject *parent):
     QObject(parent),
     mValid(false)
@@ -85,7 +70,7 @@ TmpPdfFile::TmpPdfFile(QObject *parent):
     mOrigXrefPos = 0;
     mFirstFreeNum = 0;
 
-    mFileName = genFileName();
+    mFileName = genTmpFileName(".tmp");
 }
 
 
@@ -111,57 +96,64 @@ void TmpPdfFile::merge(const JobList &jobs)
                            + "\n" + file.errorString());
     }
 
-    PDF::Writer writer(&file);
-    writer.writePDFHeader(1,7);
-
-    QVector<PdfProcessor*> procs;
-    procs.reserve(jobs.count());
-
-    quint32 pagesCnt = 0;
-    foreach (const Job &job, jobs)
+    try
     {
-        auto proc = new PdfProcessor(job.fileName(), job.fileStartPos(), job.fileEndPos());
-        proc->open();
-        pagesCnt += proc->pageCount();
-        procs << proc;
-    }
+        PDF::Writer writer(&file);
+        writer.writePDFHeader(1,7);
 
+        QVector<PdfProcessor*> procs;
+        procs.reserve(jobs.count());
 
-    QVector<PdfPageInfo> pages;
-
-    int ready =0;
-    for (int i=0; i<jobs.count(); ++i)
-    {
-        const Job &job = jobs.at(i);
-        PdfProcessor *proc = procs.at(i);
-
-        QDateTime prevEmit;
-        connect(proc, &PdfProcessor::pageReady, [this, &ready, pagesCnt, &prevEmit] ()
+        quint32 pagesCnt = 0;
+        foreach (const Job &job, jobs)
         {
-            ++ready;
+            auto proc = new PdfProcessor(job.fileName(), job.fileStartPos(), job.fileEndPos());
+            proc->open();
+            pagesCnt += proc->pageCount();
+            procs << proc;
+        }
 
-            QDateTime now = QDateTime::currentDateTime();
-            if (now.toMSecsSinceEpoch() - prevEmit.toMSecsSinceEpoch() > 100)
+
+        QVector<PdfPageInfo> pages;
+
+        int ready =0;
+        for (int i=0; i<jobs.count(); ++i)
+        {
+            const Job &job = jobs.at(i);
+            PdfProcessor *proc = procs.at(i);
+
+            QDateTime prevEmit;
+            connect(proc, &PdfProcessor::pageReady, [this, &ready, pagesCnt, &prevEmit] ()
             {
-                prevEmit = now;
-                emit progress(ready, pagesCnt);
-                qApp->processEvents();
-            }
-        });
+                ++ready;
 
-        proc->run(&writer, writer.xRefTable().maxObjNum() + 3);
+                QDateTime now = QDateTime::currentDateTime();
+                if (now.toMSecsSinceEpoch() - prevEmit.toMSecsSinceEpoch() > 100)
+                {
+                    prevEmit = now;
+                    emit progress(ready, pagesCnt);
+                    qApp->processEvents();
+                }
+            });
 
-        for (int p=0; p<proc->pageInfo().count(); ++p)
-            job.page(p)->setPdfInfo(proc->pageInfo().at(p));
+            proc->run(&writer, writer.xRefTable().maxObjNum() + 3);
 
-        pages << proc->pageInfo();
+            for (int p=0; p<proc->pageInfo().count(); ++p)
+                job.page(p)->setPdfInfo(proc->pageInfo().at(p));
+
+            pages << proc->pageInfo();
+        }
+        qDeleteAll(procs);
+
+        writeCatalog(&writer, pages);
+        file.close();
+        mValid = true;
+
     }
-    qDeleteAll(procs);
-
-    writeCatalog(&writer, pages);
-    file.close();
-    mValid = true;
-
+    catch (PDF::Error &err)
+    {
+        throw BoomagaError(err.what());
+    }
     emit progress(-1, -1);
     emit merged();
 }

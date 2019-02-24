@@ -1,0 +1,11 @@
+type = BOO
+jobs count = 1
+
+[metadata]
+author   = Metadata autor
+title    = Metadata title
+subject  = Metadata subject
+keywords = Metadata keywords
+
+[job 0]
+pageCount = 1

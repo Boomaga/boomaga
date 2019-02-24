@@ -1,0 +1,28 @@
+type = CUPSBOO
+jobs count = 3
+
+# page-ranges=2-4,7
+[job 0]
+pageCount = 4
+title = "Boomaga title"
+page.0.jobPageNum = 2
+page.1.jobPageNum = 3
+page.2.jobPageNum = 4
+page.3.jobPageNum = 7
+
+[job 1]
+pageCount = 4
+title = "Boomaga title"
+page.0.jobPageNum = 2
+page.1.jobPageNum = 3
+page.2.jobPageNum = 4
+page.3.jobPageNum = 7
+
+[job 2]
+pageCount = 4
+title = "Boomaga title"
+page.0.jobPageNum = 2
+page.1.jobPageNum = 3
+page.2.jobPageNum = 4
+page.3.jobPageNum = 7
+

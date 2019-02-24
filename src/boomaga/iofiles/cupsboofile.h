@@ -2,7 +2,7 @@
  * (c)LGPL2+
  *
  *
- * Copyright: 2012-2017 Boomaga team https://github.com/Boomaga
+ * Copyright: 2019 Boomaga team https://github.com/Boomaga
  * Authors:
  *   Alexander Sokoloff <sokoloff.a@gmail.com>
  *
@@ -23,34 +23,21 @@
  *
  * END_COMMON_COPYRIGHT_HEADER */
 
-#ifndef TOOLS_H
-#define TOOLS_H
 
-#ifdef __GNUG__
-#include <memory>
-#include <cxxabi.h>
+#ifndef CUPSBOOFILE_H
+#define CUPSBOOFILE_H
 
-static QString exceptionName(const std::exception &e)
+#include "infile.h"
+
+class CupsBooFile : public InFile
 {
-    int     status;
-    char   *realname = abi::__cxa_demangle(typeid(e).name(), 0, 0, &status);
-    if (status == 0)
-    {
-        QString res = QString::fromLatin1(realname);
-        free(realname);
-        return res;
-    }
-    return typeid(e).name() ;
-}
+    Q_OBJECT
+public:
+    explicit CupsBooFile(QObject *parent = 0);
+    Type type() const override final { return Type::CupsBoo; }
 
-#else
+protected:
+    void read() override final;
+};
 
-QString exceptionName(const std::exception &e) {
-    return typeid(e).name();
-}
-
-#endif
-
-#define FAIL_EXCEPTION(E) QFAIL(QString("Exception %1: %2").arg(exceptionName(E)).arg(E.what()).toLocal8Bit())
-
-#endif //TOOLS_H
+#endif // CUPSBOOFILE_H

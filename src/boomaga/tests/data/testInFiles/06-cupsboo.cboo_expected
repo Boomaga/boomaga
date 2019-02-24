@@ -1,0 +1,5 @@
+type = CUPSBOO
+jobs count = 1
+
+[job 0]
+pageCount = 16

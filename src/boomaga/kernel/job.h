@@ -50,8 +50,6 @@ public:
     };
 
     explicit Job();
-    explicit Job(const QString &fileName, qint64 startPos=0, qint64 endPos=0);
-    explicit Job(const QString &fileName, const QList<int> &pages, qint64 startPos=0, qint64 endPos=0);
     Job(const Job &other);
     virtual ~Job();
 
@@ -76,13 +74,16 @@ public:
     void setTitle(const QString &title);
 
     QString fileName() const;
+    void setFileName(const QString &fileName);
+
     qint64 fileStartPos() const;
     qint64 fileEndPos() const;
+    void setFilePos(qint64 startPos, qint64 endPos);
 
-    State state() const;
     QString errorString() const;
 
     ProjectPage *insertBlankPage(int before);
+    ProjectPage *addBlankPage();
 
     Job clone();
 private:

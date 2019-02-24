@@ -175,6 +175,22 @@ void readEnvFile()
 
 }
 
+/************************************************
+ *
+ ************************************************/
+void cleanup()
+{
+    // Remove temporary files ..............
+    QDir dir(boomagaChacheDir());
+    QStringList filters;
+    filters << (appUUID() + "*");
+    QStringList files = dir.entryList(filters, QDir::NoDotAndDotDot|QDir::Files);
+    foreach (QString f, files)
+    {
+        dir.remove(f);
+    }
+}
+
 
 /************************************************
 
@@ -200,6 +216,9 @@ int main(int argc, char *argv[])
     readEnvFile();
 
     QApplication application(argc, argv);
+    QObject::connect(&application, &QCoreApplication::aboutToQuit,
+                     &cleanup);
+
 
     QTranslator qtTranslator;
     qtTranslator.load("qt_" + QLocale::system().name(), QLibraryInfo::location(QLibraryInfo::TranslationsPath));
