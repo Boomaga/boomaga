@@ -1,3 +1,6 @@
+Boomaga      &nbsp;   ![Release](http://www.boomaga.org/badge_release.svg)      &nbsp;  [![Build Status](https://travis-ci.org/Boomaga/boomaga.svg?branch=master)](https://travis-ci.org/Boomaga/boomaga)      &nbsp;  [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XVRVWTQL5WERG)
+======
+
 [Homepage](http://www.boomaga.org) | 
 [Screenshots](http://www.boomaga.org/screenshots/) | 
 [Download](http://www.boomaga.org/download/)
