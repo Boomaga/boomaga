@@ -138,8 +138,18 @@ void TmpPdfFile::merge(const JobList &jobs)
 
             proc->run(&writer, writer.xRefTable().maxObjNum() + 3);
 
-            for (int p=0; p<proc->pageInfo().count(); ++p)
-                job.page(p)->setPdfInfo(proc->pageInfo().at(p));
+            for (int p=0; p<job.pageCount(); ++p)
+            {
+                ProjectPage *page = job.page(p);
+                if (page->jobPageNum() < 0)
+                    continue;
+
+                if (page->jobPageNum() >= proc->pageInfo().count())
+                    continue;
+
+                page->setPdfInfo(proc->pageInfo().at(page->jobPageNum()));
+
+            }
 
             pages << proc->pageInfo();
         }
