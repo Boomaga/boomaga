@@ -34,6 +34,7 @@
 #include <QList>
 #include <QTemporaryFile>
 #include <QUrl>
+#include <QDir>
 
 #define protected public
 #include "../kernel/layout.h"

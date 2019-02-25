@@ -212,13 +212,12 @@ QString appUUID()
  ************************************************/
 QString genTmpFileName(const QString &suffix)
 {
-    static QAtomicInt num = 0;
-    ++num;
+    static QAtomicInt num = 1;
 
     return QString("%1%2%3_%4%5")
             .arg(boomagaChacheDir())
             .arg(QDir::separator())
             .arg(appUUID())
-            .arg(num, 3, 10, QChar('0'))
+            .arg(num.fetchAndAddRelaxed(1), 3, 10, QChar('0'))
             .arg(suffix);
 }
