@@ -140,6 +140,10 @@ void ConfigDialog::saveSettings()
     settings->setValue(Settings::AutoSave, ui->autoSaveGroupBox->isChecked());
     settings->setValue(Settings::AutoSaveDir, ui->autoSaveDirEdit->text());
     settings->setValue(Settings::AllowNegativeMargins, ui->negativeMargins->isChecked());
+
+    if (settings->value(Settings::RightToLeft).toBool()  != ui->rightToLeft->isChecked())
+        upadateProject = true;
+
     settings->setValue(Settings::RightToLeft, ui->rightToLeft->isChecked());
 
     if (upadateProject)
