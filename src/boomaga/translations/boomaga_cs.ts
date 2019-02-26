@@ -59,6 +59,13 @@
     </message>
 </context>
 <context>
+    <name>BooFile</name>
+    <message>
+        <source>I can&apos;t write to file &apos;%1&apos;</source>
+        <translation>Nelze zapisovat do souboru &apos;%1&apos;</translation>
+    </message>
+</context>
+<context>
     <name>ConfigDialog</name>
     <message>
         <source>Preferences</source>
@@ -103,6 +110,13 @@
     <message>
         <source>Right-to-left direction</source>
         <translation>Směr zprava doleva</translation>
+    </message>
+</context>
+<context>
+    <name>CupsBooFile</name>
+    <message>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
+        <translation>Nelze přečíst soubor &quot;%1&quot;, protože buď tento není podporovaným souborovým typem, nebo protože soubor byl poškozen.</translation>
     </message>
 </context>
 <context>
@@ -172,6 +186,13 @@ Jste si jistý, že jej chcete přepsat?</translation>
     <message>
         <source> The document&apos;s title.</source>
         <translation>Název dokumentu.</translation>
+    </message>
+</context>
+<context>
+    <name>InFile</name>
+    <message>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
+        <translation>Nelze přečíst soubor &quot;%1&quot;, protože buď tento není podporovaným souborovým typem, nebo protože soubor byl poškozen.</translation>
     </message>
 </context>
 <context>
@@ -516,10 +537,15 @@ Jste si jistý, že jej chcete přepsat?</translation>
     </message>
 </context>
 <context>
-    <name>PdfMerger</name>
+    <name>PostScriptFile</name>
     <message>
-        <source>I can&apos;t write file &quot;%1&quot;</source>
-        <translation>Nelze zapsat soubor &quot;%1&quot;</translation>
+        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
+        <translation>Nelze spustit převaděč gs: &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>Converting PostScript to PDF</source>
+        <comment>Progressbar text</comment>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -652,33 +678,6 @@ Jste si jistý, že jej chcete přepsat?</translation>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Nelze zapisovat do souboru &apos;%1&apos;</translation>
     </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
-        <translation>Nelze otevřít soubor &quot;%1&quot; (žádný takový soubor nebo adresář)</translation>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
-        <translation>Nelze otevřít soubor &quot;%1&quot; (přístup odepřen)</translation>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Nelze otevřít soubor &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
-        <translation>Nelze přečíst soubor &quot;%1&quot;, protože buď tento není podporovaným souborovým typem, nebo protože soubor byl poškozen.</translation>
-    </message>
-</context>
-<context>
-    <name>ProjectFile</name>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Nelze otevřít soubor &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation>Nelze zapisovat do souboru &apos;%1&apos;</translation>
-    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -698,6 +697,26 @@ Jste si jistý, že jej chcete přepsat?</translation>
         <source>Default</source>
         <comment>Printer profile default name</comment>
         <translation>Výchozí</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (Empty file name)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Nelze otevřít soubor &quot;%1&quot; (žádný takový soubor nebo adresář)</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Nelze otevřít soubor &quot;%1&quot; (přístup odepřen)</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot;</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Nelze otevřít soubor &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
@@ -725,18 +744,16 @@ Jste si jistý, že jej chcete přepsat?</translation>
         <translation>Nelze vytvořit dočasný soubor &quot;%1&quot;</translation>
     </message>
     <message>
-        <source>Something is wrong. I can't find boomagamerger program.
-Please reinstall me.</source>
-        <translation>Něco je špatně. Nelze najít program boomagamerger.
-Proveďte, prosím, přeinstalaci.</translation>
-    </message>
-    <message>
         <source>I can&apos;t read file &apos;%1&apos;</source>
         <translation>Nelze přečíst soubor &apos;%1&apos;</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Nelze zapisovat do souboru &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <source>I can&apos;t write file &quot;%1&quot;</source>
+        <translation>Nelze zapsat soubor &quot;%1&quot;</translation>
     </message>
 </context>
 </TS>

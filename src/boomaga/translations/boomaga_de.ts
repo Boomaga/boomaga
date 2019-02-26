@@ -59,6 +59,13 @@
     </message>
 </context>
 <context>
+    <name>BooFile</name>
+    <message>
+        <source>I can&apos;t write to file &apos;%1&apos;</source>
+        <translation>Ich kann nicht in die Datei &apos;%1&apos; schreiben</translation>
+    </message>
+</context>
+<context>
     <name>ConfigDialog</name>
     <message>
         <source>Preferences</source>
@@ -102,7 +109,14 @@
     </message>
     <message>
         <source>Right-to-left direction</source>
-        <translation type="unfinished"/>
+        <translation>Richtung von rechts nach links</translation>
+    </message>
+</context>
+<context>
+    <name>CupsBooFile</name>
+    <message>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
+        <translation>Ich kann die Datei &quot;%1&quot; nicht lesen, weil ihr Dateityp entweder nicht unterstützt wird oder die Datei beschädigt wurde.</translation>
     </message>
 </context>
 <context>
@@ -172,6 +186,13 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     <message>
         <source> The document&apos;s title.</source>
         <translation>Der Titel des Dokuments.</translation>
+    </message>
+</context>
+<context>
+    <name>InFile</name>
+    <message>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
+        <translation>Ich kann die Datei &quot;%1&quot; nicht lesen, weil ihr Dateityp entweder nicht unterstützt wird oder die Datei beschädigt wurde.</translation>
     </message>
 </context>
 <context>
@@ -516,10 +537,15 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
 </context>
 <context>
-    <name>PdfMerger</name>
+    <name>PostScriptFile</name>
     <message>
-        <source>I can&apos;t write file &quot;%1&quot;</source>
-        <translation>Datei &quot;%1&quot; konnte nicht geschrieben werden</translation>
+        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Converting PostScript to PDF</source>
+        <comment>Progressbar text</comment>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -652,33 +678,6 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Datei &apos;%1&apos; konnte nicht geschrieben werden</translation>
     </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
-        <translation>Ich kann die Datei &quot;%1&quot; nicht öffnen (keine solche Datei oder Verzeichnis)</translation>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
-        <translation>Ich kann die Datei &quot;%1&quot; nicht öffnen (Zugriff verweigert)</translation>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Ich kann die Datei &quot;%1&quot; nicht öffnen</translation>
-    </message>
-    <message>
-        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
-        <translation>Ich kann die Datei &quot;%1&quot; nicht lesen, weil ihr Dateityp entweder nicht unterstützt wird oder die Datei beschädigt wurde.</translation>
-    </message>
-</context>
-<context>
-    <name>ProjectFile</name>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Ich kann die Datei &quot;%1&quot; nicht öffnen</translation>
-    </message>
-    <message>
-        <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation>Ich kann nicht in die Datei &apos;%1&apos; schreiben</translation>
-    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -698,6 +697,26 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
         <source>Default</source>
         <comment>Printer profile default name</comment>
         <translation>Standard</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (Empty file name)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Ich kann die Datei &quot;%1&quot; nicht öffnen (keine solche Datei oder Verzeichnis)</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Ich kann die Datei &quot;%1&quot; nicht öffnen (Zugriff verweigert)</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot;</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Ich kann die Datei &quot;%1&quot; nicht öffnen</translation>
     </message>
 </context>
 <context>
@@ -725,18 +744,16 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
         <translation>Temporäre Datei &quot;%1&quot; konnte nicht erstellt werden</translation>
     </message>
     <message>
-        <source>Something is wrong. I can't find boomagamerger program.
-Please reinstall me.</source>
-        <translation>Irgendetwas stimmt hier nicht. Das Programm boomagamerger konnte nicht gefunden werden.
-Bitte neu installieren.</translation>
-    </message>
-    <message>
         <source>I can&apos;t read file &apos;%1&apos;</source>
         <translation>Datei &apos;%1&apos; konnte nicht gelesen werden</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Datei &apos;%1&apos; konnte nicht geschrieben werden</translation>
+    </message>
+    <message>
+        <source>I can&apos;t write file &quot;%1&quot;</source>
+        <translation>Datei &quot;%1&quot; konnte nicht geschrieben werden</translation>
     </message>
 </context>
 </TS>

@@ -59,6 +59,13 @@
     </message>
 </context>
 <context>
+    <name>BooFile</name>
+    <message>
+        <source>I can&apos;t write to file &apos;%1&apos;</source>
+        <translation>Jeg kan ikke skrive til fila &quot;%1&quot;</translation>
+    </message>
+</context>
+<context>
     <name>ConfigDialog</name>
     <message>
         <source>Preferences</source>
@@ -103,6 +110,13 @@
     <message>
         <source>Right-to-left direction</source>
         <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>CupsBooFile</name>
+    <message>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
+        <translation>Jeg kan ikke lese fila &quot;%1&quot;, enten fordi det ikke er en støttet filtype, eller fordi fila har blitt skadet.</translation>
     </message>
 </context>
 <context>
@@ -172,6 +186,13 @@ Er du sikker på at du vil overskrive den?</translation>
     <message>
         <source> The document&apos;s title.</source>
         <translation>Dokumentets tittel</translation>
+    </message>
+</context>
+<context>
+    <name>InFile</name>
+    <message>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
+        <translation>Jeg kan ikke lese fila &quot;%1&quot;, enten fordi det ikke er en støttet filtype, eller fordi fila har blitt skadet.</translation>
     </message>
 </context>
 <context>
@@ -516,10 +537,15 @@ Er du sikker på at du vil overskrive den?</translation>
     </message>
 </context>
 <context>
-    <name>PdfMerger</name>
+    <name>PostScriptFile</name>
     <message>
-        <source>I can&apos;t write file &quot;%1&quot;</source>
-        <translation>Jeg kan ikke skrive til fila &quot;%1&quot;</translation>
+        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Converting PostScript to PDF</source>
+        <comment>Progressbar text</comment>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -652,33 +678,6 @@ Er du sikker på at du vil overskrive den?</translation>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Jeg kan ikke skrive til fil &quot;%1&quot;</translation>
     </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
-        <translation>Jeg kan ikke åpne fila &quot;%1&quot; (Ingen slik fil eller mappe)</translation>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
-        <translation>Jeg kan ikke åpne fila &quot;%1&quot; (Tilgang nektet)</translation>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Jeg kan ikke åpne fila &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
-        <translation>Jeg kan ikke lese fila &quot;%1&quot;, enten fordi det ikke er en støttet filtype, eller fordi fila har blitt skadet.</translation>
-    </message>
-</context>
-<context>
-    <name>ProjectFile</name>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Jeg kan ikke åpne fila &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation>Jeg kan ikke skrive til fila &quot;%1&quot;</translation>
-    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -698,6 +697,26 @@ Er du sikker på at du vil overskrive den?</translation>
         <source>Default</source>
         <comment>Printer profile default name</comment>
         <translation>Forvalg</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (Empty file name)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Jeg kan ikke åpne fila &quot;%1&quot; (Ingen slik fil eller mappe)</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Jeg kan ikke åpne fila &quot;%1&quot; (Tilgang nektet)</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot;</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Jeg kan ikke åpne fila &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
@@ -725,17 +744,15 @@ Er du sikker på at du vil overskrive den?</translation>
         <translation>Jeg kan ikke opprette midlertidig fil &quot;%1&quot;</translation>
     </message>
     <message>
-        <source>Something is wrong. I can't find boomagamerger program.
-Please reinstall me.</source>
-        <translation>Noe gikk galt. Jeg kan ikke finne boomagamerger-programmet.
-Re-installer meg.</translation>
-    </message>
-    <message>
         <source>I can&apos;t read file &apos;%1&apos;</source>
         <translation>Jeg kan ikke lese fila &quot;%1&quot;</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
+        <translation>Jeg kan ikke skrive til fila &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>I can&apos;t write file &quot;%1&quot;</source>
         <translation>Jeg kan ikke skrive til fila &quot;%1&quot;</translation>
     </message>
 </context>

@@ -59,6 +59,13 @@
     </message>
 </context>
 <context>
+    <name>BooFile</name>
+    <message>
+        <source>I can&apos;t write to file &apos;%1&apos;</source>
+        <translation>Nepavyksta rašyti į failą &quot;%1&quot;</translation>
+    </message>
+</context>
+<context>
     <name>ConfigDialog</name>
     <message>
         <source>Preferences</source>
@@ -103,6 +110,13 @@
     <message>
         <source>Right-to-left direction</source>
         <translation>Kryptis iš dešinės į kairę</translation>
+    </message>
+</context>
+<context>
+    <name>CupsBooFile</name>
+    <message>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
+        <translation>Negaliu perskaityti failo &quot;%1&quot;, nes arba jis yra nepalaikomo failo tipo, arba jis yra pažeistas.</translation>
     </message>
 </context>
 <context>
@@ -172,6 +186,13 @@ Ar tikrai norite pakeisti šį failą?</translation>
     <message>
         <source> The document&apos;s title.</source>
         <translation>Dokumento pavadinimas.</translation>
+    </message>
+</context>
+<context>
+    <name>InFile</name>
+    <message>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
+        <translation>Negaliu perskaityti failo &quot;%1&quot;, nes arba jis yra nepalaikomo failo tipo, arba jis yra pažeistas.</translation>
     </message>
 </context>
 <context>
@@ -516,10 +537,15 @@ Ar tikrai norite pakeisti šį failą?</translation>
     </message>
 </context>
 <context>
-    <name>PdfMerger</name>
+    <name>PostScriptFile</name>
     <message>
-        <source>I can&apos;t write file &quot;%1&quot;</source>
-        <translation>Nepavyksta rašyti failo &quot;%1&quot;</translation>
+        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
+        <translation>Nepavyksta paleisti gs konvertavimo įrankį: &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>Converting PostScript to PDF</source>
+        <comment>Progressbar text</comment>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -652,33 +678,6 @@ Ar tikrai norite pakeisti šį failą?</translation>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Negaliu įrašyti į failą &apos;%1&apos;</translation>
     </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
-        <translation>Negaliu atverti failo &quot;%1&quot; (Nėra tokio failo ar katalogo)</translation>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
-        <translation>Negaliu atverti failo &quot;%1&quot; (Prieiga negalima)</translation>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Negaliu atverti failo &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
-        <translation>Negaliu perskaityti failo &quot;%1&quot;, nes arba jis yra nepalaikomo failo tipo, arba jis yra pažeistas.</translation>
-    </message>
-</context>
-<context>
-    <name>ProjectFile</name>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Negaliu atverti failo &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation>Negaliu įrašyti į failą &apos;%1&apos;</translation>
-    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -698,6 +697,26 @@ Ar tikrai norite pakeisti šį failą?</translation>
         <source>Default</source>
         <comment>Printer profile default name</comment>
         <translation>Numatytasis</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (Empty file name)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Negaliu atverti failo &quot;%1&quot; (Nėra tokio failo ar katalogo)</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Negaliu atverti failo &quot;%1&quot; (Prieiga negalima)</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot;</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Nepavyksta atverti failą &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
@@ -725,18 +744,16 @@ Ar tikrai norite pakeisti šį failą?</translation>
         <translation>Negaliu sukurti laikinojo failo &quot;%1&quot;</translation>
     </message>
     <message>
-        <source>Something is wrong. I can't find boomagamerger program.
-Please reinstall me.</source>
-        <translation>Kažkas blogai. Negaliu rasti programos boomagamerger.
-Prašau mane įdiegti iš naujo.</translation>
-    </message>
-    <message>
         <source>I can&apos;t read file &apos;%1&apos;</source>
         <translation>Negaliu perskaityti failo &apos;%1&apos;</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Negaliu įrašyti į failą &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <source>I can&apos;t write file &quot;%1&quot;</source>
+        <translation>Nepavyksta rašyti failą &quot;%1&quot;</translation>
     </message>
 </context>
 </TS>

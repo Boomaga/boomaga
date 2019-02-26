@@ -59,6 +59,13 @@
     </message>
 </context>
 <context>
+    <name>BooFile</name>
+    <message>
+        <source>I can&apos;t write to file &apos;%1&apos;</source>
+        <translation>Nu pot scrie spre fișierul &apos;%1&apos;</translation>
+    </message>
+</context>
+<context>
     <name>ConfigDialog</name>
     <message>
         <source>Preferences</source>
@@ -102,6 +109,13 @@
     </message>
     <message>
         <source>Right-to-left direction</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>CupsBooFile</name>
+    <message>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -175,10 +189,17 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
     </message>
 </context>
 <context>
+    <name>InFile</name>
+    <message>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
+        <translation type="unfinished"/>
+    </message>
+</context>
+<context>
     <name>JobListView</name>
     <message>
         <source>%1 pages</source>
-        <translation type="unfinished"/>
+        <translation>%1 pagini</translation>
     </message>
 </context>
 <context>
@@ -516,9 +537,14 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
     </message>
 </context>
 <context>
-    <name>PdfMerger</name>
+    <name>PostScriptFile</name>
     <message>
-        <source>I can&apos;t write file &quot;%1&quot;</source>
+        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Converting PostScript to PDF</source>
+        <comment>Progressbar text</comment>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -614,7 +640,7 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished"/>
+        <translation>Implicit</translation>
     </message>
     <message>
         <source>Force grayscale</source>
@@ -652,33 +678,6 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Nu pot scrie fișierul &apos;%1&apos; </translation>
     </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
-        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
-        <translation type="unfinished"/>
-    </message>
-</context>
-<context>
-    <name>ProjectFile</name>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Nu pot deschide fișierul &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation>Nu pot scrie spre fișierul &quot;%1&quot;</translation>
-    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -699,6 +698,26 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
         <comment>Printer profile default name</comment>
         <translation>Implicit</translation>
     </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (Empty file name)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Nu pot deschide fișierul &quot;%1&quot; (Fișier sau directoriu inexistent)</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Nu pot deschide fișierul &quot;%1&quot; (Acces negat)</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot;</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Nu pot deschide fișierul &quot;%1&quot;</translation>
+    </message>
 </context>
 <context>
     <name>Settings</name>
@@ -715,7 +734,7 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
     </message>
     <message>
         <source>%1 pages</source>
-        <translation type="unfinished"/>
+        <translation>%1 pagini</translation>
     </message>
 </context>
 <context>
@@ -725,18 +744,16 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
         <translation>Nu pot crea fișierul temporar &quot;%1&quot;</translation>
     </message>
     <message>
-        <source>Something is wrong. I can't find boomagamerger program.
-Please reinstall me.</source>
-        <translation>Ceva e greșit. Nu pot găsi programul boomagamerger.
-Reinstalați-mă.</translation>
-    </message>
-    <message>
         <source>I can&apos;t read file &apos;%1&apos;</source>
         <translation>Nu pot citi fișierul &apos;%1&apos;</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Nu pot scrie spre fișierul &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <source>I can&apos;t write file &quot;%1&quot;</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 </TS>

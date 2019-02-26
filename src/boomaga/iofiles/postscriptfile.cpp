@@ -51,7 +51,7 @@ void PostScriptFile::read()
 
 
     QString pdfFileName = genTmpFileName("in.pdf");
-    emit startLongOperation(tr("Converting PostScript to PDF:", "Progressbar text"));
+    emit startLongOperation(tr("Converting PostScript to PDF", "Progressbar text"));
     convertToPdf(psFile, pdfFileName);
     emit endLongOperation();
 

@@ -63,10 +63,6 @@
 <context>
     <name>BooFile</name>
     <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
@@ -115,6 +111,13 @@
     </message>
     <message>
         <source>Right-to-left direction</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>CupsBooFile</name>
+    <message>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -183,6 +186,13 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source> The document&apos;s title.</source>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
+    <name>InFile</name>
+    <message>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
         <translation type="unfinished"></translation>
     </message>
 </context>
@@ -528,6 +538,18 @@ Are you sure you want to overwrite it?</source>
     </message>
 </context>
 <context>
+    <name>PostScriptFile</name>
+    <message>
+        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Converting PostScript to PDF</source>
+        <comment>Progressbar text</comment>
+        <translation type="unfinished"></translation>
+    </message>
+</context>
+<context>
     <name>PrintDialog</name>
     <message>
         <source>Print document</source>
@@ -657,34 +679,6 @@ Are you sure you want to overwrite it?</source>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation type="unfinished"></translation>
     </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
-        <translation type="unfinished"></translation>
-    </message>
-    <message>
-        <source>Converting PostScript to PDF:</source>
-        <comment>Progressbar text</comment>
-        <translation type="unfinished"></translation>
-    </message>
-</context>
-<context>
-    <name>PsToPdf</name>
-    <message>
-        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
-        <translation type="unfinished"></translation>
-    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -706,7 +700,23 @@ Are you sure you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>I can&apos;t open file &quot;%1&quot; (Empty file name)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
+        <comment>Error message. %1 is a file name</comment>
         <translation type="unfinished"></translation>
     </message>
 </context>

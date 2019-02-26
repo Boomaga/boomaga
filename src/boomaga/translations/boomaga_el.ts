@@ -59,6 +59,13 @@
     </message>
 </context>
 <context>
+    <name>BooFile</name>
+    <message>
+        <source>I can&apos;t write to file &apos;%1&apos;</source>
+        <translation>Αδύνατη η εγγραφή στο αρχείο «%1»</translation>
+    </message>
+</context>
+<context>
     <name>ConfigDialog</name>
     <message>
         <source>Preferences</source>
@@ -102,7 +109,14 @@
     </message>
     <message>
         <source>Right-to-left direction</source>
-        <translation type="unfinished"/>
+        <translation>Δεξιά προς αριστερά κατεύθυνση</translation>
+    </message>
+</context>
+<context>
+    <name>CupsBooFile</name>
+    <message>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
+        <translation>Δεν μπορώ να αναγνώσω του αρχείο «%1» είτε λόγω ενός μη υποστηριζόμενου τύπου αρχείου, είτε λόγω ενός κατεστραμμένου αρχείου.</translation>
     </message>
 </context>
 <context>
@@ -172,6 +186,13 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source> The document&apos;s title.</source>
         <translation>  Ο τίτλος του εγγράφου.</translation>
+    </message>
+</context>
+<context>
+    <name>InFile</name>
+    <message>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
+        <translation>Δεν μπορώ να αναγνώσω του αρχείο «%1» είτε λόγω ενός μη υποστηριζόμενου τύπου αρχείου, είτε λόγω ενός κατεστραμμένου αρχείου.</translation>
     </message>
 </context>
 <context>
@@ -516,10 +537,15 @@ Are you sure you want to overwrite it?</source>
     </message>
 </context>
 <context>
-    <name>PdfMerger</name>
+    <name>PostScriptFile</name>
     <message>
-        <source>I can&apos;t write file &quot;%1&quot;</source>
-        <translation>Αδύνατη η εγγραφή του αρχείου «%1»</translation>
+        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
+        <translation>Αδύνατη η εκκίνηση του μετατροπέα. &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>Converting PostScript to PDF</source>
+        <comment>Progressbar text</comment>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -652,33 +678,6 @@ Are you sure you want to overwrite it?</source>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Αδύνατη η εγγραφή στο αρχείο «%1»</translation>
     </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
-        <translation>Δεν μπορώ να ανοίξω το αρχείο «%1» (Δεν υπάρχει τέτοιο αρχείο ή κατάλογος)</translation>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
-        <translation>Δεν μπορώ να ανοίξω το αρχείο «%1» (Άρνηση πρόσβασης)</translation>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Αδύνατο το άνοιγμα του αρχείου «%1»</translation>
-    </message>
-    <message>
-        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
-        <translation>Δεν μπορώ να αναγνώσω του αρχείο «%1» είτε λόγω ενός μη υποστηριζόμενου τύπου αρχείου, είτε λόγω ενός κατεστραμμένου αρχείου.</translation>
-    </message>
-</context>
-<context>
-    <name>ProjectFile</name>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Αδύνατο το άνοιγμα του αρχείου «%1»</translation>
-    </message>
-    <message>
-        <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation>Αδύνατη η εγγραφή στο αρχείο «%1»</translation>
-    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -698,6 +697,26 @@ Are you sure you want to overwrite it?</source>
         <source>Default</source>
         <comment>Printer profile default name</comment>
         <translation>Εξ ορισμού</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (Empty file name)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Δεν μπορώ να ανοίξω το αρχείο «%1» (Δεν υπάρχει τέτοιο αρχείο ή κατάλογος)</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Δεν μπορώ να ανοίξω το αρχείο «%1» (Άρνηση πρόσβασης)</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot;</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Αδύνατο το άνοιγμα του αρχείου «%1»</translation>
     </message>
 </context>
 <context>
@@ -725,18 +744,16 @@ Are you sure you want to overwrite it?</source>
         <translation>Αδύνατη η δημιουργία του προσωρινού αρχείου «%1»</translation>
     </message>
     <message>
-        <source>Something is wrong. I can't find boomagamerger program.
-Please reinstall me.</source>
-        <translation>Κάτι έχει πάει στραβά. Δεν μπορώ να βρω το πρόγραμμα boomagamerger.
-Παρακαλώ επανεγκαταστήστε με.</translation>
-    </message>
-    <message>
         <source>I can&apos;t read file &apos;%1&apos;</source>
         <translation>Αδύνατη η ανάγνωση του αρχείου «%1»</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Αδύνατη η εγγραφή στο αρχείο «%1»</translation>
+    </message>
+    <message>
+        <source>I can&apos;t write file &quot;%1&quot;</source>
+        <translation>Αδύνατη η εγγραφή του αρχείου «%1»</translation>
     </message>
 </context>
 </TS>

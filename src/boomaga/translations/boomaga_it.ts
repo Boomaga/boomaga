@@ -59,6 +59,13 @@
     </message>
 </context>
 <context>
+    <name>BooFile</name>
+    <message>
+        <source>I can&apos;t write to file &apos;%1&apos;</source>
+        <translation>Non posso scrivere nel file &apos;%1&apos;</translation>
+    </message>
+</context>
+<context>
     <name>ConfigDialog</name>
     <message>
         <source>Preferences</source>
@@ -103,6 +110,13 @@
     <message>
         <source>Right-to-left direction</source>
         <translation>Direzione da destra a sinistra</translation>
+    </message>
+</context>
+<context>
+    <name>CupsBooFile</name>
+    <message>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
+        <translation>Non posso leggere il file &quot;%1&quot; perché è un tipo di file non supportato, oppure il file è stato danneggiato.</translation>
     </message>
 </context>
 <context>
@@ -172,6 +186,13 @@ Sei sicuro di volerlo sovracrivere?</translation>
     <message>
         <source> The document&apos;s title.</source>
         <translation>Il titolo del documento.</translation>
+    </message>
+</context>
+<context>
+    <name>InFile</name>
+    <message>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
+        <translation>Non posso leggere il file &quot;%1&quot; perché è un tipo di file non supportato, oppure il file è stato danneggiato.</translation>
     </message>
 </context>
 <context>
@@ -516,10 +537,15 @@ Sei sicuro di volerlo sovracrivere?</translation>
     </message>
 </context>
 <context>
-    <name>PdfMerger</name>
+    <name>PostScriptFile</name>
     <message>
-        <source>I can&apos;t write file &quot;%1&quot;</source>
-        <translation>Non riesco a scrivere il file &quot;%1&quot;</translation>
+        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
+        <translation>Non riesco ad avviare il convertitore gs: &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>Converting PostScript to PDF</source>
+        <comment>Progressbar text</comment>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -652,33 +678,6 @@ Sei sicuro di volerlo sovracrivere?</translation>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Non riesco a scrivere sul file &apos;%1&apos;</translation>
     </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
-        <translation>Non posso aprire il file &quot;%1&quot; (File o cartella non esistenti)</translation>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
-        <translation>Non posso aprire il file &quot;%1&quot; (Accesso negato)</translation>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Non posso aprire il file &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
-        <translation>Non posso leggere il file &quot;%1&quot; perché è un tipo di file non supportato, oppure il file è stato danneggiato.</translation>
-    </message>
-</context>
-<context>
-    <name>ProjectFile</name>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Non posso aprire il file &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation>Non posso scrivere nel file &apos;%1&apos;</translation>
-    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -698,6 +697,26 @@ Sei sicuro di volerlo sovracrivere?</translation>
         <source>Default</source>
         <comment>Printer profile default name</comment>
         <translation>Predefinito</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (Empty file name)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Non posso aprire il file &quot;%1&quot; (File o cartella non esistenti)</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Non posso aprire il file &quot;%1&quot; (Accesso negato)</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot;</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Non posso aprire il file &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
@@ -725,18 +744,16 @@ Sei sicuro di volerlo sovracrivere?</translation>
         <translation>Non riesco a creare il file temporaneo &quot;%1&quot;</translation>
     </message>
     <message>
-        <source>Something is wrong. I can't find boomagamerger program.
-Please reinstall me.</source>
-        <translation>Qualcosa non va. Non riesco a trovare il programma boomagamerger. 
-Prego installami di nuovo.</translation>
-    </message>
-    <message>
         <source>I can&apos;t read file &apos;%1&apos;</source>
         <translation>Non riesco a leggere il file &apos;%1&apos;</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Non riesco a scrivere sul file &apos;%1&apos;</translation>
+    </message>
+    <message>
+        <source>I can&apos;t write file &quot;%1&quot;</source>
+        <translation>Non riesco a scrivere il file &quot;%1&quot;</translation>
     </message>
 </context>
 </TS>

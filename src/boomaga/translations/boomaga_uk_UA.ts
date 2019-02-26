@@ -59,6 +59,13 @@
     </message>
 </context>
 <context>
+    <name>BooFile</name>
+    <message>
+        <source>I can&apos;t write to file &apos;%1&apos;</source>
+        <translation>Не вдалося записати файл: &quot;%1&quot;</translation>
+    </message>
+</context>
+<context>
     <name>ConfigDialog</name>
     <message>
         <source>Preferences</source>
@@ -103,6 +110,13 @@
     <message>
         <source>Right-to-left direction</source>
         <translation>Розміщувати справа наліво</translation>
+    </message>
+</context>
+<context>
+    <name>CupsBooFile</name>
+    <message>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
+        <translation>Не вдалося прочитати файл: &quot;%1&quot;, файл зіпсовано або файли такого типу не підтримуються.</translation>
     </message>
 </context>
 <context>
@@ -172,6 +186,13 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source> The document&apos;s title.</source>
         <translation>Заголовок документа.</translation>
+    </message>
+</context>
+<context>
+    <name>InFile</name>
+    <message>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
+        <translation>Не вдалося прочитати файл: &quot;%1&quot;, файл зіпсовано або файли такого типу не підтримуються.</translation>
     </message>
 </context>
 <context>
@@ -516,10 +537,15 @@ Are you sure you want to overwrite it?</source>
     </message>
 </context>
 <context>
-    <name>PdfMerger</name>
+    <name>PostScriptFile</name>
     <message>
-        <source>I can&apos;t write file &quot;%1&quot;</source>
-        <translation>Не вдалося записати файл: &quot;%1&quot;</translation>
+        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Converting PostScript to PDF</source>
+        <comment>Progressbar text</comment>
+        <translation type="unfinished"/>
     </message>
 </context>
 <context>
@@ -652,33 +678,6 @@ Are you sure you want to overwrite it?</source>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Не вдалос записати файл: &quot;%1&quot;</translation>
     </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
-        <translation>Не вдалося відкрити файл: &quot;%1&quot; (Немає такого файлу)</translation>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
-        <translation>Не вдалося відкрити файл: &quot;%1&quot; (Немає прав доступу)</translation>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Не вдалося відкрити файл: &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
-        <translation>Не вдалося прочитати файл: &quot;%1&quot;, файл зіпсовано або файли такого типу не підтримуються.</translation>
-    </message>
-</context>
-<context>
-    <name>ProjectFile</name>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Не вдалося відкрити файл: &quot;%1&quot;</translation>
-    </message>
-    <message>
-        <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation>Не вдалося записати файл: &quot;%1&quot;</translation>
-    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -698,6 +697,26 @@ Are you sure you want to overwrite it?</source>
         <source>Default</source>
         <comment>Printer profile default name</comment>
         <translation>За замовчуванням</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (Empty file name)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Не вдалося відкрити файл: &quot;%1&quot; (Немає такого файлу)</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Не вдалося відкрити файл: &quot;%1&quot; (Немає прав доступу)</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot;</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Не вдалося відкрити файл: &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
@@ -725,16 +744,15 @@ Are you sure you want to overwrite it?</source>
         <translation>Не вдалося створити тимчасовий файл: &quot;%1&quot;</translation>
     </message>
     <message>
-        <source>Something is wrong. I can't find boomagamerger program.
-Please reinstall me.</source>
-        <translation>Невдача спіткала радянських спортсменів на старті... Не вдалося знати програму boomagameter. Спробуйте перевстановити мене.</translation>
-    </message>
-    <message>
         <source>I can&apos;t read file &apos;%1&apos;</source>
         <translation>Не вдалося прочитати файл: &quot;%1&quot;</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
+        <translation>Не вдалося записати файл: &quot;%1&quot;</translation>
+    </message>
+    <message>
+        <source>I can&apos;t write file &quot;%1&quot;</source>
         <translation>Не вдалося записати файл: &quot;%1&quot;</translation>
     </message>
 </context>

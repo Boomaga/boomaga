@@ -59,6 +59,13 @@
     </message>
 </context>
 <context>
+    <name>BooFile</name>
+    <message>
+        <source>I can&apos;t write to file &apos;%1&apos;</source>
+        <translation>Ik kan bestand &quot;%1&quot; niet opslaan</translation>
+    </message>
+</context>
+<context>
     <name>ConfigDialog</name>
     <message>
         <source>Preferences</source>
@@ -103,6 +110,13 @@
     <message>
         <source>Right-to-left direction</source>
         <translation type="unfinished"/>
+    </message>
+</context>
+<context>
+    <name>CupsBooFile</name>
+    <message>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
+        <translation>Ik kan bestand &quot;%1&quot; niet lezen omdat het geen ondersteund bestandstype is of omdat het bestand beschadigd is.</translation>
     </message>
 </context>
 <context>
@@ -172,6 +186,13 @@ Weet u zeker dat u dit wilt overschrijven?</translation>
     <message>
         <source> The document&apos;s title.</source>
         <translation>Opschrift van het document.</translation>
+    </message>
+</context>
+<context>
+    <name>InFile</name>
+    <message>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
+        <translation>Ik kan bestand &quot;%1&quot; niet lezen omdat het geen ondersteund bestandstype is of omdat het bestand beschadigd is.</translation>
     </message>
 </context>
 <context>
@@ -516,9 +537,14 @@ Weet u zeker dat u dit wilt overschrijven?</translation>
     </message>
 </context>
 <context>
-    <name>PdfMerger</name>
+    <name>PostScriptFile</name>
     <message>
-        <source>I can&apos;t write file &quot;%1&quot;</source>
+        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>Converting PostScript to PDF</source>
+        <comment>Progressbar text</comment>
         <translation type="unfinished"/>
     </message>
 </context>
@@ -652,33 +678,6 @@ Weet u zeker dat u dit wilt overschrijven?</translation>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Ik kan bestand &quot;%1&quot; niet opslaan</translation>
     </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
-        <translation>Ik kan bestand &quot;%1&quot; niet openen (Bestand of map bestaat niet)</translation>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
-        <translation>Ik kan bestand &quot;%1&quot; niet openen (Toegang geweigerd)</translation>
-    </message>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Ik kan bestand &quot;%1&quot; niet openen</translation>
-    </message>
-    <message>
-        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
-        <translation>Ik kan bestand &quot;%1&quot; niet lezen omdat het geen ondersteund bestandstype is of omdat het bestand beschadigd is.</translation>
-    </message>
-</context>
-<context>
-    <name>ProjectFile</name>
-    <message>
-        <source>I can&apos;t open file &quot;%1&quot;</source>
-        <translation>Ik kan bestand &quot;%1&quot; niet openen</translation>
-    </message>
-    <message>
-        <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation>Ik kan bestand &quot;%1&quot; niet opslaan</translation>
-    </message>
 </context>
 <context>
     <name>QObject</name>
@@ -698,6 +697,26 @@ Weet u zeker dat u dit wilt overschrijven?</translation>
         <source>Default</source>
         <comment>Printer profile default name</comment>
         <translation>Standaard</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (Empty file name)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation type="unfinished"/>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Ik kan bestand &quot;%1&quot; niet openen (Bestand of map bestaat niet)</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Ik kan bestand &quot;%1&quot; niet openen (Toegang geweigerd)</translation>
+    </message>
+    <message>
+        <source>I can&apos;t open file &quot;%1&quot;</source>
+        <comment>Error message. %1 is a file name</comment>
+        <translation>Ik kan bestand &quot;%1&quot; niet openen</translation>
     </message>
 </context>
 <context>
@@ -725,18 +744,16 @@ Weet u zeker dat u dit wilt overschrijven?</translation>
         <translation>Ik kan geen tijdelijk bestand maken &quot;%1&quot;</translation>
     </message>
     <message>
-        <source>Something is wrong. I can't find boomagamerger program.
-Please reinstall me.</source>
-        <translation>Er is iets mis. Ik kan het boomaga samenvoegprogramma niet vinden.
-Installeer mij opnieuw.</translation>
-    </message>
-    <message>
         <source>I can&apos;t read file &apos;%1&apos;</source>
         <translation>Ik kan bestand &apos;%1&apos; niet lezen.</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
         <translation>Ik kan bestand &apos;%1&apos; niet opslaan.</translation>
+    </message>
+    <message>
+        <source>I can&apos;t write file &quot;%1&quot;</source>
+        <translation type="unfinished"/>
     </message>
 </context>
 </TS>
