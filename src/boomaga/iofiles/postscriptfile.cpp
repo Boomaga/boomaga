@@ -80,7 +80,8 @@ void PostScriptFile::convertToPdf(QFile &psFile, const QString &pdfFile)
     QProcess process;
     process.start("gs", args, QProcess::ReadWrite);
     if (!process.waitForStarted())
-        throw BoomagaError(tr("I can't start gs converter: \"%1\"")
+        throw BoomagaError(tr("I can't start gs converter: \"%1\"",
+                              "Error message. 'gs' is a command line tool from ghostscript")
                            .arg("timeout"));
 
 
@@ -99,6 +100,7 @@ void PostScriptFile::convertToPdf(QFile &psFile, const QString &pdfFile)
     }
 
     if (process.exitCode() != 0)
-        throw BoomagaError(tr("I can't start gs converter: \"%1\"")
+        throw BoomagaError(tr("I can't start gs converter: \"%1\"",
+                              "Error message. 'gs' is a command line tool from ghostscript")
                            .arg(QString::fromLocal8Bit(process.readAllStandardError())));
 }
