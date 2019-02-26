@@ -1367,24 +1367,24 @@ void MainWindow::exportAs()
  ************************************************/
 void MainWindow::load()
 {
-    QString fileName = QFileDialog::getOpenFileName(
+    QFileDialog dialog(
                 this, this->windowTitle(),
                 settings->value(Settings::SaveDir).toString(),
                 tr("All supported files (*.pdf *.boo);;Boomaga files (*.boo);;PDF files (*.pdf);;All files (*.*)"));
 
-    if (fileName.isEmpty())
+    dialog.setFileMode(QFileDialog::ExistingFiles);
+    if (!dialog.exec())
         return;
-    settings->setValue(Settings::SaveDir, QFileInfo(fileName).path());
 
-    try
-    {
-        project->load(fileName);
-    }
-    catch (QString &err)
-    {
-        project->error(err);
-    }
+    QStringList fileNames = dialog.selectedFiles();
+    if (fileNames.isEmpty())
+        return;
+
+    settings->setValue(Settings::SaveDir, dialog.directory().path());
+
+    project->load(fileNames);
 }
+
 
 /************************************************
  *
