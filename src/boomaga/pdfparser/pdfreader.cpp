@@ -1006,6 +1006,9 @@ qint64 Reader::readObject(quint64 start, Object *res) const
         throw ReaderError("Can't read genNum", pos);
 
     pos = data.indexOf("obj", pos) + 3;
+    if (pos < 3)
+        throw ReaderError("Can't read object", start);
+
     pos = data.skipSpace(pos);
 
     res->setValue(data.readValue(&pos));
@@ -1216,24 +1219,30 @@ Object Reader::getObject(uint objNum, quint16 genNum) const
 {
     Q_UNUSED(genNum)
 
+    if (objNum == 0)
+        return Object();
+
     XRefTable::const_iterator it = mXRefTable.find(objNum);
     if (it == mXRefTable.end())
         return PDF::Object();
 
-    if (it.value().type() == XRefEntry::Compressed)
+    PDF::Object res;
+
+    switch (it.value().type())
     {
-        PDF::Object res;
-        readObjectFromStream(objNum, &res, it.value().streamObjNum(), 0, it.value().streamIndex());
-        return res;
-    }
-    else if (it.value().pos())
-    {
-        PDF::Object res;
+    case XRefEntry::Free:
+        break;
+
+    case XRefEntry::Used:
         readObject(it.value().pos(), &res);
-        return res;
+        break;
+
+    case XRefEntry::Compressed:
+        readObjectFromStream(objNum, &res, it.value().streamObjNum(), 0, it.value().streamIndex());
+        break;
     }
 
-    return PDF::Object();
+    return res;
 }
 
 
@@ -1259,7 +1268,11 @@ const Value Reader::find(const QString &path) const
     Dict dict = trailerDict();
     foreach (const QString &obj, objects)
     {
-        dict = getObject(dict.value(obj).asLink()).dict();
+        Link link = dict.value(obj).asLink();
+        if (link.objNum() == 0) // Not found
+            return Value();
+
+        dict = getObject(link).dict();
     }
     return dict.value(val);
 }

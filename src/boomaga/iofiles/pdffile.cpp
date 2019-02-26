@@ -45,21 +45,21 @@ void PdfFile::read()
     try
     {
         reader.open(mFileName, mStartPos, mEndPos);
+
+        Job job;
+        job.setFileName(mFileName);
+        job.setFilePos(mStartPos, mEndPos);
+        job.setTitle(reader.find("/Trailer/Info/Title").asString().value());
+
+        int pageCount = reader.pageCount();
+        for (int i=0; i< pageCount; ++i)
+        {
+            job.addPage(new ProjectPage(i));
+        }
+        mJobs << job;
     }
     catch (PDF::Error &err)
     {
         throw BoomagaError(err.what());
     }
-
-    Job job;
-    job.setFileName(mFileName);
-    job.setFilePos(mStartPos, mEndPos);
-    job.setTitle(reader.find("/Trailer/Info/Title").asString().value());
-
-    int pageCount = reader.pageCount();
-    for (int i=0; i< pageCount; ++i)
-    {
-        job.addPage(new ProjectPage(i));
-    }
-    mJobs << job;
 }
