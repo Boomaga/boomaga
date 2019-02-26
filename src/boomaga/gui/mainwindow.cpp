@@ -1373,6 +1373,8 @@ void MainWindow::load()
                 tr("All supported files (*.pdf *.boo);;Boomaga files (*.boo);;PDF files (*.pdf);;All files (*.*)"));
 
     dialog.setFileMode(QFileDialog::ExistingFiles);
+    dialog.selectNameFilter(settings->value(Settings::MainWindow_OpenFileFilter).toString());
+
     if (!dialog.exec())
         return;
 
@@ -1381,6 +1383,7 @@ void MainWindow::load()
         return;
 
     settings->setValue(Settings::SaveDir, dialog.directory().path());
+    settings->setValue(Settings::MainWindow_OpenFileFilter, dialog.selectedNameFilter());
 
     project->load(fileNames);
 }

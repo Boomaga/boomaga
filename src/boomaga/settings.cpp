@@ -146,6 +146,7 @@ QString Settings::keyToString(Settings::Key key) const
     case MainWindow_SplitterPos:        return "MainWindow/SplitterPos";
     case MainWindow_PageListIconSize:   return "MainWindow/PageListIconSize";
     case MainWindow_PageListTab:        return "MainWindow/PageListTab";
+    case MainWindow_OpenFileFilter:     return "MainWindow/OpenFileFilter";
 
     // PrinterDialog ************************
     case PrinterDialog_Geometry:        return "PrinterDialog/Geometry";

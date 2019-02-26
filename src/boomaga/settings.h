@@ -81,6 +81,7 @@ public:
         MainWindow_SplitterPos,
         MainWindow_PageListIconSize,
         MainWindow_PageListTab,
+        MainWindow_OpenFileFilter,
 
         // PrinterDialog ************************
         PrinterDialog_Geometry,
