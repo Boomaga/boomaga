@@ -558,10 +558,12 @@ void TmpPdfFile::getPageStream(QString *out, const Sheet *sheet) const
             *out += QString("q\n%1 0 0 %1 0 0 cm\n")
                     .arg(spec.scale, 0, 'f', 3);
 
+            QRectF rect = page->rect();
+
             // Translate for page rect(x1,y1) ..
             *out += QString("q\n1 0 0 1 %1 %2 cm\n")
-                    .arg(-page->rect().left(), 0, 'f', 3)
-                    .arg(-page->rect().top(), 0, 'f', 3);
+                    .arg(-rect.left(), 0, 'f', 3)
+                    .arg(-rect.top(), 0, 'f', 3);
 
 
             for (int j=0; j<page->pdfInfo().xObjNums.size(); ++j)
@@ -571,10 +573,10 @@ void TmpPdfFile::getPageStream(QString *out, const Sheet *sheet) const
             if (printer->drawBorder())
             {
                 *out += QString("%1 %2 %3 %4 re\nS\n")
-                        .arg(page->rect().left(),   0, 'f', 3)
-                        .arg(page->rect().top(),    0, 'f', 3)
-                        .arg(page->rect().width(),  0, 'f', 3)
-                        .arg(page->rect().height(), 0, 'f', 3);
+                        .arg(rect.left(),   0, 'f', 3)
+                        .arg(rect.top(),    0, 'f', 3)
+                        .arg(rect.width(),  0, 'f', 3)
+                        .arg(rect.height(), 0, 'f', 3);
             }
 
 

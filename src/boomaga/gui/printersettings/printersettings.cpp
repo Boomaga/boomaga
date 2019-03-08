@@ -405,11 +405,12 @@ void PrinterSettings::resetToDefault()
     if (!profile)
         return;
 
-    profile->setTopMargin(     currentPrinter()->defaultCupsProfile()->topMargin(mUnit),      mUnit);
-    profile->setBottomMargin(  currentPrinter()->defaultCupsProfile()->bottomMargin(mUnit),   mUnit);
-    profile->setLeftMargin(    currentPrinter()->defaultCupsProfile()->leftMargin(mUnit),     mUnit);
-    profile->setRightMargin(   currentPrinter()->defaultCupsProfile()->rightMargin(mUnit),    mUnit);
-    profile->setInternalMargin(currentPrinter()->defaultCupsProfile()->internalMargin(mUnit), mUnit);
+    const PrinterProfile *defaultCupsProfile = currentPrinter()->defaultCupsProfile();
+    profile->setTopMargin(     defaultCupsProfile->topMargin(mUnit),      mUnit);
+    profile->setBottomMargin(  defaultCupsProfile->bottomMargin(mUnit),   mUnit);
+    profile->setLeftMargin(    defaultCupsProfile->leftMargin(mUnit),     mUnit);
+    profile->setRightMargin(   defaultCupsProfile->rightMargin(mUnit),    mUnit);
+    profile->setInternalMargin(defaultCupsProfile->internalMargin(mUnit), mUnit);
     updateWidgets();
 }
 

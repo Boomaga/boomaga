@@ -35,8 +35,8 @@
  ************************************************/
 BooFile::PageSpec::PageSpec(int pageNum, bool hidden, Rotation rotation, bool startBooklet):
     pageNum(pageNum),
-    hidden(hidden),
     rotation(rotation),
+    hidden(hidden),
     startBooklet(startBooklet)
 {
 }
@@ -47,8 +47,8 @@ BooFile::PageSpec::PageSpec(int pageNum, bool hidden, Rotation rotation, bool st
  ************************************************/
 BooFile::PageSpec::PageSpec(const QString &str):
     pageNum(0),
-    hidden(false),
     rotation(NoRotate),
+    hidden(false),
     startBooklet(0)
 {
     bool ok;

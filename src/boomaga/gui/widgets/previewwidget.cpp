@@ -265,14 +265,15 @@ void PreviewWidget::drawShadow(QPainter &painter, const QRectF &rect)
     rg.setRadius(width);
 
 
+    QPointF center = rect.center();
     // Right
-    lg.setStart(QPointF(rect.right(), rect.center().y()));
-    lg.setFinalStop(QPointF(shadowRect.right(), rect.center().y()));
+    lg.setStart(QPointF(rect.right(), center.y()));
+    lg.setFinalStop(QPointF(shadowRect.right(), center.y()));
     painter.fillRect(rect.right(), rect.top() + width, width, rect.height() - width, lg);
 
     // Bottom
-    lg.setStart(rect.center().x(),  rect.bottom());
-    lg.setFinalStop(rect.center().x(), rect.bottom() + width);
+    lg.setStart(center.x(),  rect.bottom());
+    lg.setFinalStop(center.x(), rect.bottom() + width);
     painter.fillRect(rect.left() + width, rect.bottom(), rect.width() - width, width, lg);
 
     //TopRight

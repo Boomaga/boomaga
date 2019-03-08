@@ -84,8 +84,8 @@ protected:
         bool isblank() const { return pageNum < 0; }
         QString toString() const;
         int      pageNum;
-        bool     hidden;
         Rotation rotation;
+        bool     hidden;
         bool     startBooklet;
     };
 };
