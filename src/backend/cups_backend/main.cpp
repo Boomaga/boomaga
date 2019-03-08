@@ -134,7 +134,7 @@ static bool createJobFile(istream &src, const string &destFile, const Args &args
     Log::debug("Create job file %s", destFile.c_str());
 
     ofstream dest(destFile, ios::binary | ios::trunc);
-    dest << "\x1B CUPS_BOOMAGA\n";
+    dest << "\033CUPS_BOOMAGA\n";
     dest << "JOB="     << escapeString(args.jobID)   << "\n";
     dest << "USER="    << escapeString(args.user)    << "\n";
     dest << "TITLE="   << escapeString(args.title)   << "\n";

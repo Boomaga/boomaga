@@ -23,8 +23,4 @@ dbus-send \
 	--type=method_call \
 	--print-reply \
 	--dest=org.boomaga /boomaga org.boomaga.add \
-	string:"${FILE}" \
-	string:'title' \
-	string:'options' \
-	uint32:1
-
+	string:"${FILE}"

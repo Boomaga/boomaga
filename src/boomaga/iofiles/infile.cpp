@@ -46,7 +46,7 @@ InFile::Type InFile::getType(const QString &fileName)
     file.close();
 
     // Read CUPS_BOOMAGA .........................
-    if (mark.startsWith("\x1B CUPS_BOOMAGA"))
+    if (mark.startsWith("\033CUPS_BOOMAGA"))
         return Type::CupsBoo;
 
     // Read PDF ..................................
