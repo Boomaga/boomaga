@@ -3,7 +3,7 @@
     <name>AboutDialog</name>
     <message>
         <source> About Boomaga</source>
-        <translation>A Boomagáról</translation>
+        <translation> A Boomagáról</translation>
     </message>
     <message>
         <source>About</source>
@@ -31,7 +31,7 @@
     </message>
     <message>
         <source>Copyright: %1-%2 %3</source>
-        <translation type="unfinished"/>
+        <translation>Copyright: %1-%2 %3</translation>
     </message>
     <message>
         <source>Homepage: %1</source>
@@ -55,14 +55,14 @@
     </message>
     <message>
         <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on GitHub.</source>
-        <translation type="unfinished"/>
+        <translation>A Boomaga-t a &lt;a %1&gt; Boomaga Team és a közreműködők &lt;/a&gt; fejlesztették ki a GitHub-on.</translation>
     </message>
 </context>
 <context>
     <name>BooFile</name>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&quot;%1&quot; fájl írása nem sikerült</translation>
     </message>
 </context>
 <context>
@@ -73,217 +73,218 @@
     </message>
     <message>
         <source>Divide your long booklets into smaller sub-booklets for printing.</source>
-        <translation type="unfinished"/>
+        <translation>Ossza meg a hosszú füzeteket a kisebb nyomtatási alfüzetekbe.</translation>
     </message>
     <message>
         <source>Print as sub-booklets</source>
-        <translation type="unfinished"/>
+        <translation>Nyomtatás alfüzetként</translation>
     </message>
     <message>
         <source>Maximum number of sheets in your sub-booklet.</source>
-        <translation type="unfinished"/>
+        <translation>A lapok maximális száma az al-füzetben.</translation>
     </message>
     <message>
         <source>Sheets per sub-booklet:</source>
-        <translation type="unfinished"/>
+        <translation>Lapok alfüzetenként:</translation>
     </message>
     <message>
         <source>Autosave your jobs every time you print.</source>
-        <translation type="unfinished"/>
+        <translation>A feladatok automatikus mentése minden nyomtatáskor.</translation>
     </message>
     <message>
         <source>AutoSave the recent sessions</source>
-        <translation type="unfinished"/>
+        <translation>Legutóbbi munkamenetek automatikus mentése</translation>
     </message>
     <message>
         <source>Allow negative page margins:</source>
-        <translation type="unfinished"/>
+        <translation>Negatív lapmargó engedélyezése:</translation>
     </message>
     <message>
         <source>Select directory for saved jobs.</source>
-        <translation type="unfinished"/>
+        <translation>Válassz mappát a mentett feladatoknak.</translation>
     </message>
     <message>
         <source>Directory for saved sessions:</source>
-        <translation type="unfinished"/>
+        <translation>Mappa a mentett munkameneteknek:</translation>
     </message>
     <message>
         <source>Right-to-left direction</source>
-        <translation type="unfinished"/>
+        <translation>Jobbról balra</translation>
     </message>
 </context>
 <context>
     <name>CupsBooFile</name>
     <message>
         <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
-        <translation type="unfinished"/>
+        <translation>Nem tudom elolvasni a &quot;% 1&quot; fájlt, mert nem támogatott fájltípus, vagy mert a fájl megsérült.</translation>
     </message>
 </context>
 <context>
     <name>ExportToPdf</name>
     <message>
         <source>Print to PDF</source>
-        <translation type="unfinished"/>
+        <translation>Nyomtatás PDF-be</translation>
     </message>
     <message>
         <source>File name</source>
-        <translation type="unfinished"/>
+        <translation>Fájlnév</translation>
     </message>
     <message>
         <source>Output file:</source>
-        <translation type="unfinished"/>
+        <translation>Kimeneti fájl:</translation>
     </message>
     <message>
         <source>...</source>
-        <translation type="unfinished"/>
+        <translation>...</translation>
     </message>
     <message>
         <source>Meta info</source>
-        <translation type="unfinished"/>
+        <translation>Metaadatok</translation>
     </message>
     <message>
         <source>Author:</source>
-        <translation type="unfinished"/>
+        <translation>A szerző:</translation>
     </message>
     <message>
         <source> The name of the person who created the document.</source>
-        <translation type="unfinished"/>
+        <translation> Annak a személynek a neve aki a dokumentumot készítette.</translation>
     </message>
     <message>
         <source>Title:</source>
-        <translation type="unfinished"/>
+        <translation>Cím:</translation>
     </message>
     <message>
         <source>Subject:</source>
-        <translation type="unfinished"/>
+        <translation>Tárgy:</translation>
     </message>
     <message>
         <source> The subject of the document.</source>
-        <translation type="unfinished"/>
+        <translation> A dokumentum tárgya.</translation>
     </message>
     <message>
         <source> Keywords associated with the document.</source>
-        <translation type="unfinished"/>
+        <translation> A dokumentumhoz kapcsolódó kulcsszavak.</translation>
     </message>
     <message>
         <source>Keywords:</source>
-        <translation type="unfinished"/>
+        <translation>Kulcs szavak:</translation>
     </message>
     <message>
         <source>PDF files (*.pdf);;All files (*.*)</source>
-        <translation type="unfinished"/>
+        <translation>PDF files (*.pdf);;All files (*.*)</translation>
     </message>
     <message>
         <source>Overwrite file?</source>
-        <translation type="unfinished"/>
+        <translation>Felül szeretné írni a fájlt?</translation>
     </message>
     <message>
         <source>A file named &quot;%1&quot; already exists.
 Are you sure you want to overwrite it?</source>
-        <translation type="unfinished"/>
+        <translation>Már létezik &quot;%1&quot; nevű fájl.
+Biztosan felül szeretné írni?</translation>
     </message>
     <message>
         <source> The document&apos;s title.</source>
-        <translation type="unfinished"/>
+        <translation> Dokumentum címe.</translation>
     </message>
 </context>
 <context>
     <name>InFile</name>
     <message>
         <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
-        <translation type="unfinished"/>
+        <translation>Nem tudom elolvasni a &quot;% 1&quot; fájlt, mert nem támogatott fájltípus, vagy mert a fájl megsérült.</translation>
     </message>
 </context>
 <context>
     <name>JobListView</name>
     <message>
         <source>%1 pages</source>
-        <translation type="unfinished"/>
+        <translation>%1 lap</translation>
     </message>
 </context>
 <context>
     <name>MainWindow</name>
     <message>
         <source>&amp;File</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Fájl</translation>
     </message>
     <message>
         <source>&amp;Preferences</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Beállítások</translation>
     </message>
     <message>
         <source>Help</source>
-        <translation type="unfinished"/>
+        <translation>Súgó</translation>
     </message>
     <message>
         <source>Layout</source>
-        <translation type="unfinished"/>
+        <translation>Elrendezés</translation>
     </message>
     <message>
         <source>1 up</source>
-        <translation type="unfinished"/>
+        <translation>1 felfelé</translation>
     </message>
     <message>
         <source>2 up</source>
-        <translation type="unfinished"/>
+        <translation>2 felfelé</translation>
     </message>
     <message>
         <source>Booklet</source>
-        <translation type="unfinished"/>
+        <translation>Füzet</translation>
     </message>
     <message>
         <source>Print on both sides of a sheet.</source>
         <comment>MainForm::Double-sided checkbox tooltip</comment>
-        <translation type="unfinished"/>
+        <translation>Nyomtatás a lap mindkét oldalára.</translation>
     </message>
     <message>
         <source>Double-sided</source>
         <comment>MainForm::Double-sided checkbox</comment>
-        <translation type="unfinished"/>
+        <translation>Kétoldalas</translation>
     </message>
     <message>
         <source>Jobs</source>
-        <translation type="unfinished"/>
+        <translation>Feladatok</translation>
     </message>
     <message>
         <source>Printer</source>
-        <translation type="unfinished"/>
+        <translation>Nyomtató</translation>
     </message>
     <message>
         <source>Configure...</source>
-        <translation type="unfinished"/>
+        <translation>Beállítás…</translation>
     </message>
     <message>
         <source>Toolbar</source>
-        <translation type="unfinished"/>
+        <translation>Eszköztár</translation>
     </message>
     <message>
         <source>&amp;Print</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Nyomtatás</translation>
     </message>
     <message>
         <source>E&amp;xit</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Kilépés</translation>
     </message>
     <message>
         <source>Print and Close</source>
-        <translation type="unfinished"/>
+        <translation>Nyomtat és bezár</translation>
     </message>
     <message>
         <source>Ctrl+P</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+P</translation>
     </message>
     <message>
         <source>Next sheet</source>
-        <translation type="unfinished"/>
+        <translation>Következő munkalap</translation>
     </message>
     <message>
         <source>Previous sheet</source>
-        <translation type="unfinished"/>
+        <translation>Előző munkalap</translation>
     </message>
     <message>
         <source>About Boomaga</source>
-        <translation type="unfinished"/>
+        <translation>Névjegy</translation>
     </message>
     <message>
         <source>Boomaga</source>
@@ -292,378 +293,379 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>%v of %m</source>
         <comment>Format for QProgressBar (http://qt-project.org/doc/qt-4.8/qprogressbar.html#format-prop)</comment>
-        <translation type="unfinished"/>
+        <translation>%v / %m ból</translation>
     </message>
     <message>
         <source>Print the all pages on %1.</source>
-        <translation type="unfinished"/>
+        <translation>Nyomtatandó oldalak száma ezen: %1.</translation>
     </message>
     <message>
         <source>Print the odd pages on %1.&lt;p&gt;When finished, turn the pages, insert them into the printer&lt;br&gt;and click the Continue button.</source>
-        <translation type="unfinished"/>
+        <translation>A páratlan oldalak nyomtatása %1. &lt;p&gt; Ha elkészült, fordítsa el az oldalakat, helyezze be őket a nyomtatóba és kattintson a Folytatás gombra.</translation>
     </message>
     <message>
         <source>Print the even pages on %1.</source>
-        <translation type="unfinished"/>
+        <translation>Nyomtassa ki a(z) %1. páros oldalakat.</translation>
     </message>
     <message>
         <source>Continue</source>
-        <translation type="unfinished"/>
+        <translation>Folytatás</translation>
     </message>
     <message>
         <source>%1 pages</source>
         <comment>Status bar</comment>
-        <translation type="unfinished"/>
+        <translation>%1 lap</translation>
     </message>
     <message>
         <source>%1 page</source>
         <comment>Status bar</comment>
-        <translation type="unfinished"/>
+        <translation>%1 lap</translation>
     </message>
     <message>
         <source>%1 sheets</source>
         <comment>Status bar</comment>
-        <translation type="unfinished"/>
+        <translation>%1 munkalap</translation>
     </message>
     <message>
         <source>%1 sheet</source>
         <comment>Status bar</comment>
-        <translation type="unfinished"/>
+        <translation>%1 munkalap</translation>
     </message>
     <message>
         <source>Sheet %1 of %2</source>
         <comment>Status bar</comment>
-        <translation type="unfinished"/>
+        <translation>%1 munkalap, %2 összesen</translation>
     </message>
     <message>
         <source>Insert blank page after this page</source>
-        <translation type="unfinished"/>
+        <translation>Üres oldal beszúrása ezen oldal után</translation>
     </message>
     <message>
         <source>Delete this page</source>
-        <translation type="unfinished"/>
+        <translation>Törölje ezt a lapot</translation>
     </message>
     <message>
         <source>Undo delete</source>
-        <translation type="unfinished"/>
+        <translation>Törlés visszavonása</translation>
     </message>
     <message>
         <source>Insert blank page before this page</source>
-        <translation type="unfinished"/>
+        <translation>Üres oldal beszúrása ezen oldal elé</translation>
     </message>
     <message>
         <source>Save</source>
-        <translation type="unfinished"/>
+        <translation>Mentés</translation>
     </message>
     <message>
         <source>Save project</source>
-        <translation type="unfinished"/>
+        <translation>Projekt mentése</translation>
     </message>
     <message>
         <source>Ctrl+S</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
         <source>Save as...</source>
-        <translation type="unfinished"/>
+        <translation>Mentés másként…</translation>
     </message>
     <message>
         <source>Save project under a new name</source>
-        <translation type="unfinished"/>
+        <translation>Projekt mentése egy új néven</translation>
     </message>
     <message>
         <source>Ctrl+Shift+S</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+Shift+S</translation>
     </message>
     <message>
         <source>Open...</source>
-        <translation type="unfinished"/>
+        <translation>Megnyitás...</translation>
     </message>
     <message>
         <source>Open an existing project</source>
-        <translation type="unfinished"/>
+        <translation>Létező projekt megnyitása</translation>
     </message>
     <message>
         <source>Ctrl+O</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+M</translation>
     </message>
     <message>
         <source>Page %1</source>
         <comment>'Undo deletion' menu item</comment>
-        <translation type="unfinished"/>
+        <translation>Oldal: %1</translation>
     </message>
     <message>
         <source>Boomaga files (*.boo);;All files (*.*)</source>
-        <translation type="unfinished"/>
+        <translation>Boomaga fájlok (*.boo);;Minden fájl (*.*)</translation>
     </message>
     <message>
         <source>Project saved successfully.</source>
-        <translation type="unfinished"/>
+        <translation>A projekt sikeresen elmentve.</translation>
     </message>
     <message>
         <source>All supported files (*.pdf *.boo);;Boomaga files (*.boo);;PDF files (*.pdf);;All files (*.*)</source>
-        <translation type="unfinished"/>
+        <translation>Minden támogatott fájl (*.pdf *.boo);;Boomaga files (*.boo);;PDF files (*.pdf);;All files (*.*)</translation>
     </message>
     <message>
         <source>4 up horizontal</source>
-        <translation type="unfinished"/>
+        <translation>4 vízszintesen felfelé</translation>
     </message>
     <message>
         <source>4 up vertical</source>
-        <translation type="unfinished"/>
+        <translation>4 függőlegesen felfelé</translation>
     </message>
     <message>
         <source>8 up horizontal</source>
-        <translation type="unfinished"/>
+        <translation>8 vízszintesen felfelé</translation>
     </message>
     <message>
         <source>8 up vertical</source>
-        <translation type="unfinished"/>
+        <translation>8 függőlegesen felfelé</translation>
     </message>
     <message>
         <source>Start new booklet from this page</source>
-        <translation type="unfinished"/>
+        <translation>Indítsa el az új füzetet ezen az oldalon</translation>
     </message>
     <message>
         <source>Don&apos;t start new booklet from this page</source>
-        <translation type="unfinished"/>
+        <translation>Ne indítsa el az új füzetet ezen az oldalon</translation>
     </message>
     <message>
         <source>Rotate page to the left</source>
-        <translation type="unfinished"/>
+        <translation>Az oldal elforgatása balra</translation>
     </message>
     <message>
         <source>Rotate page to the right</source>
-        <translation type="unfinished"/>
+        <translation>Az oldal elforgatása jobbra</translation>
     </message>
     <message>
         <source>Rename job</source>
-        <translation type="unfinished"/>
+        <translation>Munkafolyamat átnevezése</translation>
     </message>
     <message>
         <source>Rotate job to the left</source>
-        <translation type="unfinished"/>
+        <translation>Forgassa a feladatot balra</translation>
     </message>
     <message>
         <source>Rotate job to the right</source>
-        <translation type="unfinished"/>
+        <translation>Forgassa a feladatot jobbra</translation>
     </message>
     <message>
         <source>Job title:</source>
-        <translation type="unfinished"/>
+        <translation>Feladat megnevezése:</translation>
     </message>
     <message>
         <source>Export the project to PDF</source>
-        <translation type="unfinished"/>
+        <translation>A projekt exportálás PDF-be</translation>
     </message>
     <message>
         <source>Ctrl+E</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+S</translation>
     </message>
     <message>
         <source>Clone job...</source>
-        <translation type="unfinished"/>
+        <translation>Feladat klónozása...</translation>
     </message>
     <message>
         <source>Clone job</source>
-        <translation type="unfinished"/>
+        <translation>Feladat klónozása</translation>
     </message>
     <message>
         <source>Number of copies:</source>
-        <translation type="unfinished"/>
+        <translation>Másolatok száma:</translation>
     </message>
     <message>
         <source>Print with options...</source>
-        <translation type="unfinished"/>
+        <translation>Nyomtatás opciókkal...</translation>
     </message>
     <message>
         <source>Select number of copies before printing.</source>
-        <translation type="unfinished"/>
+        <translation>A nyomtatás előtt válassza ki a másolatok számát.</translation>
     </message>
     <message>
         <source>Ctrl+Shift+P</source>
-        <translation type="unfinished"/>
+        <translation>Ctrl+Shift+P</translation>
     </message>
     <message>
         <source>Sub-booklets</source>
-        <translation type="unfinished"/>
+        <translation>Alfüzetek</translation>
     </message>
     <message>
         <source>Undo delete page</source>
-        <translation type="unfinished"/>
+        <translation>Laptörlés visszavonása</translation>
     </message>
     <message>
         <source>Page %1 of %2</source>
         <comment>Status bar</comment>
-        <translation type="unfinished"/>
+        <translation>%1 / %2 oldal</translation>
     </message>
     <message>
         <source>Recent files</source>
-        <translation type="unfinished"/>
+        <translation>Nemrég használt fájlok</translation>
     </message>
     <message>
         <source>&amp;Edit page</source>
-        <translation type="unfinished"/>
+        <translation>Lap &amp;szerkesztése</translation>
     </message>
     <message>
         <source>Edit &amp;job</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Feladat szerkesztése</translation>
     </message>
     <message>
         <source>&amp;Export to PDF...</source>
-        <translation type="unfinished"/>
+        <translation>&amp;Exportálás PDF-be...</translation>
     </message>
     <message>
         <source>Delete pages until the end of the job</source>
-        <translation type="unfinished"/>
+        <translation>Törölje az oldalakat a munka végén</translation>
     </message>
     <message>
         <source>Delete current job</source>
-        <translation type="unfinished"/>
+        <translation>Aktuális feladat törlése</translation>
     </message>
     <message>
         <source>Auto saving</source>
-        <translation type="unfinished"/>
+        <translation>Automatikus mentés</translation>
     </message>
     <message>
         <source>I can&apos;t create directory &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>Nem hozható létre &quot;%1&quot; könyvtár</translation>
     </message>
     <message>
         <source>%1 %2: Page %3</source>
         <comment>'Undo deletion' menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
-        <translation type="unfinished"/>
+        <translation>%1 %2: Oldal %3</translation>
     </message>
 </context>
 <context>
     <name>PostScriptFile</name>
     <message>
-        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>Converting PostScript to PDF</source>
         <comment>Progressbar text</comment>
-        <translation type="unfinished"/>
+        <translation>PostScript konvertálása PDF-be</translation>
+    </message>
+    <message>
+        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
+        <comment>Error message. 'gs' is a command line tool from ghostscript</comment>
+        <translation>Nem tudtam elindítani a gs konvertert: &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
     <name>PrintDialog</name>
     <message>
         <source>Print document</source>
-        <translation type="unfinished"/>
+        <translation>Dokumentum nyomtatása</translation>
     </message>
     <message>
         <source>Number of copies:</source>
-        <translation type="unfinished"/>
+        <translation>Másolatok száma:</translation>
     </message>
     <message>
         <source>Collate copies:</source>
-        <translation type="unfinished"/>
+        <translation>Másolatok összegyűjtése:</translation>
     </message>
 </context>
 <context>
     <name>PrinterSettings</name>
     <message>
         <source>Margins (mm)</source>
-        <translation type="unfinished"/>
+        <translation>Margók (mm)</translation>
     </message>
     <message>
         <source>Right:</source>
-        <translation type="unfinished"/>
+        <translation>Jobb:</translation>
     </message>
     <message>
         <source>Bottom:</source>
-        <translation type="unfinished"/>
+        <translation>Alul:</translation>
     </message>
     <message>
         <source>Internal:</source>
-        <translation type="unfinished"/>
+        <translation>Belső:</translation>
     </message>
     <message>
         <source>Left:</source>
-        <translation type="unfinished"/>
+        <translation>Bal:</translation>
     </message>
     <message>
         <source>Top:</source>
-        <translation type="unfinished"/>
+        <translation>Felül:</translation>
     </message>
     <message>
         <source>Draw border</source>
-        <translation type="unfinished"/>
+        <translation>Szegély rajzolása</translation>
     </message>
     <message>
         <source>Print in reverse order</source>
-        <translation type="unfinished"/>
+        <translation>Fordított nyomtatási sorrend</translation>
     </message>
     <message>
         <source>Printer has duplexer</source>
-        <translation type="unfinished"/>
+        <translation>A nyomtató duplex egységgel rendelkezik</translation>
     </message>
     <message>
         <source>Manual with reverse (suitable for most printers)</source>
-        <translation type="unfinished"/>
+        <translation>Kézi visszatöltés (alkalmas a legtöbb nyomtató)</translation>
     </message>
     <message>
         <source>Manual without reverse</source>
-        <translation type="unfinished"/>
+        <translation>Kézzel fordítás nélkül</translation>
     </message>
     <message>
         <source>Preferences of &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>&quot;%1&quot; beállításai</translation>
     </message>
     <message>
         <source>Profiles</source>
-        <translation type="unfinished"/>
+        <translation>Profilok</translation>
     </message>
     <message>
         <source>+</source>
-        <translation type="unfinished"/>
+        <translation>+</translation>
     </message>
     <message>
         <source>-</source>
-        <translation type="unfinished"/>
+        <translation>-</translation>
     </message>
     <message>
         <source>Reset to default</source>
-        <translation type="unfinished"/>
+        <translation>Visszaállítás alapértelmezettre</translation>
     </message>
     <message>
         <source>Profile %1</source>
         <comment>Defaul name for created printer profile in the Printer Settings diaog</comment>
-        <translation type="unfinished"/>
+        <translation>%1 profil</translation>
     </message>
     <message>
         <source>Color mode:</source>
-        <translation type="unfinished"/>
+        <translation>Színmód:</translation>
     </message>
     <message>
         <source>Default</source>
-        <translation type="unfinished"/>
+        <translation>Alapértelmezett</translation>
     </message>
     <message>
         <source>Force grayscale</source>
-        <translation type="unfinished"/>
+        <translation>Szürkeárnyalatos kényszerítése</translation>
     </message>
     <message>
         <source>Force color</source>
-        <translation type="unfinished"/>
+        <translation>Színkényszerítés</translation>
     </message>
     <message>
         <source>Settings</source>
-        <translation type="unfinished"/>
+        <translation>Beállítások</translation>
     </message>
     <message>
         <source>Print on both sides</source>
-        <translation type="unfinished"/>
+        <translation>Nyomtatás mindkét oldalra</translation>
     </message>
     <message>
         <source>Flip on short edge</source>
-        <translation type="unfinished"/>
+        <translation>Fordítsd át a rövid oldalon</translation>
     </message>
     <message>
         <source>Flip on long edge</source>
-        <translation type="unfinished"/>
+        <translation>Fordítsd a hosszú oldalon</translation>
     </message>
 </context>
 <context>
@@ -675,84 +677,84 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&quot;%1&quot; fájl írása nem sikerült</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <source>I can&apos;t read from file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&quot;%1&quot; fájlból olvasás nem sikerült</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&quot;%1&quot; fájlba írása nem sikerült</translation>
     </message>
     <message>
         <source>Untitled</source>
-        <translation type="unfinished"/>
+        <translation>Nincs cím</translation>
     </message>
     <message>
         <source>Default</source>
         <comment>Printer profile default name</comment>
-        <translation type="unfinished"/>
+        <translation>Alapértelmezett</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (Empty file name)</source>
         <comment>Error message. %1 is a file name</comment>
-        <translation type="unfinished"/>
+        <translation>&quot;%1&quot; fájlt nem lehet megnyitni (Üres fájlnév)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
         <comment>Error message. %1 is a file name</comment>
-        <translation type="unfinished"/>
+        <translation>&quot;%1&quot; fájlt nem lehet megnyitni (Fájl vagy mappa nem található)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
         <comment>Error message. %1 is a file name</comment>
-        <translation type="unfinished"/>
+        <translation>&quot;%1&quot; fájlt nem lehet megnyitni (Hozzáférés megtagadva)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
         <comment>Error message. %1 is a file name</comment>
-        <translation type="unfinished"/>
+        <translation>&quot;%1&quot; fájlt nem lehet megnyitni</translation>
     </message>
 </context>
 <context>
     <name>Settings</name>
     <message>
         <source>~/Untitled.pdf</source>
-        <translation type="unfinished"/>
+        <translation>~/Névtelen.pdf</translation>
     </message>
 </context>
 <context>
     <name>SubBookletView</name>
     <message>
         <source>Sub-booklet %1</source>
-        <translation type="unfinished"/>
+        <translation>%1 alfüzet</translation>
     </message>
     <message>
         <source>%1 pages</source>
-        <translation type="unfinished"/>
+        <translation>%1 lap</translation>
     </message>
 </context>
 <context>
     <name>TmpPdfFile</name>
     <message>
         <source>I can&apos;t create temporary file &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>&quot;%1&quot; átmeneti fájl nem hozható létre</translation>
     </message>
     <message>
         <source>I can&apos;t read file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&quot;%1&quot; fájl olvasása nem sikerült</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation type="unfinished"/>
+        <translation>&quot;%1&quot; fájl írása nem sikerült</translation>
     </message>
     <message>
         <source>I can&apos;t write file &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation>&quot;%1&quot; fájlba nem lehet írni</translation>
     </message>
 </context>
 </TS>

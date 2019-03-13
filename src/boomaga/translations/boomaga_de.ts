@@ -62,7 +62,7 @@
     <name>BooFile</name>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation>Ich kann nicht in die Datei &apos;%1&apos; schreiben</translation>
+        <translation>Die Datei &quot;%1&quot; konnte nicht geschrieben werden</translation>
     </message>
 </context>
 <context>
@@ -109,14 +109,14 @@
     </message>
     <message>
         <source>Right-to-left direction</source>
-        <translation>Richtung von rechts nach links</translation>
+        <translation>Richtung: von rechts nach links</translation>
     </message>
 </context>
 <context>
     <name>CupsBooFile</name>
     <message>
         <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
-        <translation>Ich kann die Datei &quot;%1&quot; nicht lesen, weil ihr Dateityp entweder nicht unterstützt wird oder die Datei beschädigt wurde.</translation>
+        <translation>IDie Datei &quot;%1&quot; konnte nicht gelesen werden, weil ihr Dateityp nicht unterstützt wird oder die Datei beschädigt ist.</translation>
     </message>
 </context>
 <context>
@@ -192,7 +192,7 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     <name>InFile</name>
     <message>
         <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
-        <translation>Ich kann die Datei &quot;%1&quot; nicht lesen, weil ihr Dateityp entweder nicht unterstützt wird oder die Datei beschädigt wurde.</translation>
+        <translation>Die Datei &quot;%1&quot; konnte nicht gelesen werden, weil ihr Dateityp nicht unterstützt wird oder die Datei beschädigt ist.</translation>
     </message>
 </context>
 <context>
@@ -539,13 +539,14 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
 <context>
     <name>PostScriptFile</name>
     <message>
-        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
-        <translation type="unfinished"/>
-    </message>
-    <message>
         <source>Converting PostScript to PDF</source>
         <comment>Progressbar text</comment>
-        <translation type="unfinished"/>
+        <translation> PostScript wird in PDF umgewandelt</translation>
+    </message>
+    <message>
+        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
+        <comment>Error message. 'gs' is a command line tool from ghostscript</comment>
+        <translation>Der Konverter gs konnte nicht gestartet werden: &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
@@ -660,11 +661,11 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
     <message>
         <source>Flip on short edge</source>
-        <translation>An kurzer Kante umdrehen</translation>
+        <translation>An kurzer Kante drehen</translation>
     </message>
     <message>
         <source>Flip on long edge</source>
-        <translation>An langer Kante umdrehen</translation>
+        <translation>An langer Kante drehen</translation>
     </message>
 </context>
 <context>
@@ -701,22 +702,22 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (Empty file name)</source>
         <comment>Error message. %1 is a file name</comment>
-        <translation type="unfinished"/>
+        <translation>Die Datei &quot;%1&quot; konnte nicht geöffnet werden (kein Dateiname)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
         <comment>Error message. %1 is a file name</comment>
-        <translation>Ich kann die Datei &quot;%1&quot; nicht öffnen (keine solche Datei oder Verzeichnis)</translation>
+        <translation>Die Datei &quot;%1&quot; konnte nicht geöffnet werden (keine Datei oder Verzeichnis)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
         <comment>Error message. %1 is a file name</comment>
-        <translation>Ich kann die Datei &quot;%1&quot; nicht öffnen (Zugriff verweigert)</translation>
+        <translation>Die Datei &quot;%1&quot; konnte nicht geöffnet werden (Zugriff verweigert)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
         <comment>Error message. %1 is a file name</comment>
-        <translation>Ich kann die Datei &quot;%1&quot; nicht öffnen</translation>
+        <translation>Die Datei &quot;%1&quot; konnte nicht geöffnet werden</translation>
     </message>
 </context>
 <context>
@@ -753,7 +754,7 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
     <message>
         <source>I can&apos;t write file &quot;%1&quot;</source>
-        <translation>Datei &quot;%1&quot; konnte nicht geschrieben werden</translation>
+        <translation>Die Datei &quot;%1&quot; konnte nicht geschrieben werden</translation>
     </message>
 </context>
 </TS>

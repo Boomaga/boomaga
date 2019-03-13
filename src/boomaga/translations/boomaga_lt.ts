@@ -539,13 +539,14 @@ Ar tikrai norite pakeisti šį failą?</translation>
 <context>
     <name>PostScriptFile</name>
     <message>
-        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
-        <translation>Nepavyksta paleisti gs konvertavimo įrankį: &quot;%1&quot;</translation>
-    </message>
-    <message>
         <source>Converting PostScript to PDF</source>
         <comment>Progressbar text</comment>
-        <translation type="unfinished"/>
+        <translation>Konvertuojama PostScript į PDF</translation>
+    </message>
+    <message>
+        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
+        <comment>Error message. 'gs' is a command line tool from ghostscript</comment>
+        <translation>Nepavyksta paleisti gs konvertavimo įrankį: &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
@@ -701,7 +702,7 @@ Ar tikrai norite pakeisti šį failą?</translation>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (Empty file name)</source>
         <comment>Error message. %1 is a file name</comment>
-        <translation type="unfinished"/>
+        <translation>Negaliu atverti failo &quot;%1&quot; (Tuščias failo pavadinimas)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>

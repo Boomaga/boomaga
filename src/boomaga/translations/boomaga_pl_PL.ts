@@ -538,12 +538,13 @@ Are you sure you want to overwrite it?</source>
 <context>
     <name>PostScriptFile</name>
     <message>
-        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
+        <source>Converting PostScript to PDF</source>
+        <comment>Progressbar text</comment>
         <translation type="unfinished"/>
     </message>
     <message>
-        <source>Converting PostScript to PDF</source>
-        <comment>Progressbar text</comment>
+        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
+        <comment>Error message. 'gs' is a command line tool from ghostscript</comment>
         <translation type="unfinished"/>
     </message>
 </context>

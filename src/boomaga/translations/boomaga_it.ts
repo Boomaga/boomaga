@@ -539,13 +539,14 @@ Sei sicuro di volerlo sovracrivere?</translation>
 <context>
     <name>PostScriptFile</name>
     <message>
-        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
-        <translation>Non riesco ad avviare il convertitore gs: &quot;%1&quot;</translation>
-    </message>
-    <message>
         <source>Converting PostScript to PDF</source>
         <comment>Progressbar text</comment>
-        <translation type="unfinished"/>
+        <translation>Conversione di PostScript in PDF</translation>
+    </message>
+    <message>
+        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
+        <comment>Error message. 'gs' is a command line tool from ghostscript</comment>
+        <translation>Non riesco ad avviare il convertitore gs: &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
@@ -701,7 +702,7 @@ Sei sicuro di volerlo sovracrivere?</translation>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (Empty file name)</source>
         <comment>Error message. %1 is a file name</comment>
-        <translation type="unfinished"/>
+        <translation>Non riesco ad aprire il file &quot;% 1&quot; (nome del file vuoto)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>

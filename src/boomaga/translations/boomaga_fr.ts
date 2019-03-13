@@ -539,13 +539,14 @@ Are you sure you want to overwrite it?</source>
 <context>
     <name>PostScriptFile</name>
     <message>
-        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
-        <translation>Je ne peux pas lancer le convertisseur gs : « %1 »</translation>
-    </message>
-    <message>
         <source>Converting PostScript to PDF</source>
         <comment>Progressbar text</comment>
-        <translation type="unfinished"/>
+        <translation>Conversion de PostScript à PDF</translation>
+    </message>
+    <message>
+        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
+        <comment>Error message. 'gs' is a command line tool from ghostscript</comment>
+        <translation>Je ne peux pas lancer le convertisseur gs : « %1 »</translation>
     </message>
 </context>
 <context>
@@ -701,17 +702,17 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (Empty file name)</source>
         <comment>Error message. %1 is a file name</comment>
-        <translation type="unfinished"/>
+        <translation>Je ne peux pas ouvrir le fichier « %1 » (le nom de fichier est vide)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
         <comment>Error message. %1 is a file name</comment>
-        <translation>Je ne peux pas ouvrir le fichier « %1 » (fichier ou répertoire inexistant)</translation>
+        <translation>Je ne peux pas ouvrir le fichier « %1 » (le fichier ou répertoire n’existe pas)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
         <comment>Error message. %1 is a file name</comment>
-        <translation>Je ne peux pas ouvrir le fichier « %1 » (accès refusé)</translation>
+        <translation>Je ne peux pas ouvrir le fichier « %1 » (l’accès est refusé)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>

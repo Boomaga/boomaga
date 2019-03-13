@@ -539,13 +539,14 @@ Jste si jistý, že jej chcete přepsat?</translation>
 <context>
     <name>PostScriptFile</name>
     <message>
-        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
-        <translation>Nelze spustit převaděč gs: &quot;%1&quot;</translation>
-    </message>
-    <message>
         <source>Converting PostScript to PDF</source>
         <comment>Progressbar text</comment>
-        <translation type="unfinished"/>
+        <translation>Převést PostScript do PDF</translation>
+    </message>
+    <message>
+        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
+        <comment>Error message. 'gs' is a command line tool from ghostscript</comment>
+        <translation>Nelze spustit převaděč gs: &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
@@ -701,7 +702,7 @@ Jste si jistý, že jej chcete přepsat?</translation>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (Empty file name)</source>
         <comment>Error message. %1 is a file name</comment>
-        <translation type="unfinished"/>
+        <translation>Nelze otevřít soubor &quot;%1&quot; (prázdný název souboru)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
