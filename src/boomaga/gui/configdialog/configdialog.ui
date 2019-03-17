@@ -7,7 +7,7 @@
     <x>0</x>
     <y>0</y>
     <width>432</width>
-    <height>315</height>
+    <height>387</height>
    </rect>
   </property>
   <property name="windowTitle">
@@ -111,21 +111,66 @@
         </property>
        </widget>
       </item>
+     </layout>
+    </widget>
+   </item>
+   <item>
+    <widget class="QGroupBox" name="updateGroupBox">
+     <property name="minimumSize">
+      <size>
+       <width>0</width>
+       <height>0</height>
+      </size>
+     </property>
+     <property name="title">
+      <string extracomment="Setting groupbox title">Automatically check for updates</string>
+     </property>
+     <property name="checkable">
+      <bool>true</bool>
+     </property>
+     <layout class="QHBoxLayout" name="horizontalLayout_2">
       <item>
-       <spacer name="verticalSpacer">
+       <widget class="QLabel" name="lastUpdateLbl">
+        <property name="text">
+         <string notr="true" extracomment="%1 is date of the last update">Last update was %1</string>
+        </property>
+       </widget>
+      </item>
+      <item>
+       <spacer name="horizontalSpacer">
         <property name="orientation">
-         <enum>Qt::Vertical</enum>
+         <enum>Qt::Horizontal</enum>
         </property>
         <property name="sizeHint" stdset="0">
          <size>
-          <width>20</width>
-          <height>40</height>
+          <width>134</width>
+          <height>20</height>
          </size>
         </property>
        </spacer>
       </item>
+      <item>
+       <widget class="QPushButton" name="updateNowBtn">
+        <property name="text">
+         <string extracomment="Buuton title for check updates ">Check now</string>
+        </property>
+       </widget>
+      </item>
      </layout>
     </widget>
+   </item>
+   <item>
+    <spacer name="verticalSpacer">
+     <property name="orientation">
+      <enum>Qt::Vertical</enum>
+     </property>
+     <property name="sizeHint" stdset="0">
+      <size>
+       <width>20</width>
+       <height>40</height>
+      </size>
+     </property>
+    </spacer>
    </item>
    <item>
     <widget class="QDialogButtonBox" name="buttonBox">

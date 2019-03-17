@@ -42,7 +42,9 @@
 #include <QDir>
 #include <iostream>
 #include <cstdlib>
-
+#ifdef MAC_UPDATER
+#include "updater/updater.h"
+#endif
 
 using namespace std;
 
@@ -235,6 +237,12 @@ int main(int argc, char *argv[])
     MainWindow mainWindow;
     mainWindow.show();
     application.processEvents();
+
+#ifdef MAC_UPDATER
+    Updater &updater = Updater::sharedUpdater();
+    if (updater.automaticallyChecksForUpdates())
+        updater.checkForUpdatesInBackground();
+#endif
 
     QStringList files;
     for (auto &f: args.files)

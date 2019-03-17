@@ -38,7 +38,7 @@ class ConfigDialog : public QDialog
     Q_OBJECT
     
 public:
-    static ConfigDialog *createAndShow(QWidget *parent = 0);
+    static ConfigDialog *createAndShow(QWidget *parent = nullptr);
 
 public slots:
     void done(int res);
@@ -52,8 +52,10 @@ private slots:
 private:
     Ui::ConfigDialog *ui;
 
-    explicit ConfigDialog(QWidget *parent = 0);
+    explicit ConfigDialog(QWidget *parent = nullptr);
     ~ConfigDialog();
+
+    void updateLastUpdateLbl();
 };
 
 #endif // CONFIGDIALOG_H

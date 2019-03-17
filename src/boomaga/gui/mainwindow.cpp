@@ -41,6 +41,10 @@
 #include "printdialog/printdialog.h"
 #include "boomagatypes.h"
 
+#ifdef Q_OS_MAC
+#include "updater/updater.h"
+#endif
+
 #include <math.h>
 #include <QRadioButton>
 #include <QMessageBox>
@@ -395,6 +399,13 @@ void MainWindow::initActions()
     connect(act, SIGNAL(triggered()),
             this, SLOT(showAboutDialog()));
 
+#ifdef MAC_UPDATER
+    act = ui->actionCheckUpdates;
+    connect(act, SIGNAL(triggered()),
+            this, SLOT(checkUpdates()));
+#else
+    ui->actionCheckUpdates->setVisible(false);
+#endif
 
 }
 
@@ -1246,6 +1257,17 @@ void MainWindow::dontStartBooklet()
 void MainWindow::showConfigDialog()
 {
     ConfigDialog::createAndShow(this);
+}
+
+
+/************************************************
+
+ ************************************************/
+void MainWindow::checkUpdates()
+{
+#ifdef MAC_UPDATER
+    Updater::sharedUpdater().checkForUpdatesInBackground();
+#endif
 }
 
 

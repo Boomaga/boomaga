@@ -90,7 +90,7 @@ private slots:
     void dontStartBooklet();
 
     void showConfigDialog();
-
+    void checkUpdates();
 
     void save();
     void saveAs(const QString &fileName = "");

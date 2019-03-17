@@ -278,7 +278,7 @@
      <x>0</x>
      <y>0</y>
      <width>1188</width>
-     <height>23</height>
+     <height>22</height>
     </rect>
    </property>
    <widget class="QMenu" name="menuFile">
@@ -307,6 +307,7 @@
     <property name="title">
      <string>&amp;Preferences</string>
     </property>
+    <addaction name="actionCheckUpdates"/>
     <addaction name="actionPreferences"/>
    </widget>
    <widget class="QMenu" name="menuHelp">
@@ -424,7 +425,7 @@
   </action>
   <action name="actionPreferences">
    <property name="text">
-    <string>&amp;Preferences</string>
+    <string extracomment="menu action text">&amp;Preferences...</string>
    </property>
    <property name="menuRole">
     <enum>QAction::PreferencesRole</enum>
@@ -455,6 +456,17 @@
   <action name="actionfake">
    <property name="text">
     <string notr="true">fake</string>
+   </property>
+  </action>
+  <action name="actionCheckUpdates">
+   <property name="text">
+    <string extracomment="Menu action text">Check for Updates...</string>
+   </property>
+   <property name="toolTip">
+    <string extracomment="menu action tooltip">Check for Updates</string>
+   </property>
+   <property name="menuRole">
+    <enum>QAction::ApplicationSpecificRole</enum>
    </property>
   </action>
  </widget>

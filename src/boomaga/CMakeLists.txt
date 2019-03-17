@@ -202,6 +202,17 @@ find_package(ZLIB REQUIRED)
 include_directories(${ZLIB_INCLUDE_DIRS})
 set(LIBRARIES ${LIBRARIES} ${ZLIB_LIBRARIES})
 
+if (APPLE)
+ 
+    if (MAC_BUNDLE)
+        add_definitions(-DMAC_BUNDLE=1)
+        
+        add_definitions(-DMAC_UPDATER=1)
+        add_subdirectory(updater)
+        set(LIBRARIES ${LIBRARIES} updater_mac)
+    endif() 
+endif()
+
 include(translations/translatorsinfo/CMakeLists.txt)
 get_translatorsinfo_qrc(translatorsinfo_qrc)
 qt5_add_resources(TRANSLATORS_INFO_QRC ${translatorsinfo_qrc})

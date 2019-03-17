@@ -30,6 +30,10 @@
 #include <QDebug>
 #include <QFileDialog>
 
+#ifdef MAC_UPDATER
+#include "updater/updater.h"
+#endif
+
 
 /************************************************
 
@@ -66,6 +70,20 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
 
     connect(ui->autoSaveDirBtn, SIGNAL(clicked()),
             this, SLOT(openAutoSaveDirDialog()));
+
+#if MAC_UPDATER
+    ui->updateGroupBox->setVisible(true);
+    connect(ui->updateNowBtn, &QPushButton::clicked,
+            [this]() {
+                Updater::sharedUpdater().checkForUpdatesInBackground();
+                updateLastUpdateLbl();
+            });
+
+    updateLastUpdateLbl();
+#else
+    ui->updateGroupBox->setVisible(false);
+#endif
+
 }
 
 
@@ -75,6 +93,25 @@ ConfigDialog::ConfigDialog(QWidget *parent) :
 ConfigDialog::~ConfigDialog()
 {
     delete ui;
+}
+
+
+/************************************************
+
+ ************************************************/
+void ConfigDialog::updateLastUpdateLbl()
+{
+#ifdef MAC_UPDATER
+    QDateTime date = Updater::sharedUpdater().lastUpdateCheckDate();
+    QString s;
+    if (!date.isNull())
+        s = tr("Last check was %1", "Information about last update")
+                .arg(date.toString(Qt::DefaultLocaleLongDate));
+    else
+        s = tr("Never checked", "Information about last update");
+
+    ui->lastUpdateLbl->setText(s);
+#endif
 }
 
 
@@ -116,6 +153,10 @@ void ConfigDialog::loadSettings()
     ui->autoSaveDirEdit->setText(settings->value(Settings::AutoSaveDir).toString());
     ui->negativeMargins->setChecked(settings->value(Settings::AllowNegativeMargins).toBool());
     ui->rightToLeft->setChecked(settings->value(Settings::RightToLeft).toBool());
+
+#ifdef MAC_UPDATER
+   ui->updateGroupBox->setChecked(Updater::sharedUpdater().automaticallyChecksForUpdates());
+#endif
 }
 
 
@@ -148,6 +189,11 @@ void ConfigDialog::saveSettings()
 
     if (upadateProject)
         project->update();
+
+#ifdef MAC_UPDATER
+    Updater::sharedUpdater().setAutomaticallyChecksForUpdates(
+        ui->updateGroupBox->isChecked());
+#endif
 }
 
 
