@@ -35,8 +35,6 @@
 #include <string>
 
 
-static const int BUF_SIZE  = 4096;
-
 using namespace std;
 
 struct Args

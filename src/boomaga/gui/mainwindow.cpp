@@ -1496,7 +1496,7 @@ void MainWindow::longTaskStarted(const ProjectLongTask *task)
     ui->statusbar->insertWidget(0, label);
     ui->statusbar->insertWidget(1, progressBar);
 
-    connect(task, &ProjectLongTask::finished, [this, label, progressBar]()
+    connect(task, &ProjectLongTask::finished, [label, progressBar]()
     {
         label->deleteLater();
         progressBar->deleteLater();
