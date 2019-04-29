@@ -1,0 +1,39 @@
+#!/bin/sh
+# [postinst] for boomaga
+# COPYRIGHT
+# © 2019 Boomaga team https://github.com/Boomaga/boomaga
+#    Alexander Sokoloff <sokoloff.a@gmail.com>
+#
+set -e
+
+
+# Sanitize ownerships and permissions.
+chmod 0700 /usr/libexec/cups/backend/boomaga
+chown root /usr/libexec/cups/backend/boomaga
+
+# Wait until CUPS has reloaded its configuration.
+if lpstat -h localhost -r 2>/dev/null | grep -q not; then
+	t=0
+	while lpstat -h localhost -r 2>/dev/null | grep -q not; do
+	        t=$(($t + 1))
+		if [ $t = 10 ]; then
+		        echo "CUPS failed to reload its configuration!"
+			break
+		fi
+		sleep 1
+	done
+fi
+
+# Create a queue if we have none yet.
+if  ! lpstat -v boomaga 1>/dev/null 2>/dev/null; then
+	queue=Boomaga
+	# Create the queue.
+	lpadmin -p $queue -v boomaga:/ -m /@CUPS_PPD_DIR@/boomaga.ppd -o printer-is-shared=no -E 2>/dev/null
+	# Enable the queue.
+	#cupsenable $queue 2>/dev/null
+	#cupsaccept $queue 2>/dev/null
+	
+	# Set the queue as default.
+	lpadmin -d $queue 2>/dev/null
+fi
+exit 0

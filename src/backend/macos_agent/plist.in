@@ -19,15 +19,10 @@
   <array>
     <string>/Library/Printers/@MAC_APP_ID@/agent</string>
     <string>@MAC_SPOOL_DIR@</string>
-    <string>~/Library/Application Support/@MAC_APP_ID@</string>
-    <string>@MAC_APP_ID@</string>
   </array>
 
   <key>KeepAlive</key>
   <false/>
-
-  <key>EnableGlobbing</key>
-  <true/>
 
   <key>WatchPaths</key>
   <array>
@@ -46,6 +41,8 @@
   <key>StandardErrorPath</key>
   <string>/tmp/@MAC_APP_ID@.agent.log</string>
 -->
+  <key>AbandonProcessGroup</key>
+  <false/>
 
 </dict>
 </plist>

@@ -48,6 +48,12 @@ target_include_directories(${PROJECT_NAME} PRIVATE
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
+# MacOS ***************************************************
+if(APPLE)
+    set(CUPS_BACKEND_DIR "usr/libexec/cups/backend")
+    set(CUPS_PPD_DIR     "Library/Printers/PPDs/Contents/Resources")
+endif()
+
 
 install(FILES "${CMAKE_CURRENT_BINARY_DIR}/boomaga"
   DESTINATION ${CUPS_BACKEND_DIR}
@@ -68,3 +74,7 @@ install(FILES ${CMAKE_CURRENT_BINARY_DIR}/boomaga.ppd
     WORLD_READ
 )
 
+
+if (APPLE)
+        configure_file(apple.postinstall.in ${CMAKE_BINARY_DIR}/scripts/postinstall @ONLY)
+endif()

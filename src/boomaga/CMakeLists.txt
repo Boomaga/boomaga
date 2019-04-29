@@ -220,22 +220,32 @@ qt5_add_resources(TRANSLATORS_INFO_QRC ${translatorsinfo_qrc})
 qt5_add_resources(  QRC_SOURCES ${RESOURCES})
 qt5_add_translation(QM_FILES    ${TS_FILES})
 
-
 add_executable(boomaga ${HEADERS} ${SOURCES} ${QM_FILES} ${QRC_SOURCES} ${TRANSLATORS_INFO_QRC})
-set_target_properties(boomaga PROPERTIES OUTPUT_NAME "boomaga")
 target_link_libraries(boomaga ${LIBRARIES} Qt5::Widgets Qt5::PrintSupport Qt5::DBus)
+set_target_properties(boomaga PROPERTIES OUTPUT_NAME "boomaga")
 
 
-install(TARGETS boomaga RUNTIME DESTINATION ${GUI_DIR})
-install(FILES ${QM_FILES} DESTINATION ${TRANSLATIONS_DIR})
 
+
+# MacOS ***************************************************
 if( ${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
-    # MacOS ***********************************************
 
-    # MacOS ***********************************************
+    install(TARGETS boomaga RUNTIME DESTINATION "Applications/Boomaga.app/Contents/MacOS")
+    set_target_properties(boomaga PROPERTIES OUTPUT_NAME "Boomaga")    
 
+    install(FILES misc/images/mainicon/Boomaga.icns DESTINATION "Applications/Boomaga.app/Contents/Resources")
+
+    install(FILES ${QM_FILES} DESTINATION "Applications/Boomaga.app/Contents/translations")
+
+    CREATE_PLIST_FILE(misc/Info.plist.in ${CMAKE_CURRENT_BINARY_DIR}/Info.plist)
+    install(FILES ${CMAKE_CURRENT_BINARY_DIR}/Info.plist DESTINATION "Applications/Boomaga.app/Contents")
+
+
+# Linux + BSD ********************************************
 else()
-    # Linux + BSD *****************************************
+    install(TARGETS boomaga RUNTIME DESTINATION ${GUI_DIR})
+    install(FILES ${QM_FILES} DESTINATION ${TRANSLATIONS_DIR})
+
     configure_file(${CMAKE_CURRENT_SOURCE_DIR}/org.boomaga.service
                    ${CMAKE_CURRENT_BINARY_DIR}/org.boomaga.service
                    @ONLY)

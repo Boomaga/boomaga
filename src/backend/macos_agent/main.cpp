@@ -37,23 +37,20 @@
 #include <sys/stat.h>
 #include <sys/types.h>
 
-
-
 #include "../../common.h"
 
 using namespace std;
 
-static const char* PATTERN = "*.boo";
-//#define OPEN_COMMAND "/usr/bin/open"
+static const char* PATTERN = "*.cboo." AUTOREMOVE_EXT;
+
 
 /************************************************
  *
  ************************************************/
 static void usage()
 {
-    cerr << "Usage: agent SOURCE_DIRECTORY TARGET_DIRECTORY" << endl;
-    cerr << "  example: agent /var/spool/io.github.Boomaga "
-            "'~/Library/Application Support/io.github.Boomaga' " << endl;
+    cerr << "Usage: agent SOURCE_DIRECTORY" << endl;
+    cerr << "  example: agent /var/spool/io.github.Boomaga " << endl;
 }
 
 
@@ -69,7 +66,7 @@ static string expandSrcPath(const string &path)
         if (!home)
         {
             Log::error("can't get HOME environment variable");
-            return NULL;
+            return nullptr;
         }
 
         res.replace(0, 1, home);
@@ -83,28 +80,6 @@ static string expandSrcPath(const string &path)
     }
 
     return res + "/" + user;
-}
-
-
-/************************************************
- *
- ************************************************/
-static string expandDestPath(const char *path)
-{
-    string res = path;
-    if (res[0] == '~')
-    {
-        const char *home = getenv("HOME");
-        if (!home)
-        {
-            Log::error("can't get HOME environment variable");
-            return NULL;
-        }
-
-        res.replace(0, 1, home);
-    }
-
-    return res;
 }
 
 
@@ -136,16 +111,16 @@ void startApplication(const char *appID, const string &file)
 
     else
     {
-        Log::debug("exec open '%s' '%s' '%s' ",
+        Log::debug("exec open %s %s %s '%s' ",
               "-b", appID,
+              "--args",
               file.c_str());
 
         execlp("open",
                "open",
                "-b", appID,
-               file.c_str(),
                "--args",
-               "--autoremove",
+               file.c_str(),
                nullptr);
     }
 }
@@ -159,31 +134,21 @@ int main(int argc, char *argv[])
     Log::setPrefix("Boomaga agent");
     Log::setWriteTime(true);
 
-    if (argc != 3 ||
-            !strlen(argv[1]) ||
-            !strlen(argv[2]) )
+    if (argc < 2 || !strlen(argv[1]))
     {
+        Log::error("Missing source directory operand");
         usage();
         return 1;
     }
 
-    Log::debug("start '%s' '%s'", argv[1], argv[2]);
+    Log::debug("start '%s'", argv[1]);
 
     try
     {
         string srcDir  = expandSrcPath(argv[1]);
-        string destDir = expandDestPath(argv[2]);
 
-        if (srcDir == destDir)
-        {
-            Log::warn("source_direcory (\"%s\") and target_direcory (\"%s\") must be different.", srcDir.c_str(), destDir.c_str());
-            return 400;
-        }
-
-        Log::debug("Source dir:      '%s'", srcDir.c_str());
-        Log::debug("Destination dir: '%s'", destDir.c_str());
-
-//        mkdirs(destDir, 0700);
+        Log::debug("Source dir: '%s'", srcDir.c_str());
+        Log::debug("Search '%s'", (srcDir + "/" + PATTERN).c_str());
 
         int cnt = 100;
         while (cnt > 0) // If new files appear in the directory during this cycle, we process them again.
@@ -191,11 +156,11 @@ int main(int argc, char *argv[])
             --cnt;
 
             glob_t files;
-            int ret = glob((srcDir + "/" + PATTERN).c_str(), GLOB_TILDE, 0, &files);
+            int ret = glob((srcDir + "/" + PATTERN).c_str(), GLOB_TILDE, nullptr, &files);
 
-            if (ret != 0)
+            if (ret != 0 && ret != GLOB_NOMATCH)
             {
-                Log::error(strerror(errno));
+                Log::error("Glob error: %s", strerror(errno));
                 return 500;
             }
 
@@ -212,18 +177,7 @@ int main(int argc, char *argv[])
             {
                 Log::debug("Found file '%s'", files.gl_pathv[i]);
                 string file = files.gl_pathv[i];
-                //string file = destDir + "/" + basename(files.gl_pathv[i]);
-                //Log::debug("QQQ %s", file.c_str());
-                //                 debug("Move to '%s'", file.c_str());
-                //                 if (!moveFile(files.gl_pathv[i], file.c_str()))
-                //                 {
-                //                     throw format("Can't move file \"%s\" to \"%s\": %s",
-                //                              files.gl_pathv[i],
-                //                              destDir.c_str(),
-                //                              strerror(errno));
-                //                 }
 
-                //                 DBUS::add(file, "", false);
                 Log::debug("start application '%s' with file '%s'", MAC_APP_ID, file.c_str());
                 startApplication(MAC_APP_ID, file);
             }
@@ -239,9 +193,6 @@ int main(int argc, char *argv[])
         Log::error(e.c_str());
         return 500;
     }
-
-    return 0;
-
 
     return CUPS_BACKEND_OK;
 }

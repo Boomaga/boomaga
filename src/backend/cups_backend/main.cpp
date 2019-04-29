@@ -42,10 +42,10 @@ struct Args
     string jobID;
     string user;
     string title;
-    int    count;
     string options;
     string file;
     passwd *pwd;
+    int    count;
 };
 
 
@@ -165,8 +165,8 @@ static bool createJobFile(istream &src, const string &destFile, const Args &args
  ************************************************/
 string dirname(const string &path)
 {
-    int n = path.rfind('/', path.length() - 2);
-    if (n>-1)
+    string::size_type n = path.rfind('/', path.length() - 2);
+    if (n != string::npos)
         return path.substr(0, n);
 
     return path;
@@ -251,7 +251,7 @@ int main(int argc, char *argv[])
 #ifdef __APPLE__
     // Start agent from Boomaga.app
 
-    string startFile = dir + "/.start";
+    string startFile = baseDir + "/.start";
     ofstream dest(startFile, ios::binary | ios::trunc);
     dest << time(nullptr);
     dest.close();

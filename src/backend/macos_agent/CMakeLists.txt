@@ -49,7 +49,11 @@ target_include_directories(${PROJECT_NAME} PRIVATE
   ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-configure_file(plist.in agent.plist @ONLY)
+configure_file(plist.in ${CMAKE_CURRENT_BINARY_DIR}/agent.plist @ONLY)
 
-install(TARGETS ${PROJECT_NAME}   RUNTIME DESTINATION Applications/Boomaga.app/Contents/MacOS)
-install(FILES agent.plist         DESTINATION Library/LaunchAgents/${MAC_APP_ID}.agent.plist)
+install(TARGETS ${PROJECT_NAME}   RUNTIME 
+        DESTINATION "Library/Printers/${MAC_APP_ID}")
+
+install(FILES ${CMAKE_CURRENT_BINARY_DIR}/agent.plist         
+	DESTINATION "Library/LaunchAgents"
+	RENAME ${MAC_APP_ID}.agent.plist)
