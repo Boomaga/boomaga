@@ -632,7 +632,7 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
     <message>
         <source>Profile %1</source>
-        <comment>Defaul name for created printer profile in the Printer Settings diaog</comment>
+        <comment>Default name for created printer profile in the Printer Settings diaog</comment>
         <translation>Profil %1</translation>
     </message>
     <message>

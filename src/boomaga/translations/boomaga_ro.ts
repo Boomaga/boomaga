@@ -632,7 +632,7 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
     </message>
     <message>
         <source>Profile %1</source>
-        <comment>Defaul name for created printer profile in the Printer Settings diaog</comment>
+        <comment>Default name for created printer profile in the Printer Settings diaog</comment>
         <translation>Profilul %1</translation>
     </message>
     <message>
