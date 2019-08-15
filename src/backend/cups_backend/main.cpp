@@ -69,7 +69,7 @@ static int getmod(const string &file)
  ************************************************/
 static string mkUserDir(const string &baseDir, const string &user)
 {
-    Log::debug("Create user direcory %s", baseDir.c_str());
+    Log::debug("Create user directory %s", baseDir.c_str());
 
     passwd *pwd = getpwnam(user.c_str());
     if (!pwd)

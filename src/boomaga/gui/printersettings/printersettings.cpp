@@ -355,7 +355,7 @@ void PrinterSettings::addProfile()
     QStandardItem *parent = cur->parent();
 
     ProfileItem *item =new ProfileItem();
-    item->setText(tr("Profile %1", "Defaul name for created printer profile in the Printer Settings diaog")
+    item->setText(tr("Profile %1", "Default name for created printer profile in the Printer Settings diaog")
                   .arg(parent->rowCount()));
     parent->insertRow(cur->row()+1, item);
 

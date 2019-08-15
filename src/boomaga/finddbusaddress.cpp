@@ -82,7 +82,7 @@ QStringList FindDbusAddress::fromSessionFiles()
     DIR *dir;
     if ((dir = opendir(sessionsDir.c_str())) == NULL)
     {
-        Log::warn("Can't read DBUS session direcory %s", sessionsDir.c_str());
+        Log::warn("Can't read DBUS session directory %s", sessionsDir.c_str());
         return QStringList();
     }
 
@@ -133,7 +133,7 @@ QStringList FindDbusAddress::fromProcFiles()
     DIR *dir;
     if ((dir = opendir(PROC_DIR.c_str())) == NULL)
     {
-        Log::warn("Can't read /proc direcory");
+        Log::warn("Can't read /proc directory");
         return QStringList();
     }
 
