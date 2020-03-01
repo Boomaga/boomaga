@@ -40,10 +40,7 @@ using namespace PDF;
 /************************************************
  *
  ************************************************/
-Writer::Writer():
-    mDevice(nullptr),
-    mXRefPos(0),
-    mBuf{0}
+Writer::Writer()
 {
     mXRefTable.addFreeObject(0, 65535, 0);
 }
@@ -53,9 +50,7 @@ Writer::Writer():
  *
  ************************************************/
 Writer::Writer(QIODevice *device):
-    mDevice(device),
-    mXRefPos(0),
-    mBuf{0}
+    mDevice(device)
 {
     mXRefTable.addFreeObject(0, 65535, 0);
 }

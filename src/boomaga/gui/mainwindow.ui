@@ -127,9 +127,15 @@
             <widget class="PrintersComboBox" name="printersCombo"/>
            </item>
            <item>
-            <widget class="QToolButton" name="printerConfigBtn">
+            <widget class="QPushButton" name="printerConfigBtn">
              <property name="enabled">
               <bool>true</bool>
+             </property>
+             <property name="sizePolicy">
+              <sizepolicy hsizetype="Fixed" vsizetype="Fixed">
+               <horstretch>0</horstretch>
+               <verstretch>0</verstretch>
+              </sizepolicy>
              </property>
              <property name="text">
               <string>Configure...</string>

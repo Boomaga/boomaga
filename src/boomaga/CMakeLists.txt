@@ -34,6 +34,7 @@ endif()
 project(boomagaGui)
 
 set(HEADERS
+    application.h
     boomagatypes.h
     dbus.h
     render.h
@@ -85,6 +86,7 @@ set(HEADERS
 
 set(SOURCES
     main.cpp
+    application.cpp
     boomagatypes.cpp
     dbus.cpp
     render.cpp
@@ -133,6 +135,12 @@ set(SOURCES
 )
 
 
+if (APPLE)
+    set(SOURCES ${SOURCES}
+        application_mac.mm
+    )
+endif()
+
 set(LIBRARIES
 )
 
@@ -180,6 +188,7 @@ find_package(Qt5 REQUIRED
     PrintSupport
     DBus
     LinguistTools
+    Concurrent
 )
 
 include_directories(
@@ -203,14 +212,17 @@ include_directories(${ZLIB_INCLUDE_DIRS})
 set(LIBRARIES ${LIBRARIES} ${ZLIB_LIBRARIES})
 
 if (APPLE)
- 
+    FIND_LIBRARY(COCOA_LIBRARY Cocoa)
+      set(LIBRARIES ${LIBRARIES} ${COCOA_LIBRARY})
+
     if (MAC_BUNDLE)
         add_definitions(-DMAC_BUNDLE=1)
         
         add_definitions(-DMAC_UPDATER=1)
         add_subdirectory(updater)
         set(LIBRARIES ${LIBRARIES} updater_mac)
-    endif() 
+    endif()
+
 endif()
 
 include(translations/translatorsinfo/CMakeLists.txt)
@@ -231,7 +243,7 @@ set_target_properties(boomaga PROPERTIES OUTPUT_NAME "boomaga")
 if( ${CMAKE_SYSTEM_NAME} STREQUAL "Darwin")
 
     install(TARGETS boomaga RUNTIME DESTINATION "Applications/Boomaga.app/Contents/MacOS")
-    set_target_properties(boomaga PROPERTIES OUTPUT_NAME "Boomaga")    
+    set_target_properties(boomaga PROPERTIES OUTPUT_NAME "Boomaga")
 
     install(FILES misc/images/mainicon/Boomaga.icns DESTINATION "Applications/Boomaga.app/Contents/Resources")
 

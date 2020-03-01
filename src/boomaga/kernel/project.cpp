@@ -107,14 +107,6 @@ Project::~Project()
  ************************************************/
 void Project::free()
 {
-    for (const Job &job: mJobs)
-    {
-        if (job.fileName().endsWith(AUTOREMOVE_EXT))
-        {
-            QFile(job.fileName()).remove();
-        }
-    }
-
     mJobs.clear();
     delete mTmpFile;
 }
@@ -161,6 +153,9 @@ void Project::addJobs(const JobList &jobs)
         stopMerging();
         update();
 
+        if (mTmpFile)
+            mTmpFile->disconnect(this);
+
         mLastTmpFile = createTmpPdfFile();
         mLastTmpFile->merge(mJobs);
     }
@@ -195,6 +190,9 @@ void Project::removeJob(int index)
             if (remove)
                 QFile(fileName).remove();
         }
+
+        if (mTmpFile)
+            mTmpFile->disconnect(this);
 
         mLastTmpFile = createTmpPdfFile();
         mLastTmpFile->merge(mJobs);

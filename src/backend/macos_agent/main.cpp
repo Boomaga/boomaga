@@ -111,15 +111,13 @@ void startApplication(const char *appID, const string &file)
 
     else
     {
-        Log::debug("exec open %s %s %s '%s' ",
+        Log::debug("exec open %s %s '%s' ",
               "-b", appID,
-              "--args",
               file.c_str());
 
         execlp("open",
                "open",
                "-b", appID,
-               "--args",
                file.c_str(),
                nullptr);
     }

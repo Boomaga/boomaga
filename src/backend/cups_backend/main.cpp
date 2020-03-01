@@ -252,9 +252,9 @@ int main(int argc, char *argv[])
     // Start agent from Boomaga.app
 
     string startFile = baseDir + "/.start";
-    ofstream dest(startFile, ios::binary | ios::trunc);
-    dest << time(nullptr);
-    dest.close();
+    ofstream start(startFile, ios::binary | ios::trunc);
+    start << time(nullptr);
+    start.close();
 
     if (getmod(startFile) != 0664 && chmod(startFile.c_str(), 0664) != 0)
     {

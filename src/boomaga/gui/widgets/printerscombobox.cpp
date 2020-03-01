@@ -88,7 +88,7 @@ void PrintersComboBoxDelegate::paint(QPainter *painter,
            const QModelIndex &index) const
 {
     QStyleOptionMenuItem opt = getStyleOption(option, index);
-    painter->fillRect(option.rect, opt.palette.background());
+    painter->fillRect(option.rect, opt.palette.window());
 
     QString type = index.data( Qt::AccessibleDescriptionRole ).toString();
 

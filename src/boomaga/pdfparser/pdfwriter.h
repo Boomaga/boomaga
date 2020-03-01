@@ -103,11 +103,11 @@ protected:
     void write(qint16 value);
 
 private:
-    QIODevice *mDevice;
-    XRefTable mXRefTable;
-    qint64 mXRefPos;
+    QIODevice *mDevice = nullptr;
+    XRefTable mXRefTable ;
+    qint64 mXRefPos = 0;
 
-    char mBuf[1024*1024];
+    char mBuf[1024*1024] = {0};
 };
 
 

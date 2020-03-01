@@ -29,8 +29,8 @@
 #include "dbus.h"
 #include "kernel/job.h"
 #include "../common.h"
+#include "application.h"
 
-#include <QApplication>
 #include <QTextStream>
 #include <QLocale>
 #include <QTranslator>
@@ -48,6 +48,47 @@
 
 using namespace std;
 
+#define LOG_TO_FILE
+#ifdef LOG_TO_FILE
+QFile *openLog() {
+    QFile *res = new QFile(QDir::homePath() + "/boomaga.log");
+    res->open(QFile::WriteOnly);
+    return res;
+}
+
+
+void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QString &msg)
+{
+    Q_UNUSED(context)
+    static QFile *log = openLog();
+    log->seek(log->size());
+
+    QString s = QString("%1: %2")
+            .arg(QDateTime::currentDateTime().toString("MM.dd hh:mm:ss"))
+            .arg(msg);
+
+
+    switch (type) {
+    case QtDebugMsg:
+        log->write((QString("Debug: ") + s).toLocal8Bit());
+        break;
+    case QtInfoMsg:
+        log->write((QString("Info: ") + s).toLocal8Bit());
+        break;
+    case QtWarningMsg:
+        log->write((QString("Warning: ") + s).toLocal8Bit());
+        break;
+    case QtCriticalMsg:
+        log->write((QString("Critical: ") + s).toLocal8Bit());
+        break;
+    case QtFatalMsg:
+        log->write((QString("Fatal: ") + s).toLocal8Bit());
+        break;
+    }
+    log->write("\n");
+    log->flush();
+}
+
 typedef vector<string> stringList;
 
 struct Args
@@ -57,7 +98,7 @@ struct Args
     bool startedFromCups;
     stringList files;
 };
-
+#endif
 
 /************************************************
 
@@ -195,10 +236,75 @@ void cleanup()
 
 
 /************************************************
+ *
+ ************************************************/
+static QString moveAutoRemoveFile(const QString oldFile)
+{
+    static quint64 num = 0;
+    ++num;
+    QString newFile = QString("%1%2%3_in[%4].cboo")
+            .arg(boomagaChacheDir())
+            .arg(QDir::separator())
+            .arg(appUUID())
+            .arg(num);
+
+    Log::debug("Move \"%s\" to \"%s\"",
+               oldFile.toLocal8Bit().data(),
+               newFile.toLocal8Bit().data());
+
+    QFile f(oldFile);
+    if (! f.rename(newFile)) {
+        Log::error("Can't move \"%s\" to \"%s\": %s",
+                   oldFile.toLocal8Bit().data(),
+                   newFile.toLocal8Bit().data(),
+                   f.errorString().toLocal8Bit().data());
+        return "";
+    }
+
+    return newFile;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+static void openFiles(const QStringList &files)
+{
+    QStringList jobFiles;
+    for (auto file: files) {
+        if (file.endsWith(AUTOREMOVE_EXT))
+        {
+            QString newFile = moveAutoRemoveFile(file);
+            if (!newFile.isEmpty())
+                jobFiles << newFile;
+        }
+        else
+        {
+            jobFiles << file;
+        }
+    }
+    project->load(jobFiles);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+static void openFile(const QString &file)
+{
+    project->load(QStringList() << file);
+}
+
+
+/************************************************
 
  ************************************************/
 int main(int argc, char *argv[])
 {
+#ifdef LOG_TO_FILE
+    qInstallMessageHandler(myMessageOutput);
+    qDebug() << ".:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:.:";
+#endif
     Log::setPrefix("Boomaga GUI");
 
     Args args(argc, argv);
@@ -217,9 +323,9 @@ int main(int argc, char *argv[])
     // Start GUI ................................
     readEnvFile();
 
-    QApplication application(argc, argv);
-    QObject::connect(&application, &QCoreApplication::aboutToQuit,
-                     &cleanup);
+    Application application(argc, argv);
+    QObject::connect(&application, &QCoreApplication::aboutToQuit, &cleanup);
+    Application::connect(&application, &Application::openFile, openFile);
 
 
     QTranslator qtTranslator;
@@ -250,6 +356,6 @@ int main(int argc, char *argv[])
         files << QString::fromStdString(f);
     }
 
-    project->load(files);
+    openFiles(files);
     return application.exec();
 }

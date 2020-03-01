@@ -25,17 +25,19 @@
 #
 # END_COMMON_COPYRIGHT_HEADER
 
-if ! [ $(id -u) = 0 ]; then
-   echo "The script need to be run as root." >&2
-   exit 1
-fi
+set -e
 
+if [ $(uname) != "Darwin" ]; then
+  if ! [ $(id -u) = 0 ]; then
+    echo "The script need to be run as root." >&2
+    exit 1
+  fi
+fi
 
 
 SCHEME="boomaga"
 URI="${SCHEME}:/"
 NAME="Boomaga"
-PPD="lsb/usr/boomaga/${SCHEME}.ppd"
 
 
 while [ $# -gt 0 ]; do
@@ -52,6 +54,7 @@ while [ $# -gt 0 ]; do
   esac
 done  
 
+PATH="$PATH:/sbin"
 
 if [ -z "${FORCE}" ]
 then
@@ -69,10 +72,11 @@ do
   printer="${NAME}-${number}"
 done
 
-pageSize="$(LC_ALL=C paperconf 2>/dev/null)" || size=a4
+pageSize="$(LC_ALL=C paperconf 2>/dev/null)" || pageSize=a4
 
+model=$(lpinfo --make-and-model=${NAME} -m | grep -oh ".*boomaga.ppd")
 
-lpadmin -h localhost -p "${printer}" -v ${URI} -E -m ${PPD} -o printer-is-shared=no -o PageSize=${pageSize}
+lpadmin -h localhost -p "${printer}" -v ${URI} -E -m ${model} -o printer-is-shared=no -o PageSize=${pageSize}
 
 
 if [ -z "$(LC_ALL=C lpstat -h localhost -d 2>/dev/null | grep 'system default destination:')" ]

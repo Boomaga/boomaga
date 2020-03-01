@@ -86,8 +86,9 @@ TmpPdfFile::~TmpPdfFile()
 /************************************************
 
  ************************************************/
-void TmpPdfFile::merge(const JobList &jobs)
+void TmpPdfFile::merge(const JobList &jobList)
 {
+    JobList jobs = jobList;
     QFile file(mFileName);
     if (! file.open(QFile::WriteOnly | QFile::Truncate))
     {
