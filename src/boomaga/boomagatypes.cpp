@@ -28,6 +28,7 @@
 #include <QDir>
 #include <QStandardPaths>
 #include <QUuid>
+#include <QTemporaryDir>
 
 /************************************************
 
@@ -168,6 +169,16 @@ QString boomagaChacheDir()
 /************************************************
  *
  ************************************************/
+QString tmpDir()
+{
+    static QTemporaryDir res(boomagaChacheDir() + QDir::separator() + "boomaga-XXXXXX");
+    return res.path();
+}
+
+
+/************************************************
+ *
+ ************************************************/
 void mustOpenFile(const QString &fileName, QFile *file)
 {
     QFileInfo fi(fileName);
@@ -220,4 +231,28 @@ QString genTmpFileName(const QString &suffix)
             .arg(appUUID())
             .arg(num.fetchAndAddRelaxed(1), 3, 10, QChar('0'))
             .arg(suffix);
+}
+
+
+/************************************************
+ *
+ ************************************************/
+QString genInputFileName()
+{
+    static QAtomicInteger<quint64> cnt(1);
+    quint64 id = cnt.fetchAndAddRelaxed(1);
+
+    return tmpDir() + QDir::separator() + QString("in-%1").arg(id, 3, 10, QChar('0'));
+}
+
+
+/************************************************
+ *
+ ************************************************/
+QString genJobFileName()
+{
+    static QAtomicInteger<quint64> cnt(1);
+    quint64 id = cnt.fetchAndAddRelaxed(1);
+
+    return tmpDir() + QDir::separator() + QString("job-%1.pdf").arg(id, 3, 10, QChar('0'));
 }

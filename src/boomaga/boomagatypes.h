@@ -157,8 +157,10 @@ QString safeFileName(const QString &str);
 QString expandHomeDir(const QString &fileName);
 QString shrinkHomeDir(const QString &fileName);
 QString boomagaChacheDir();
+QString tmpDir();
 QString appUUID();
 QString genTmpFileName(const QString &suffix);
-
+QString genInputFileName();
+QString genJobFileName();
 
 #endif // BOOMAGATYPES_H

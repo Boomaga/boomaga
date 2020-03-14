@@ -241,13 +241,7 @@ void cleanup()
  ************************************************/
 static QString moveAutoRemoveFile(const QString oldFile)
 {
-    static quint64 num = 0;
-    ++num;
-    QString newFile = QString("%1%2%3_in[%4].cboo")
-            .arg(boomagaChacheDir())
-            .arg(QDir::separator())
-            .arg(appUUID())
-            .arg(num);
+    QString newFile = genInputFileName();
 
     Log::debug("Move \"%s\" to \"%s\"",
                oldFile.toLocal8Bit().data(),
