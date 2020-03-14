@@ -48,7 +48,7 @@
 
 using namespace std;
 
-#define LOG_TO_FILE
+//#define LOG_TO_FILE
 #ifdef LOG_TO_FILE
 QFile *openLog() {
     QFile *res = new QFile(QDir::homePath() + "/boomaga.log");
@@ -88,6 +88,7 @@ void myMessageOutput(QtMsgType type, const QMessageLogContext &context, const QS
     log->write("\n");
     log->flush();
 }
+#endif
 
 typedef vector<string> stringList;
 
@@ -98,7 +99,7 @@ struct Args
     bool startedFromCups;
     stringList files;
 };
-#endif
+
 
 /************************************************
 
