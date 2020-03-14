@@ -44,7 +44,7 @@ public:
     Writer();
 
     /// Constructs a stream writer that writes into device;
-    Writer(QIODevice *device);
+    explicit Writer(QIODevice *device);
 
     /// Destroys the writer.
     ~Writer();
@@ -107,7 +107,7 @@ private:
     XRefTable mXRefTable ;
     qint64 mXRefPos = 0;
 
-    char mBuf[1024*1024] = {0};
+    char *mBuf;
 };
 
 

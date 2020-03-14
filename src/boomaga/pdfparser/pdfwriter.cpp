@@ -35,12 +35,14 @@
 #include <QDebug>
 
 using namespace PDF;
+static constexpr size_t BUF_SIZE = 1024 * 1024;
 
 
 /************************************************
  *
  ************************************************/
-Writer::Writer()
+Writer::Writer():
+    mBuf(new char[BUF_SIZE]())
 {
     mXRefTable.addFreeObject(0, 65535, 0);
 }
@@ -50,7 +52,8 @@ Writer::Writer()
  *
  ************************************************/
 Writer::Writer(QIODevice *device):
-    mDevice(device)
+    mDevice(device),
+    mBuf(new char[BUF_SIZE]())
 {
     mXRefTable.addFreeObject(0, 65535, 0);
 }
@@ -61,6 +64,7 @@ Writer::Writer(QIODevice *device):
  ************************************************/
 Writer::~Writer()
 {
+    delete[] mBuf;
 }
 
 
