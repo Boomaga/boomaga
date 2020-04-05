@@ -79,7 +79,9 @@ public:
     /// Write PDF trailer
     ///  root - The catalog dictionary for the PDF document.
     ///  info - The document’s information dictionary.
-    void writeTrailer(const Link &root, const Link &info);
+    ///  prev - The byte offset from the beginning of the file to the beginning of the previous cross-reference section.
+    ///         Present only if the file has more than one cross-reference section; must not be an indirect reference.
+    void writeTrailer(const Link &root, const Link &info, const quint64 prev = 0);
     void writeTrailer(const Dict &trailerDict);
 
     const XRefTable xRefTable() const { return mXRefTable; }

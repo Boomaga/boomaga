@@ -622,7 +622,7 @@ void Writer::writeTrailer(const Link &root)
 /************************************************
  *
  ************************************************/
-void Writer::writeTrailer(const Link &root, const Link &info)
+void Writer::writeTrailer(const Link &root, const Link &info, const quint64 prev)
 {
     Dict trailerDict;
 
@@ -639,6 +639,13 @@ void Writer::writeTrailer(const Link &root, const Link &info)
     // dictionary (see Section 10.2.1, “Document Information Dictionary”).
     if (info.objNum())
         trailerDict.insert("Info", info);
+
+    // Prev - The byte offset from the beginning of the file to the beginning of the previous
+    // cross-reference section. (Present only if the file has more than one cross-reference
+    // section; must not be an indirect reference)
+    if (prev) {
+        trailerDict.insert("Prev", prev);
+    }
 
     // ID - (Optional, but strongly recommended; PDF 1.1) An array of two byte-strings
     // constituting a file identifier (see Section 10.3, “File Identifiers”) for the file.
