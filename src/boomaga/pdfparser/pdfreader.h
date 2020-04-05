@@ -89,6 +89,9 @@ public:
     /// Closes this reader for reading.
     void close();
 
+    /// Returns true if the reader is open; otherwise returns false.
+    bool isOpen() const;
+
     const XRefTable &xRefTable() const { return mXRefTable; }
     const Dict &trailerDict() const { return mTrailerDict; }
     Dict trailerDict() { return mTrailerDict; }
