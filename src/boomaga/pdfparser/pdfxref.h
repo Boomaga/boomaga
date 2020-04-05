@@ -69,6 +69,10 @@ private:
 class XRefTable: public QMap<PDF::ObjNum, XRefEntry>
 {
 public:
+    XRefTable() = default;
+    XRefTable(const XRefTable &other) = default;
+    XRefTable &operator=(const XRefTable &other) = default;
+
     qint32 maxObjNum() const;
 
     XRefEntry addFreeObject(PDF::ObjNum objNum, PDF::GenNum genNum, PDF::ObjNum nextFreeObj = 0);
