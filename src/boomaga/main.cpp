@@ -219,22 +219,6 @@ void readEnvFile()
 
 }
 
-/************************************************
- *
- ************************************************/
-void cleanup()
-{
-    // Remove temporary files ..............
-    QDir dir(boomagaChacheDir());
-    QStringList filters;
-    filters << (appUUID() + "*");
-    QStringList files = dir.entryList(filters, QDir::NoDotAndDotDot|QDir::Files);
-    foreach (QString f, files)
-    {
-        dir.remove(f);
-    }
-}
-
 
 /************************************************
  *
@@ -278,6 +262,7 @@ static void openFiles(const QStringList &files)
             jobFiles << file;
         }
     }
+    qDebug() << "TMP DIR" << tmpDir();
     project->load(jobFiles);
 }
 
@@ -319,7 +304,6 @@ int main(int argc, char *argv[])
     readEnvFile();
 
     Application application(argc, argv);
-    QObject::connect(&application, &QCoreApplication::aboutToQuit, &cleanup);
     Application::connect(&application, &Application::openFile, openFile);
 
 

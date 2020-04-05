@@ -158,7 +158,7 @@ QString shrinkHomeDir(const QString &fileName)
 /************************************************
  *
  ************************************************/
-QString boomagaChacheDir()
+static QString chacheDir()
 {
     QString res = QStandardPaths::writableLocation(QStandardPaths::GenericCacheLocation);
     res = expandHomeDir(res);
@@ -171,7 +171,7 @@ QString boomagaChacheDir()
  ************************************************/
 QString tmpDir()
 {
-    static QTemporaryDir res(boomagaChacheDir() + QDir::separator() + "boomaga-XXXXXX");
+    static QTemporaryDir res(chacheDir() + QDir::separator() + "boomaga-XXXXXX");
     return res.path();
 }
 
@@ -221,16 +221,12 @@ QString appUUID()
 /************************************************
  *
  ************************************************/
-QString genTmpFileName(const QString &suffix)
+QString genTmpFileName()
 {
-    static QAtomicInt num = 1;
+    static QAtomicInteger<quint64> cnt(1);
+    quint64 id = cnt.fetchAndAddRelaxed(1);
 
-    return QString("%1%2%3_%4%5")
-            .arg(boomagaChacheDir())
-            .arg(QDir::separator())
-            .arg(appUUID())
-            .arg(num.fetchAndAddRelaxed(1), 3, 10, QChar('0'))
-            .arg(suffix);
+    return tmpDir() + QDir::separator() + QString("tmp-%1.pdf").arg(id, 3, 10, QChar('0'));
 }
 
 
