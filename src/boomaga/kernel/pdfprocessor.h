@@ -66,14 +66,14 @@ private:
     qint64 mEndPos;
     PDF::Reader mReader;
     quint32 mObjNumOffset;
-    PDF::Writer *mWriter;
     QVector<PdfPageInfo> mPageInfo;
     QSet<PDF::ObjNum> mProcessedObjects;
 
-    int walkPageTree(int pageNum, const PDF::Object &page, const PDF::Dict &inherited);
-    PDF::ObjNum writePageAsXObject(const PDF::Object &page, const PDF::Dict &inherited);
-    PDF::Object &addOffset(PDF::Object &obj);
-    void offsetValue(PDF::Value &value);
+    int walkPageTree(int pageNum, const PDF::Object &page, const PDF::Dict &inherited, PDF::Writer *writer);
+    PDF::ObjNum writePageAsXObject(const PDF::Object &page, const PDF::Dict &inherited, PDF::Writer *writer);
+    PDF::Object &addOffset(PDF::Object &obj, PDF::Writer *writer);
+    void offsetValue(PDF::Value &value, PDF::Writer *writer);
+    void copyResources(const PDF::Value &value);
 };
 
 #endif // PDFPROCESSOR_H

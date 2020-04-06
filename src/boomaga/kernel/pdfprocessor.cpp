@@ -40,8 +40,7 @@ PdfProcessor::PdfProcessor(const QString &fileName, qint64 startPos, qint64 endP
     mFileName(fileName),
     mStartPos(startPos),
     mEndPos(endPos),
-    mObjNumOffset(0),
-    mWriter(nullptr)
+    mObjNumOffset(0)
 {
 
 }
@@ -78,7 +77,7 @@ quint32 PdfProcessor::pageCount()
  ************************************************/
 void PdfProcessor::run(PDF::Writer *writer, quint32 objNumOffset)
 {
-    mWriter = writer;
+    assert(mReader.isOpen());
     mObjNumOffset = objNumOffset;
 
     PDF::Object catalog = mReader.getObject(mReader.trailerDict().value("Root").asLink());
@@ -87,9 +86,7 @@ void PdfProcessor::run(PDF::Writer *writer, quint32 objNumOffset)
     mPageInfo.reserve(pages.dict().value("Count").asNumber().value());
 
     PDF::Dict dict;
-    walkPageTree(0, pages, dict);
-
-    writer = nullptr;
+    walkPageTree(0, pages, dict, writer);
 }
 
 
@@ -130,7 +127,7 @@ void fillPageInfo(PdfPageInfo *pageInfo, const PDF::Dict &pageDict, const PDF::D
 /************************************************
  *
  ************************************************/
-int PdfProcessor::walkPageTree(int pageNum, const PDF::Object &page, const PDF::Dict &inherited)
+int PdfProcessor::walkPageTree(int pageNum, const PDF::Object &page, const PDF::Dict &inherited, PDF::Writer *writer)
 {
     assert(page.type() == "Pages" || page.type() == "Page");
 
@@ -154,7 +151,7 @@ int PdfProcessor::walkPageTree(int pageNum, const PDF::Object &page, const PDF::
         const PDF::Array kids = pageDict.value("Kids").asArray();
         for (int i=0; i<kids.count(); ++i)
         {
-            pageNum = walkPageTree(pageNum, mReader.getObject(kids.at(i).asLink()), dict);
+            pageNum = walkPageTree(pageNum, mReader.getObject(kids.at(i).asLink()), dict, writer);
         }
         return pageNum;
     }
@@ -172,7 +169,7 @@ int PdfProcessor::walkPageTree(int pageNum, const PDF::Object &page, const PDF::
             throw QString("Error on page %1 %2: %3").arg(page.objNum()).arg(page.genNum()).arg(err);
         }
 
-        pageInfo.xObjNums << writePageAsXObject(page, inherited);
+        pageInfo.xObjNums << writePageAsXObject(page, inherited, writer);
         mPageInfo << pageInfo;
         emit pageReady();
 
@@ -243,7 +240,7 @@ int PdfProcessor::walkPageTree(int pageNum, const PDF::Object &page, const PDF::
     (including potential white space) as intended by the page’s creator. The default
     value is the page’s crop box.
  ************************************************/
-PDF::ObjNum PdfProcessor::writePageAsXObject(const PDF::Object &page, const PDF::Dict &inherited)
+PDF::ObjNum PdfProcessor::writePageAsXObject(const PDF::Object &page, const PDF::Dict &inherited, PDF::Writer *writer)
 {
     const PDF::Dict &pageDict = page.dict();
 
@@ -290,7 +287,7 @@ PDF::ObjNum PdfProcessor::writePageAsXObject(const PDF::Object &page, const PDF:
             dict.remove("Filter");
 
         dict.insert("Length", xObj.stream().length());
-        addOffset(xObj);
+        addOffset(xObj, writer);
         return xObj.objNum();
     }
 
@@ -309,7 +306,7 @@ PDF::ObjNum PdfProcessor::writePageAsXObject(const PDF::Object &page, const PDF:
         xObj.dict().remove("Filter");
         xObj.dict().insert("Length", xObj.stream().length());
 
-        addOffset(xObj);
+        addOffset(xObj, writer);
         return xObj.objNum();
     }
 
@@ -320,14 +317,14 @@ PDF::ObjNum PdfProcessor::writePageAsXObject(const PDF::Object &page, const PDF:
 /************************************************
  *
  ************************************************/
-PDF::Object &PdfProcessor::addOffset(PDF::Object &obj)
+PDF::Object &PdfProcessor::addOffset(PDF::Object &obj, PDF::Writer *writer)
 {
 #ifdef SAVE_DEBUG_INFO
     obj.dict().insert("BoomagaFrom", PDF::String(QString("%1 %2 obj").arg(obj.objNum()).arg(obj.genNum())));
 #endif
     obj.setObjNum(obj.objNum() + mObjNumOffset);
-    offsetValue(obj.value());
-    mWriter->writeObject(obj);
+    offsetValue(obj.value(), writer);
+    writer->writeObject(obj);
     return obj;
 }
 
@@ -335,7 +332,7 @@ PDF::Object &PdfProcessor::addOffset(PDF::Object &obj)
 /************************************************
  *
  ************************************************/
-void PdfProcessor::offsetValue(PDF::Value &value)
+void PdfProcessor::offsetValue(PDF::Value &value, PDF::Writer *writer)
 {
     if (value.isLink())
     {
@@ -344,7 +341,7 @@ void PdfProcessor::offsetValue(PDF::Value &value)
         {
             mProcessedObjects << link.objNum();
             PDF::Object obj = mReader.getObject(link);
-            addOffset(obj);
+            addOffset(obj, writer);
         }
         link.setObjNum(link.objNum() + mObjNumOffset);
     }
@@ -355,7 +352,7 @@ void PdfProcessor::offsetValue(PDF::Value &value)
 
         for (int i=0; i<arr.count(); ++i)
         {
-            offsetValue(arr[i]);
+            offsetValue(arr[i], writer);
         }
     }
 
@@ -365,7 +362,35 @@ void PdfProcessor::offsetValue(PDF::Value &value)
 
         foreach (auto &key, dict.keys())
         {
-            offsetValue(dict[key]);
+            offsetValue(dict[key], writer);
         }
     }
 }
+
+
+///************************************************
+// *
+// ************************************************/
+//void PdfProcessor::copyResources(const PDF::Value &value)
+//{
+//    PDF::Dict dict;
+//    if (value.isLink()) {
+//        dict = mReader.getObject(value.asLink()).dict();
+//    }
+
+//    if (value.isDict()) {
+//        dict = value.asDict();
+//    }
+
+//    qDebug() << value << (value.isLink() ? "Link" : "") << (value.isDict() ? "Dict" : "");
+
+//    for (auto &key: dict.keys()) {
+//        qDebug() << key << "=" << dict[key];
+//    }
+
+//    //PDF::Dict res = mReader.getObject(value)
+
+//    //if (value.isDict()) {
+//    //    c
+//   // }
+//}
