@@ -29,11 +29,14 @@
 
 #include <QObject>
 #include <QVector>
+#include <QFile>
 #include "boomagatypes.h"
+#include "pdfparser/pdfxref.h"
 
 class Sheet;
 class Job;
 class JobList;
+struct JobFile;
 
 namespace PDF {
     class Writer;
@@ -49,7 +52,7 @@ public:
     explicit TmpPdfFile(QObject *parent = 0);
     virtual ~TmpPdfFile();
 
-    void merge(const JobList &jobs);
+    JobList add(const JobList &jobs);
     void updateSheets(const QList<Sheet *> &sheets);
 
     QString fileName() const { return mFileName; }
@@ -57,20 +60,25 @@ public:
     bool writeDocument(const QList<Sheet*> &sheets, QIODevice *out);
     bool isValid() const { return mValid; }
 
-signals:
-    void merged();
-    void progress(int progress, int all) const;
+    QString errorString() const { return mErrorString; }
 
 private:
     void getPageStream(QString *out, const Sheet *sheet) const;
     void writeSheets(QIODevice *out, const QList<Sheet *> &sheets) const;
-    void writeCatalog(PDF::Writer *writer, const QVector<PdfPageInfo> &pages);
+    quint64 writeCatalog(PDF::Writer *writer, const QVector<PdfPageInfo> &pages);
+
+    class Data;
+    Data *mData;
 
     QString mFileName;
-    qint32 mFirstFreeNum;
-    qint64 mOrigFileSize;
-    qint64 mOrigXrefPos;
-    bool mValid;
+    QFile   mFile;
+
+
+    qint32 mFirstFreeNum = 0;
+    qint64 mOrigFileSize = 0;
+    qint64 mOrigXrefPos  = 0;
+    bool mValid = false;
+    QString mErrorString;
 };
 
 

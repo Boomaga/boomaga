@@ -28,11 +28,8 @@
 #include "settings.h"
 #include "job.h"
 
-#include "tmppdffile.h"
-#include "sheet.h"
 #include "layout.h"
-#include "iofiles/infile.h"
-#include "iofiles/boofile.h"
+#include "boofile.h"
 
 #include <unistd.h>
 #include <fstream>
@@ -46,6 +43,7 @@
 #include <QDateTime>
 #include <QUuid>
 #include <QUrl>
+#include "debug.h"
 
 #define META_SIZE (4 * 1024)
 
@@ -83,13 +81,16 @@ Project::Project(QObject *parent) :
     mCurrentPage(0),
     mCurrentSheet(0),
     mSheetCount(0),
-    mTmpFile(0),
-    mLastTmpFile(0),
     mNullPrinter("Fake"),
     mPrinter(&mNullPrinter),
     mDoubleSided(true),
     mRotation(NoRotate)
-{
+{      
+    connect(&mFileLoader, &FileLoader::jobsReady,
+            this, &Project::jobFilesReady);
+
+    connect(&mFileLoader, &FileLoader::metaDataReady,
+            this, &Project::setMetadata);
 }
 
 
@@ -108,62 +109,23 @@ Project::~Project()
 void Project::free()
 {
     mJobs.clear();
-    delete mTmpFile;
-}
-
-
-/************************************************
-
- ************************************************/
-TmpPdfFile *Project::createTmpPdfFile()
-{
-    TmpPdfFile *res = new TmpPdfFile(this);
-
-    connect(res, SIGNAL(progress(int,int)),
-            this, SLOT(tmpFileProgress(int,int)));
-
-    connect(res, SIGNAL(merged()),
-            this, SLOT(tmpFileMerged()));
-
-    return res;
 }
 
 
 /************************************************
  *
  * ***********************************************/
-void Project::addJob(const Job &job)
+void Project::cloneJob(const Job &src, uint count)
 {
-    addJobs(JobList() << job);
-}
-
-
-/************************************************
- *
- * ***********************************************/
-void Project::addJobs(const JobList &jobs)
-{
-    try
-    {
-        foreach (Job job, jobs)
-        {
-            mJobs << job;
-        }
-
-        stopMerging();
-        update();
-
-        if (mTmpFile)
-            mTmpFile->disconnect(this);
-
-        mLastTmpFile = createTmpPdfFile();
-        mLastTmpFile->merge(mJobs);
+    JobList jobs;
+    for (uint i=1; i<count; ++i) {
+        Job job = src.clone();
+        job.setTitle(QString("%1 [ %2 ]").arg(src.title()).arg(i+1));
+        jobs << job;
     }
-    catch (BoomagaError &err)
-    {
-        qWarning() << Q_FUNC_INFO << err.what();
-        error(err.what());
-    }
+
+    mJobs << jobs;
+    mTmpFile.add(jobs);
 }
 
 
@@ -174,28 +136,8 @@ void Project::removeJob(int index)
 {
     try
     {
-
-        stopMerging();
-
-        QString fileName = mJobs.at(index).fileName();
         mJobs.removeAt(index);
         update();
-
-        if (fileName.endsWith(AUTOREMOVE_EXT))
-        {
-            bool remove = true;
-            for (const Job &job: mJobs)
-                remove = remove && job.fileName() != fileName;
-
-            if (remove)
-                QFile(fileName).remove();
-        }
-
-        if (mTmpFile)
-            mTmpFile->disconnect(this);
-
-        mLastTmpFile = createTmpPdfFile();
-        mLastTmpFile->merge(mJobs);
     }
     catch (BoomagaError &err)
     {
@@ -211,44 +153,6 @@ void Project::removeJob(int index)
 void Project::moveJob(int from, int to)
 {
     mJobs.move(from, to);
-    update();
-}
-
-
-/************************************************
-
- ************************************************/
-void Project::tmpFileMerged()
-{
-    TmpPdfFile *tmpPdf = qobject_cast<TmpPdfFile*>(sender());
-    if (!tmpPdf)
-        return;
-
-    if (tmpPdf != mLastTmpFile)
-    {
-        tmpPdf->deleteLater();
-        return;
-    }
-
-//    foreach (const Job &job, mJobs)
-//    {
-//        for (int p=0; p<job.pageCount(); ++p)
-//        {
-//            ProjectPage *page = job.page(p);
-//            page->setPdfInfo(tmpPdf->pageInfo(job, page->jobPageNum()));
-//        }
-
-//    }
-
-    delete mTmpFile;
-    mTmpFile = mLastTmpFile;
-    mLastTmpFile = 0;
-
-    if (mMetaData.title().isEmpty() && !mJobs.isEmpty())
-    {
-        mMetaData.setTitle(mJobs.first().title());
-    }
-
     update();
 }
 
@@ -302,11 +206,8 @@ void Project::update()
         Direction direction = settings->value(Settings::RightToLeft).toBool() ? RightToLeft : LeftToRight;
         mLayout->fillPreviewSheets(&mPreviewSheets, direction);
 
-        if (mTmpFile)
-        {
-            mTmpFile->updateSheets(mPreviewSheets);
-            emitTmpFileRenamed = true;
-        }
+        mTmpFile.updateSheets(mPreviewSheets);
+        emitTmpFileRenamed = true;
     }
 
     foreach (Sheet *s, mPreviewSheets)
@@ -325,10 +226,8 @@ void Project::update()
         mCurrentSheet = 0;
 
 
-
-
     if (emitTmpFileRenamed)
-        emit tmpFileRenamed(mTmpFile->fileName());
+        emit tmpFileRenamed(mTmpFile.fileName());
 
     if (state.currentSheetChanged())
     {
@@ -701,15 +600,22 @@ Rotation Project::calcRotation(const QList<ProjectPage *> &pages, const Layout *
 
 
 /************************************************
-
+ *
  ************************************************/
-void Project::stopMerging()
+void Project::jobFilesReady(const JobList &jobs)
 {
-    if (mLastTmpFile)
-    {
-        mLastTmpFile->deleteLater();
-        mLastTmpFile = 0;
+    JobList res = mTmpFile.add(jobs);
+    if (!mTmpFile.isValid()) {
+        error(mTmpFile.errorString());
+        return;
     }
+    mJobs << res;
+
+    if (mMetaData.title().isEmpty() && !mJobs.isEmpty()) {
+        mMetaData.setTitle(mJobs.first().title());
+    }
+
+    update();
 }
 
 
@@ -718,8 +624,8 @@ void Project::stopMerging()
  ************************************************/
 void Project::tmpFileProgress(int progr, int all) const
 {
-    if (sender() == mLastTmpFile)
-        emit progress(progr, all);
+//    if (sender() == mLastTmpFile)
+//        emit progress(progr, all);
 }
 
 
@@ -787,7 +693,7 @@ QList<Sheet*> Project::selectSheets(Project::PagesType pages, Project::PagesOrde
  ************************************************/
 bool Project::writeDocument(const QList<Sheet*> &sheets, QIODevice *out)
 {
-    return mTmpFile->writeDocument(sheets, out);
+    return mTmpFile.writeDocument(sheets, out);
 }
 
 
@@ -980,6 +886,19 @@ void MetaData::xmp(QByteArray &out, const QString &format, const QString &value)
 /************************************************
 
  ************************************************/
+MetaData::MetaData()
+{
+    static bool registred = false;
+    if (!registred) {
+        registred = true;
+        qRegisterMetaType<MetaData>();
+    }
+}
+
+
+/************************************************
+ *
+ ************************************************/
 QByteArray MetaData::asPDFDict() const
 {
     QByteArray res;
@@ -1002,6 +921,19 @@ QByteArray MetaData::asPDFDict() const
     addDictItem(res, "ModDate",      now);  // The date and time the document was most recently modified
 
     return res;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+bool MetaData::isEmpty() const
+{
+    return mTitle.isEmpty()   &&
+           mAuthor.isEmpty()  &&
+           mSubject.isEmpty() &&
+           mKeywords.isEmpty();
+
 }
 
 
@@ -1055,72 +987,20 @@ void MetaData::addDictItem(QByteArray &out, const QString &key, const QDateTime 
 /************************************************
 
  ************************************************/
-JobList Project::load(const QString &fileName)
+void Project::load(const QString &fileName)
 {
-    return load(QStringList() << fileName);
+    load(QStringList() << fileName);
 }
 
 
 /************************************************
 
  ************************************************/
-JobList Project::load(const QStringList &fileNames)
+void Project::load(const QStringList &fileNames)
 {
-    stopMerging();
-    QStringList errors;
-
-    QStringList delFiles;
-    JobList jobs;
-    foreach(QString fileName, fileNames)
-    {
-        try
-        {
-            InFile::Type fileType = InFile::getType(fileName);
-            if (fileType == InFile::Type::CupsBoo &&
-                fileName.endsWith(AUTOREMOVE_EXT))
-            {
-                QString old = fileName;
-                fileName = genTmpFileName(".cboo");
-                QFile::copy(old, fileName);
-                delFiles << old;
-            }
-
-            QObject keeper;
-            InFile *parser = InFile::fromFile(fileName, &keeper);
-            connect(parser, &InFile::startLongOperation,
-                    [this, &parser](const QString &msg){
-                auto task = new ProjectLongTask(msg, parser);
-                emit longTaskStarted(task);
-            });
-
-            parser->load(fileName);
-            jobs << parser->jobs();
-
-            if (fileType == InFile::Type::Boo)
-            {
-                setMetadata(parser->metaData());
-            }
-        }
-        catch (const BoomagaError &err)
-        {
-            qWarning() << err.what();
-            errors << err.what();
-        }
+    for (auto file: fileNames) {
+        mFileLoader.load(file);
     }
-
-
-    foreach(QString fileName, delFiles)
-    {
-        QFile(fileName).remove();
-    }
-
-    if (!jobs.isEmpty())
-        addJobs(jobs);
-
-    if (!errors.isEmpty())
-        error(errors.join("\n\n"));
-
-    return jobs;
 }
 
 

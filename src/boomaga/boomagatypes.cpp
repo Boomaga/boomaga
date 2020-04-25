@@ -171,6 +171,10 @@ static QString chacheDir()
  ************************************************/
 QString tmpDir()
 {
+    if (const char* dir = std::getenv("BOOMAGA_TMP_DIR")) {
+        return dir;
+    }
+
     static QTemporaryDir res(chacheDir() + QDir::separator() + "boomaga-XXXXXX");
     return res.path();
 }

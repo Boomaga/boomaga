@@ -25,7 +25,6 @@
 
 
 #include "boofile.h"
-#include "pdffile.h"
 #include <QFile>
 #include <QFileInfo>
 
@@ -126,151 +125,8 @@ QString BooFile::PageSpec::toString() const
  *
  ************************************************/
 BooFile::BooFile(QObject *parent):
-    InFile(parent)
+    QObject(parent)
 {
-}
-
-
-/************************************************
- *
- ************************************************/
-void BooFile::read()
-{
-    QFile file;
-    mustOpenFile(mFileName, &file);
-
-    file.seek(mStartPos);
-
-    QString metaAuthor;
-    QString metaTitle;
-    QString metaSubject;
-    QString metaKeywords;
-
-    QString title;
-    QList<PageSpec> pagesSpec;
-
-    while (!file.atEnd())
-    {
-        QString line = QString::fromUtf8(file.readLine()).trimmed();
-
-        if (line.startsWith("@PJL"))
-        {
-            QString command = line.section(' ', 1, 1, QString::SectionSkipEmpty).toUpper();
-
-
-            // Boomaga commands ................................
-            if (command == "BOOMAGA")
-            {
-                QString subCommand = line.section(' ', 2, -1, QString::SectionSkipEmpty)
-                        .section('=', 0, 0, QString::SectionSkipEmpty)
-                        .trimmed()
-                        .toUpper();
-
-                QString value = line.section('=', 1,-1, QString::SectionSkipEmpty).trimmed();
-                if (value.startsWith('"') || value.startsWith('\''))
-                    value = value.mid(1, value.length()-2);
-
-
-                if (subCommand == "META_AUTHOR")
-                    metaAuthor = value;
-
-                else if (subCommand == "META_TITLE")
-                    metaTitle = value;
-
-                else if (subCommand == "META_SUBJECT")
-                    metaSubject = value;
-
-                else if (subCommand == "META_KEYWORDS")
-                    metaKeywords = value;
-
-
-
-                else if (subCommand == "JOB_TITLE")
-                    title = value;
-
-                else if (subCommand == "JOB_PAGES")
-                    pagesSpec = PageSpec::readPagesSpec(value);
-
-                else
-                    qWarning() << QString("Unknown command '%1' in the line '%2'").arg(subCommand).arg(line);
-
-            }
-            // Boomaga commands ................................
-
-
-            // PDF stream ......................................
-            else if (command == "ENTER")
-            {
-                QString subCommand = line.section(' ', 2, -1, QString::SectionSkipEmpty).remove(' ').toUpper();
-
-                if (subCommand == "LANGUAGE=PDF")
-                {
-                    qint64 startPos = file.pos();
-                    qint64 endPos = 0;
-                    while (!file.atEnd())
-                    {
-                        QByteArray buf = file.readLine();
-                        if (buf.startsWith("\x1B%-12345X@PJL"))
-                            break;
-
-                        endPos = file.pos() - 1;
-                    }
-
-                    PdfFile pdf;
-                    pdf.load(mFileName, startPos, endPos);
-
-                    Job job;
-                    job.setFileName(mFileName);
-                    job.setFilePos(startPos, endPos);
-                    job.setTitle(title);
-
-                    Job pdfJob = pdf.jobs().first();
-
-                    // remove wrong pages .................
-                    {
-                        int cnt = pdfJob.pageCount();
-                        for (int i=pagesSpec.count()-1; i>=0; --i)
-                        {
-                            if (pagesSpec.at(i).pageNum >= cnt)
-                                pagesSpec.removeAt(i);
-                        }
-                    }
-
-                    QVector<int> pageNums;
-                    pageNums.reserve(pagesSpec.count());
-                    foreach(const PageSpec &spec, pagesSpec)
-                        pageNums << spec.pageNum;
-
-                    addPages(pdfJob, pageNums, &job);
-
-                    for(int i=0; i<pagesSpec.count(); ++i)
-                    {
-                        const PageSpec &spec = pagesSpec.at(i);
-                        ProjectPage *page = job.page(i);
-
-                        if (spec.hidden)
-                            page->setVisible(false);
-
-                        if (spec.startBooklet)
-                            page->setManualStartSubBooklet(true);
-
-                        page->setManualRotation(spec.rotation);
-                    }
-
-                    mJobs << job;
-                    title.clear();
-                    pagesSpec.clear();
-                }
-            }
-            // PDF stream ......................................
-        }
-    }
-    file.close();
-
-    mMetaData.setAuthor(metaAuthor);
-    mMetaData.setTitle(metaTitle);
-    mMetaData.setSubject(metaSubject);
-    mMetaData.setKeywords(metaKeywords);
 }
 
 
@@ -298,7 +154,7 @@ static void writeCommand(QFile *out, const QString &command, const QString &data
 
  ************************************************/
 static QByteArray readJobPDF(const Job &job)
-{
+{    
     QFile file(job.fileName());
     if(!file.open(QFile::ReadOnly))
     {
@@ -308,11 +164,11 @@ static QByteArray readJobPDF(const Job &job)
                 file.errorString();
     }
 
-    file.seek(job.fileStartPos());
-    QByteArray res = file.read(job.fileEndPos() - job.fileStartPos());
+    QByteArray res = file.readAll();
     file.close();
     return res;
 }
+
 
 
 /************************************************
@@ -380,6 +236,7 @@ void BooFile::save(const QString &fileName)
             writeCommand(&file, "JOB_TITLE", job.title(false));
 
         write(&file, "@PJL ENTER LANGUAGE=PDF\n");
+
 
         if (documents.at(i).count())
         {

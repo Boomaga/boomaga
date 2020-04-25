@@ -34,9 +34,11 @@
 #include "pdfprocessor.h"
 #include "pdfparser/pdfwriter.h"
 #include "pdfparser/pdfobject.h"
+#include "pdfparser/pdfxref.h"
 #include "projectpage.h"
 #include "printer.h"
 #include "project.h"
+#include "../debug.h"
 
 
 /************************************************
@@ -58,19 +60,49 @@ QIODevice &operator<<(QIODevice &out, const int value)
     return out;
 }
 
+struct JobInfo
+{
+    quint64 xrefPos = 0;
+    quint64 endPos  = 0;
+
+    PDF::XRefTable xref;
+};
+
+class TmpPdfFile::Data
+{
+public:
+    Data()
+    {
+    }
+
+    quint64 startPos = 0;
+    QVector<JobInfo> mJobInfoList;
+};
+
 
 /************************************************
 
  ************************************************/
 TmpPdfFile::TmpPdfFile(QObject *parent):
     QObject(parent),
-    mValid(false)
+    mData(new Data),
+    mFileName(genTmpFileName()),
+    mFile(mFileName)
 {
-    mOrigFileSize = 0;
-    mOrigXrefPos = 0;
-    mFirstFreeNum = 0;
+    mValid = mFile.open(QFile::WriteOnly | QFile::Truncate);
 
-    mFileName = genTmpFileName(".tmp");
+    if (!mValid){
+        mErrorString = tr("I can't write file \"%1\"")
+                .arg(mFile.fileName()) + ":" +
+                mFile.errorString();
+
+        return;
+    }
+
+
+    PDF::Writer writer(&mFile);
+    writer.writePDFHeader();
+    mData->startPos = mFile.pos();
 }
 
 
@@ -79,115 +111,92 @@ TmpPdfFile::TmpPdfFile(QObject *parent):
  ************************************************/
 TmpPdfFile::~TmpPdfFile()
 {
-    QFile::remove(mFileName);
-}
-
-
-/************************************************
-
- ************************************************/
-void TmpPdfFile::merge(const JobList &jobList)
-{
-    JobList jobs = jobList;
-    QFile file(mFileName);
-    if (! file.open(QFile::WriteOnly | QFile::Truncate))
-    {
-        throw BoomagaError(tr("I can't write file \"%1\"")
-                           .arg(file.fileName())
-                           + "\n" + file.errorString());
-    }
-
-    try
-    {
-        PDF::Writer writer(&file);
-        writer.writePDFHeader(1,7);
-
-        QVector<PdfProcessor*> procs;
-        procs.reserve(jobs.count());
-
-        quint32 pagesCnt = 0;
-        foreach (const Job &job, jobs)
-        {
-            auto proc = new PdfProcessor(job.fileName(), job.fileStartPos(), job.fileEndPos());
-            proc->open();
-            pagesCnt += proc->pageCount();
-            procs << proc;
-        }
-
-
-        QVector<PdfPageInfo> pages;
-
-        int ready =0;
-        for (int i=0; i<jobs.count(); ++i)
-        {
-            const Job &job = jobs.at(i);
-            PdfProcessor *proc = procs.at(i);
-
-            QDateTime prevEmit;
-            connect(proc, &PdfProcessor::pageReady, [this, &ready, pagesCnt, &prevEmit] ()
-            {
-                ++ready;
-
-                QDateTime now = QDateTime::currentDateTime();
-                if (now.toMSecsSinceEpoch() - prevEmit.toMSecsSinceEpoch() > 100)
-                {
-                    prevEmit = now;
-                    emit progress(ready, pagesCnt);
-                    qApp->processEvents();
-                }
-            });
-
-            proc->run(&writer, writer.xRefTable().maxObjNum() + 3);
-
-            for (int p=0; p<job.pageCount(); ++p)
-            {
-                ProjectPage *page = job.page(p);
-                if (page->jobPageNum() < 0)
-                    continue;
-
-                if (page->jobPageNum() >= proc->pageInfo().count())
-                    continue;
-
-                page->setPdfInfo(proc->pageInfo().at(page->jobPageNum()));
-
-            }
-
-            pages << proc->pageInfo();
-        }
-        qDeleteAll(procs);
-
-        writeCatalog(&writer, pages);
-        file.close();
-        mValid = true;
-
-    }
-    catch (PDF::Error &err)
-    {
-        throw BoomagaError(err.what());
-    }
-    emit progress(-1, -1);
-    emit merged();
 }
 
 
 /************************************************
  *
  ************************************************/
-void TmpPdfFile::writeCatalog(PDF::Writer *writer, const QVector<PdfPageInfo> &pages)
+JobList TmpPdfFile::add(const JobList &jobs)
 {
+    try {
+        JobList res;
+        QVector<PdfPageInfo> pages;
+
+        PDF::ObjNum offset = 0;
+        quint64 startPos = mData->startPos;
+        if (!mData->mJobInfoList.isEmpty()) {
+            const JobInfo &ji = mData->mJobInfoList.last();
+
+            startPos = ji.endPos;
+            offset += ji.xref.maxObjNum();
+        }
+
+        mFile.seek(startPos);
+        for (const Job &job: jobs) {
+
+            PDF::Writer writer(&mFile);
+
+            PdfProcessor proc(job.fileName());
+            proc.open();
+            proc.run(&writer, offset);
+
+            for (quint32 i=0; i<job.pageCount(); ++i) {
+                int p = job.page(i)->jobPageNum();
+                if (p>=0 && p<proc.pageCount()) {
+                    job.page(i)->setPdfInfo(proc.pageInfo().at(p));
+                }
+            }
+            res << job;
+
+            quint64 xrefPos = writeCatalog(&writer, proc.pageInfo());
+            JobInfo info;
+            info.xref    = writer.xRefTable();
+            info.xrefPos = xrefPos;
+            info.endPos  = mFile.pos();
+            mData->mJobInfoList.append(info);
+
+            pages << proc.pageInfo();
+            offset = writer.xRefTable().maxObjNum();
+            mFirstFreeNum = writer.xRefTable().maxObjNum() + 1;
+            mOrigXrefPos  = xrefPos;
+        }
+
+        mOrigFileSize = mFile.pos();
+        mFile.resize(mFile.pos());
+        mFile.flush();
+        return res;
+    }
+    catch (PDF::Error &err) {
+        mValid = false;
+        mErrorString = err.what();
+        return JobList();
+    }
+}
+
+
+/************************************************
+ *
+ ************************************************/
+quint64 TmpPdfFile::writeCatalog(PDF::Writer *writer, const QVector<PdfPageInfo> &pages)
+{
+    PDF::ObjNum catalogObjNum = writer->xRefTable().maxObjNum() + 1;
+    PDF::ObjNum pagesObjNum   = catalogObjNum + 1;
+
+
     // Catalog object ...........................
     PDF::Object catalog;
-    catalog.setObjNum(1);
+    catalog.setObjNum(catalogObjNum);
 
     catalog.dict().insert("Type",  PDF::Name("Catalog"));
-    catalog.dict().insert("Pages", PDF::Link(catalog.objNum() + 1));
+    catalog.dict().insert("Pages", PDF::Link(pagesObjNum));
     writer->writeObject(catalog);
     // ..........................................
 
     // Pages object .............................
     if (!std::getenv("BOOMAGAMERGER_DEBUGPAGES"))
     {
-        PDF::Object pagesObj(2);
+        PDF::Object pagesObj(pagesObjNum);
         pagesObj.dict().insert("Type",  PDF::Name("Pages"));
         pagesObj.dict().insert("Count", PDF::Number(0));
         pagesObj.dict().insert("Kids",  PDF::Array());
@@ -195,7 +204,7 @@ void TmpPdfFile::writeCatalog(PDF::Writer *writer, const QVector<PdfPageInfo> &p
     }
     else
     {
-        PDF::Object pagesObj(2);
+        PDF::Object pagesObj(pagesObjNum);
         pagesObj.dict().insert("Type",  PDF::Name("Pages"));
 
         PDF::ObjNum pageNum = writer->xRefTable().maxObjNum() + 1;
@@ -266,13 +275,11 @@ void TmpPdfFile::writeCatalog(PDF::Writer *writer, const QVector<PdfPageInfo> &p
     }
     // ..........................................
 
-    mOrigXrefPos  = writer->device()->pos();
-    mFirstFreeNum = writer->xRefTable().maxObjNum() + 1;
-
+    quint64 xrefPos = writer->device()->pos();
     writer->writeXrefTable();
-    writer->writeTrailer(PDF::Link(catalog.objNum()));
-
-    mOrigFileSize = writer->device()->pos();
+    quint64 prev = mData->mJobInfoList.empty() ? 0 : mData->mJobInfoList.last().xrefPos;
+    writer->writeTrailer(PDF::Link(catalogObjNum), PDF::Link(), prev);
+    return xrefPos;
 }
 
 
@@ -331,6 +338,8 @@ bool TmpPdfFile::writeDocument(const QList<Sheet*> &sheets, QIODevice *out)
  ************************************************/
 void TmpPdfFile::writeSheets(QIODevice *out, const QList<Sheet *> &sheets) const
 {
+    assert(!mData->mJobInfoList.isEmpty());
+
     qint32 rootNum = mFirstFreeNum;
     qint32 metaDataNum = rootNum + 1;
     qint32 pagesNum = metaDataNum + 1;
@@ -464,10 +473,6 @@ void TmpPdfFile::writeSheets(QIODevice *out, const QList<Sheet *> &sheets) const
     // XRef for old objects .....................
     qint64 xrefPos = out->pos();
     *out << "xref\n";
-    *out << "0 3\n";
-    *out << "0000000001 65535 f \n";
-    *out << "0000000002 00000 f \n";
-    *out << "0000000000 00000 f \n";
    // ..........................................
 
     // XRef for new objects .....................

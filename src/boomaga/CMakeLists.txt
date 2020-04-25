@@ -53,11 +53,7 @@ set(HEADERS
     kernel/pdfprocessor.h
     kernel/fileloader.h
 
-    iofiles/infile.h
-    iofiles/boofile.h
-    iofiles/pdffile.h
-    iofiles/cupsboofile.h
-    iofiles/postscriptfile.h
+    boofile.h
 
     gui/mainwindow.h
     gui/actions.h
@@ -105,12 +101,7 @@ set(SOURCES
     kernel/printer.cpp
     kernel/pdfprocessor.cpp
     kernel/fileloader.cpp
-
-    iofiles/infile.cpp
-    iofiles/pdffile.cpp
-    iofiles/boofile.cpp
-    iofiles/cupsboofile.cpp
-    iofiles/postscriptfile.cpp
+    boofile.cpp
 
     gui/mainwindow.cpp
     gui/actions.cpp

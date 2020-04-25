@@ -32,6 +32,9 @@
 #include <QObject>
 #include <QMap>
 #include "job.h"
+#include "boomagatypes.h"
+
+class MetaData;
 
 
 class FileLoader : public QObject
@@ -45,15 +48,16 @@ public slots:
     void load(const QString &fileName);
 
 signals:
-    void jobsReady(const QStringList &jobs);
+    void jobsReady(const JobList &jobs);
+    void metaDataReady(const MetaData &metaData);
 
 private slots:
-    void workerJobReady(const QString &jobFile, quint64 readerId, quint32 fileNum);
+    void workerJobReady(const Job &job, quint64 readerId, quint32 fileNum);
     void readerError(const QString &error);
 
 private:
-    QMap<QString, QString> mResults;
-    quint32 mWorked;
+    QMap<QString, Job> mResults;
+    quint32 mWorked = 0;
 
     void sendResult();
 };
@@ -65,29 +69,23 @@ class FileLoaderWorker : public QObject
 public:
     explicit FileLoaderWorker(const QString &fileName, const quint64 id);
 
-    struct Result
-    {
-        quint64 id = 0;
-        quint64 subId = 0;
-        QString jobFileName;
-        quint32 pageCount = 0;
-    };
 public slots:
     void run();
 
 signals:
-    void jobReady(const QString &jobFile, quint64 readerId, quint32 fileNum);
+    void jobReady(const Job &job, quint64 readerId, quint32 fileNum);
+    void metaDataReady(const MetaData &metaData);
     void finished();
     void errorOccurred(const QString &error);
 
 private:
-    QFile mFile;
+    QString mFileName;
     quint64 mId;
 
-    void readPdf(const QString &pdfFile);
-    void readCupsBoo();
-    void readBoo();
-    void readPostScript(QFile &psFile, qint64 endPos);
+    Job readPdf(const QString &pdfFile, qint64 startPos = 0, qint64 endPos = 0);
+    Job readPostScript(QFile &psFile, qint64 endPos);
+    void loadBoo(QFile &booFile);
+    void loadCupsBoo(QFile &inFile);
 };
 
 #endif // FILELOADER_H

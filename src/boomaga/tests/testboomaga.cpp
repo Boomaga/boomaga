@@ -40,7 +40,7 @@
 #include "../kernel/layout.h"
 #include "../kernel/project.h"
 #include "../kernel/sheet.h"
-#include "iofiles/boofile.h"
+#include "boofile.h"
 #include "../boomagatypes.h"
 #include "../kernel/projectpage.h"
 #include "../settings.h"

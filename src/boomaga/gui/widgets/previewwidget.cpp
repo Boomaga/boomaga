@@ -162,11 +162,11 @@ PreviewWidget::PreviewWidget(QWidget *parent) :
 
     mRender = new RenderCache(RESOLUTIN, 8, this);
 
-    connect(project, SIGNAL(tmpFileRenamed(QString)),
-            mRender, SLOT(setFileName(QString)));
+    connect(project, &Project::tmpFileRenamed,
+            mRender, &RenderCache::setFileName);
 
-    connect(mRender, SIGNAL(sheetReady(QImage,int)),
-            this, SLOT(sheetImageReady(QImage,int)));
+    connect(mRender, &RenderCache::sheetReady,
+            this, &PreviewWidget::sheetImageReady);
 }
 
 

@@ -1282,14 +1282,8 @@ void MainWindow::cloneJob()
 
     bool ok;
     int cnt = QInputDialog::getInt(this, tr("Clone job"), tr("Number of copies:"), 2, 2, 100, 1, &ok);
-    if (ok)
-    {
-        for (int i=1; i<cnt; ++i)
-        {
-            Job job = act->job().clone();
-            job.setTitle(QString("%1 [ %2 ]").arg(job.title()).arg(i+1));
-            project->addJob(job);
-        }
+    if (ok) {
+        project->cloneJob(act->job(), cnt);
     }
 }
 

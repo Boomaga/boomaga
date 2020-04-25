@@ -28,35 +28,19 @@
 #include "tools.h"
 #include <QTest>
 #include <QDebug>
-#include "../iofiles/infile.h"
-#include "../iofiles/pdffile.h"
-#include "../iofiles/boofile.h"
-#include "../iofiles/cupsboofile.h"
-#include "../iofiles/postscriptfile.h"
+#include "boomagatypes.h"
+#include "kernel/project.h"
+#include "kernel/fileloader.h"
 #include <QSettings>
 #include <QDir>
-
-
-/************************************************
- *
- ************************************************/
-static QString typeToString(InFile::Type type)
-{
-    switch (type)
-    {
-    case InFile::Type::Pdf:         return "PDF";
-    case InFile::Type::PostScript:  return "POSTSCRIPT";
-    case InFile::Type::Boo:         return "BOO";
-    case InFile::Type::CupsBoo:     return "CUPSBOO";
-    default:                        return "UNKNOWN";
-    }
-}
-
-
-/************************************************
- *
- ************************************************/
 #include <QProcessEnvironment>
+#include "kernel/projectpage.h"
+#include <QSignalSpy>
+
+
+/************************************************
+ *
+ ************************************************/
 void TestBoomaga::testInFiles()
 {
     QFETCH(QString, expectedFile);
@@ -68,63 +52,49 @@ void TestBoomaga::testInFiles()
     try
     {
         QDir().mkpath(dir());
-        setenv("XDG_CACHE_HOME", dir().toLocal8Bit().data(), 1);
-        auto type = InFile::getType(inFile);
+        setenv("BOOMAGA_TMP_DIR", dir().toLocal8Bit().data(), 1);
 
-        QCOMPARE(typeToString(type), expect.value("type").toString());
+        FileLoader loader;
+        JobList jobs;
+        MetaData metaData;
 
-        QObject keeper;
-        InFile *res = nullptr;
-        switch (type) {
-        case InFile::Type::Pdf:
-            res = new PdfFile(&keeper);
-            break;
+        connect(&loader, &FileLoader::metaDataReady, [&metaData](const MetaData &m) {
+            metaData = m;
+        });
 
-        case InFile::Type::Boo:
-            res = new BooFile(&keeper);
-            break;
+        connect(&loader, &FileLoader::jobsReady, [&jobs](const JobList &j) {
+            jobs = j;
+        });
 
-        case InFile::Type::CupsBoo:
-            res = new CupsBooFile(&keeper);
-            break;
-
-        case InFile::Type::PostScript:
-            res = new PostScriptFile(&keeper);
-            break;
-
-        default:
-            QFAIL("Unknown file type");
-            break;
-        }
-
-        res->load(inFile);
-        QCOMPARE(typeToString(res->type()), expect.value("type").toString());
+        loader.load(inFile);
+        QSignalSpy spy(&loader, &FileLoader::jobsReady);
+        QVERIFY(spy.wait(20 * 1000));
 
 
         // Check metadata .......................
         expect.beginGroup(QString("metadata"));
 
         if (expect.contains("title"))
-            QCOMPARE(res->metaData().title(), expect.value("title").toString());
+            QCOMPARE(metaData.title(), expect.value("title").toString());
 
         if (expect.contains("author"))
-            QCOMPARE(res->metaData().author(), expect.value("author").toString());
+            QCOMPARE(metaData.author(), expect.value("author").toString());
 
         if (expect.contains("subject"))
-            QCOMPARE(res->metaData().subject(), expect.value("subject").toString());
+            QCOMPARE(metaData.subject(), expect.value("subject").toString());
 
         if (expect.contains("keywords"))
-            QCOMPARE(res->metaData().keywords(), expect.value("keywords").toString());
+            QCOMPARE(metaData.keywords(), expect.value("keywords").toString());
 
         expect.endGroup();
         // Check metadata .......................
 
         // Check jobs ...........................
-        QCOMPARE(res->jobs().count(), expect.value("jobs count").toInt());
+        QCOMPARE(jobs.count(), expect.value("jobs count").toInt());
 
-        for (int j=0; j<res->jobs().count(); ++j)
+        for (int j=0; j<jobs.count(); ++j)
         {
-            const Job &job = res->jobs().at(j);
+            const Job &job = jobs.at(j);
             expect.beginGroup(QString("job %1").arg(j));
 
             if (expect.contains("pageCount"))

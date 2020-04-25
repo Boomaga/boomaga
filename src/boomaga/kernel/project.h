@@ -30,6 +30,9 @@
 #include "job.h"
 #include "printer.h"
 #include "projectpage.h"
+#include "fileloader.h"
+#include "tmppdffile.h"
+#include "sheet.h"
 
 #include <QObject>
 #include <QList>
@@ -38,14 +41,15 @@
 #include <QPointer>
 
 class Job;
-class TmpPdfFile;
 class Layout;
-#include "sheet.h"
+
 
 class MetaData
 {
 public:
-    MetaData() {}
+    MetaData();
+    MetaData(const MetaData &other) = default;
+    MetaData &operator=(const MetaData &other) = default;
 
     QString author() const { return mAuthor; }
     void setAuthor(const QString &value) { mAuthor = value;}
@@ -60,6 +64,8 @@ public:
     void setKeywords(const QString &value) { mKeywords = value; }
 
     QByteArray asPDFDict() const;
+
+    bool isEmpty() const;
 
 #if 0
     //QByteArray asXMP() const;
@@ -79,6 +85,8 @@ private:
     void addDictItem(QByteArray &out, const QString &key, const QString &value) const;
     void addDictItem(QByteArray &out, const QString &key, const QDateTime &value) const;
 };
+
+Q_DECLARE_METATYPE(MetaData)
 
 class ProjectLongTask: public QObject
 {
@@ -166,8 +174,8 @@ public:
     ProjectPage *nextVisiblePage(ProjectPage *current) const;
 
 public slots:
-    JobList load(const QString &fileName);
-    JobList load(const QStringList &fileNames);
+    void load(const QString &fileName);
+    void load(const QStringList &fileNames);
 
     void setCurrentPage(ProjectPage *page);
     void setCurrentPage(int pageNum);
@@ -187,8 +195,7 @@ public slots:
 public slots:
     bool error(const QString &message) const;
 
-    void addJob(const Job &job);
-    void addJobs(const JobList &jobs);
+    void cloneJob(const Job &src, uint count);
     void removeJob(int index);
     void moveJob(int from, int to);
     void setLayout(const Layout *layout);
@@ -210,7 +217,7 @@ protected:
     Rotation calcRotation(const QList<ProjectPage *> &pages, const Layout *layout) const;
 
 private slots:
-    void tmpFileMerged();
+    void jobFilesReady(const JobList &jobs);
     void tmpFileProgress(int progr, int all) const;
 
 private:
@@ -225,8 +232,7 @@ private:
 
     int mSheetCount;
     SheetList mPreviewSheets;
-    TmpPdfFile *mTmpFile;
-    TmpPdfFile *mLastTmpFile;
+    TmpPdfFile mTmpFile;
 
     Printer mNullPrinter;
     Printer *mPrinter;
@@ -235,8 +241,7 @@ private:
     MetaData mMetaData;
     Rotation mRotation;
 
-    TmpPdfFile *createTmpPdfFile();
-    void stopMerging();
+    FileLoader mFileLoader;
 };
 
 

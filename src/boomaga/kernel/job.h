@@ -69,6 +69,7 @@ public:
     void removePages(const QList<ProjectPage *> &pages);
 
     ProjectPage *takePage(ProjectPage *page);
+    QList<ProjectPage*> takeAllPages();
 
     QString title(bool human = true) const;
     void setTitle(const QString &title);
@@ -85,7 +86,7 @@ public:
     ProjectPage *insertBlankPage(int before);
     ProjectPage *addBlankPage();
 
-    Job clone();
+    Job clone() const;
 private:
     QExplicitlySharedDataPointer<JobData> mData;
 };
@@ -99,5 +100,9 @@ public:
 
     int indexOfProjectPage(const ProjectPage *page, int from = 0) const;
 };
+
+
+Q_DECLARE_METATYPE(Job)
+Q_DECLARE_METATYPE(JobList)
 
 #endif // JOB_H

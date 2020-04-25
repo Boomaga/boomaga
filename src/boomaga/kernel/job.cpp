@@ -117,6 +117,15 @@ ProjectPage *JobData::takePage(ProjectPage *page)
         return 0;
 }
 
+static void regMetaTypes() {
+    static bool done = false;
+    if (!done) {
+        done = true;
+        qRegisterMetaType<Job>();
+        qRegisterMetaType<JobList>();
+    }
+}
+
 
 /************************************************
 
@@ -124,6 +133,7 @@ ProjectPage *JobData::takePage(ProjectPage *page)
 Job::Job():
     mData(new JobData())
 {
+    regMetaTypes();
 }
 
 
@@ -133,6 +143,7 @@ Job::Job():
 Job::Job(const Job &other):
     mData(other.mData)
 {
+    regMetaTypes();
 }
 
 
@@ -280,6 +291,17 @@ ProjectPage *Job::takePage(ProjectPage *page)
 
 
 /************************************************
+ *
+ ************************************************/
+QList<ProjectPage *> Job::takeAllPages()
+{
+    QList<ProjectPage*> res = mData->mPages;
+    mData->mPages.clear();
+    return res;
+}
+
+
+/************************************************
 
  ************************************************/
 QString Job::title(bool human) const
@@ -380,7 +402,7 @@ ProjectPage *Job::addBlankPage()
 /************************************************
  *
  ************************************************/
-Job Job::clone()
+Job Job::clone() const
 {
     Job res = *this;
     res.mData.detach();

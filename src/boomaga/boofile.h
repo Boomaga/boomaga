@@ -27,7 +27,9 @@
 #ifndef BOOFILE_H
 #define BOOFILE_H
 
-#include "infile.h"
+#include "kernel/project.h"
+#include "boomagatypes.h"
+#include "kernel/job.h"
 
 /************************************************
  * File format
@@ -62,20 +64,17 @@
  *  @PJL BOOMAGA JOB_PAGES="1,2::180,B,3:H:90,4:H"
  *
  ************************************************/
-class BooFile : public InFile
+class BooFile : public QObject
 {
     Q_OBJECT
 public:
     explicit BooFile(QObject *parent = 0);
-    Type type() const override final { return Type::Boo; }
 
     void setMetadata(const MetaData &value) { mMetaData = value; }
     void setJobs(const JobList &value) { mJobs = value; }
     void save(const QString &fileName);
 
-protected:
-    void read() override final;
-
+public:
     struct PageSpec{
         explicit PageSpec(int pageNum, bool hidden, Rotation rotation, bool startBooklet);
         explicit PageSpec(const QString &str);
@@ -88,6 +87,9 @@ protected:
         bool     hidden;
         bool     startBooklet;
     };
+private:
+    JobList mJobs;
+    MetaData mMetaData;
 };
 
 #endif // BOOFILE_H
