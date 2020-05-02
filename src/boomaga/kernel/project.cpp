@@ -619,6 +619,8 @@ void Project::jobFilesReady(const JobList &jobs)
     }
 
     update();
+    if (!mFileLoader.workedCount())
+        emit progress(-1, -1);
 }
 
 
@@ -1001,6 +1003,7 @@ void Project::load(const QString &fileName)
  ************************************************/
 void Project::load(const QStringList &fileNames)
 {
+    emit progress(0, 0);
     for (auto file: fileNames) {
         mFileLoader.load(file);
     }
