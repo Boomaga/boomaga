@@ -27,6 +27,7 @@
 #include <poppler-document.h>
 #include <poppler-page-renderer.h>
 #include <poppler-page.h>
+#include <poppler-version.h>
 #include <QDebug>
 #include <QFile>
 #include <QFileInfo>
@@ -34,6 +35,7 @@
 #include "kernel/project.h"
 #include "kernel/layout.h"
 
+#define POPPLER_VERSION_NUM  QT_VERSION_CHECK(POPPLER_VERSION_MAJOR, POPPLER_VERSION_MINOR, POPPLER_VERSION_MICRO)
 
 /************************************************
 
@@ -53,10 +55,18 @@ QImage doRenderSheet(poppler::document *doc, int sheetNum, double resolution)
 
         switch (img.format())
         {
-        case poppler::image::format_invalid: format = QImage::Format_Invalid; break;
-        case poppler::image::format_mono:    format = QImage::Format_Mono;    break;
-        case poppler::image::format_rgb24:   format = QImage::Format_RGB32;   break;
-        case poppler::image::format_argb32:  format = QImage::Format_ARGB32;  break;
+            case poppler::image::format_invalid: format = QImage::Format_Invalid;     break;
+            case poppler::image::format_mono:    format = QImage::Format_Mono;        break;
+            case poppler::image::format_rgb24:   format = QImage::Format_RGB32;       break;
+            case poppler::image::format_argb32:  format = QImage::Format_ARGB32;      break;
+#if (POPPLER_VERSION_NUM >= QT_VERSION_CHECK(0, 65, 0))
+            case poppler::image::format_gray8:   format = QImage::Format_Grayscale8;  break;
+#if (QT_VERSION >= QT_VERSION_CHECK(5, 14, 0))
+
+            case poppler::image::format_bgr24:   format = QImage::Format_BGR888;      break;
+#endif
+#endif
+            default:                             format = QImage::Format_Invalid;     break;
         }
 
 
