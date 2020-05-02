@@ -85,7 +85,7 @@ void FileLoader::load(const QString &fileName)
     });
 
     connect(worker, &FileLoaderWorker::errorOccurred,
-            this, &FileLoader::readerError);
+            this, &FileLoader::errorOccurred);
 
     connect(worker, &FileLoaderWorker::jobReady,
             this, &FileLoader::workerJobReady);
@@ -104,15 +104,6 @@ void FileLoader::load(const QString &fileName)
 void FileLoader::workerJobReady(const Job &job, quint64 readerId, quint32 fileNum)
 {
     mResults.insert(QString("%1:%2").arg(readerId).arg(fileNum), job);
-}
-
-
-/************************************************
- *
- ************************************************/
-void FileLoader::readerError(const QString &error)
-{
-    qWarning() << "ERROR" << error;
 }
 
 
@@ -189,6 +180,17 @@ void FileLoaderWorker::run()
                "it's not a supported file type, or because "
                "the file has been damaged.")
                .arg(mFileName).toStdString());
+
+    }
+    catch (PDF::Error &err) {
+        QString msg = tr("I can't read file \"%1\" either because "
+                         "it's not a supported file type, or because "
+                         "the file has been damaged.")
+                         .arg(mFileName);
+
+        qWarning() << err.what();
+        emit errorOccurred(msg);
+        emit finished();
 
     }
     catch (BoomagaError &err) {

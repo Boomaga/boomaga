@@ -44,16 +44,18 @@ public:
     explicit FileLoader(QObject *parent = nullptr);
     ~FileLoader();
 
+    quint32 workedCount() const { return mWorked; }
+
 public slots:
     void load(const QString &fileName);
 
 signals:
     void jobsReady(const JobList &jobs);
     void metaDataReady(const MetaData &metaData);
+    void errorOccurred(const QString &error);
 
 private slots:
     void workerJobReady(const Job &job, quint64 readerId, quint32 fileNum);
-    void readerError(const QString &error);
 
 private:
     QMap<QString, Job> mResults;

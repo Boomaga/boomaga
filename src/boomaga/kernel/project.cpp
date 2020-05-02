@@ -91,6 +91,9 @@ Project::Project(QObject *parent) :
 
     connect(&mFileLoader, &FileLoader::metaDataReady,
             this, &Project::setMetadata);
+
+    connect(&mFileLoader, &FileLoader::errorOccurred,
+             this, &Project::error);
 }
 
 
