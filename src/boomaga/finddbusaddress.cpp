@@ -52,10 +52,10 @@ static string readFile(const string &fileName, char delim)
         if (line.find("DBUS_SESSION_BUS_ADDRESS=") != 0)
             continue;
 
-        static int s = strlen("DBUS_SESSION_BUS_ADDRESS=");
+        static size_t s = strlen("DBUS_SESSION_BUS_ADDRESS=");
         s = line.find_first_not_of(" \t'\"", s);
 
-        int e = line.find_last_not_of(" \t'\"") + 1;
+        size_t e = line.find_last_not_of(" \t'\"") + 1;
         return line.substr(s, e-s);
     }
 

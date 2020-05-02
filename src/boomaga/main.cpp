@@ -223,7 +223,7 @@ void readEnvFile()
 /************************************************
  *
  ************************************************/
-static QString moveAutoRemoveFile(const QString oldFile)
+static QString moveAutoRemoveFile(const QString &oldFile)
 {
     QString newFile = genInputFileName();
 

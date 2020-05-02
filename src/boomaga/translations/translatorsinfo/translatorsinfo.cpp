@@ -433,10 +433,9 @@ void TranslatorsInfo::process(const QString &lang, const QString &englishName, c
 /************************************************
  *
  ************************************************/
-Translator::Translator(const QString &englishName, const QString &nativeName, const QString &contact)
+Translator::Translator(const QString &englishName, const QString &nativeName, const QString &contact):
+    mEnglishName(englishName)
 {
-    mEnglishName = englishName;
-
     if (nativeName != englishName)
         mNativeName = nativeName;
 
