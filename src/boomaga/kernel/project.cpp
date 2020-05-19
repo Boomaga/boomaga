@@ -994,7 +994,9 @@ void MetaData::addDictItem(QByteArray &out, const QString &key, const QDateTime 
  ************************************************/
 void Project::load(const QString &fileName)
 {
-    load(QStringList() << fileName);
+    if (!fileName.isEmpty()) {
+        load(QStringList() << fileName);
+    }
 }
 
 
@@ -1003,9 +1005,11 @@ void Project::load(const QString &fileName)
  ************************************************/
 void Project::load(const QStringList &fileNames)
 {
-    emit progress(0, 0);
-    for (auto file: fileNames) {
-        mFileLoader.load(file);
+    if (!fileNames.isEmpty()) {
+        emit progress(0, 0);
+        for (auto file: fileNames) {
+            mFileLoader.load(file);
+        }
     }
 }
 
