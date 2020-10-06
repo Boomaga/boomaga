@@ -16,4 +16,3 @@ script:
   - cmake -DBUILD_TESTS=Yes ..
   - make -j8
   - src/boomaga/tests/boomaga_test
-
