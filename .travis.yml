@@ -1,4 +1,9 @@
 language: cpp
+
+arch:
+  - AMD64
+  - ppc64le
+  
 compiler:
   - gcc
   - clang
@@ -16,4 +21,3 @@ script:
   - cmake -DBUILD_TESTS=Yes ..
   - make -j8
   - src/boomaga/tests/boomaga_test
-
