@@ -73,7 +73,6 @@ void PostScriptFile::convertToPdf(QFile &psFile, const QString &pdfFile)
     args << "-sDEVICE=pdfwrite";
     args << "-sOutputFile=" + pdfFile;
     args << "-q";
-    args << "-c" << ".setpdfwrite";
     args << "-f" << "-";
 
 
