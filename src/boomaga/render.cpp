@@ -57,6 +57,8 @@ QImage doRenderSheet(poppler::document *doc, int sheetNum, double resolution)
         case poppler::image::format_mono:    format = QImage::Format_Mono;    break;
         case poppler::image::format_rgb24:   format = QImage::Format_RGB32;   break;
         case poppler::image::format_argb32:  format = QImage::Format_ARGB32;  break;
+        case poppler::image::format_gray8:   format = QImage::Format_Grayscale8; break;
+        case poppler::image::format_bgr24:   format = QImage::Format_BGR888; break;
         }
 
 
