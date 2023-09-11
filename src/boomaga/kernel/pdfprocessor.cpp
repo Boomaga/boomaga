@@ -98,7 +98,7 @@ void PdfProcessor::run(PDF::Writer *writer, quint32 objNumOffset)
  ************************************************/
 void fillPageInfo(PdfPageInfo *pageInfo, const PDF::Dict &pageDict, const PDF::Dict &inherited)
 {
-    const PDF::Array &mediaBox = pageDict.value("MediaBox", inherited.value("MediaBox")).asArray();
+    const auto mediaBox = pageDict.value("MediaBox", inherited.value("MediaBox")).asArray();
     if (mediaBox.count() != 4)
         throw QString("Incorrect MediaBox rectangle");
 
@@ -107,7 +107,7 @@ void fillPageInfo(PdfPageInfo *pageInfo, const PDF::Dict &pageDict, const PDF::D
                                 mediaBox.at(2).asNumber().value() - mediaBox.at(0).asNumber().value(),
                                 mediaBox.at(3).asNumber().value() - mediaBox.at(1).asNumber().value());
 
-    const PDF::Array &cropBox  = pageDict.value("CropBox", inherited.value("CropBox")).asArray();
+    const auto cropBox  = pageDict.value("CropBox", inherited.value("CropBox")).asArray();
     if (cropBox.isValid())
     {
         if (cropBox.count() != 4)
