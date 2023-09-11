@@ -100,7 +100,7 @@ void printVersion()
 int printError(const QString &msg)
 {
     QTextStream out(stdout);
-    out << msg << endl <<Qt::endl;
+    out << msg << Qt::endl;
     out << "Use --help to get a list of available command line options." << Qt::endl;
     return 1;
 }
