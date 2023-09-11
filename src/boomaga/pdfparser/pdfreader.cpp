@@ -1260,7 +1260,7 @@ Object Reader::getObject(const XRefEntry &xrefEntry) const
  ************************************************/
 const Value Reader::find(const QString &path) const
 {
-    QStringList objects = path.split('/', QString::SkipEmptyParts);
+    QStringList objects = path.split('/', Qt::SkipEmptyParts);
     if (objects.first() == "Trailer")
         objects.removeFirst();
     QString val = objects.takeLast();
