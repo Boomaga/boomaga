@@ -1012,7 +1012,7 @@ QByteArray MetaData::asPDFDict() const
  ************************************************/
 void MetaData::addDictItem(QByteArray &out, const QString &key, const QString &value) const
 {
-    out.append("/" + key + " <FEFF");
+    out.append(QString("/").toLatin1() + key.toLatin1() + QString(" <FEFF").toLatin1());
     const ushort* utf16 = value.utf16();
     for (int i=0; utf16[i]>0; ++i)
     {
@@ -1023,7 +1023,8 @@ void MetaData::addDictItem(QByteArray &out, const QString &key, const QString &v
         qint8 b1 = (utf16[i] & 0xFF00) >> 8;
         qint8 b2 = (utf16[i] & 0x00FF);
 #endif
-        out.append(QString("%1%2").arg(b1, 2, 16, QChar('0')).arg(b2, 2, 16, QChar('0')));
+        auto string = QString("%1%2").arg(b1, 2, 16, QChar('0')).arg(b2, 2, 16, QChar('0'));
+        out.append(string.toLatin1());
     }
     out.append(">\n");
 }
@@ -1038,18 +1039,23 @@ void MetaData::addDictItem(QByteArray &out, const QString &key, const QDateTime 
     utc.setTimeSpec(Qt::LocalTime);
     int offset = utc.secsTo(value) / 60;
 
-    out.append("/" + key + " (");
-    out.append(value.toString("yyyyMMddhhmmss"));
+    out.append(QString("/").toLatin1() + key.toLatin1() + QString(" (").toLatin1());
+    out.append(value.toString("yyyyMMddhhmmss").toLatin1());
 
     if (offset > 0)
-        out.append(QString("+%1'%2'")
-                   .arg(offset / 60, 2, 10, QChar('0'))
-                   .arg(offset % 60, 2, 10, QChar('0')));
+    {
+        auto string = QString("+%1'%2'")
+                          .arg(offset / 60, 2, 10, QChar('0'))
+                          .arg(offset % 60, 2, 10, QChar('0'));
+        out.append(string.toLatin1());
+    }
     else if (offset < 0)
-        out.append(QString("-%1'%2'")
-                    .arg(-offset / 60, 2, 10, QChar('0'))
-                    .arg(-offset % 60, 2, 10, QChar('0')));
-
+    {
+        auto string = QString("-%1'%2'")
+                          .arg(-offset / 60, 2, 10, QChar('0'))
+                          .arg(-offset % 60, 2, 10, QChar('0'));
+        out.append(string.toLatin1());
+    }
     out.append(")\n");
 }
 

@@ -183,7 +183,7 @@ XRefStreamData::XRefStreamData(const char *buf, const quint64 size, const Dict &
     Q_UNUSED(mSize)
     // W - An array of integers representing the size of the fields in a
     // single cross-reference entry.
-    const Array &w = dict.value("W").asArray();
+    const auto w = dict.value("W").asArray();
     if (!w.isValid())
         throw ReaderError("Incorrect XRef stream dictionary", 0);
 
@@ -1115,7 +1115,7 @@ void Reader::readObjectFromStream(ObjNum objNum, Object *res, ObjNum streamObjNu
     }
     else
     {
-        const Link &extends = streamObj.dict().value("Extends").asLink();
+        const auto extends = streamObj.dict().value("Extends").asLink();
         if (extends.isValid())
         {
             readObjectFromStream(objNum, res, extends.objNum(), extends.genNum(), 0);
@@ -1260,7 +1260,7 @@ Object Reader::getObject(const XRefEntry &xrefEntry) const
  ************************************************/
 const Value Reader::find(const QString &path) const
 {
-    QStringList objects = path.split('/', QString::SkipEmptyParts);
+    QStringList objects = path.split('/', Qt::SkipEmptyParts);
     if (objects.first() == "Trailer")
         objects.removeFirst();
     QString val = objects.takeLast();
