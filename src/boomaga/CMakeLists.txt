@@ -24,7 +24,7 @@
  # END_COMMON_COPYRIGHT_HEADER
 
 
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.25.0)
 cmake_policy(SET CMP0028 NEW)
 if (POLICY CMP0071)
     cmake_policy(SET CMP0071 NEW)
