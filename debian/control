@@ -1,0 +1,38 @@
+Source: boomaga
+Section: utils
+Priority: optional
+Maintainer: Ubuntu Developers <ubuntu-devel-discuss@lists.ubuntu.com>
+XSBC-Original-Maintainer: Lisandro Damián Nicanor Pérez Meyer <lisandro@debian.org>
+Build-Depends: cmake,
+               debhelper-compat (= 13),
+               dpkg-dev (>= 1.16.0~),
+               libcups2-dev,
+               libpoppler-cpp-dev,
+               libpoppler-dev,
+               libsnappy-dev,
+               pkg-config,
+               qt6-base-dev,
+               qt6-tools-dev,
+               qt6-tools-dev-tools
+Rules-Requires-Root: no
+Standards-Version: 4.6.2
+Homepage: https://github.com/Boomaga/boomaga
+Vcs-Git: https://gitlab.com/perezmeyer/debian-package-boomaga.git
+Vcs-Browser: https://gitlab.com/perezmeyer/debian-package-boomaga
+
+Package: boomaga
+Architecture: any
+Depends: cups, ${misc:Depends}, ${shlibs:Depends}
+Description: virtual printer for viewing a document before printing
+ Boomaga (BOOklet MAnager) is a virtual printer for viewing a document before
+ printing it out using the physical printer.
+ .
+ The program is very simple to work with. Running any program, click "print"
+ and select "Boomaga" to see in several seconds (CUPS takes some time to
+ respond) the Boomaga window open.
+ .
+ If you print out one more document, it gets added to the previous one, and you
+ can also print them out as one.
+ .
+ Regardless of whether your printer supports duplex printing or not, you would
+ be able to easily print on both sides of the sheet.

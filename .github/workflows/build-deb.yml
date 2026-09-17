@@ -1,0 +1,65 @@
+name: Build Debian package
+
+on:
+  pull_request:
+  release:
+    types: [published]
+  workflow_dispatch:
+
+permissions:
+  contents: read
+
+jobs:
+  build-deb:
+    runs-on: ubuntu-26.04
+
+    steps:
+      - name: Check out source
+        uses: actions/checkout@v4
+
+      - name: Install Debian build dependencies
+        run: |
+          sudo apt-get update
+          sudo apt-get install --no-install-recommends -y \
+            build-essential \
+            cmake \
+            debhelper-compat \
+            dpkg-dev \
+            libcups2-dev \
+            libpoppler-cpp-dev \
+            libpoppler-dev \
+            libsnappy-dev \
+            pkg-config \
+            qt6-base-dev \
+            qt6-tools-dev \
+            qt6-tools-dev-tools \
+            zlib1g-dev
+
+      - name: Build Debian package
+        run: dpkg-buildpackage --build=binary --no-sign
+
+      - name: Upload package artifact
+        uses: actions/upload-artifact@v4
+        with:
+          name: boomaga-deb-packages
+          path: ../*.deb
+          if-no-files-found: error
+
+  publish-release:
+    if: github.event_name == 'release'
+    needs: build-deb
+    runs-on: ubuntu-26.04
+    permissions:
+      contents: write
+
+    steps:
+      - name: Download package artifact
+        uses: actions/download-artifact@v4
+        with:
+          name: boomaga-deb-packages
+          path: packages
+
+      - name: Attach packages to GitHub release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: packages/*.deb

@@ -1,0 +1,5 @@
+boomaga (3.5.0-1) resolute; urgency=medium
+
+  * Port to Qt6
+
+ -- Archisman Panigrahi <apandada1@gmail.com>  Thu, 17 Sep 2026 09:15:08 -0400
