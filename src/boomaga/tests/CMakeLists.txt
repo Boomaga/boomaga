@@ -24,7 +24,7 @@
  # END_COMMON_COPYRIGHT_HEADER
 
 
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.16)
 cmake_policy(SET CMP0028 NEW)
 
 project(boomaga_test)
@@ -82,7 +82,7 @@ include_directories(
     ${CMAKE_CURRENT_BINARY_DIR}
 )
 
-find_package(Qt5 REQUIRED
+find_package(Qt6 REQUIRED COMPONENTS
     Core
     Test
     Widgets
@@ -91,6 +91,5 @@ find_package(Qt5 REQUIRED
     LinguistTools
 )
 
-
 add_executable(${PROJECT_NAME} ${TEST_HEADERS} ${TEST_SOURCES})
-target_link_libraries(${PROJECT_NAME} ${LIBRARIES} Qt5::Core Qt5::Test Qt5::Widgets Qt5::PrintSupport Qt5::DBus)
+target_link_libraries(${PROJECT_NAME} ${LIBRARIES} Qt6::Core Qt6::Test Qt6::Widgets Qt6::PrintSupport Qt6::DBus)

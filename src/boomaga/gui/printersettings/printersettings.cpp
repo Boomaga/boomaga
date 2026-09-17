@@ -127,7 +127,7 @@ PrinterSettings::PrinterSettings(QWidget *parent) :
 
 
     QPalette pal(palette());
-    pal.setColor(QPalette::Background, QColor(105, 101, 98));
+    pal.setColor(QPalette::Window, QColor(105, 101, 98));
     ui->marginsPereview->setPalette(pal);
     ui->marginsPereview->setAutoFillBackground(true);
     ui->marginsPereview->installEventFilter(this);

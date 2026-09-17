@@ -153,7 +153,7 @@ PreviewWidget::PreviewWidget(QWidget *parent) :
     mWheelDelta(0)
 {
     QPalette pal(palette());
-    pal.setColor(QPalette::Background, QColor(105, 101, 98));
+    pal.setColor(QPalette::Window, QColor(105, 101, 98));
     setPalette(pal);
     setAutoFillBackground(true);
 
@@ -250,7 +250,7 @@ void PreviewWidget::drawShadow(QPainter &painter, const QRectF &rect)
     painter.save();
     painter.setClipRect(rect.adjusted(0, 0, width, width));
 
-    QColor lightColor = this->palette().color(QPalette::Background);
+    QColor lightColor = this->palette().color(QPalette::Window);
     QColor darkColor  = lightColor.darker(160);
 
     QRectF shadowRect = rect.adjusted(0, 0, width, width);
@@ -581,7 +581,7 @@ void PreviewWidget::refresh()
  ************************************************/
 void PreviewWidget::wheelEvent(QWheelEvent *event)
 {
-    mWheelDelta -= event->delta();
+    mWheelDelta -= event->angleDelta().y();
     int pages = mWheelDelta / 120;
 
     if (pages)

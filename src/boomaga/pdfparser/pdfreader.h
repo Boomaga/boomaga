@@ -122,7 +122,6 @@ private:
     XRefTable   mXRefTable;
     Dict        mTrailerDict;
     int         mPagesCount;
-    QTextCodec  *mTextCodec;
 
     class Cache;
     Cache       *mCache;

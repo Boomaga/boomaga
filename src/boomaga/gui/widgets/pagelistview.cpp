@@ -258,9 +258,9 @@ void PagesListView::mouseReleaseEvent(QMouseEvent *e)
  ************************************************/
 void PagesListView::wheelEvent(QWheelEvent *e)
 {
-    if (e->modifiers() & Qt::CTRL)
+    if (e->modifiers() & Qt::ControlModifier)
     {
-        if (e->delta() > 0)
+        if (e->angleDelta().y() > 0)
             setIconSize(iconSize() + 8);
         else
             setIconSize(iconSize() - 8);

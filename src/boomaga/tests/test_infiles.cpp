@@ -63,7 +63,6 @@ void TestBoomaga::testInFiles()
     QString inFile = expectedFile.left(expectedFile.length() - 9);
 
     QSettings expect(expectedFile, QSettings::IniFormat);
-    expect.setIniCodec("UTF-8");
 
     try
     {

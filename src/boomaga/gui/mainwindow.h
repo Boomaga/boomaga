@@ -31,6 +31,7 @@
 #include <QLabel>
 #include <QProgressBar>
 #include <QMouseEvent>
+
 #include <kernel/job.h>
 
 class Layout;

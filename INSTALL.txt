@@ -6,7 +6,7 @@ Prerequisites
 
 Should you wish to build the program from the sources, you would need header files for:
 
- * Qt5
+ * Qt6
  * cups
  * snappy
  * poppler-cpp

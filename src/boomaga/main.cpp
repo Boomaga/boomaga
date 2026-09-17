@@ -65,20 +65,20 @@ struct Args
 void printHelp()
 {
     QTextStream out(stdout);
-    out << "Usage: boomaga [options] [files...]" << endl;
-    out << endl;
+    out << "Usage: boomaga [options] [files...]\n";
+    out << '\n';
 
-    out << "Boomaga provides a virtual printer for CUPS. This can be used" << endl;
-    out << "for print preview or for print booklets." << endl;
-    out << endl;
+    out << "Boomaga provides a virtual printer for CUPS. This can be used\n";
+    out << "for print preview or for print booklets.\n";
+    out << '\n';
 
-    out << "Options:" << endl;
-    out << "  -h, --help              Show help about options" << endl;
-    out << "  -V, --version           Print program version" << endl;
-    out << endl;
+    out << "Options:\n";
+    out << "  -h, --help              Show help about options\n";
+    out << "  -V, --version           Print program version\n";
+    out << '\n';
 
-    out << "Arguments:" << endl;
-    out << "  files                    One or more PDF files" << endl;
+    out << "Arguments:\n";
+    out << "  files                    One or more PDF files\n";
 
 
 }
@@ -90,7 +90,7 @@ void printHelp()
 void printVersion()
 {
     QTextStream out(stdout);
-    out << "boomaga " << FULL_VERSION << endl;
+    out << "boomaga " << FULL_VERSION << '\n';
 }
 
 
@@ -100,8 +100,8 @@ void printVersion()
 int printError(const QString &msg)
 {
     QTextStream out(stdout);
-    out << msg << endl << endl;
-    out << "Use --help to get a list of available command line options." << endl;
+    out << msg << "\n\n";
+    out << "Use --help to get a list of available command line options.\n";
     return 1;
 }
 

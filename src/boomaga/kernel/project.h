@@ -36,6 +36,7 @@
 #include <QStringList>
 #include <QImage>
 #include <QPointer>
+#include <QVector3D>
 
 class Job;
 class TmpPdfFile;
@@ -238,7 +239,6 @@ private:
     TmpPdfFile *createTmpPdfFile();
     void stopMerging();
 };
-
 
 #define project Project::instance()
 

@@ -76,7 +76,7 @@ QList<BooFile::PageSpec> BooFile::PageSpec::readPagesSpec(const QString &str)
 {
     QList<PageSpec> res;
 
-    foreach(QString s, str.split(',', QString::SkipEmptyParts))
+    foreach(QString s, str.split(',', Qt::SkipEmptyParts))
         res << PageSpec(s);
 
     return res;

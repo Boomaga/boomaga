@@ -50,11 +50,11 @@ public:
         mByteArray.append("xref\n");
         mByteArray.append("0 3\n");
         mByteArray.append("0000000000 65535 f \n");
-        mByteArray.append(QString("%1 00000 n \n").arg(obj1Pos, 10, 10, QChar('0')));
-        mByteArray.append(QString("%1 00000 n \n").arg(obj2Pos, 10, 10, QChar('0')));
+        mByteArray.append(QString("%1 00000 n \n").arg(obj1Pos, 10, 10, QChar('0')).toLatin1());
+        mByteArray.append(QString("%1 00000 n \n").arg(obj2Pos, 10, 10, QChar('0')).toLatin1());
 
         mByteArray.append("trailer\n<</Root 1 0 R /Size 0>>\n");
-        mByteArray.append(QString("startxref\n%1\n%%EOF\n").arg(xrefPos));
+        mByteArray.append(QString("startxref\n%1\n%%EOF\n").arg(xrefPos).toLatin1());
 
         open(mByteArray.constData(), mByteArray.length());
         mByteArray.replace(0, data.toLocal8Bit().length(), data.toLocal8Bit());

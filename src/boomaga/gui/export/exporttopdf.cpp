@@ -24,14 +24,14 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 
-#include "exporttopdf.h"
-#include "ui_exporttopdf.h"
-
 #include <QFileDialog>
 #include <QPushButton>
 #include <QMessageBox>
 #include <QCloseEvent>
 #include <QDebug>
+
+#include "exporttopdf.h"
+#include "ui_exporttopdf.h"
 
 /************************************************
 

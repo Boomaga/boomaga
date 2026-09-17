@@ -45,7 +45,7 @@ private:
  ************************************************/
 CupsOptions::CupsOptions(const QString &str)
 {
-    foreach (const QString s, str.split(' ', QString::SkipEmptyParts))
+    foreach (const QString s, str.split(' ', Qt::SkipEmptyParts))
     {
         QString key = s.section("=", 0, 0);
         QString val = s.section("=", 1);
@@ -194,7 +194,6 @@ void CupsBooFile::read()
         mJobs << job.clone();
     }
 }
-
 
 
 

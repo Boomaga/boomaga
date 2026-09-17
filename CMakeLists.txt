@@ -24,7 +24,7 @@
  # END_COMMON_COPYRIGHT_HEADER
 
 
-cmake_minimum_required(VERSION 3.0.0)
+cmake_minimum_required(VERSION 3.16)
 cmake_policy(SET CMP0028 NEW)
 
 project(boomaga)
@@ -44,7 +44,8 @@ add_definitions(-DMINOR_VERSION=${MINOR_VERSION})
 add_definitions(-DPATCH_VERSION=${PATCH_VERSION})
 add_definitions(-DFULL_VERSION=\"${FULL_VERSION}\")
 
-set (CMAKE_CXX_STANDARD 11)
+set (CMAKE_CXX_STANDARD 17)
+set (CMAKE_CXX_STANDARD_REQUIRED ON)
 
 include("cmake/tools.cmake")
 include("cmake/status_message.cmake")

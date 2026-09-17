@@ -27,6 +27,7 @@
 #include "printerscombobox.h"
 #include "kernel/printer.h"
 #include <QStandardItem>
+#include <QVariant>
 #include <QDebug>
 
 #define PRINTER_ITEM_TEXT_ROLE      (Qt::UserRole + 1)
@@ -88,7 +89,7 @@ void PrintersComboBoxDelegate::paint(QPainter *painter,
            const QModelIndex &index) const
 {
     QStyleOptionMenuItem opt = getStyleOption(option, index);
-    painter->fillRect(option.rect, opt.palette.background());
+    painter->fillRect(option.rect, opt.palette.window());
 
     QString type = index.data( Qt::AccessibleDescriptionRole ).toString();
 
@@ -126,7 +127,6 @@ QStyleOptionMenuItem PrintersComboBoxDelegate::getStyleOption(const QStyleOption
 
     menuOption.palette = resolvedpalette;
     menuOption.state = QStyle::State_None;
-    menuOption.tabWidth = 0;
     menuOption.maxIconWidth =  0;
 
     if (mCombo->window()->isActiveWindow())
@@ -149,7 +149,7 @@ QStyleOptionMenuItem PrintersComboBoxDelegate::getStyleOption(const QStyleOption
 
     if (index.data(Qt::BackgroundRole).canConvert<QBrush>())
     {
-        menuOption.palette.setBrush(QPalette::All, QPalette::Background,
+        menuOption.palette.setBrush(QPalette::All, QPalette::Window,
                                     qvariant_cast<QBrush>(index.data(Qt::BackgroundRole)));
     }
 
@@ -234,7 +234,7 @@ int PrintersComboBox::addPrinter(Printer *printer)
 {
     QStandardItem *item = new QStandardItem(printer->name());
     item->setData(printer->name(), PRINTER_ITEM_TEXT_ROLE);
-    item->setData(qVariantFromValue((void *)printer), PRINTER_ITEM_PRINTER_ROLE);
+    item->setData(QVariant::fromValue((void *)printer), PRINTER_ITEM_PRINTER_ROLE);
     item->setData(-1, PRINTER_ITEM_PROFILE_ROLE);
 
     item->setFlags( item->flags() & ~( Qt::ItemIsEnabled | Qt::ItemIsSelectable ) );
@@ -259,11 +259,11 @@ int PrintersComboBox::addPrinter(Printer *printer)
  ************************************************/
 int PrintersComboBox::addProfile(Printer *printer, int profileIndex)
 {
-    const PrinterProfile &profile = printer->profiles().at(profileIndex);
+    const PrinterProfile profile = printer->profiles().at(profileIndex);
 
     QStandardItem *item = new QStandardItem(printer->name() + " (" + profile.name() + ") ");
     item->setData(profile.name(), PRINTER_ITEM_TEXT_ROLE);
-    item->setData(qVariantFromValue((void *)printer), PRINTER_ITEM_PRINTER_ROLE);
+    item->setData(QVariant::fromValue((void *)printer), PRINTER_ITEM_PRINTER_ROLE);
     item->setData(profileIndex, PRINTER_ITEM_PROFILE_ROLE);
 
 
@@ -357,6 +357,3 @@ int PrintersComboBox::findFirstProfile() const
     }
     return -1;
 }
-
-
-

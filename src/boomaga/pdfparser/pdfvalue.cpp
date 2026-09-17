@@ -28,7 +28,6 @@
 #include "pdfvalue.h"
 #include "pdfobject.h"
 #include <QThreadStorage>
-#include <QTextCodec>
 #include <QDebug>
 
 using namespace PDF;

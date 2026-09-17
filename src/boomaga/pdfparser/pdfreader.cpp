@@ -32,7 +32,8 @@
 #include "pdferrors.h"
 #include "pdfvalue.h"
 #include <QFile>
-#include <QTextCodec>
+#include <QStringConverter>
+#include <QStringDecoder>
 #include <QDebug>
 
 
@@ -42,10 +43,9 @@ struct ReaderData
 {
 public:
 
-    ReaderData(const char *buf, const quint64 size, QTextCodec *textCodec):
+    ReaderData(const char *buf, const quint64 size):
         mData(buf),
-        mSize(size),
-        mTextCodec(textCodec)
+        mSize(size)
     {
 
     }
@@ -54,7 +54,6 @@ public:
 
     const char   *mData;
     const quint64 mSize;
-    QTextCodec  *mTextCodec;
 
     bool compareStr(quint64 pos, const char *str) const;
     bool compareWord(quint64 pos, const char *str) const;
@@ -67,6 +66,7 @@ public:
     double readNum(quint64 *pos, bool *ok) const;
 
     QString readNameString(quint64 *pos) const;
+    QString decodeString(const QByteArray &data) const;
     qint64 readHexString(quint64 start, String *res) const;
     qint64 readLiteralString(qint64 start, String *res) const;
 
@@ -183,7 +183,8 @@ XRefStreamData::XRefStreamData(const char *buf, const quint64 size, const Dict &
     Q_UNUSED(mSize)
     // W - An array of integers representing the size of the fields in a
     // single cross-reference entry.
-    const Array &w = dict.value("W").asArray();
+    const Value wValue = dict.value("W");
+    const Array &w = wValue.asArray();
     if (!w.isValid())
         throw ReaderError("Incorrect XRef stream dictionary", 0);
 
@@ -461,6 +462,17 @@ QString ReaderData::readNameString(quint64 *pos) const
 
 
 /************************************************
+ *
+ ************************************************/
+QString ReaderData::decodeString(const QByteArray &data) const
+{
+    auto encoding = QStringConverter::encodingForData(data);
+    QStringDecoder decoder(encoding.value_or(QStringConverter::Utf8));
+    return decoder(data);
+}
+
+
+/************************************************
  * Strings may be written in hexadecimal form, which is useful for
  * including arbitrary binary data in a PDF file. A hexadecimal
  * string is written as a sequence of hexadecimal digits (0–9 and
@@ -538,7 +550,7 @@ qint64 ReaderData::readHexString(quint64 start, String *res) const
             if (!first)
                 string.append(r * 16);
 
-            res->setValue(QTextCodec::codecForUtfText(string, mTextCodec)->toUnicode(string));
+            res->setValue(decodeString(string));
             res->setEncodingType(String::HexEncoded);
             return pos + 1;
         }
@@ -738,7 +750,7 @@ qint64 ReaderData::readLiteralString(qint64 start, String *res) const
 
                 if (level == 0)
                 {
-                    res->setValue(QTextCodec::codecForUtfText(data, mTextCodec)->toUnicode(data));
+                    res->setValue(decodeString(data));
                     res->setEncodingType(String::LiteralEncoded);
                     return i + 1;
                 }
@@ -959,7 +971,6 @@ Reader::Reader():
     mData(nullptr),
     mSize(0),
     mPagesCount(-1),
-    mTextCodec(QTextCodec::codecForName("UTF-8")),
     mCache(new Cache())
 {
 
@@ -983,7 +994,7 @@ Reader::~Reader()
  ************************************************/
 Value Reader::readValue(quint64 *pos) const
 {
-    return ReaderData(mData, mSize, mTextCodec).readValue(pos);
+    return ReaderData(mData, mSize).readValue(pos);
 }
 
 
@@ -992,7 +1003,7 @@ Value Reader::readValue(quint64 *pos) const
  ************************************************/
 qint64 Reader::readObject(quint64 start, Object *res) const
 {
-    ReaderData data(mData, mSize, mTextCodec);
+    ReaderData data(mData, mSize);
     quint64 pos = start;
 
     bool ok;
@@ -1079,7 +1090,7 @@ void Reader::readObjectFromStream(ObjNum objNum, Object *res, ObjNum streamObjNu
         mCache->setStream(streamObjNum, streamGenNum, stream);
     }
 
-    ReaderData data(stream.data(), stream.size(), mTextCodec);
+    ReaderData data(stream.data(), stream.size());
 
     // The number of compressed objects in the stream.
     uint cnt = streamObj.dict().value("N").asNumber().value();
@@ -1115,7 +1126,8 @@ void Reader::readObjectFromStream(ObjNum objNum, Object *res, ObjNum streamObjNu
     }
     else
     {
-        const Link &extends = streamObj.dict().value("Extends").asLink();
+        const Value extendsValue = streamObj.dict().value("Extends");
+        const Link &extends = extendsValue.asLink();
         if (extends.isValid())
         {
             readObjectFromStream(objNum, res, extends.objNum(), extends.genNum(), 0);
@@ -1129,7 +1141,7 @@ void Reader::readObjectFromStream(ObjNum objNum, Object *res, ObjNum streamObjNu
  ************************************************/
 qint64 Reader::readXRefTable(quint64 pos, XRefTable *res, Dict *trailerDict) const
 {
-    ReaderData data(mData, mSize, mTextCodec);
+    ReaderData data(mData, mSize);
     pos = data.skipSpace(pos);
 
     if (!data.compareWord(pos, "xref"))
@@ -1260,7 +1272,7 @@ Object Reader::getObject(const XRefEntry &xrefEntry) const
  ************************************************/
 const Value Reader::find(const QString &path) const
 {
-    QStringList objects = path.split('/', QString::SkipEmptyParts);
+    QStringList objects = path.split('/', Qt::SkipEmptyParts);
     if (objects.first() == "Trailer")
         objects.removeFirst();
     QString val = objects.takeLast();
@@ -1357,7 +1369,7 @@ void Reader::load()
 {
     mXRefTable.clear();
     mTrailerDict.clear();
-    ReaderData data(mData, mSize, mTextCodec);
+    ReaderData data(mData, mSize);
 
     // Check header ...................................
     if (!data.compareStr(0, "%PDF-"))

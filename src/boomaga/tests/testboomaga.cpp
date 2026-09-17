@@ -430,7 +430,7 @@ QList<ProjectPage *> TestBoomaga::createPages(const QString &definition)
     if (def.startsWith('['))
         def = def.mid(1, def.length()-2);
 
-    QStringList items = def.split(',', QString::SkipEmptyParts);
+    QStringList items = def.split(',', Qt::SkipEmptyParts);
     QList<ProjectPage *> res;
     for (int i=0; i<items.count(); ++i)
     {
@@ -1067,11 +1067,11 @@ void TestBoomaga::test_BooklesSplit()
     settings->setValue(Settings::SubBookletsEnabled, true);
     settings->setValue(Settings::SubBookletSize, 2);
 
-    QStringList tags = QString(QTest::currentDataTag()).split(":", QString::SkipEmptyParts);
+    QStringList tags = QString(QTest::currentDataTag()).split(":", Qt::SkipEmptyParts);
     QString pageSpec = tags.count() > 2 ? tags.at(2): "";
 
     QList<ProjectPage*> pages;
-    foreach (QString spec, pageSpec.split(" ", QString::SkipEmptyParts))
+    foreach (QString spec, pageSpec.split(" ", Qt::SkipEmptyParts))
     {
         ProjectPage *page = new ProjectPage();
         page->setManualStartSubBooklet(spec.contains("M"));
