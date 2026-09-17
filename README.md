@@ -1,5 +1,5 @@
-Boomaga      &nbsp;   ![Release](http://www.boomaga.org/badge_release.svg)      &nbsp;  [![Build Status](https://travis-ci.org/Boomaga/boomaga.svg?branch=master)](https://travis-ci.org/Boomaga/boomaga)      &nbsp;  [![Donate](https://img.shields.io/badge/Donate-PayPal-green.svg)](https://www.paypal.com/cgi-bin/webscr?cmd=_s-xclick&hosted_button_id=XVRVWTQL5WERG)
-======
+# <img src="src/boomaga/misc/images/mainicon/boomaga.svg" align="left" width="100" height="100">  <br> Boomaga      &nbsp;   ![Release](https://img.shields.io/github/v/release/Boomaga/boomaga)
+
 
 [Homepage](http://www.boomaga.org) | 
 [Screenshots](http://www.boomaga.org/screenshots/) | 
