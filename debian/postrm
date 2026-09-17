@@ -27,15 +27,16 @@ case "$1" in
 		then
 			rm -rf /var/spool/boomaga
 		fi
+		# Use the local CUPS socket so root can authenticate without a password.
 		# Ensure that CUPS is running before we manipulate its queues.
 		if [ -f /etc/init.d/cups ]
 		then
 			invoke-rc.d cups force-reload || invoke-rc.d cups start || :
 		fi
 		# Wait until CUPS has reloaded its configuration.
-		if lpstat -h localhost -r 2>/dev/null | grep -q not; then
+		if lpstat -h /run/cups/cups.sock -r 2>/dev/null | grep -q not; then
 			t=0
-			while lpstat -h localhost -r 2>/dev/null | grep -q not; do
+			while lpstat -h /run/cups/cups.sock -r 2>/dev/null | grep -q not; do
 			        t=$(($t + 1))
 				if [ $t = 10 ]; then
 				        echo "CUPS failed to reload its configuration!"
@@ -45,11 +46,11 @@ case "$1" in
 			done
 		fi
 		# Purge all queues and disable them.
-		for queue in $(LC_ALL=C lpstat -h localhost -v 2>/dev/null | grep 'boomaga:/' | cut -d ':' -f 1 | cut -d ' ' -f 3)
+		for queue in $(LC_ALL=C lpstat -h /run/cups/cups.sock -v 2>/dev/null | grep 'boomaga:/' | cut -d ':' -f 1 | cut -d ' ' -f 3)
 			do
-				echo | cupsreject -h localhost $queue 2>/dev/null || :
-				echo | cupsdisable -h localhost $queue 2>/dev/null || :
-				echo | lpadmin -h localhost -x $queue 2>/dev/null || :
+				echo | cupsreject -h /run/cups/cups.sock $queue 2>/dev/null || :
+				echo | cupsdisable -h /run/cups/cups.sock $queue 2>/dev/null || :
+				echo | lpadmin -h /run/cups/cups.sock -x $queue 2>/dev/null || :
 			done
 		;;
 	abort-upgrade|upgrade|failed-upgrade|remove|disappear)

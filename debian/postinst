@@ -31,15 +31,16 @@ case "$1" in
 		#chmod 0640 /var/log/cups/boomaga_log*
 		#chown root:lpadmin /var/spool/boomaga/ANONYMOUS
 		#chmod 1777 /var/spool/boomaga/ANONYMOUS
+		# Use the local CUPS socket so root can authenticate without a password.
 		# Ensure that CUPS is running before we manipulate its queues.
 		if [ -f /etc/init.d/cups ]
 		then
 			invoke-rc.d cups force-reload || invoke-rc.d cups start || :
 		fi
 		# Wait until CUPS has reloaded its configuration.
-		if lpstat -h localhost -r 2>/dev/null | grep -q not; then
+		if lpstat -h /run/cups/cups.sock -r 2>/dev/null | grep -q not; then
 			t=0
-			while lpstat -h localhost -r 2>/dev/null | grep -q not; do
+			while lpstat -h /run/cups/cups.sock -r 2>/dev/null | grep -q not; do
 			        t=$(($t + 1))
 				if [ $t = 10 ]; then
 				        echo "CUPS failed to reload its configuration!"
@@ -49,12 +50,12 @@ case "$1" in
 			done
 		fi
 	        # Create a queue if we have none yet.
-		if [ -z "$(LC_ALL=C lpstat -h localhost -v 2>/dev/null | grep 'boomaga:/')" ]
+		if [ -z "$(LC_ALL=C lpstat -h /run/cups/cups.sock -v 2>/dev/null | grep 'boomaga:/')" ]
 		then
 			# 1) Find a name for the queue.
 			queue=Boomaga
 			number=0
-			while LC_ALL=C lpstat -h localhost -v 2>/dev/null | cut -d ':' -f 1 | cut -d ' ' -f 3 | grep -q ^$queue\$
+			while LC_ALL=C lpstat -h /run/cups/cups.sock -v 2>/dev/null | cut -d ':' -f 1 | cut -d ' ' -f 3 | grep -q ^$queue\$
 			do
 				number=$(($number + 1))
 				queue="Boomaga-$number"
@@ -62,14 +63,14 @@ case "$1" in
 			# 2) Find the default paper size.
 			size="$(LC_ALL=C paperconf 2>/dev/null)" || size=a4
 			# 3) Create the queue.
-			echo | lpadmin -h localhost -p $queue -v boomaga:/ -m /usr/share/ppd/boomaga/boomaga.ppd -o printer-is-shared=no -o PageSize=$size 2>/dev/null || :
+			echo | lpadmin -h /run/cups/cups.sock -p $queue -v boomaga:/ -m /usr/share/ppd/boomaga/boomaga.ppd -o printer-is-shared=no -o PageSize=$size 2>/dev/null || :
 			# 4) Enable the queue.
-			echo | cupsenable -h localhost $queue 2>/dev/null || :
-			echo | cupsaccept -h localhost $queue 2>/dev/null || :
+			echo | cupsenable -h /run/cups/cups.sock $queue 2>/dev/null || :
+			echo | cupsaccept -h /run/cups/cups.sock $queue 2>/dev/null || :
 			# 5) Set the queue as default if there is no default printer yet.
-			if [ -z "$(LC_ALL=C lpstat -h localhost -d 2>/dev/null | grep 'system default destination:')" ]
+			if [ -z "$(LC_ALL=C lpstat -h /run/cups/cups.sock -d 2>/dev/null | grep 'system default destination:')" ]
 			then
-				echo | lpadmin -h localhost -d $queue 2>/dev/null || :
+				echo | lpadmin -h /run/cups/cups.sock -d $queue 2>/dev/null || :
 			fi
 		fi
 		;;
