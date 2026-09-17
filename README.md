@@ -6,8 +6,7 @@ Boomaga      &nbsp;   ![Release](http://www.boomaga.org/badge_release.svg)      
 [Download](http://www.boomaga.org/download/)
 
 
-*Unfortunately I don't have enough time to support this project.  
-Excuse me!*
+*We are looking for volunteers to help maintain this project.*
 
 
 
