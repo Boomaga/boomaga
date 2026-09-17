@@ -12,6 +12,8 @@ permissions:
 jobs:
   build-deb:
     runs-on: ubuntu-26.04
+    permissions:
+      contents: write
 
     steps:
       - name: Check out source
@@ -36,30 +38,21 @@ jobs:
             zlib1g-dev
 
       - name: Build Debian package
-        run: dpkg-buildpackage --build=binary --no-sign
+        run: |
+          dpkg-buildpackage --build=binary --no-sign
+          mv ../*.deb .
 
       - name: Upload package artifact
         uses: actions/upload-artifact@v4
         with:
           name: boomaga-deb-packages
-          path: ../*.deb
+          path: "*.deb"
           if-no-files-found: error
 
-  publish-release:
-    if: github.event_name == 'release'
-    needs: build-deb
-    runs-on: ubuntu-26.04
-    permissions:
-      contents: write
-
-    steps:
-      - name: Download package artifact
-        uses: actions/download-artifact@v4
-        with:
-          name: boomaga-deb-packages
-          path: packages
-
-      - name: Attach packages to GitHub release
+      - name: Upload packages to GitHub release
+        if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
-          files: packages/*.deb
+          files: "*.deb"
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
