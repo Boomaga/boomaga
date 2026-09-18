@@ -67,7 +67,7 @@
  ************************************************/
 PagesListView::PagesListView(QWidget *parent):
     QListWidget(parent),
-    mRender(new Render(RESOLUTIN)),
+    mRender(new Render(RESOLUTIN, this)),
     mIconSize(64)
 {
     connect(project, SIGNAL(tmpFileRenamed(QString)),
