@@ -39,6 +39,12 @@
 #include "boomagatypes.h"
 
 #define RESOLUTIN 30
+
+// Thumbnails are rendered at a fraction of the preview resolution and scale
+// even less: measured over a 342 page document at 30 dpi, four workers reach
+// 2.6x and eight only 2.7x, so the extra four are not worth their memory.
+#define MAX_RENDER_THREADS 4
+
 #define PAGE_NUM_ROLE           (Qt::UserRole + 1)
 #define TOOLTIP_TEMPLATE_ROLE   (Qt::UserRole + 2)
 #define PREVIEWPAGE_NUM_ROLE    (Qt::UserRole + 3)
@@ -67,7 +73,7 @@
  ************************************************/
 PagesListView::PagesListView(QWidget *parent):
     QListWidget(parent),
-    mRender(new Render(RESOLUTIN, this)),
+    mRender(new Render(RESOLUTIN, this, MAX_RENDER_THREADS)),
     mIconSize(64)
 {
     connect(project, SIGNAL(tmpFileRenamed(QString)),
