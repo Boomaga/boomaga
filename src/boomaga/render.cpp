@@ -109,10 +109,12 @@ QImage RenderWorker::renderSheet(int sheetNum)
     if (!mPopplerDoc)
         return QImage();
 
-    mBusy = true;
     QImage img = doRenderSheet(mPopplerDoc, sheetNum, mResolution);
-    emit sheetReady(img, sheetNum);
+
+    // Clear the flag before emitting: the signal is delivered to the Render on
+    // another thread, which may hand this worker its next job straight away.
     mBusy = false;
+    emit sheetReady(img, sheetNum);
     return img;
 }
 
@@ -125,7 +127,6 @@ QImage RenderWorker::renderPage(int sheetNum, const QRectF &pageRect, int pageNu
     if (!mPopplerDoc)
         return QImage();
 
-    mBusy = true;
     QImage img = doRenderSheet(mPopplerDoc, sheetNum, mResolution);
 
     QSizeF printerSize =  project->printer()->paperRect().size();
@@ -156,8 +157,9 @@ QImage RenderWorker::renderPage(int sheetNum, const QRectF &pageRect, int pageNu
 
     img = img.copy(rect);
 
-    emit pageReady(img, pageNum);
+    // Clear the flag before emitting, see renderSheet().
     mBusy = false;
+    emit pageReady(img, pageNum);
     return img;
 }
 
@@ -309,6 +311,7 @@ void Render::workerFinished()
  ************************************************/
 void Render::startRenderSheet(RenderWorker *worker, int sheetNum)
 {
+    worker->setBusy(true);
     QMetaObject::invokeMethod(worker,
                               "renderSheet",
                               Qt::QueuedConnection,
@@ -340,6 +343,7 @@ void Render::startRenderPage(RenderWorker *worker, int pageNum)
 
     TransformSpec spec = project->layout()->transformSpec(sheet, pageOnSheet, project->rotation());
 
+    worker->setBusy(true);
     QMetaObject::invokeMethod(worker,
                               "renderPage",
                               Qt::QueuedConnection,

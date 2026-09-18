@@ -27,6 +27,7 @@
 #ifndef RENDER_H
 #define RENDER_H
 
+#include <atomic>
 #include <QObject>
 #include <QImage>
 #include <QThread>
@@ -45,7 +46,10 @@ public:
     explicit RenderWorker(const QString &fileName, int resolution);
     virtual ~RenderWorker();
 
+    // Read from the thread owning the Render, written from both that thread
+    // (when a job is handed out) and the worker thread (when it finishes).
     bool isBusy() const { return mBusy; }
+    void setBusy(bool busy) { mBusy = busy; }
     QThread *thread() { return &mThread; }
 
 public slots:
@@ -59,7 +63,7 @@ signals:
 private:
     int mSheetNum;
     int mResolution;
-    bool mBusy;
+    std::atomic<bool> mBusy;
     QThread mThread;
     poppler::document *mPopplerDoc;
 };
