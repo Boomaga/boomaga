@@ -69,7 +69,10 @@ class Render : public QObject
 {
     Q_OBJECT
 public:
-    explicit Render(double resolution, int threadCount = 8, QObject *parent = 0);
+    static constexpr int DefaultThreadCount = 8;
+
+    explicit Render(double resolution, QObject *parent = nullptr,
+                    int threadCount = DefaultThreadCount);
     virtual ~Render();
 
     QString fileName() const { return mFileName; }

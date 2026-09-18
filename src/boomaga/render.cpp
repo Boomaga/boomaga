@@ -165,7 +165,7 @@ QImage RenderWorker::renderPage(int sheetNum, const QRectF &pageRect, int pageNu
 /************************************************
  *
  ************************************************/
-Render::Render(double resolution, int threadCount, QObject *parent):
+Render::Render(double resolution, QObject *parent, int threadCount):
     QObject(parent),
     mResolution(resolution),
     mThreadCount(threadCount)
