@@ -101,8 +101,9 @@ private:
     int mThreadCount;
     QList<QPair<int, bool> > mQueue;
 
-    void startRenderSheet(RenderWorker *worker, int sheetNum);
-    void startRenderPage(RenderWorker *worker, int pageNum);
+    // Return whether the job was really handed to the worker.
+    bool startRenderSheet(RenderWorker *worker, int sheetNum);
+    bool startRenderPage(RenderWorker *worker, int pageNum);
 
 };
 
