@@ -27,6 +27,8 @@
 #include <poppler-document.h>
 #include <poppler-page-renderer.h>
 #include <poppler-page.h>
+#include <memory>
+#include <mutex>
 #include <QDebug>
 #include <QFile>
 #include <QFileInfo>
@@ -36,10 +38,47 @@
 
 
 /************************************************
+ * Poppler builds its process wide LittleCMS state - GfxState::sRGBProfile,
+ * GfxXYZ2DisplayTransforms::XYZProfile and the CMS error handler - lazily in the
+ * GfxState constructor, without any locking. Several threads reaching that code
+ * at the same time corrupt the heap and abort the process, see issue #144.
+ *
+ * Building it once from a single thread closes the race, because every later
+ * render only reads it. The GfxState constructor runs for every page render
+ * regardless of the page content, so rendering one arbitrary page is enough.
+ *
+ * This works around a Poppler bug, reported upstream as
+ * https://gitlab.freedesktop.org/poppler/poppler/-/work_items/1800
+ * It can be dropped once Boomaga requires a Poppler that guards those statics.
+ ************************************************/
+static void initPopplerGlobals(poppler::document *doc)
+{
+    static std::mutex mutex;
+    static bool initialized = false;
+
+    std::lock_guard<std::mutex> lock(mutex);
+
+    if (initialized || doc->pages() < 1)
+        return;
+
+    std::unique_ptr<poppler::page> page(doc->create_page(0));
+    if (!page)
+        return;
+
+    // Only the side effect of constructing the GfxState matters, the image
+    // itself is thrown away, so render as few pixels as possible.
+    poppler::page_renderer().render_page(page.get(), 1.0, 1.0);
+    initialized = true;
+}
+
+
+/************************************************
 
  ************************************************/
 QImage doRenderSheet(poppler::document *doc, int sheetNum, double resolution)
 {
+    initPopplerGlobals(doc);
+
     poppler::page *page = doc->create_page(sheetNum);
     if (page)
     {
