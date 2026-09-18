@@ -165,12 +165,13 @@ QImage RenderWorker::renderPage(int sheetNum, const QRectF &pageRect, int pageNu
 /************************************************
  *
  ************************************************/
-Render::Render(double resolution, int threadCount, QObject *parent):
+Render::Render(double resolution, QObject *parent, int maxThreadCount):
     QObject(parent),
     mResolution(resolution),
-    mThreadCount(threadCount)
+    // idealThreadCount() returns -1 when it cannot tell, which qBound maps to 1.
+    mThreadCount(qBound(1, QThread::idealThreadCount(), maxThreadCount))
 {
-    mWorkers.reserve(threadCount);
+    mWorkers.reserve(mThreadCount);
 }
 
 
