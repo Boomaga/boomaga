@@ -197,6 +197,9 @@ void Render::setFileName(const QString &fileName)
 {
     mFileName = fileName;
 
+    // The queued jobs refer to the sheets of the previous document.
+    mQueue.clear();
+
     foreach(RenderWorker *worker, mWorkers)
     {
         worker->thread()->quit();
