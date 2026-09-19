@@ -546,6 +546,11 @@ bool Printer::print(const QList<Sheet *> &sheets, const QString &jobName, bool d
     args << "-T" << jobName;                      // Sets the job name.
     args << "-r";                                 // The print files should be deleted after printing them
 
+    // CUPS does not always infer landscape orientation from a PDF page's
+    // /Rotate entry. Pass it explicitly for landscape Boomaga sheets.
+    if (!sheets.isEmpty() && isLandscape(sheets.first()->rotation()))
+        args << "-o orientation-requested=4";
+
     // Duplex options ...........................
     if (duplexType() == DuplexAuto && doubleSided)
     {
