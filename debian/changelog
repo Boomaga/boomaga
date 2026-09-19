@@ -1,3 +1,9 @@
+boomaga (3.6.0-1) resolute; urgency=medium
+
+  * Fix CUPS rotation bug
+
+ -- Archisman Panigrahi <apandada1@gmail.com>  Sat, 19 Sep 2026 16:50:04 -0400
+
 boomaga (3.5.0-1) resolute; urgency=medium
 
   * Port to Qt6
