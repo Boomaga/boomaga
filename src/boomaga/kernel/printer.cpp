@@ -334,13 +334,13 @@ void PrinterProfile::saveSettings() const
 /************************************************
 
  ************************************************/
-Printer::Printer(const QString &printerName):
+Printer::Printer(const QString &printerName, bool queryCups):
     mCanChangeDuplexType(true),
     mPrinterName(printerName),
     mCurrentProfileIndex(-1),
     mCurrentProfile(0)
 {
-    CupsPrinterOptions cupsOpts(mPrinterName);
+    CupsPrinterOptions cupsOpts(queryCups ? mPrinterName : QString());
 
     mDeviceUri = cupsOpts.deviceURI();
     if (!cupsOpts.paperSize().isEmpty())
@@ -457,10 +457,10 @@ QList<Printer*> Printer::availablePrinters()
     {
         printers = new QList<Printer*>;
 
-        QList<QPrinterInfo> piList = QPrinterInfo::availablePrinters();
-        foreach (const QPrinterInfo &pi, piList)
+        const QStringList printerNames = QPrinterInfo::availablePrinterNames();
+        for (const QString &printerName : printerNames)
         {
-            Printer *printer = new Printer(pi.printerName());
+            Printer *printer = new Printer(printerName);
             if (printer->deviceUri() != CUPS_BACKEND_URI)
                 *printers << printer;
             else
@@ -492,7 +492,7 @@ Printer *Printer::printerByName(const QString &printerName)
  ************************************************/
 Printer *Printer::nullPrinter()
 {
-    static Printer nullPrinter = Printer("Fake");
+    static Printer nullPrinter = Printer("Fake", false);
     return &nullPrinter;
 }
 
@@ -616,6 +616,5 @@ bool Printer::print(const QList<Sheet *> &sheets, const QString &jobName, bool d
     return true;
 #endif
 }
-
 
 

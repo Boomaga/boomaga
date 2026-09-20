@@ -104,7 +104,7 @@ private:
 class Printer
 {
 public:
-    explicit Printer(const QString &name);
+    explicit Printer(const QString &name, bool queryCups = true);
     virtual ~Printer();
 
     virtual QString name() const { return mPrinterName; }

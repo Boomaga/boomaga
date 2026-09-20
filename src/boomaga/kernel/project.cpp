@@ -85,7 +85,7 @@ Project::Project(QObject *parent) :
     mSheetCount(0),
     mTmpFile(0),
     mLastTmpFile(0),
-    mNullPrinter("Fake"),
+    mNullPrinter("Fake", false),
     mPrinter(&mNullPrinter),
     mDoubleSided(true),
     mRotation(NoRotate)

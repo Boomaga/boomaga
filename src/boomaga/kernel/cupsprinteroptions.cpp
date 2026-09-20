@@ -69,10 +69,13 @@ CupsPrinterOptions::CupsPrinterOptions(const QString &printerName):
     mTopMargin(0),
     mBottomMargin(0)
 {
-    cups_dest_t *dests;
-    int num_dests = cupsGetDests(&dests);
-    cups_dest_t *dest = cupsGetDest(printerName.toLocal8Bit().data(),
-                                    0, num_dests, dests);
+    // Placeholder printers have no CUPS destination. Avoid discovery for them.
+    if (printerName.isEmpty())
+        return;
+
+    // Query only this queue instead of rediscovering every printer each time.
+    cups_dest_t *dest = cupsGetNamedDest(CUPS_HTTP_DEFAULT,
+                                       printerName.toLocal8Bit().constData(), nullptr);
 
     if (!dest)
         return;
@@ -153,9 +156,8 @@ CupsPrinterOptions::CupsPrinterOptions(const QString &printerName):
     if (ok)
         mBottomMargin =n;
 
-    cupsFreeDests(num_dests, dests);
+    cupsFreeDests(1, dest);
 }
-
 
 
 
