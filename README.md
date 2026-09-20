@@ -42,6 +42,13 @@ The version for developers is available on our page at [GitHub](https://github.c
 Address your preferences and error messages to our [Issue tracker](https://github.com/Boomaga/boomaga/issues).
 
 
+Translations
+============
+
+Translations are managed on [Weblate](https://hosted.weblate.org/projects/boomaga/boomaga-gui-interface/).
+Join the project there to help translate Boomaga or improve an existing translation.
+
+
 Why you may need it?
 ====================
 

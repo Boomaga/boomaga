@@ -161,11 +161,10 @@ QString AboutDialog::translationsText() const
 {
     TranslatorsInfo translatorsInfo;
     return QString("%1<p><ul>%2</ul>").arg(
-                tr("If you want to help translate, we will be glad to see you in our translation team on <a %1>Transifex server</a>.")
-                    .arg(" href='https://www.transifex.com/projects/p/boomaga/'"),
+                tr("If you want to help translate, join the Boomaga translation team on <a %1>Weblate</a>.")
+                    .arg(" href='https://hosted.weblate.org/projects/boomaga/boomaga-gui-interface/'"),
                 translatorsInfo.asHtml()
                 );
 }
-
 
 
