@@ -315,6 +315,8 @@
      <string>Help</string>
     </property>
     <addaction name="actionAbout"/>
+    <addaction name="separator"/>
+    <addaction name="actionAddVirtualPrinter"/>
    </widget>
    <widget class="QMenu" name="menuEditPage">
     <property name="title">
@@ -438,6 +440,11 @@
    </property>
    <property name="toolTip">
     <string>Restore the most recently deleted page</string>
+   </property>
+  </action>
+  <action name="actionAddVirtualPrinter">
+   <property name="text">
+    <string>Add Boomaga as virtual printer</string>
    </property>
   </action>
   <action name="actionAbout">

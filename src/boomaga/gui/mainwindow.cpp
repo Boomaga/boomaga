@@ -51,6 +51,7 @@
 #include <QPushButton>
 #include <QDir>
 #include <QProcess>
+#include <QStandardPaths>
 #include <QDebug>
 #include <QTimer>
 #include <QKeyEvent>
@@ -428,6 +429,13 @@ void MainWindow::initActions()
     act = ui->actionAbout;
     connect(act, SIGNAL(triggered()),
             this, SLOT(showAboutDialog()));
+
+#ifdef Q_OS_LINUX
+    connect(ui->actionAddVirtualPrinter, SIGNAL(triggered()),
+            this, SLOT(addVirtualPrinter()));
+#else
+    ui->actionAddVirtualPrinter->setVisible(false);
+#endif
 
 #ifdef MAC_UPDATER
     act = ui->actionCheckUpdates;
@@ -860,6 +868,72 @@ void MainWindow::showAboutDialog()
     AboutDialog dialog(this);
     dialog.exec();
 
+}
+
+
+/************************************************
+
+ ************************************************/
+void MainWindow::addVirtualPrinter()
+{
+    const QString title = tr("Add Boomaga as virtual printer");
+    const QString command = QStringLiteral(
+                "sudo lpadmin -p Boomaga -E -v boomaga:/ "
+                "-P /usr/share/ppd/boomaga/boomaga.ppd -o printer-is-shared=false");
+
+    QMessageBox confirmation(QMessageBox::Question, title,
+                            tr("This will run the following command in a terminal. "
+                               "sudo will ask for your password if authentication is required.\n\n%1")
+                            .arg(command),
+                            QMessageBox::Ok | QMessageBox::Cancel, this);
+    confirmation.setTextFormat(Qt::PlainText);
+    confirmation.setDefaultButton(QMessageBox::Cancel);
+    confirmation.button(QMessageBox::Ok)->setText(tr("Run command"));
+    if (confirmation.exec() != QMessageBox::Ok)
+        return;
+
+    // Pass messages as shell arguments so translated text is never shell code.
+    const QString script = command + QStringLiteral(
+                "\nresult=$?\n"
+                "if [ \"$result\" -eq 0 ]; then printf '\\n%s\\n' \"$1\"; "
+                "else printf '\\n%s (%s)\\n' \"$2\" \"$result\"; fi\n"
+                "printf '%s\\n' \"$3\"\n"
+                "read -r reply\n"
+                "exit \"$result\"");
+    const QStringList shellArguments = {
+        QStringLiteral("sh"), QStringLiteral("-c"), script, QStringLiteral("boomaga-printer-setup"),
+        tr("Boomaga virtual printer added successfully."),
+        tr("Could not add the Boomaga virtual printer. See the error above. Exit code:"),
+        tr("Press Enter to close this terminal.")
+    };
+
+    const QStringList terminals = {
+        QStringLiteral("x-terminal-emulator"), QStringLiteral("gnome-terminal"),
+        QStringLiteral("konsole"), QStringLiteral("xfce4-terminal"),
+        QStringLiteral("mate-terminal"), QStringLiteral("xterm")
+    };
+    for (const QString &terminal : terminals)
+    {
+        const QString executable = QStandardPaths::findExecutable(terminal);
+        if (executable.isEmpty())
+            continue;
+
+        QStringList arguments;
+        // These terminals accept an argument vector after their execute option.
+        if (terminal == QStringLiteral("gnome-terminal") || terminal == QStringLiteral("mate-terminal"))
+            arguments << QStringLiteral("--");
+        else if (terminal == QStringLiteral("xfce4-terminal"))
+            arguments << QStringLiteral("-x");
+        else
+            arguments << QStringLiteral("-e");
+        arguments << shellArguments;
+        if (QProcess::startDetached(executable, arguments))
+            return;
+    }
+
+    QMessageBox::warning(this, title,
+                         tr("Could not open a terminal for sudo authentication. "
+                            "Run this command in a terminal:\n\n%1").arg(command));
 }
 
 

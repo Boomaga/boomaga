@@ -68,6 +68,7 @@ private slots:
     void applyPrinterSettings();
 
     void showAboutDialog();
+    void addVirtualPrinter();
 
     void updateProgressBar(int value, int total);
 
