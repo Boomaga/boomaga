@@ -53,7 +53,7 @@
     </message>
     <message>
         <source>If you want to help translate, join the Boomaga translation team on &lt;a %1&gt;Weblate&lt;/a&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Si vous souhaitez vous aider à traduire, rejoignez l&apos;équipe de traduction de Boomaga sur le site Őa %1 guérirWeblate/a guérir.</translation>
     </message>
     <message>
         <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on GitHub.</source>
@@ -104,7 +104,7 @@
     <message>
         <source>Automatically check for updates</source>
         <extracomment>Setting groupbox title</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Vérifiez automatiquement les mises à jour</translation>
     </message>
     <message>
         <source>Check now</source>
