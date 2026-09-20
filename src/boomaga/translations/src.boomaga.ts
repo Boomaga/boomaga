@@ -304,6 +304,54 @@ Are you sure you want to overwrite it?</source>
         <translation type="unfinished"></translation>
     </message>
     <message>
+        <source>Rotate left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate the current page to the left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate the current page to the right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blank before</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert a blank page before the current page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blank after</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert a blank page after the current page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete the current page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restore the most recently deleted page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Boomaga as virtual printer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>About Boomaga</source>
         <translation type="unfinished"></translation>
     </message>
@@ -355,6 +403,34 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>Sheet %1 of %2</source>
         <comment>Status bar</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>This will run the following command in a terminal. sudo will ask for your password if authentication is required.
+
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Run command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Boomaga virtual printer added successfully.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not add the Boomaga virtual printer. See the error above. Exit code:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Press Enter to close this terminal.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not open a terminal for sudo authentication. Run this command in a terminal:
+
+%1</source>
         <translation type="unfinished"></translation>
     </message>
     <message>

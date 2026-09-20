@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="ro" version="2.1">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="ro">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -55,7 +57,7 @@
     </message>
     <message>
         <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on GitHub.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -89,34 +91,54 @@
     </message>
     <message>
         <source>Autosave your jobs every time you print.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>AutoSave the recent sessions</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Allow negative page margins:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Automatically check for updates</source>
+        <extracomment>Setting groupbox title</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check now</source>
+        <extracomment>Buuton title for check updates </extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Last check was %1</source>
+        <comment>Information about last update</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Never checked</source>
+        <comment>Information about last update</comment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Select directory for saved jobs.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Directory for saved sessions:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Right-to-left direction</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
     <name>CupsBooFile</name>
     <message>
         <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -192,7 +214,7 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
     <name>InFile</name>
     <message>
         <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -283,8 +305,66 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
         <translation>Foaia precedentă</translation>
     </message>
     <message>
+        <source>Rotate left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate the current page to the left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate the current page to the right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blank before</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert a blank page before the current page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blank after</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert a blank page after the current page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete the current page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restore the most recently deleted page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Boomaga as virtual printer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>About Boomaga</source>
         <translation>Despre Boomaga</translation>
+    </message>
+    <message>
+        <source>Check for Updates...</source>
+        <extracomment>Menu action text</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check for Updates</source>
+        <extracomment>menu action tooltip</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Boomaga</source>
@@ -335,6 +415,34 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
         <source>Sheet %1 of %2</source>
         <comment>Status bar</comment>
         <translation>foaia %1 din %2</translation>
+    </message>
+    <message>
+        <source>This will run the following command in a terminal. sudo will ask for your password if authentication is required.
+
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Run command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Boomaga virtual printer added successfully.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not add the Boomaga virtual printer. See the error above. Exit code:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Press Enter to close this terminal.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not open a terminal for sudo authentication. Run this command in a terminal:
+
+%1</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Insert blank page after this page</source>
@@ -390,7 +498,7 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
     </message>
     <message>
         <source>Page %1</source>
-        <comment>'Undo deletion' menu item</comment>
+        <comment>&apos;Undo deletion&apos; menu item</comment>
         <translation>Pagina %1</translation>
     </message>
     <message>
@@ -487,53 +595,58 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
     </message>
     <message>
         <source>Sub-booklets</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Undo delete page</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Page %1 of %2</source>
         <comment>Status bar</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Recent files</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;Edit page</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Edit &amp;job</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>&amp;Preferences...</source>
+        <extracomment>menu action text</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>&amp;Export to PDF...</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Delete pages until the end of the job</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Delete current job</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Auto saving</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>I can&apos;t create directory &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>%1 %2: Page %3</source>
-        <comment>'Undo deletion' menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
-        <translation type="unfinished"/>
+        <comment>&apos;Undo deletion&apos; menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -541,12 +654,12 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
     <message>
         <source>Converting PostScript to PDF</source>
         <comment>Progressbar text</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
-        <comment>Error message. 'gs' is a command line tool from ghostscript</comment>
-        <translation type="unfinished"/>
+        <comment>Error message. &apos;gs&apos; is a command line tool from ghostscript</comment>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -561,7 +674,7 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
     </message>
     <message>
         <source>Collate copies:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -637,7 +750,7 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
     </message>
     <message>
         <source>Color mode:</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Default</source>
@@ -645,27 +758,27 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
     </message>
     <message>
         <source>Force grayscale</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Force color</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Settings</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Print on both sides</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Flip on short edge</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Flip on long edge</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 <context>
@@ -702,7 +815,7 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (Empty file name)</source>
         <comment>Error message. %1 is a file name</comment>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
@@ -731,7 +844,7 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
     <name>SubBookletView</name>
     <message>
         <source>Sub-booklet %1</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>%1 pages</source>
@@ -754,7 +867,7 @@ Sunteți siguri că doriți să-l suprascrieți?</translation>
     </message>
     <message>
         <source>I can&apos;t write file &quot;%1&quot;</source>
-        <translation type="unfinished"/>
+        <translation type="unfinished"></translation>
     </message>
 </context>
 </TS>

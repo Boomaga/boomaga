@@ -63,8 +63,8 @@
 <context>
     <name>BooFile</name>
     <message>
-        <source>I can't write to file '%1'</source>
-        <translation>Nie można zapisać do pliku '%1'</translation>
+        <source>I can&apos;t write to file &apos;%1&apos;</source>
+        <translation>Nie można zapisać do pliku &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
@@ -102,6 +102,26 @@
         <translation>Zezwalaj na negatywne marginesy:</translation>
     </message>
     <message>
+        <source>Automatically check for updates</source>
+        <extracomment>Setting groupbox title</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check now</source>
+        <extracomment>Buuton title for check updates </extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Last check was %1</source>
+        <comment>Information about last update</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Never checked</source>
+        <comment>Information about last update</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>Select directory for saved jobs.</source>
         <translation>Wybierz katalog do zapisu kolejki.</translation>
     </message>
@@ -117,8 +137,8 @@
 <context>
     <name>CupsBooFile</name>
     <message>
-        <source>I can't read file "%1" either because it's not a supported file type, or because the file has been damaged.</source>
-        <translation>Nie można odczytać pliku "%1" ponieważ ten typ nie jest wspierany lub plik uległ uszkodzeniu.</translation>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
+        <translation>Nie można odczytać pliku &quot;%1&quot; ponieważ ten typ nie jest wspierany lub plik uległ uszkodzeniu.</translation>
     </message>
 </context>
 <context>
@@ -180,21 +200,21 @@
         <translation>Zastąpić plik?</translation>
     </message>
     <message>
-        <source>A file named "%1" already exists.
+        <source>A file named &quot;%1&quot; already exists.
 Are you sure you want to overwrite it?</source>
-        <translation>Plik o nazwie "%1" już istnieje.
+        <translation>Plik o nazwie &quot;%1&quot; już istnieje.
 Czy na pewno go zastąpić?</translation>
     </message>
     <message>
-        <source> The document's title.</source>
+        <source> The document&apos;s title.</source>
         <translation> Tytuł dokumentu.</translation>
     </message>
 </context>
 <context>
     <name>InFile</name>
     <message>
-        <source>I can't read file "%1" either because it's not a supported file type, or because the file has been damaged.</source>
-        <translation>Nie można odczytać pliku "%1" ponieważ ten typ nie jest wspierany lub plik uległ uszkodzeniu.</translation>
+        <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
+        <translation>Nie można odczytać pliku &quot;%1&quot; ponieważ ten typ nie jest wspierany lub plik uległ uszkodzeniu.</translation>
     </message>
 </context>
 <context>
@@ -213,10 +233,6 @@ Czy na pewno go zastąpić?</translation>
     <message>
         <source>&amp;Preferences</source>
         <translation>&amp;Preferencje</translation>
-    </message>
-    <message>
-    <source>Preferences...</source>
-    <translation>Ustawienia...</translation>
     </message>
     <message>
         <source>Help</source>
@@ -289,8 +305,66 @@ Czy na pewno go zastąpić?</translation>
         <translation>Poprzednia strona</translation>
     </message>
     <message>
+        <source>Rotate left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate the current page to the left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate the current page to the right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blank before</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert a blank page before the current page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blank after</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert a blank page after the current page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete the current page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restore the most recently deleted page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Boomaga as virtual printer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>About Boomaga</source>
         <translation>O programie Boomaga</translation>
+    </message>
+    <message>
+        <source>Check for Updates...</source>
+        <extracomment>Menu action text</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check for Updates</source>
+        <extracomment>menu action tooltip</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Boomaga</source>
@@ -307,7 +381,7 @@ Czy na pewno go zastąpić?</translation>
     </message>
     <message>
         <source>Print the odd pages on %1.&lt;p&gt;When finished, turn the pages, insert them into the printer&lt;br&gt;and click the Continue button.</source>
-        <translation>Drukuj nieparzyste strony na %1.&lt;p&gt;Gdy wydruk zostanie zakończony, odwróć kartki, włóż ponownie do drukarki&lt;br&gt;i naciśnij przycisk 'Kontynuuj'.</translation>
+        <translation>Drukuj nieparzyste strony na %1.&lt;p&gt;Gdy wydruk zostanie zakończony, odwróć kartki, włóż ponownie do drukarki&lt;br&gt;i naciśnij przycisk &apos;Kontynuuj&apos;.</translation>
     </message>
     <message>
         <source>Print the even pages on %1.</source>
@@ -341,6 +415,34 @@ Czy na pewno go zastąpić?</translation>
         <source>Sheet %1 of %2</source>
         <comment>Status bar</comment>
         <translation>Arkusz %1 z %2</translation>
+    </message>
+    <message>
+        <source>This will run the following command in a terminal. sudo will ask for your password if authentication is required.
+
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Run command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Boomaga virtual printer added successfully.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not add the Boomaga virtual printer. See the error above. Exit code:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Press Enter to close this terminal.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not open a terminal for sudo authentication. Run this command in a terminal:
+
+%1</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Insert blank page after this page</source>
@@ -396,7 +498,7 @@ Czy na pewno go zastąpić?</translation>
     </message>
     <message>
         <source>Page %1</source>
-        <comment>'Undo deletion' menu item</comment>
+        <comment>&apos;Undo deletion&apos; menu item</comment>
         <translation>Stronę %1</translation>
     </message>
     <message>
@@ -432,7 +534,7 @@ Czy na pewno go zastąpić?</translation>
         <translation>Początek nowej broszury od tej strony</translation>
     </message>
     <message>
-        <source>Don't start new booklet from this page</source>
+        <source>Don&apos;t start new booklet from this page</source>
         <translation>Nie rozpoczynaj broszury od tej strony</translation>
     </message>
     <message>
@@ -517,6 +619,11 @@ Czy na pewno go zastąpić?</translation>
         <translation>Edytuj &amp;kolejkę</translation>
     </message>
     <message>
+        <source>&amp;Preferences...</source>
+        <extracomment>menu action text</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&amp;Export to PDF...</source>
         <translation>&amp;Exportuj do PDF...</translation>
     </message>
@@ -533,12 +640,12 @@ Czy na pewno go zastąpić?</translation>
         <translation>Automatyczne zapisywanie</translation>
     </message>
     <message>
-        <source>I can't create directory "%1"</source>
-        <translation>Nie można utworzyć katalogu "%1"</translation>
+        <source>I can&apos;t create directory &quot;%1&quot;</source>
+        <translation>Nie można utworzyć katalogu &quot;%1&quot;</translation>
     </message>
     <message>
         <source>%1 %2: Page %3</source>
-        <comment>'Undo deletion' menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
+        <comment>&apos;Undo deletion&apos; menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
         <translation>%1 %2: Strona %3</translation>
     </message>
 </context>
@@ -550,9 +657,9 @@ Czy na pewno go zastąpić?</translation>
         <translation>Konvertuje PostScript do PDF</translation>
     </message>
     <message>
-        <source>I can't start gs converter: "%1"</source>
-        <comment>Error message. 'gs' is a command line tool from ghostscript</comment>
-        <translation>Nie można wykonać polecenia konwertera ghostscript ('gs'): "%1"</translation>
+        <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
+        <comment>Error message. &apos;gs&apos; is a command line tool from ghostscript</comment>
+        <translation>Nie można wykonać polecenia konwertera ghostscript (&apos;gs&apos;): &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
@@ -617,8 +724,8 @@ Czy na pewno go zastąpić?</translation>
         <translation>Ręcznie bez odwrotnej kolejności</translation>
     </message>
     <message>
-        <source>Preferences of "%1"</source>
-        <translation>Konfiguracja dla "%1"</translation>
+        <source>Preferences of &quot;%1&quot;</source>
+        <translation>Konfiguracja dla &quot;%1&quot;</translation>
     </message>
     <message>
         <source>Profiles</source>
@@ -682,19 +789,19 @@ Czy na pewno go zastąpić?</translation>
         <translation>Boomaga</translation>
     </message>
     <message>
-        <source>I can't write to file '%1'</source>
-        <translation>Nie można zapisać do pliku '%1'</translation>
+        <source>I can&apos;t write to file &apos;%1&apos;</source>
+        <translation>Nie można zapisać do pliku &apos;%1&apos;</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
-        <source>I can't read from file '%1'</source>
-        <translation>Nie można odczytać pliku '%1'</translation>
+        <source>I can&apos;t read from file &apos;%1&apos;</source>
+        <translation>Nie można odczytać pliku &apos;%1&apos;</translation>
     </message>
     <message>
-        <source>I can't write to file '%1'</source>
-        <translation>Nie można zapisać do pliku '%1'</translation>
+        <source>I can&apos;t write to file &apos;%1&apos;</source>
+        <translation>Nie można zapisać do pliku &apos;%1&apos;</translation>
     </message>
     <message>
         <source>Untitled</source>
@@ -706,24 +813,24 @@ Czy na pewno go zastąpić?</translation>
         <translation>Domyślny</translation>
     </message>
     <message>
-        <source>I can't open file "%1" (Empty file name)</source>
+        <source>I can&apos;t open file &quot;%1&quot; (Empty file name)</source>
         <comment>Error message. %1 is a file name</comment>
-        <translation>Nie można otworzyć pliku "%1" (bez nazwy)</translation>
+        <translation>Nie można otworzyć pliku &quot;%1&quot; (bez nazwy)</translation>
     </message>
     <message>
-        <source>I can't open file "%1" (No such file or directory)</source>
+        <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
         <comment>Error message. %1 is a file name</comment>
-        <translation>Nie można otworzyć pliku "%1" (nie istnieje taki katalog)</translation>
+        <translation>Nie można otworzyć pliku &quot;%1&quot; (nie istnieje taki katalog)</translation>
     </message>
     <message>
-        <source>I can't open file "%1" (Access denied)</source>
+        <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
         <comment>Error message. %1 is a file name</comment>
-        <translation>Nie można otworzyć pliku "%1" (brak dostępu)</translation>
+        <translation>Nie można otworzyć pliku &quot;%1&quot; (brak dostępu)</translation>
     </message>
     <message>
-        <source>I can't open file "%1"</source>
+        <source>I can&apos;t open file &quot;%1&quot;</source>
         <comment>Error message. %1 is a file name</comment>
-        <translation>Nie można otworzyć pliku "%1"</translation>
+        <translation>Nie można otworzyć pliku &quot;%1&quot;</translation>
     </message>
 </context>
 <context>
@@ -747,20 +854,20 @@ Czy na pewno go zastąpić?</translation>
 <context>
     <name>TmpPdfFile</name>
     <message>
-        <source>I can't create temporary file "%1"</source>
-        <translation>Nie można zapisać pliku temporalnego "%1"</translation>
+        <source>I can&apos;t create temporary file &quot;%1&quot;</source>
+        <translation>Nie można zapisać pliku temporalnego &quot;%1&quot;</translation>
     </message>
     <message>
-        <source>I can't read file '%1'</source>
-        <translation>Nie można odczytać pliku '%1'</translation>
+        <source>I can&apos;t read file &apos;%1&apos;</source>
+        <translation>Nie można odczytać pliku &apos;%1&apos;</translation>
     </message>
     <message>
-        <source>I can't write to file '%1'</source>
-        <translation>Nie można zapisać do pliku '%1'</translation>
+        <source>I can&apos;t write to file &apos;%1&apos;</source>
+        <translation>Nie można zapisać do pliku &apos;%1&apos;</translation>
     </message>
     <message>
-        <source>I can't write file "%1"</source>
-        <translation>Nie można zapisać pliku '%1'</translation>
+        <source>I can&apos;t write file &quot;%1&quot;</source>
+        <translation>Nie można zapisać pliku &apos;%1&apos;</translation>
     </message>
 </context>
 </TS>

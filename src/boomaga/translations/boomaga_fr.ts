@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="fr" version="2.1">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="fr">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -23,7 +25,7 @@
     </message>
     <message>
         <source>Version: %1</source>
-        <translation>Version : %1</translation>
+        <translation>Version&#xa0;: %1</translation>
     </message>
     <message>
         <source>Boomaga provides a virtual printer for CUPS. This can be used for print preview or for print booklets.</source>
@@ -31,15 +33,15 @@
     </message>
     <message>
         <source>Copyright: %1-%2 %3</source>
-        <translation>Tous droits réservés : %1-%2 %3</translation>
+        <translation>Tous droits réservés&#xa0;: %1-%2 %3</translation>
     </message>
     <message>
         <source>Homepage: %1</source>
-        <translation>Page d’accueil : %1</translation>
+        <translation>Page d’accueil&#xa0;: %1</translation>
     </message>
     <message>
         <source>License: %1</source>
-        <translation>Licence : %1</translation>
+        <translation>Licence&#xa0;: %1</translation>
     </message>
     <message>
         <source>If you are interested in working with our development team, &lt;a %1&gt;join us&lt;/a&gt;.</source>
@@ -47,7 +49,7 @@
     </message>
     <message>
         <source>Special thanks to:</source>
-        <translation>Remerciements particuliers à :</translation>
+        <translation>Remerciements particuliers à&#xa0;:</translation>
     </message>
     <message>
         <source>If you want to help translate, join the Boomaga translation team on &lt;a %1&gt;Weblate&lt;/a&gt;.</source>
@@ -62,7 +64,7 @@
     <name>BooFile</name>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation>Je ne peux pas écrire le fichier « %1 »</translation>
+        <translation>Je ne peux pas écrire le fichier «&#xa0;%1&#xa0;»</translation>
     </message>
 </context>
 <context>
@@ -85,7 +87,7 @@
     </message>
     <message>
         <source>Sheets per sub-booklet:</source>
-        <translation>Feuilles dans votre sous-livret :</translation>
+        <translation>Feuilles dans votre sous-livret&#xa0;:</translation>
     </message>
     <message>
         <source>Autosave your jobs every time you print.</source>
@@ -97,7 +99,27 @@
     </message>
     <message>
         <source>Allow negative page margins:</source>
-        <translation>Autoriser les marges négatives :</translation>
+        <translation>Autoriser les marges négatives&#xa0;:</translation>
+    </message>
+    <message>
+        <source>Automatically check for updates</source>
+        <extracomment>Setting groupbox title</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check now</source>
+        <extracomment>Buuton title for check updates </extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Last check was %1</source>
+        <comment>Information about last update</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Never checked</source>
+        <comment>Information about last update</comment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Select directory for saved jobs.</source>
@@ -105,7 +127,7 @@
     </message>
     <message>
         <source>Directory for saved sessions:</source>
-        <translation>Répertoire des travaux enregistrés :</translation>
+        <translation>Répertoire des travaux enregistrés&#xa0;:</translation>
     </message>
     <message>
         <source>Right-to-left direction</source>
@@ -116,7 +138,7 @@
     <name>CupsBooFile</name>
     <message>
         <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
-        <translation>Je ne peux pas lire le fichier « %1 ». Soit ce n’est pas un type de fichier pris en charge, soit le fichier est endommagé.</translation>
+        <translation>Je ne peux pas lire le fichier «&#xa0;%1&#xa0;». Soit ce n’est pas un type de fichier pris en charge, soit le fichier est endommagé.</translation>
     </message>
 </context>
 <context>
@@ -131,7 +153,7 @@
     </message>
     <message>
         <source>Output file:</source>
-        <translation>Fichier de sortie :</translation>
+        <translation>Fichier de sortie&#xa0;:</translation>
     </message>
     <message>
         <source>...</source>
@@ -143,7 +165,7 @@
     </message>
     <message>
         <source>Author:</source>
-        <translation>Auteur :</translation>
+        <translation>Auteur&#xa0;:</translation>
     </message>
     <message>
         <source> The name of the person who created the document.</source>
@@ -151,11 +173,11 @@
     </message>
     <message>
         <source>Title:</source>
-        <translation>Titre :</translation>
+        <translation>Titre&#xa0;:</translation>
     </message>
     <message>
         <source>Subject:</source>
-        <translation>Objet :</translation>
+        <translation>Objet&#xa0;:</translation>
     </message>
     <message>
         <source> The subject of the document.</source>
@@ -167,7 +189,7 @@
     </message>
     <message>
         <source>Keywords:</source>
-        <translation>Mots-clés :</translation>
+        <translation>Mots-clés&#xa0;:</translation>
     </message>
     <message>
         <source>PDF files (*.pdf);;All files (*.*)</source>
@@ -175,13 +197,13 @@
     </message>
     <message>
         <source>Overwrite file?</source>
-        <translation>Écraser le fichier ?</translation>
+        <translation>Écraser le fichier&#x2009;?</translation>
     </message>
     <message>
         <source>A file named &quot;%1&quot; already exists.
 Are you sure you want to overwrite it?</source>
-        <translation>Un fichier nommé « %1 » existe déjà.
-Êtes-vous sûr de vouloir l’écraser ?</translation>
+        <translation>Un fichier nommé «&#xa0;%1&#xa0;» existe déjà.
+Êtes-vous sûr de vouloir l’écraser&#x2009;?</translation>
     </message>
     <message>
         <source> The document&apos;s title.</source>
@@ -192,7 +214,7 @@ Are you sure you want to overwrite it?</source>
     <name>InFile</name>
     <message>
         <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
-        <translation>Je ne peux pas lire le fichier « %1 ». Soit ce n’est pas un type de fichier pris en charge, soit le fichier est endommagé.</translation>
+        <translation>Je ne peux pas lire le fichier «&#xa0;%1&#xa0;». Soit ce n’est pas un type de fichier pris en charge, soit le fichier est endommagé.</translation>
     </message>
 </context>
 <context>
@@ -283,8 +305,66 @@ Are you sure you want to overwrite it?</source>
         <translation>Feuille précédente</translation>
     </message>
     <message>
+        <source>Rotate left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate the current page to the left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate the current page to the right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blank before</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert a blank page before the current page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blank after</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert a blank page after the current page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete the current page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restore the most recently deleted page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Boomaga as virtual printer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>About Boomaga</source>
         <translation>À propos de Boomaga</translation>
+    </message>
+    <message>
+        <source>Check for Updates...</source>
+        <extracomment>Menu action text</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check for Updates</source>
+        <extracomment>menu action tooltip</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Boomaga</source>
@@ -335,6 +415,34 @@ Are you sure you want to overwrite it?</source>
         <source>Sheet %1 of %2</source>
         <comment>Status bar</comment>
         <translation>Feuille %1 de %2</translation>
+    </message>
+    <message>
+        <source>This will run the following command in a terminal. sudo will ask for your password if authentication is required.
+
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Run command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Boomaga virtual printer added successfully.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not add the Boomaga virtual printer. See the error above. Exit code:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Press Enter to close this terminal.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not open a terminal for sudo authentication. Run this command in a terminal:
+
+%1</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Insert blank page after this page</source>
@@ -390,7 +498,7 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Page %1</source>
-        <comment>'Undo deletion' menu item</comment>
+        <comment>&apos;Undo deletion&apos; menu item</comment>
         <translation>Page %1</translation>
     </message>
     <message>
@@ -451,7 +559,7 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Job title:</source>
-        <translation>Titre du travail :</translation>
+        <translation>Titre du travail&#xa0;:</translation>
     </message>
     <message>
         <source>Export the project to PDF</source>
@@ -471,7 +579,7 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Number of copies:</source>
-        <translation>Nombre de copies :</translation>
+        <translation>Nombre de copies&#xa0;:</translation>
     </message>
     <message>
         <source>Print with options...</source>
@@ -511,6 +619,11 @@ Are you sure you want to overwrite it?</source>
         <translation>Modifier le &amp;travail</translation>
     </message>
     <message>
+        <source>&amp;Preferences...</source>
+        <extracomment>menu action text</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&amp;Export to PDF...</source>
         <translation>&amp;Exporter en PDF...</translation>
     </message>
@@ -528,12 +641,12 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>I can&apos;t create directory &quot;%1&quot;</source>
-        <translation>Je ne peux pas créer le répertoire « %1 »</translation>
+        <translation>Je ne peux pas créer le répertoire «&#xa0;%1&#xa0;»</translation>
     </message>
     <message>
         <source>%1 %2: Page %3</source>
-        <comment>'Undo deletion' menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
-        <translation>%1 %2 : page %3</translation>
+        <comment>&apos;Undo deletion&apos; menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
+        <translation>%1 %2&#xa0;: page %3</translation>
     </message>
 </context>
 <context>
@@ -545,8 +658,8 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
-        <comment>Error message. 'gs' is a command line tool from ghostscript</comment>
-        <translation>Je ne peux pas lancer le convertisseur gs : « %1 »</translation>
+        <comment>Error message. &apos;gs&apos; is a command line tool from ghostscript</comment>
+        <translation>Je ne peux pas lancer le convertisseur gs&#xa0;: «&#xa0;%1&#xa0;»</translation>
     </message>
 </context>
 <context>
@@ -557,11 +670,11 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Number of copies:</source>
-        <translation>Nombre de copies :</translation>
+        <translation>Nombre de copies&#xa0;:</translation>
     </message>
     <message>
         <source>Collate copies:</source>
-        <translation>Collationner les copies :</translation>
+        <translation>Collationner les copies&#xa0;:</translation>
     </message>
 </context>
 <context>
@@ -572,23 +685,23 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Right:</source>
-        <translation>Droite :</translation>
+        <translation>Droite&#xa0;:</translation>
     </message>
     <message>
         <source>Bottom:</source>
-        <translation>Bas :</translation>
+        <translation>Bas&#xa0;:</translation>
     </message>
     <message>
         <source>Internal:</source>
-        <translation>Interne :</translation>
+        <translation>Interne&#xa0;:</translation>
     </message>
     <message>
         <source>Left:</source>
-        <translation>Gauche :</translation>
+        <translation>Gauche&#xa0;:</translation>
     </message>
     <message>
         <source>Top:</source>
-        <translation>Haut :</translation>
+        <translation>Haut&#xa0;:</translation>
     </message>
     <message>
         <source>Draw border</source>
@@ -637,7 +750,7 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Color mode:</source>
-        <translation>Mode chromatique :</translation>
+        <translation>Mode chromatique&#xa0;:</translation>
     </message>
     <message>
         <source>Default</source>
@@ -677,18 +790,18 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation>Je ne peux pas écrire le fichier « %1 »</translation>
+        <translation>Je ne peux pas écrire le fichier «&#xa0;%1&#xa0;»</translation>
     </message>
 </context>
 <context>
     <name>QObject</name>
     <message>
         <source>I can&apos;t read from file &apos;%1&apos;</source>
-        <translation>Je ne peux pas lire le fichier « %1 »</translation>
+        <translation>Je ne peux pas lire le fichier «&#xa0;%1&#xa0;»</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation>Je ne peux pas écrire le fichier « %1 »</translation>
+        <translation>Je ne peux pas écrire le fichier «&#xa0;%1&#xa0;»</translation>
     </message>
     <message>
         <source>Untitled</source>
@@ -707,17 +820,17 @@ Are you sure you want to overwrite it?</source>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (No such file or directory)</source>
         <comment>Error message. %1 is a file name</comment>
-        <translation>Je ne peux pas ouvrir le fichier « %1 » (le fichier ou répertoire n’existe pas)</translation>
+        <translation>Je ne peux pas ouvrir le fichier «&#xa0;%1&#xa0;» (le fichier ou répertoire n’existe pas)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot; (Access denied)</source>
         <comment>Error message. %1 is a file name</comment>
-        <translation>Je ne peux pas ouvrir le fichier « %1 » (l’accès est refusé)</translation>
+        <translation>Je ne peux pas ouvrir le fichier «&#xa0;%1&#xa0;» (l’accès est refusé)</translation>
     </message>
     <message>
         <source>I can&apos;t open file &quot;%1&quot;</source>
         <comment>Error message. %1 is a file name</comment>
-        <translation>Je ne peux pas ouvrir le fichier « %1 »</translation>
+        <translation>Je ne peux pas ouvrir le fichier «&#xa0;%1&#xa0;»</translation>
     </message>
 </context>
 <context>
@@ -742,19 +855,19 @@ Are you sure you want to overwrite it?</source>
     <name>TmpPdfFile</name>
     <message>
         <source>I can&apos;t create temporary file &quot;%1&quot;</source>
-        <translation>Je ne peux pas créer le fichier temporaire « %1 »</translation>
+        <translation>Je ne peux pas créer le fichier temporaire «&#xa0;%1&#xa0;»</translation>
     </message>
     <message>
         <source>I can&apos;t read file &apos;%1&apos;</source>
-        <translation>Je ne peux pas lire le fichier « %1 »</translation>
+        <translation>Je ne peux pas lire le fichier «&#xa0;%1&#xa0;»</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
-        <translation>Je ne peux pas écrire le fichier « %1 »</translation>
+        <translation>Je ne peux pas écrire le fichier «&#xa0;%1&#xa0;»</translation>
     </message>
     <message>
         <source>I can&apos;t write file &quot;%1&quot;</source>
-        <translation>Je ne peux pas écrire le fichier « %1 »</translation>
+        <translation>Je ne peux pas écrire le fichier «&#xa0;%1&#xa0;»</translation>
     </message>
 </context>
 </TS>

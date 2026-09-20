@@ -1,4 +1,6 @@
-<?xml version="1.0" ?><!DOCTYPE TS><TS language="ru" version="2.1">
+<?xml version="1.0" encoding="utf-8"?>
+<!DOCTYPE TS>
+<TS version="2.1" language="ru">
 <context>
     <name>AboutDialog</name>
     <message>
@@ -98,6 +100,26 @@
     <message>
         <source>Allow negative page margins:</source>
         <translation>Разрешать отрицательные поля:</translation>
+    </message>
+    <message>
+        <source>Automatically check for updates</source>
+        <extracomment>Setting groupbox title</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check now</source>
+        <extracomment>Buuton title for check updates </extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Last check was %1</source>
+        <comment>Information about last update</comment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Never checked</source>
+        <comment>Information about last update</comment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Select directory for saved jobs.</source>
@@ -283,8 +305,66 @@ Are you sure you want to overwrite it?</source>
         <translation>Предыдущий</translation>
     </message>
     <message>
+        <source>Rotate left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate the current page to the left</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Rotate the current page to the right</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blank before</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert a blank page before the current page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Blank after</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Insert a blank page after the current page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Delete the current page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Restore the most recently deleted page</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Add Boomaga as virtual printer</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>About Boomaga</source>
         <translation>О программе</translation>
+    </message>
+    <message>
+        <source>Check for Updates...</source>
+        <extracomment>Menu action text</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Check for Updates</source>
+        <extracomment>menu action tooltip</extracomment>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Boomaga</source>
@@ -335,6 +415,34 @@ Are you sure you want to overwrite it?</source>
         <source>Sheet %1 of %2</source>
         <comment>Status bar</comment>
         <translation>Лист %1 из %2</translation>
+    </message>
+    <message>
+        <source>This will run the following command in a terminal. sudo will ask for your password if authentication is required.
+
+%1</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Run command</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Boomaga virtual printer added successfully.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not add the Boomaga virtual printer. See the error above. Exit code:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Press Enter to close this terminal.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Could not open a terminal for sudo authentication. Run this command in a terminal:
+
+%1</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Insert blank page after this page</source>
@@ -390,7 +498,7 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>Page %1</source>
-        <comment>'Undo deletion' menu item</comment>
+        <comment>&apos;Undo deletion&apos; menu item</comment>
         <translation>Страница %1</translation>
     </message>
     <message>
@@ -511,6 +619,11 @@ Are you sure you want to overwrite it?</source>
         <translation>Редактирование &amp;задания</translation>
     </message>
     <message>
+        <source>&amp;Preferences...</source>
+        <extracomment>menu action text</extracomment>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
         <source>&amp;Export to PDF...</source>
         <translation>&amp;Экспортировать в PDF...</translation>
     </message>
@@ -532,7 +645,7 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>%1 %2: Page %3</source>
-        <comment>'Undo deletion' menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
+        <comment>&apos;Undo deletion&apos; menu item, (%1 - is a job number, %2 - is a job title, %3 - is a page number in this job</comment>
         <translation>%1 %2: страница %3</translation>
     </message>
 </context>
@@ -545,7 +658,7 @@ Are you sure you want to overwrite it?</source>
     </message>
     <message>
         <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
-        <comment>Error message. 'gs' is a command line tool from ghostscript</comment>
+        <comment>Error message. &apos;gs&apos; is a command line tool from ghostscript</comment>
         <translation>Не получилось запустить gs: &quot;%1&quot;</translation>
     </message>
 </context>

@@ -48,6 +48,14 @@ Translations
 Translations are managed on [Weblate](https://hosted.weblate.org/projects/boomaga/boomaga-gui-interface/).
 Join the project there to help translate Boomaga or improve an existing translation.
 
+After changing user-facing source strings, refresh the translation catalogs with:
+
+```sh
+scripts/update-translations.sh
+```
+
+The same operation is available from a configured CMake build using the `update_translations` target.
+
 
 Why you may need it?
 ====================

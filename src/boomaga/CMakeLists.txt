@@ -182,6 +182,13 @@ find_package(Qt6 REQUIRED COMPONENTS
     LinguistTools
 )
 
+add_custom_target(update_translations
+    COMMAND "${CMAKE_SOURCE_DIR}/scripts/update-translations.sh" "$<TARGET_FILE:Qt6::lupdate>"
+    WORKING_DIRECTORY "${CMAKE_SOURCE_DIR}"
+    COMMENT "Updating Qt translation catalogs"
+    VERBATIM
+)
+
 include_directories(
     ${CMAKE_CURRENT_SOURCE_DIR}
     ${CMAKE_SOURCE_DIR}
