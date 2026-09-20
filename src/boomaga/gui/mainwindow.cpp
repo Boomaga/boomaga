@@ -665,7 +665,8 @@ bool MainWindow::print(uint count, bool collate)
         Project::PagesType  pagesType_1;
         Project::PagesType  pagesType_2;
         bool rotate_1 = false;
-        bool rotate_2 = false;
+        bool rotate_2 = project->layout()->flipType(project->printer()->flipType()) ==
+                        FlipType::ShortEdge;
 
         if (project->printer()->duplexType() == DuplexManual)
         {
@@ -685,7 +686,6 @@ bool MainWindow::print(uint count, bool collate)
             }
 
             rotate_1 = isLandscape(project->rotation());
-            rotate_2 = false;
         }
         else
         {
@@ -705,7 +705,6 @@ bool MainWindow::print(uint count, bool collate)
             }
 
             rotate_1 = isPortrate(project->rotation());
-            rotate_2 = false;
         }
 
          keeper.sheets_1 = project->selectSheets(pagesType_1, order_1);

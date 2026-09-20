@@ -318,9 +318,8 @@ void PrinterSettings::updateWidgets()
     ui->bottomMarginSpin->setValue(profile->bottomMargin(mUnit));
     ui->internalMarginSpin->setValue(profile->internalMargin(mUnit));
 
-    bool enable = ui->duplexTypeComboBox->currentData().toInt() == DuplexAuto;
-    ui->flipLongEdgeCheck->setEnabled(enable);
-    ui->flipShortEdgeCheck->setEnabled(enable);
+    ui->flipLongEdgeCheck->setEnabled(true);
+    ui->flipShortEdgeCheck->setEnabled(true);
 
     if (mPrinter->isSupportColor())
     {
