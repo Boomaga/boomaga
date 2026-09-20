@@ -102,6 +102,24 @@ Installing the printer
 Once the program has been installed, it’s time to add the virtual printer. Please note that this has to be
 done only once. You don’t have to install the printer over again when updating the program.
 
+Boomaga requires CUPS. On a systemd-based Linux distribution, enable and start it with:
+
+```sh
+sudo systemctl enable --now cups.service
+```
+
+Then add the Boomaga virtual printer:
+
+```sh
+sudo lpadmin -p Boomaga -E \
+    -v boomaga:/ \
+    -P /usr/share/ppd/boomaga/boomaga.ppd \
+    -o printer-is-shared=false
+```
+
+CUPS may warn that printer drivers are deprecated. The warning is expected because Boomaga currently
+uses a PPD-based virtual printer.
+
 The best solution is to use the `scripts/installPrinter.sh` from sources tree– just run it.
 
 If you wish to install the printer on your own, select "_Local Printers: Boomaga (Virtual boomaga printer)_" in the "create printer" dialogue and indicate the type, "_Generic Virtual boomaga printer_" or, if you can’t access the previous, select the "_build/cups/boomaga.ppd_" PPD file.
