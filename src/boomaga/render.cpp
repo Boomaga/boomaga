@@ -107,7 +107,12 @@ RenderWorker::~RenderWorker()
 QImage RenderWorker::renderSheet(int sheetNum)
 {
     if (!mPopplerDoc)
+    {
+        // The worker was marked busy when the job was handed out, so release it
+        // here as well - otherwise it would never be offered another one.
+        mBusy = false;
         return QImage();
+    }
 
     QImage img = doRenderSheet(mPopplerDoc, sheetNum, mResolution);
 
@@ -125,7 +130,11 @@ QImage RenderWorker::renderSheet(int sheetNum)
 QImage RenderWorker::renderPage(int sheetNum, const QRectF &pageRect, int pageNum)
 {
     if (!mPopplerDoc)
+    {
+        // See renderSheet().
+        mBusy = false;
         return QImage();
+    }
 
     QImage img = doRenderSheet(mPopplerDoc, sheetNum, mResolution);
 
