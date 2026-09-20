@@ -31,6 +31,9 @@ Boomaga makes it possible to:
     * 1, 2, 4, 8 pages per sheet
     * Booklet. Folding the sheets in two, you’ll get a book.
 
+See [Features](Features.md) for a detailed description of document assembly, page layouts,
+booklet and duplex printing, printer profiles, saved projects, and PDF export.
+
 Boomaga is an open source project distributed under the GPLv2 license (some files are distributed
 under the LGPLv2+ license). It would be more convenient to install the program from the package for your
 distribution; you can access the list of the packages at [our site](https://github.com/Boomaga/boomaga); installation guide for Ubuntu-based distros is avabilable [here](https://github.com/Boomaga/boomaga/wiki/How-to-Install-Boomaga-in-LinuxMint-or-Ubuntu). You can also build the program from the sources; you can download the sources of the latest stable version [here](https://github.com/Boomaga/boomaga/archive/master.zip). 
@@ -96,7 +99,7 @@ One simple solution is to install the program from the package manager of your d
 Should you wish to build the program from the sources, please refer to [INSTALL.txt](INSTALL.txt) for more information.
 
 
-Installing the printer
+Adding Boomaga as a virtual printer
 ======================
 
 Once the program has been installed, it’s time to add the virtual printer. Please note that this has to be
@@ -119,9 +122,3 @@ sudo lpadmin -p Boomaga -E \
 
 CUPS may warn that printer drivers are deprecated. The warning is expected because Boomaga currently
 uses a PPD-based virtual printer.
-
-The best solution is to use the `scripts/installPrinter.sh` from sources tree– just run it.
-
-If you wish to install the printer on your own, select "_Local Printers: Boomaga (Virtual boomaga printer)_" in the "create printer" dialogue and indicate the type, "_Generic Virtual boomaga printer_" or, if you can’t access the previous, select the "_build/cups/boomaga.ppd_" PPD file.
-
-For more information, see https://github.com/Boomaga/boomaga/wiki/Instalation-from-sources#installing-the-printer page.
