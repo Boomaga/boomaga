@@ -356,6 +356,13 @@
    <addaction name="separator"/>
    <addaction name="actionPreviousSheet"/>
    <addaction name="actionNextSheet"/>
+   <addaction name="separator"/>
+   <addaction name="actionRotatePageLeft"/>
+   <addaction name="actionRotatePageRight"/>
+   <addaction name="actionInsertBlankPageBefore"/>
+   <addaction name="actionInsertBlankPageAfter"/>
+   <addaction name="actionDeletePage"/>
+   <addaction name="actionUndoDeletePage"/>
   </widget>
   <action name="actionPrint">
    <property name="text">
@@ -383,6 +390,54 @@
   <action name="actionPreviousSheet">
    <property name="text">
     <string>Previous sheet</string>
+   </property>
+  </action>
+  <action name="actionRotatePageLeft">
+   <property name="text">
+    <string>Rotate left</string>
+   </property>
+   <property name="toolTip">
+    <string>Rotate the current page to the left</string>
+   </property>
+  </action>
+  <action name="actionRotatePageRight">
+   <property name="text">
+    <string>Rotate right</string>
+   </property>
+   <property name="toolTip">
+    <string>Rotate the current page to the right</string>
+   </property>
+  </action>
+  <action name="actionInsertBlankPageBefore">
+   <property name="text">
+    <string>Blank before</string>
+   </property>
+   <property name="toolTip">
+    <string>Insert a blank page before the current page</string>
+   </property>
+  </action>
+  <action name="actionInsertBlankPageAfter">
+   <property name="text">
+    <string>Blank after</string>
+   </property>
+   <property name="toolTip">
+    <string>Insert a blank page after the current page</string>
+   </property>
+  </action>
+  <action name="actionDeletePage">
+   <property name="text">
+    <string>Delete page</string>
+   </property>
+   <property name="toolTip">
+    <string>Delete the current page</string>
+   </property>
+  </action>
+  <action name="actionUndoDeletePage">
+   <property name="text">
+    <string>Undo delete</string>
+   </property>
+   <property name="toolTip">
+    <string>Restore the most recently deleted page</string>
    </property>
   </action>
   <action name="actionAbout">

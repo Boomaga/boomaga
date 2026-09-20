@@ -31,6 +31,7 @@
 #include <QLabel>
 #include <QProgressBar>
 #include <QMouseEvent>
+#include <QPointer>
 
 #include <kernel/job.h>
 
@@ -118,6 +119,7 @@ private:
 
     QProgressBar mProgressBar;
     QString      mSaveFile;
+    QPointer<ProjectPage> mLastDeletedPage;
 
     void fillPrintersCombo();
     void initActions();

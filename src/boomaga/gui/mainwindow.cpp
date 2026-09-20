@@ -375,6 +375,36 @@ void MainWindow::initActions()
     connect(act, SIGNAL(triggered()),
             project, SLOT(nextSheet()));
 
+    act = ui->actionRotatePageLeft;
+    act->setIcon(QIcon::fromTheme("object-rotate-left"));
+    connect(act, SIGNAL(triggered()),
+            this, SLOT(rotatePageLeft()));
+
+    act = ui->actionRotatePageRight;
+    act->setIcon(QIcon::fromTheme("object-rotate-right"));
+    connect(act, SIGNAL(triggered()),
+            this, SLOT(rotatePageRight()));
+
+    act = ui->actionInsertBlankPageBefore;
+    act->setIcon(QIcon::fromTheme("insert-page-break"));
+    connect(act, SIGNAL(triggered()),
+            this, SLOT(insertBlankPageBefore()));
+
+    act = ui->actionInsertBlankPageAfter;
+    act->setIcon(QIcon::fromTheme("insert-page-break"));
+    connect(act, SIGNAL(triggered()),
+            this, SLOT(insertBlankPageAfter()));
+
+    act = ui->actionDeletePage;
+    act->setIcon(QIcon::fromTheme("edit-delete"));
+    connect(act, SIGNAL(triggered()),
+            this, SLOT(deletePage()));
+
+    act = ui->actionUndoDeletePage;
+    act->setIcon(QIcon::fromTheme("edit-undo"));
+    connect(act, SIGNAL(triggered()),
+            this, SLOT(undoDeletePage()));
+
     act = ui->actionOpen;
     connect(act, SIGNAL(triggered()),
             this, SLOT(load()));
@@ -450,6 +480,14 @@ void MainWindow::updateWidgets()
 
     ui->actionPreviousSheet->setEnabled(project->currentSheetNum() > 0);
     ui->actionNextSheet->setEnabled(project->currentSheetNum() < project->previewSheetCount() - 1);
+
+    bool hasCurrentPage = project->currentPage() != 0;
+    ui->actionRotatePageLeft->setEnabled(hasCurrentPage);
+    ui->actionRotatePageRight->setEnabled(hasCurrentPage);
+    ui->actionInsertBlankPageBefore->setEnabled(hasCurrentPage);
+    ui->actionInsertBlankPageAfter->setEnabled(hasCurrentPage);
+    ui->actionDeletePage->setEnabled(hasCurrentPage);
+    ui->actionUndoDeletePage->setEnabled(mLastDeletedPage && !mLastDeletedPage->visible());
 
     ui->actionSave->setEnabled(project->pageCount() > 0);
     ui->actionSaveAs->setEnabled(ui->actionSave->isEnabled());
@@ -1069,10 +1107,14 @@ void MainWindow::fillJobEditMenu(const Job &job, QMenu *menu)
 void MainWindow::deletePage()
 {
     PageAction *act = qobject_cast<PageAction*>(sender());
-    if (!act || !act->page())
+    ProjectPage *page = act ? act->page() : project->currentPage();
+    if (!page)
         return;
 
-    project->deletePage(act->page());
+    if (!page->isBlankPage())
+        mLastDeletedPage = page;
+
+    project->deletePage(page);
 }
 
 
@@ -1082,10 +1124,13 @@ void MainWindow::deletePage()
 void MainWindow::undoDeletePage()
 {
     PageAction *act = qobject_cast<PageAction*>(sender());
-    if (!act || !act->page())
+    ProjectPage *page = act ? act->page() : mLastDeletedPage.data();
+    if (!page || page->visible())
         return;
 
-    project->undoDeletePage(act->page());
+    project->undoDeletePage(page);
+    if (page == mLastDeletedPage)
+        mLastDeletedPage.clear();
 }
 
 
@@ -1108,10 +1153,11 @@ void MainWindow::deletePagesEnd()
 void MainWindow::insertBlankPageBefore()
 {
     PageAction *act = qobject_cast<PageAction*>(sender());
-    if (!act || !act->page())
+    ProjectPage *page = act ? act->page() : project->currentPage();
+    if (!page)
         return;
 
-    project->insertBlankPageBefore(act->page());
+    project->insertBlankPageBefore(page);
 }
 
 
@@ -1121,10 +1167,11 @@ void MainWindow::insertBlankPageBefore()
 void MainWindow::insertBlankPageAfter()
 {
     PageAction *act = qobject_cast<PageAction*>(sender());
-    if (!act || !act->page())
+    ProjectPage *page = act ? act->page() : project->currentPage();
+    if (!page)
         return;
 
-    project->insertBlankPageAfter(act->page());
+    project->insertBlankPageAfter(page);
 }
 
 
@@ -1193,10 +1240,11 @@ void MainWindow::rotateJobRight()
 void MainWindow::rotatePageLeft()
 {
     PageAction *act = qobject_cast<PageAction*>(sender());
-    if (!act || !act->page())
+    ProjectPage *page = act ? act->page() : project->currentPage();
+    if (!page)
         return;
 
-    act->page()->setManualRotation(act->page()->manualRotation() - Rotate90);
+    page->setManualRotation(page->manualRotation() - Rotate90);
     project->update();
 }
 
@@ -1207,10 +1255,11 @@ void MainWindow::rotatePageLeft()
 void MainWindow::rotatePageRight()
 {
     PageAction *act = qobject_cast<PageAction*>(sender());
-    if (!act || !act->page())
+    ProjectPage *page = act ? act->page() : project->currentPage();
+    if (!page)
         return;
 
-    act->page()->setManualRotation(act->page()->manualRotation() + Rotate90);
+    page->setManualRotation(page->manualRotation() + Rotate90);
     project->update();
 }
 
