@@ -53,7 +53,7 @@
     </message>
     <message>
         <source>If you want to help translate, join the Boomaga translation team on &lt;a %1&gt;Weblate&lt;/a&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokud chcete pomoci s překladem, přidejte se k překladatelskému týmu Boomagy na &lt;a %1&gt;Weblate&lt;/a&gt;.</translation>
     </message>
     <message>
         <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on GitHub.</source>
@@ -87,7 +87,7 @@
     </message>
     <message>
         <source>Sheets per sub-booklet:</source>
-        <translation>Listů na dílčí knížečku</translation>
+        <translation>Listů na dílčí knížečku:</translation>
     </message>
     <message>
         <source>Autosave your jobs every time you print.</source>
@@ -104,22 +104,22 @@
     <message>
         <source>Automatically check for updates</source>
         <extracomment>Setting groupbox title</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Automatické kontroly aktualizací</translation>
     </message>
     <message>
         <source>Check now</source>
         <extracomment>Buuton title for check updates </extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Zkontrolovat nyní</translation>
     </message>
     <message>
         <source>Last check was %1</source>
         <comment>Information about last update</comment>
-        <translation type="unfinished"></translation>
+        <translation>Poslední kontrola: %1</translation>
     </message>
     <message>
         <source>Never checked</source>
         <comment>Information about last update</comment>
-        <translation type="unfinished"></translation>
+        <translation>Zatím nekontrolováno</translation>
     </message>
     <message>
         <source>Select directory for saved jobs.</source>
@@ -138,7 +138,7 @@
     <name>CupsBooFile</name>
     <message>
         <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
-        <translation>Nelze přečíst soubor &quot;%1&quot;, protože buď tento není podporovaným souborovým typem, nebo protože soubor byl poškozen.</translation>
+        <translation>Soubor „%1&quot; nelze přečíst. Buď jde o nepodporovaný formát, nebo je soubor poškozený.</translation>
     </message>
 </context>
 <context>
@@ -169,7 +169,7 @@
     </message>
     <message>
         <source> The name of the person who created the document.</source>
-        <translation>Jméno osoby, která dokument vytvořila.</translation>
+        <translation> Jméno osoby, která dokument vytvořila.</translation>
     </message>
     <message>
         <source>Title:</source>
@@ -181,11 +181,11 @@
     </message>
     <message>
         <source> The subject of the document.</source>
-        <translation>Předmět dokumentu.</translation>
+        <translation> Předmět dokumentu.</translation>
     </message>
     <message>
         <source> Keywords associated with the document.</source>
-        <translation>Klíčová slova spojená s dokumentem.</translation>
+        <translation> Klíčová slova spojená s dokumentem.</translation>
     </message>
     <message>
         <source>Keywords:</source>
@@ -203,11 +203,11 @@
         <source>A file named &quot;%1&quot; already exists.
 Are you sure you want to overwrite it?</source>
         <translation>Soubor s názvem &quot;%1&quot; již existuje.
-Jste si jistý, že jej chcete přepsat?</translation>
+Opravdu jej chcete přepsat?</translation>
     </message>
     <message>
         <source> The document&apos;s title.</source>
-        <translation>Název dokumentu.</translation>
+        <translation> Název dokumentu.</translation>
     </message>
 </context>
 <context>
@@ -306,51 +306,51 @@ Jste si jistý, že jej chcete přepsat?</translation>
     </message>
     <message>
         <source>Rotate left</source>
-        <translation type="unfinished"></translation>
+        <translation>Otočit doleva</translation>
     </message>
     <message>
         <source>Rotate the current page to the left</source>
-        <translation type="unfinished"></translation>
+        <translation>Otočit aktuální stranu doleva</translation>
     </message>
     <message>
         <source>Rotate right</source>
-        <translation type="unfinished"></translation>
+        <translation>Otočit doprava</translation>
     </message>
     <message>
         <source>Rotate the current page to the right</source>
-        <translation type="unfinished"></translation>
+        <translation>Otočit aktuální stranu doprava</translation>
     </message>
     <message>
         <source>Blank before</source>
-        <translation type="unfinished"></translation>
+        <translation>Prázdná před</translation>
     </message>
     <message>
         <source>Insert a blank page before the current page</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit prázdnou stranu před aktuální stranu</translation>
     </message>
     <message>
         <source>Blank after</source>
-        <translation type="unfinished"></translation>
+        <translation>Prázdná za</translation>
     </message>
     <message>
         <source>Insert a blank page after the current page</source>
-        <translation type="unfinished"></translation>
+        <translation>Vložit prázdnou stranu za aktuální stranu</translation>
     </message>
     <message>
         <source>Delete page</source>
-        <translation type="unfinished"></translation>
+        <translation>Smazat stranu</translation>
     </message>
     <message>
         <source>Delete the current page</source>
-        <translation type="unfinished"></translation>
+        <translation>Smazat aktuální stranu</translation>
     </message>
     <message>
         <source>Restore the most recently deleted page</source>
-        <translation type="unfinished"></translation>
+        <translation>Obnovit naposledy smazanou stranu</translation>
     </message>
     <message>
         <source>Add Boomaga as virtual printer</source>
-        <translation type="unfinished"></translation>
+        <translation>Přidat Boomagu jako virtuální tiskárnu</translation>
     </message>
     <message>
         <source>About Boomaga</source>
@@ -359,12 +359,12 @@ Jste si jistý, že jej chcete přepsat?</translation>
     <message>
         <source>Check for Updates...</source>
         <extracomment>Menu action text</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Zkontrolovat aktualizace...</translation>
     </message>
     <message>
         <source>Check for Updates</source>
         <extracomment>menu action tooltip</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Zkontrolovat aktualizace</translation>
     </message>
     <message>
         <source>Boomaga</source>
@@ -420,29 +420,33 @@ Jste si jistý, že jej chcete přepsat?</translation>
         <source>This will run the following command in a terminal. sudo will ask for your password if authentication is required.
 
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Toto spustí v terminálu následující příkaz. Pokud bude potřeba ověření, sudo si vyžádá vaše heslo.
+
+%1</translation>
     </message>
     <message>
         <source>Run command</source>
-        <translation type="unfinished"></translation>
+        <translation>Spustit příkaz</translation>
     </message>
     <message>
         <source>Boomaga virtual printer added successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Virtuální tiskárna Boomaga byla úspěšně přidána.</translation>
     </message>
     <message>
         <source>Could not add the Boomaga virtual printer. See the error above. Exit code:</source>
-        <translation type="unfinished"></translation>
+        <translation>Virtuální tiskárnu Boomaga se nepodařilo přidat. Chybu najdete výše. Návratový kód:</translation>
     </message>
     <message>
         <source>Press Enter to close this terminal.</source>
-        <translation type="unfinished"></translation>
+        <translation>Zavřete tento terminál stisknutím klávesy Enter.</translation>
     </message>
     <message>
         <source>Could not open a terminal for sudo authentication. Run this command in a terminal:
 
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nepodařilo se otevřít terminál pro ověření přes sudo. Spusťte tento příkaz v terminálu:
+
+%1</translation>
     </message>
     <message>
         <source>Insert blank page after this page</source>
@@ -621,7 +625,7 @@ Jste si jistý, že jej chcete přepsat?</translation>
     <message>
         <source>&amp;Preferences...</source>
         <extracomment>menu action text</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Nastavení...</translation>
     </message>
     <message>
         <source>&amp;Export to PDF...</source>
@@ -633,7 +637,7 @@ Jste si jistý, že jej chcete přepsat?</translation>
     </message>
     <message>
         <source>Delete current job</source>
-        <translation>Smazat nynější úlohu</translation>
+        <translation>Smazat aktuální úlohu</translation>
     </message>
     <message>
         <source>Auto saving</source>
@@ -766,7 +770,7 @@ Jste si jistý, že jej chcete přepsat?</translation>
     </message>
     <message>
         <source>Settings</source>
-        <translation>Nastavení</translation>
+        <translation>Tisk</translation>
     </message>
     <message>
         <source>Print on both sides</source>
