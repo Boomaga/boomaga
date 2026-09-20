@@ -53,7 +53,7 @@
     </message>
     <message>
         <source>If you want to help translate, join the Boomaga translation team on &lt;a %1&gt;Weblate&lt;/a&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Jeśli chcesz pomóc w tłumaczeniu, dołącz do grupy tłumaczy Boomaga na &lt;a %1&gt;Weblate&lt;/a&gt;.</translation>
     </message>
     <message>
         <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on GitHub.</source>
@@ -104,22 +104,22 @@
     <message>
         <source>Automatically check for updates</source>
         <extracomment>Setting groupbox title</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Automatycznie sprawdzaj aktualizacje</translation>
     </message>
     <message>
         <source>Check now</source>
         <extracomment>Buuton title for check updates </extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Sprawdż teraz</translation>
     </message>
     <message>
         <source>Last check was %1</source>
         <comment>Information about last update</comment>
-        <translation type="unfinished"></translation>
+        <translation>Ostatnio sprawdzano %1</translation>
     </message>
     <message>
         <source>Never checked</source>
         <comment>Information about last update</comment>
-        <translation type="unfinished"></translation>
+        <translation>Nigdy nie sprawdzano</translation>
     </message>
     <message>
         <source>Select directory for saved jobs.</source>
@@ -193,7 +193,7 @@
     </message>
     <message>
         <source>PDF files (*.pdf);;All files (*.*)</source>
-        <translation>Pliki PDF  (*.pdf);;Wszystkie pliki (*.*)</translation>
+        <translation>Pliki PDF (*.pdf);;Wszystkie pliki (*.*)</translation>
     </message>
     <message>
         <source>Overwrite file?</source>
@@ -214,7 +214,7 @@ Czy na pewno go zastąpić?</translation>
     <name>InFile</name>
     <message>
         <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
-        <translation>Nie można odczytać pliku &quot;%1&quot; ponieważ ten typ nie jest wspierany lub plik uległ uszkodzeniu.</translation>
+        <translation>Nie można odczytać pliku &quot;%1&quot;, ponieważ ten typ nie jest wspierany lub plik uległ uszkodzeniu.</translation>
     </message>
 </context>
 <context>
@@ -257,7 +257,7 @@ Czy na pewno go zastąpić?</translation>
     <message>
         <source>Print on both sides of a sheet.</source>
         <comment>MainForm::Double-sided checkbox tooltip</comment>
-        <translation>Druk obustronny.</translation>
+        <translation>Drukuje na obu stronach kartki.</translation>
     </message>
     <message>
         <source>Double-sided</source>
@@ -306,51 +306,51 @@ Czy na pewno go zastąpić?</translation>
     </message>
     <message>
         <source>Rotate left</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrót w lewo</translation>
     </message>
     <message>
         <source>Rotate the current page to the left</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrót bieżącej strony w lewo</translation>
     </message>
     <message>
         <source>Rotate right</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrót w prawo</translation>
     </message>
     <message>
         <source>Rotate the current page to the right</source>
-        <translation type="unfinished"></translation>
+        <translation>Obrót bieżącej strony w prawo</translation>
     </message>
     <message>
         <source>Blank before</source>
-        <translation type="unfinished"></translation>
+        <translation>Pusta strona przed</translation>
     </message>
     <message>
         <source>Insert a blank page before the current page</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaje pustą stronę przed bieżącą stronę</translation>
     </message>
     <message>
         <source>Blank after</source>
-        <translation type="unfinished"></translation>
+        <translation>Pusta strona po</translation>
     </message>
     <message>
         <source>Insert a blank page after the current page</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaje pustą stronę za biężącą stroną</translation>
     </message>
     <message>
         <source>Delete page</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń stronę</translation>
     </message>
     <message>
         <source>Delete the current page</source>
-        <translation type="unfinished"></translation>
+        <translation>Usuń bieżącą stronę</translation>
     </message>
     <message>
         <source>Restore the most recently deleted page</source>
-        <translation type="unfinished"></translation>
+        <translation>Przywraca ostatnio usuniętą stronę</translation>
     </message>
     <message>
         <source>Add Boomaga as virtual printer</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodaj sterownik drukarki wirtualnej Boomaga</translation>
     </message>
     <message>
         <source>About Boomaga</source>
@@ -359,12 +359,12 @@ Czy na pewno go zastąpić?</translation>
     <message>
         <source>Check for Updates...</source>
         <extracomment>Menu action text</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Sprawdź aktualizacje...</translation>
     </message>
     <message>
         <source>Check for Updates</source>
         <extracomment>menu action tooltip</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Sprawdż aktualizacje</translation>
     </message>
     <message>
         <source>Boomaga</source>
@@ -420,29 +420,33 @@ Czy na pewno go zastąpić?</translation>
         <source>This will run the following command in a terminal. sudo will ask for your password if authentication is required.
 
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>To uruchamia następujące polecenie w terminalu. Należy podać hasło administratora (sudo) w celu identyfikacji.
+
+%1</translation>
     </message>
     <message>
         <source>Run command</source>
-        <translation type="unfinished"></translation>
+        <translation>Uruchom polecenie</translation>
     </message>
     <message>
         <source>Boomaga virtual printer added successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Dodawanie Boomaga jako drukarki wirtualnej powiodło się.</translation>
     </message>
     <message>
         <source>Could not add the Boomaga virtual printer. See the error above. Exit code:</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można zainstalować drukarki wirtualnej Boomaga. Patrz błąd powyżej. Kod wyjścia:</translation>
     </message>
     <message>
         <source>Press Enter to close this terminal.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wciśnij Enter, aby zamknąć terminal.</translation>
     </message>
     <message>
         <source>Could not open a terminal for sudo authentication. Run this command in a terminal:
 
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Nie można otworzyć terminalu w trybie administratora (sudo) dla tej identyfikacji. Uruchom polecenie w terminalu:
+ 
+%1</translation>
     </message>
     <message>
         <source>Insert blank page after this page</source>
@@ -621,7 +625,7 @@ Czy na pewno go zastąpić?</translation>
     <message>
         <source>&amp;Preferences...</source>
         <extracomment>menu action text</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Ustawienia...</translation>
     </message>
     <message>
         <source>&amp;Export to PDF...</source>
@@ -797,7 +801,7 @@ Czy na pewno go zastąpić?</translation>
     <name>QObject</name>
     <message>
         <source>I can&apos;t read from file &apos;%1&apos;</source>
-        <translation>Nie można odczytać pliku &apos;%1&apos;</translation>
+        <translation>Nie można odczytać z pliku &apos;%1&apos;</translation>
     </message>
     <message>
         <source>I can&apos;t write to file &apos;%1&apos;</source>
