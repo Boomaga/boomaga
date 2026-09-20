@@ -101,6 +101,8 @@ private:
     int mThreadCount;
     QList<QPair<int, bool> > mQueue;
 
+    RenderWorker *idleWorker() const;
+
     // Return whether the job was really handed to the worker.
     bool startRenderSheet(RenderWorker *worker, int sheetNum);
     bool startRenderPage(RenderWorker *worker, int pageNum);

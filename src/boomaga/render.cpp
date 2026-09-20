@@ -27,6 +27,7 @@
 #include <poppler-document.h>
 #include <poppler-page-renderer.h>
 #include <poppler-page.h>
+#include <QCoreApplication>
 #include <QDebug>
 #include <QFile>
 #include <QFileInfo>
@@ -216,6 +217,11 @@ void Render::setFileName(const QString &fileName)
         delete worker;
     }
 
+    // A worker that was mid-render when it was stopped has already queued its
+    // result and its workerFinished() call to this thread. They describe the
+    // previous document, so drop them before they can reach the new one.
+    QCoreApplication::removePostedEvents(this, QEvent::MetaCall);
+
     mWorkers.resize(mThreadCount);
 
     for (int i=0; i<mWorkers.count(); ++i)
@@ -245,15 +251,26 @@ void Render::setFileName(const QString &fileName)
 /************************************************
  *
  ************************************************/
-void Render::renderSheet(int sheetNum)
+RenderWorker *Render::idleWorker() const
 {
     foreach (RenderWorker *worker, mWorkers)
     {
         if (!worker->isBusy())
-        {
-            startRenderSheet(worker, sheetNum);
-            return;
-        }
+            return worker;
+    }
+    return nullptr;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Render::renderSheet(int sheetNum)
+{
+    if (RenderWorker *worker = idleWorker())
+    {
+        startRenderSheet(worker, sheetNum);
+        return;
     }
 
     QPair<int,bool> job(sheetNum, false);
@@ -267,13 +284,10 @@ void Render::renderSheet(int sheetNum)
  ************************************************/
 void Render::renderPage(int pageNum)
 {
-    foreach (RenderWorker *worker, mWorkers)
+    if (RenderWorker *worker = idleWorker())
     {
-        if (!worker->isBusy())
-        {
-            startRenderPage(worker, pageNum);
-            return;
-        }
+        startRenderPage(worker, pageNum);
+        return;
     }
 
     QPair<int,bool> job(pageNum, true);
@@ -306,22 +320,24 @@ void Render::cancelPage(int pageNum)
  ************************************************/
 void Render::workerFinished()
 {
-    RenderWorker *worker = qobject_cast<RenderWorker*>(sender());
-    if (!worker)
-        return;
-
-    // A queued job may have become unrenderable while it waited, so keep
-    // taking jobs until one is really handed out. Stopping at the first
-    // unrenderable one would leave this worker without a job, and nothing
-    // would ever trigger it again to drain the rest of the queue.
+    // Hand queued jobs to whichever workers are idle. Deliberately not to
+    // sender(): between the finishing worker clearing its flag and this slot
+    // running, renderSheet()/renderPage() may already have given it a new job,
+    // and a second one would pile up on it while other workers sit idle.
+    //
+    // A job that can no longer be started - its page is gone - leaves the
+    // worker idle, so the loop simply moves on to the next job.
     while (!mQueue.isEmpty())
     {
-        QPair<int,bool> job = mQueue.takeFirst();
-
-        bool started = job.second ? startRenderPage(worker, job.first)
-                                  : startRenderSheet(worker, job.first);
-        if (started)
+        RenderWorker *worker = idleWorker();
+        if (!worker)
             return;
+
+        QPair<int,bool> job = mQueue.takeFirst();
+        if (job.second)
+            startRenderPage(worker, job.first);
+        else
+            startRenderSheet(worker, job.first);
     }
 }
 
