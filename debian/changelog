@@ -1,3 +1,9 @@
+boomaga (3.7.0-1) resolute; urgency=medium
+
+  * New buttons, translation updates, menu entry for virtual printer
+
+ -- Archisman Panigrahi <apandada1@gmail.com>  Sun, 20 Sep 2026 06:07:32 -0400
+
 boomaga (3.6.0-1) resolute; urgency=medium
 
   * Fix CUPS rotation bug
