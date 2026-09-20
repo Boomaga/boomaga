@@ -29,7 +29,7 @@
     </message>
     <message>
         <source>Boomaga provides a virtual printer for CUPS. This can be used for print preview or for print booklets.</source>
-        <translation>Boomaga stellt einen virtuellen Drucker für CUPS zur Verfügung. Dieser kann als Druckvorschau oder zum Drucken von Booklets verwendet werden.</translation>
+        <translation>Boomaga stellt einen virtuellen Drucker für CUPS zur Verfügung. Dieser kann als Druckvorschau oder zum Drucken von Broschüren verwendet werden.</translation>
     </message>
     <message>
         <source>Copyright: %1-%2 %3</source>
@@ -53,7 +53,7 @@
     </message>
     <message>
         <source>If you want to help translate, join the Boomaga translation team on &lt;a %1&gt;Weblate&lt;/a&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Wer mit dem Übersetzer-Team zusammenarbeiten möchte, bitte &lt;a %1&gt;bei Weblate melden&lt;/a&gt;.</translation>
     </message>
     <message>
         <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on GitHub.</source>
@@ -75,7 +75,7 @@
     </message>
     <message>
         <source>Divide your long booklets into smaller sub-booklets for printing.</source>
-        <translation>Große Broschüren (zum Drucken) aufteilen</translation>
+        <translation>Große Broschüren (zum Drucken) aufteilen.</translation>
     </message>
     <message>
         <source>Print as sub-booklets</source>
@@ -104,22 +104,22 @@
     <message>
         <source>Automatically check for updates</source>
         <extracomment>Setting groupbox title</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Updates automatisch prüfen</translation>
     </message>
     <message>
         <source>Check now</source>
         <extracomment>Buuton title for check updates </extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Jetzt prüfen</translation>
     </message>
     <message>
         <source>Last check was %1</source>
         <comment>Information about last update</comment>
-        <translation type="unfinished"></translation>
+        <translation>Die letzte Prüfung war am %1</translation>
     </message>
     <message>
         <source>Never checked</source>
         <comment>Information about last update</comment>
-        <translation type="unfinished"></translation>
+        <translation>Niemals geprüft</translation>
     </message>
     <message>
         <source>Select directory for saved jobs.</source>
@@ -138,7 +138,7 @@
     <name>CupsBooFile</name>
     <message>
         <source>I can&apos;t read file &quot;%1&quot; either because it&apos;s not a supported file type, or because the file has been damaged.</source>
-        <translation>IDie Datei &quot;%1&quot; konnte nicht gelesen werden, weil ihr Dateityp nicht unterstützt wird oder die Datei beschädigt ist.</translation>
+        <translation>Die Datei &quot;%1&quot; konnte nicht gelesen werden, weil ihr Dateityp nicht unterstützt wird oder die Datei beschädigt ist.</translation>
     </message>
 </context>
 <context>
@@ -169,7 +169,7 @@
     </message>
     <message>
         <source> The name of the person who created the document.</source>
-        <translation>Name des Autors, der das Dokument erstellt hat.</translation>
+        <translation> Name des Authors, der das Dokument erstellt hat.</translation>
     </message>
     <message>
         <source>Title:</source>
@@ -181,11 +181,11 @@
     </message>
     <message>
         <source> The subject of the document.</source>
-        <translation>Der Betreff des Dokuments.</translation>
+        <translation> Der Betreff des Dokuments.</translation>
     </message>
     <message>
         <source> Keywords associated with the document.</source>
-        <translation>Schlüsselwörter des Dokuments.</translation>
+        <translation> Schlüsselwörter des Dokuments.</translation>
     </message>
     <message>
         <source>Keywords:</source>
@@ -207,7 +207,7 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
     <message>
         <source> The document&apos;s title.</source>
-        <translation>Der Titel des Dokuments.</translation>
+        <translation> Der Titel des Dokuments.</translation>
     </message>
 </context>
 <context>
@@ -306,51 +306,51 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
     <message>
         <source>Rotate left</source>
-        <translation type="unfinished"></translation>
+        <translation>Gegen den Uhrzeigersinn</translation>
     </message>
     <message>
         <source>Rotate the current page to the left</source>
-        <translation type="unfinished"></translation>
+        <translation>Dreht die aktuelle Seite gegen den Uhrzeigersinn</translation>
     </message>
     <message>
         <source>Rotate right</source>
-        <translation type="unfinished"></translation>
+        <translation>Im Uhrzeigersinn</translation>
     </message>
     <message>
         <source>Rotate the current page to the right</source>
-        <translation type="unfinished"></translation>
+        <translation>Dreht die aktuelle Seite im Uhrzeigersinn</translation>
     </message>
     <message>
         <source>Blank before</source>
-        <translation type="unfinished"></translation>
+        <translation>Leere Seite davor</translation>
     </message>
     <message>
         <source>Insert a blank page before the current page</source>
-        <translation type="unfinished"></translation>
+        <translation>Fügt eine leere Seite vor die aktuelle Seite hinzu</translation>
     </message>
     <message>
         <source>Blank after</source>
-        <translation type="unfinished"></translation>
+        <translation>Leere Seite danach</translation>
     </message>
     <message>
         <source>Insert a blank page after the current page</source>
-        <translation type="unfinished"></translation>
+        <translation>Fügt eine leere Seite nach der aktuellen Seite hinzu</translation>
     </message>
     <message>
         <source>Delete page</source>
-        <translation type="unfinished"></translation>
+        <translation>Seite löschen</translation>
     </message>
     <message>
         <source>Delete the current page</source>
-        <translation type="unfinished"></translation>
+        <translation>Löscht die aktuelle Seite</translation>
     </message>
     <message>
         <source>Restore the most recently deleted page</source>
-        <translation type="unfinished"></translation>
+        <translation>Zuletzt gelöschte Seite wieder rückgängig machen</translation>
     </message>
     <message>
         <source>Add Boomaga as virtual printer</source>
-        <translation type="unfinished"></translation>
+        <translation>Boomaga als virtuellen Drucker hinzufügen</translation>
     </message>
     <message>
         <source>About Boomaga</source>
@@ -359,12 +359,12 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     <message>
         <source>Check for Updates...</source>
         <extracomment>Menu action text</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Updates prüfen...</translation>
     </message>
     <message>
         <source>Check for Updates</source>
         <extracomment>menu action tooltip</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>Updates prüfen</translation>
     </message>
     <message>
         <source>Boomaga</source>
@@ -420,29 +420,33 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
         <source>This will run the following command in a terminal. sudo will ask for your password if authentication is required.
 
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Folgender Befehl wird im Terminal gestartet. Im Administrator-Modus (sudo) ist es notwendig, das Administrator-Passwort einzugeben.
+ 
+%1</translation>
     </message>
     <message>
         <source>Run command</source>
-        <translation type="unfinished"></translation>
+        <translation>Befehl ausführen</translation>
     </message>
     <message>
         <source>Boomaga virtual printer added successfully.</source>
-        <translation type="unfinished"></translation>
+        <translation>Virtueller Boomaga-Drucker wurde erfolgreich hinzugefügt.</translation>
     </message>
     <message>
         <source>Could not add the Boomaga virtual printer. See the error above. Exit code:</source>
-        <translation type="unfinished"></translation>
+        <translation>Boomaga konnte nicht als virtueller Drucker hinzugefügt werden. Die Fehlerausgabe ist zu prüfen. Beendigungscode:</translation>
     </message>
     <message>
         <source>Press Enter to close this terminal.</source>
-        <translation type="unfinished"></translation>
+        <translation>Enter-Taste drücken, um das Terminal zu schließen.</translation>
     </message>
     <message>
         <source>Could not open a terminal for sudo authentication. Run this command in a terminal:
 
 %1</source>
-        <translation type="unfinished"></translation>
+        <translation>Das Terminal kann nicht im Administrator-Modus (sudo) geöffnet werden. &lt;br&gt;Folgender Befehl ist im Terminal auszuführen:
+ 
+%1</translation>
     </message>
     <message>
         <source>Insert blank page after this page</source>
@@ -507,7 +511,7 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     </message>
     <message>
         <source>Project saved successfully.</source>
-        <translation>Projekt erfolgreich gespeichert</translation>
+        <translation>Projekt erfolgreich gespeichert.</translation>
     </message>
     <message>
         <source>All supported files (*.pdf *.boo);;Boomaga files (*.boo);;PDF files (*.pdf);;All files (*.*)</source>
@@ -621,7 +625,7 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     <message>
         <source>&amp;Preferences...</source>
         <extracomment>menu action text</extracomment>
-        <translation type="unfinished"></translation>
+        <translation>&amp;Einstellungen...</translation>
     </message>
     <message>
         <source>&amp;Export to PDF...</source>
@@ -654,7 +658,7 @@ Sind Sie sicher, dass diese überschrieben werden soll?</translation>
     <message>
         <source>Converting PostScript to PDF</source>
         <comment>Progressbar text</comment>
-        <translation> PostScript wird in PDF umgewandelt</translation>
+        <translation>PostScript wird in PDF umgewandelt</translation>
     </message>
     <message>
         <source>I can&apos;t start gs converter: &quot;%1&quot;</source>
