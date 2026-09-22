@@ -24,6 +24,7 @@
  * END_COMMON_COPYRIGHT_HEADER */
 
 #include "render.h"
+#include <mutex>
 #include <poppler-document.h>
 #include <poppler-page-renderer.h>
 #include <poppler-page.h>
@@ -36,9 +37,9 @@
 
 
 /************************************************
-
+ *
  ************************************************/
-QImage doRenderSheet(poppler::document *doc, int sheetNum, double resolution)
+static QImage renderSheetUnguarded(poppler::document *doc, int sheetNum, double resolution)
 {
     poppler::page *page = doc->create_page(sheetNum);
     if (page)
@@ -74,6 +75,42 @@ QImage doRenderSheet(poppler::document *doc, int sheetNum, double resolution)
     }
 
     return QImage();
+}
+
+
+/************************************************
+ * Poppler builds its process wide LittleCMS state - GfxState::sRGBProfile,
+ * GfxXYZ2DisplayTransforms::XYZProfile and the CMS error handler - lazily in the
+ * GfxState constructor, without any locking. Several threads reaching that code
+ * at the same time corrupt the heap and abort the process, see issue #144.
+ *
+ * The GfxState constructor runs for every page render, so the very first
+ * render that succeeds builds that state, and every render after it only reads
+ * it. Renders are therefore serialised until one has succeeded; from then on
+ * the lock is taken and released uncontended and everything runs in parallel.
+ * Nothing is rendered twice, and a document whose pages cannot be rendered
+ * simply keeps the lock in place - it has no concurrent renders to protect.
+ *
+ * This works around a Poppler bug, reported upstream as
+ * https://gitlab.freedesktop.org/poppler/poppler/-/work_items/1800
+ * It can be dropped once Boomaga requires a Poppler that guards those statics.
+ ************************************************/
+QImage doRenderSheet(poppler::document *doc, int sheetNum, double resolution)
+{
+    static std::mutex initMutex;
+    static bool initialized = false;
+
+    {
+        std::lock_guard<std::mutex> lock(initMutex);
+        if (!initialized)
+        {
+            QImage img = renderSheetUnguarded(doc, sheetNum, resolution);
+            initialized = !img.isNull();
+            return img;
+        }
+    }
+
+    return renderSheetUnguarded(doc, sheetNum, resolution);
 }
 
 
