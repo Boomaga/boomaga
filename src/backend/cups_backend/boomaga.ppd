@@ -49,6 +49,7 @@
 *OrderDependency: 100 JCLSetup *PageSize
 *DefaultPageSize: A4
 *PageSize Letter/Letter: "@PJL SET PAPER=LETTER<0A>"
+*PageSize A3/A3: "@PJL SET PAPER=A3<0A>"
 *PageSize A4/A4: "@PJL SET PAPER=A4<0A>"
 *PageSize A5/A5: "@PJL SET PAPER=A5<0A>"
 *PageSize A6/A6: "@PJL SET PAPER=A6<0A>"
@@ -71,6 +72,7 @@
 *OrderDependency: 100 JCLSetup *PageRegion
 *DefaultPageRegion: A4
 *PageRegion Letter/Letter: "@PJL SET PAPER=LETTER<0A>"
+*PageRegion A3/A3: "@PJL SET PAPER=A3<0A>"
 *PageRegion A4/A4: "@PJL SET PAPER=A4<0A>"
 *PageRegion A5/A5: "@PJL SET PAPER=A5<0A>"
 *PageRegion A6/A6: "@PJL SET PAPER=A6<0A>"
@@ -91,6 +93,7 @@
 
 *DefaultImageableArea: Letter
 *ImageableArea Letter/Letter: "18 36 594 756"
+*ImageableArea A3/A3: "18 36 824 1155"
 *ImageableArea A4/A4: "18 36 577 806"
 *ImageableArea A5/A5: "18 36 402 559"
 *ImageableArea A6/A6: "18 36 279 384"
@@ -110,6 +113,7 @@
 
 *DefaultPaperDimension: Letter
 *PaperDimension Letter/Letter: "612 792"
+*PaperDimension A3/A3: "842 1191"
 *PaperDimension A4/A4: "595 842"
 *PaperDimension A5/A5: "420 595"
 *PaperDimension A6/A6: "297 420"
