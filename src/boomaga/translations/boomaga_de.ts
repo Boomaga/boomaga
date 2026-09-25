@@ -44,8 +44,16 @@
         <translation>Lizenz: %1</translation>
     </message>
     <message>
-        <source>If you are interested in working with our development team, &lt;a %1&gt;join us&lt;/a&gt;.</source>
-        <translation>Wer mit dem Entwickler-Team zusammenarbeiten möchte, bitte &lt;a %1&gt;hier melden&lt;/a&gt;.</translation>
+        <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team&lt;/a&gt; and &lt;a %2&gt;contributors&lt;/a&gt; on GitHub.</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>Contributors:</source>
+        <translation type="unfinished"></translation>
+    </message>
+    <message>
+        <source>If you are interested in working with our development team, create a new issue on GitHub to &lt;a %1&gt;join us&lt;/a&gt;.</source>
+        <translation type="unfinished"></translation>
     </message>
     <message>
         <source>Special thanks to:</source>
@@ -54,10 +62,6 @@
     <message>
         <source>If you want to help translate, join the Boomaga translation team on &lt;a %1&gt;Weblate&lt;/a&gt;.</source>
         <translation>Wer mit dem Übersetzer-Team zusammenarbeiten möchte, bitte &lt;a %1&gt;bei Weblate melden&lt;/a&gt;.</translation>
-    </message>
-    <message>
-        <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team and contributors&lt;/a&gt; on GitHub.</source>
-        <translation>Boomaga wird vom &lt;a %1&gt;Boomaga-Team und Beitragenden&lt;/a&gt; auf GitHub entwickelt.</translation>
     </message>
 </context>
 <context>

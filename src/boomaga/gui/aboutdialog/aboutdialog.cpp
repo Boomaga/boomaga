@@ -129,11 +129,30 @@ QString AboutDialog::aboutText() const
  ************************************************/
 QString AboutDialog::authorsText() const
 {
-    return QString("%1<p>%2").arg(
-                tr("Boomaga is developed by the <a %1>Boomaga Team and contributors</a> on GitHub.")
-                    .arg(" href='https://github.com/orgs/Boomaga/people'"),
-                tr("If you are interested in working with our development team, <a %1>join us</a>.")
-                    .arg(" href='https://github.com/Boomaga/boomaga'")
+    return QString("%1<p><b>%2</b><ul>%3</ul><p><a href='https://github.com/Boomaga/boomaga/graphs/contributors?all=1'>View all contributors</a><p>%4").arg(
+                tr("Boomaga is developed by the <a %1>Boomaga Team</a> and <a %2>contributors</a> on GitHub.")
+                    .arg(" href='https://github.com/orgs/Boomaga/people'")
+                    .arg(" href='https://github.com/Boomaga/boomaga/graphs/contributors?all=1'"),
+                tr("Contributors:"),
+                "<li><a href='https://github.com/sokoloff'>Alexander Sokoloff</a></li>"
+                "<li><a href='https://github.com/apandada1'>Archisman Panigrahi</a></li>"
+                "<li><a href='https://github.com/ByDMA'>byDMA</a></li>"
+                "<li><a href='https://github.com/carsonip'>Carson Ip</a></li>"
+                "<li><a href='https://github.com/dtardon'>David Tardon</a></li>"
+                "<li><a href='https://github.com/dthadi3'>dthadi3</a></li>"
+                "<li><a href='https://github.com/famo'>famo</a></li>"
+                "<li><a href='https://github.com/hoky24'>hoky24</a></li>"
+                "<li><a href='https://github.com/abdurrahmanavci'>Abdurrahman AVCI</a></li>"
+                "<li><a href='https://github.com/alecm'>Alec Moskvin</a></li>"
+                "<li><a href='https://github.com/andreybondrov'>Andrey Bondrov</a></li>"
+                "<li><a href='https://github.com/rominf'>rominf</a></li>"
+                "<li><a href='https://github.com/richardllom'>Richard llom</a></li>"
+                "<li><a href='https://github.com/XOlegator'>XOlegator</a></li>"
+                "<li><a href='https://github.com/perezmeyer'>Lisandro Damián Nicanor Pérez Meyer</a></li>"
+                "<li><a href='https://github.com/leonidborisenko'>Leonid Borisenko</a></li>"
+                "<li><a href='https://github.com/vitovt'>vitovt</a></li>",
+                tr("If you are interested in working with our development team, create a new issue on GitHub to <a %1>join us</a>.")
+                    .arg(" href='https://github.com/Boomaga/boomaga/issues'")
                 );
 }
 
