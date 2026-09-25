@@ -129,7 +129,7 @@ QString AboutDialog::aboutText() const
  ************************************************/
 QString AboutDialog::authorsText() const
 {
-    return QString("%1<p><b>%2</b><ul>%3</ul><p>%4").arg(
+    return QString("%1<p><b>%2</b><ul>%3</ul><p><a href='https://github.com/Boomaga/boomaga/graphs/contributors?all=1'>View all contributors</a><p>%4").arg(
                 tr("Boomaga is developed by the <a %1>Boomaga Team</a> and <a %2>contributors</a> on GitHub.")
                     .arg(" href='https://github.com/orgs/Boomaga/people'")
                     .arg(" href='https://github.com/Boomaga/boomaga/graphs/contributors?all=1'"),
@@ -150,8 +150,7 @@ QString AboutDialog::authorsText() const
                 "<li><a href='https://github.com/XOlegator'>XOlegator</a></li>"
                 "<li><a href='https://github.com/perezmeyer'>Lisandro Damián Nicanor Pérez Meyer</a></li>"
                 "<li><a href='https://github.com/leonidborisenko'>Leonid Borisenko</a></li>"
-                "<li><a href='https://github.com/vitovt'>vitovt</a></li>"
-                "<li><a href='https://github.com/Boomaga/boomaga/graphs/contributors?all=1'>View all contributors</a></li>",
+                "<li><a href='https://github.com/vitovt'>vitovt</a></li>",
                 tr("If you are interested in working with our development team, <a %1>join us</a>.")
                     .arg(" href='https://github.com/Boomaga/boomaga'")
                 );
