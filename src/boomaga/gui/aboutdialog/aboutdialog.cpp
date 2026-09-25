@@ -151,8 +151,8 @@ QString AboutDialog::authorsText() const
                 "<li><a href='https://github.com/perezmeyer'>Lisandro Damián Nicanor Pérez Meyer</a></li>"
                 "<li><a href='https://github.com/leonidborisenko'>Leonid Borisenko</a></li>"
                 "<li><a href='https://github.com/vitovt'>vitovt</a></li>",
-                tr("If you are interested in working with our development team, <a %1>join us</a>.")
-                    .arg(" href='https://github.com/Boomaga/boomaga'")
+                tr("If you are interested in working with our development team, create a new issue on GitHub to <a %1>join us</a>.")
+                    .arg(" href='https://github.com/Boomaga/boomaga/issues'")
                 );
 }
 
