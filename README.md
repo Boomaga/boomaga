@@ -115,7 +115,7 @@ One simple solution is to install the program from the package manager of your d
 
 - For Debian, please head over to the prebuilt .deb packages in [GitHub releases](https://github.com/Boomaga/boomaga/releases/latest).
 
-- For Arch Linux, use the AUR package, `yay -S boomaga`.
+- For Arch Linux, use the [AUR package](https://aur.archlinux.org/packages/boomaga), `yay -S boomaga`.
 
 Should you wish to build the program from the sources, please refer to [INSTALL.txt](INSTALL.txt) for more information.
 
