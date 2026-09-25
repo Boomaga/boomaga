@@ -11,26 +11,31 @@ permissions:
 
 jobs:
   build-deb:
-    name: Build for ${{ matrix.distribution }}
-    runs-on: ubuntu-latest
+    name: Build for ${{ matrix.distribution.name }} (${{ matrix.architecture.name }})
+    runs-on: ${{ matrix.architecture.runner }}
     container:
-      image: ${{ matrix.image }}
+      image: ${{ matrix.distribution.image }}
     strategy:
       fail-fast: false
       matrix:
-        include:
-          - distribution: Ubuntu 26.04
+        distribution:
+          - name: Ubuntu 26.04
             image: ubuntu:26.04
-            package-suffix: ubuntu-26_04
-          - distribution: Ubuntu 24.04
+            package_suffix: ubuntu-26_04
+          - name: Ubuntu 24.04
             image: ubuntu:24.04
-            package-suffix: ubuntu-24_04
-          - distribution: Debian 13
+            package_suffix: ubuntu-24_04
+          - name: Debian 13
             image: debian:13
-            package-suffix: debian-13
-          - distribution: Debian 12
+            package_suffix: debian-13
+          - name: Debian 12
             image: debian:12
-            package-suffix: debian-12
+            package_suffix: debian-12
+        architecture:
+          - name: amd64
+            runner: ubuntu-24.04
+          - name: arm64
+            runner: ubuntu-24.04-arm
     permissions:
       contents: write
 
@@ -64,13 +69,13 @@ jobs:
           dpkg-buildpackage --build=binary --no-sign
           for package in ../*.deb; do
             filename="${package##*/}"
-            mv "$package" "${filename%.deb}-${{ matrix.package-suffix }}.deb"
+            mv "$package" "${filename%.deb}-${{ matrix.distribution.package_suffix }}.deb"
           done
 
       - name: Upload package artifact
         uses: actions/upload-artifact@v4
         with:
-          name: boomaga-deb-packages-${{ matrix.package-suffix }}
+          name: boomaga-deb-packages-${{ matrix.distribution.package_suffix }}-${{ matrix.architecture.name }}
           path: "*.deb"
           if-no-files-found: error
 
