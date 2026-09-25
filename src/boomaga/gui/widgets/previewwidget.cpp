@@ -49,9 +49,9 @@
 /************************************************
  *
  ************************************************/
-RenderCache::RenderCache(double resolution, int threadCount, QObject *parent):
+RenderCache::RenderCache(double resolution, QObject *parent):
     QObject(parent),
-    mRender(new Render(resolution, threadCount, this))
+    mRender(new Render(resolution, this))
 {
     connect(mRender, SIGNAL(sheetReady(QImage,int)),
             this, SLOT(onSheetReady(QImage,int)));
@@ -160,7 +160,7 @@ PreviewWidget::PreviewWidget(QWidget *parent) :
     connect(project, SIGNAL(changed()),
             this, SLOT(refresh()));
 
-    mRender = new RenderCache(RESOLUTIN, 8, this);
+    mRender = new RenderCache(RESOLUTIN, this);
 
     connect(project, SIGNAL(tmpFileRenamed(QString)),
             mRender, SLOT(setFileName(QString)));

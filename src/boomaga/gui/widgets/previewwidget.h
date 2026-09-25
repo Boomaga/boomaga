@@ -38,7 +38,7 @@ class RenderCache: public QObject
 {
     Q_OBJECT
 public:
-    RenderCache(double resolution, int threadCount = 8, QObject *parent = 0);
+    explicit RenderCache(double resolution, QObject *parent = nullptr);
     ~RenderCache();
     QString fileName() const;
 
