@@ -91,7 +91,12 @@ void BoomagaDbus::doAdd(const QString &file)
 static bool doRunBoomaga(const QString &dbusAddress, const QList<QVariant> &args)
 {
     Log::debug("Try to start boomaga via DBus %s", dbusAddress.toLocal8Bit().data());
-    QDBusConnection dbus = QDBusConnection::connectToBus(dbusAddress, "boomaga");
+    // Qt caches bus connections by name, so each candidate address needs a
+    // distinct name. Otherwise the first failed connection is reused for all
+    // subsequent addresses.
+    static unsigned int connectionNumber = 0;
+    const QString connectionName = QStringLiteral("boomaga-%1").arg(connectionNumber++);
+    QDBusConnection dbus = QDBusConnection::connectToBus(dbusAddress, connectionName);
     if (!dbus.isConnected())
     {
 
