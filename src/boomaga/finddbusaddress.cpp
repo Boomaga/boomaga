@@ -45,18 +45,21 @@ using namespace std;
  ************************************************/
 static string readFile(const string &fileName, char delim)
 {
+    static const string envPrefix = "DBUS_SESSION_BUS_ADDRESS=";
+
     ifstream file(fileName, ios::binary);
     string line;
     while (getline(file, line, delim))
     {
-        if (line.find("DBUS_SESSION_BUS_ADDRESS=") != 0)
+        if (line.find(envPrefix) != 0)
             continue;
 
-        static int s = strlen("DBUS_SESSION_BUS_ADDRESS=");
-        s = line.find_first_not_of(" \t'\"", s);
+        const auto s = line.find_first_not_of(" \t'\"", envPrefix.length());
+        if (s == string::npos)
+            return "";
 
-        int e = line.find_last_not_of(" \t'\"") + 1;
-        return line.substr(s, e-s);
+        const auto e = line.find_last_not_of(" \t'\"");
+        return line.substr(s, e-s+1);
     }
 
     return "";
