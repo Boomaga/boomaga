@@ -28,6 +28,7 @@
 #include <poppler-document.h>
 #include <poppler-page-renderer.h>
 #include <poppler-page.h>
+#include <QCoreApplication>
 #include <QDebug>
 #include <QFile>
 #include <QFileInfo>
@@ -144,12 +145,19 @@ RenderWorker::~RenderWorker()
 QImage RenderWorker::renderSheet(int sheetNum)
 {
     if (!mPopplerDoc)
+    {
+        // The worker was marked busy when the job was handed out, so release it
+        // here as well - otherwise it would never be offered another one.
+        mBusy = false;
         return QImage();
+    }
 
-    mBusy = true;
     QImage img = doRenderSheet(mPopplerDoc, sheetNum, mResolution);
-    emit sheetReady(img, sheetNum);
+
+    // Clear the flag before emitting: the signal is delivered to the Render on
+    // another thread, which may hand this worker its next job straight away.
     mBusy = false;
+    emit sheetReady(img, sheetNum);
     return img;
 }
 
@@ -160,9 +168,12 @@ QImage RenderWorker::renderSheet(int sheetNum)
 QImage RenderWorker::renderPage(int sheetNum, const QRectF &pageRect, int pageNum)
 {
     if (!mPopplerDoc)
+    {
+        // See renderSheet().
+        mBusy = false;
         return QImage();
+    }
 
-    mBusy = true;
     QImage img = doRenderSheet(mPopplerDoc, sheetNum, mResolution);
 
     QSizeF printerSize =  project->printer()->paperRect().size();
@@ -193,8 +204,9 @@ QImage RenderWorker::renderPage(int sheetNum, const QRectF &pageRect, int pageNu
 
     img = img.copy(rect);
 
-    emit pageReady(img, pageNum);
+    // Clear the flag before emitting, see renderSheet().
     mBusy = false;
+    emit pageReady(img, pageNum);
     return img;
 }
 
@@ -233,12 +245,20 @@ void Render::setFileName(const QString &fileName)
 {
     mFileName = fileName;
 
+    // The queued jobs refer to the sheets of the previous document.
+    mQueue.clear();
+
     foreach(RenderWorker *worker, mWorkers)
     {
         worker->thread()->quit();
         worker->thread()->wait();
         delete worker;
     }
+
+    // A worker that was mid-render when it was stopped has already queued its
+    // result and its workerFinished() call to this thread. They describe the
+    // previous document, so drop them before they can reach the new one.
+    QCoreApplication::removePostedEvents(this, QEvent::MetaCall);
 
     mWorkers.resize(mThreadCount);
 
@@ -269,15 +289,26 @@ void Render::setFileName(const QString &fileName)
 /************************************************
  *
  ************************************************/
-void Render::renderSheet(int sheetNum)
+RenderWorker *Render::idleWorker() const
 {
     foreach (RenderWorker *worker, mWorkers)
     {
         if (!worker->isBusy())
-        {
-            startRenderSheet(worker, sheetNum);
-            return;
-        }
+            return worker;
+    }
+    return nullptr;
+}
+
+
+/************************************************
+ *
+ ************************************************/
+void Render::renderSheet(int sheetNum)
+{
+    if (RenderWorker *worker = idleWorker())
+    {
+        startRenderSheet(worker, sheetNum);
+        return;
     }
 
     QPair<int,bool> job(sheetNum, false);
@@ -291,13 +322,10 @@ void Render::renderSheet(int sheetNum)
  ************************************************/
 void Render::renderPage(int pageNum)
 {
-    foreach (RenderWorker *worker, mWorkers)
+    if (RenderWorker *worker = idleWorker())
     {
-        if (!worker->isBusy())
-        {
-            startRenderPage(worker, pageNum);
-            return;
-        }
+        startRenderPage(worker, pageNum);
+        return;
     }
 
     QPair<int,bool> job(pageNum, true);
@@ -330,14 +358,24 @@ void Render::cancelPage(int pageNum)
  ************************************************/
 void Render::workerFinished()
 {
-    if (!mQueue.isEmpty())
+    // Hand queued jobs to whichever workers are idle. Deliberately not to
+    // sender(): between the finishing worker clearing its flag and this slot
+    // running, renderSheet()/renderPage() may already have given it a new job,
+    // and a second one would pile up on it while other workers sit idle.
+    //
+    // A job that can no longer be started - its page is gone - leaves the
+    // worker idle, so the loop simply moves on to the next job.
+    while (!mQueue.isEmpty())
     {
-        RenderWorker *worker = qobject_cast<RenderWorker*>(sender());
+        RenderWorker *worker = idleWorker();
+        if (!worker)
+            return;
+
         QPair<int,bool> job = mQueue.takeFirst();
-        if (!job.second)
-            startRenderSheet(worker, job.first);
-        else
+        if (job.second)
             startRenderPage(worker, job.first);
+        else
+            startRenderSheet(worker, job.first);
     }
 }
 
@@ -345,23 +383,25 @@ void Render::workerFinished()
 /************************************************
  *
  ************************************************/
-void Render::startRenderSheet(RenderWorker *worker, int sheetNum)
+bool Render::startRenderSheet(RenderWorker *worker, int sheetNum)
 {
+    worker->setBusy(true);
     QMetaObject::invokeMethod(worker,
                               "renderSheet",
                               Qt::QueuedConnection,
                               Q_ARG(int, sheetNum));
+    return true;
 }
 
 
 /************************************************
  *
  ************************************************/
-void Render::startRenderPage(RenderWorker *worker, int pageNum)
+bool Render::startRenderPage(RenderWorker *worker, int pageNum)
 {
     int sheetNum = project->previewSheets().indexOfPage(pageNum);
     if (sheetNum < 0)
-        return;
+        return false;
 
     Sheet *sheet = project->previewSheets().at(sheetNum);
     ProjectPage *page = project->page(pageNum);
@@ -374,16 +414,18 @@ void Render::startRenderPage(RenderWorker *worker, int pageNum)
     }
 
     if (pageOnSheet < 0)
-        return;
+        return false;
 
     TransformSpec spec = project->layout()->transformSpec(sheet, pageOnSheet, project->rotation());
 
+    worker->setBusy(true);
     QMetaObject::invokeMethod(worker,
                               "renderPage",
                               Qt::QueuedConnection,
                               Q_ARG(int, sheetNum),
                               Q_ARG(QRectF, spec.rect),
                               Q_ARG(int, pageNum));
+    return true;
 }
 
 
