@@ -79,12 +79,21 @@ jobs:
           path: "*.deb"
           if-no-files-found: error
 
+      - name: Prepare GitHub release packages
+        if: github.event_name == 'release'
+        run: |
+          mkdir release-packages
+          for package in *.deb; do
+            case "$package" in
+              *dbgsym*) continue ;;
+            esac
+            cp "$package" release-packages/
+          done
+
       - name: Upload packages to GitHub release
         if: github.event_name == 'release'
         uses: softprops/action-gh-release@v2
         with:
-          files: |
-            *.deb
-            !*dbgsym*.deb
+          files: "release-packages/*.deb"
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
