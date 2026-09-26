@@ -6,8 +6,25 @@
 [Download](http://www.boomaga.org/download/)
 
 
+  <a href="https://www.star-history.com/?repos=boomaga%2Fboomaga&type=date&legend=bottom-right">
+    <picture>
+      <source
+        media="(prefers-color-scheme: dark)"
+        srcset="https://api.star-history.com/chart?repos=boomaga/boomaga&type=date&theme=dark&legend=bottom-right"
+      />
+      <source
+        media="(prefers-color-scheme: light)"
+        srcset="https://api.star-history.com/chart?repos=boomaga/boomaga&type=date&legend=bottom-right"
+      />
+      <img
+        alt="Star History Chart"
+        src="https://api.star-history.com/chart?repos=boomaga/boomaga&type=date&legend=bottom-right"
+        width="600"
+      />
+    </picture>
+  </a>
+  
 *We are looking for volunteers to help maintain this project.*
-
 
 
 About the program
