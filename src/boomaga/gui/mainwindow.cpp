@@ -342,17 +342,17 @@ void MainWindow::initActions()
 {
     QAction *act;
     act = ui->actionPrint;
-    act->setIcon(loadIcon("print"));
+    act->setIcon(QIcon::fromTheme("document-print"));
     connect(act, SIGNAL(triggered()),
             this, SLOT(print()));
 
     act = ui->actionPrintAndClose;
-    act->setIcon(loadIcon("print"));
+    act->setIcon(QIcon::fromTheme("document-print"));
     connect(act, SIGNAL(triggered()),
             this, SLOT(printAndClose()));
 
     act = ui->actionPrintWithOptions;
-    act->setIcon(loadIcon("print"));
+    act->setIcon(QIcon::fromTheme("document-print"));
     connect(act, SIGNAL(triggered()),
             this, SLOT(printWithOptions()));
 
@@ -362,17 +362,17 @@ void MainWindow::initActions()
 
     act = ui->actionPreviousSheet;
     if (qApp->layoutDirection() == Qt::LeftToRight)
-        act->setIcon(loadIcon("arrow-left"));
+        act->setIcon(QIcon::fromTheme("go-previous"));
     else
-        act->setIcon(loadIcon("arrow-right"));
+        act->setIcon(QIcon::fromTheme("go-next"));
     connect(act, SIGNAL(triggered()),
             project, SLOT(prevSheet()));
 
     act = ui->actionNextSheet;
     if (qApp->layoutDirection() == Qt::LeftToRight)
-        act->setIcon(loadIcon("arrow-right"));
+        act->setIcon(QIcon::fromTheme("go-next"));
     else
-        act->setIcon(loadIcon("arrow-left"));
+        act->setIcon(QIcon::fromTheme("go-previous"));
     connect(act, SIGNAL(triggered()),
             project, SLOT(nextSheet()));
 

@@ -149,7 +149,6 @@ set(UI_FILES
 
 # QRC files .................
 set(RESOURCES
-    misc/images/icons.qrc
     misc/images/mainicon.qrc
 )
 
