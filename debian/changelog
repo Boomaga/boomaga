@@ -1,3 +1,9 @@
+boomaga (3.9.1-1) resolute; urgency=medium
+
+  * Translation update
+
+ -- Archisman Panigrahi <apandada1@gmail.com>  Sat, 26 Sep 2026 12:09:09 -0400
+
 boomaga (3.9.0-1) resolute; urgency=medium
 
   * Fix Qt dbus issues (to fix print to boomaga in KDE+Ubuntu)
