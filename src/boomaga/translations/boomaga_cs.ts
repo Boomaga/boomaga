@@ -45,15 +45,15 @@
     </message>
     <message>
         <source>Boomaga is developed by the &lt;a %1&gt;Boomaga Team&lt;/a&gt; and &lt;a %2&gt;contributors&lt;/a&gt; on GitHub.</source>
-        <translation type="unfinished"></translation>
+        <translation>Boomaga je vyvíjena týmem &lt;a %1&gt;Boomaga Team&lt;/a&gt; a &lt;a %2&gt;přispěvateli&lt;/a&gt; na GitHubu.</translation>
     </message>
     <message>
         <source>Contributors:</source>
-        <translation type="unfinished"></translation>
+        <translation>Přispěvatelé:</translation>
     </message>
     <message>
         <source>If you are interested in working with our development team, create a new issue on GitHub to &lt;a %1&gt;join us&lt;/a&gt;.</source>
-        <translation type="unfinished"></translation>
+        <translation>Pokud máte zájem spolupracovat s naším vývojářským týmem, vytvořte na GitHubu nový požadavek a &lt;a %1&gt;přidejte se k nám&lt;/a&gt;.</translation>
     </message>
     <message>
         <source>Special thanks to:</source>
