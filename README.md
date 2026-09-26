@@ -62,7 +62,7 @@ Address your preferences and error messages to our [Issue tracker](https://githu
 Translations
 ============
 
-Translations are managed on [Weblate](https://hosted.weblate.org/projects/boomaga/boomaga-gui-interface/).
+Translations are managed on [Weblate](https://hosted.weblate.org/engage/boomaga/).
 Join the project there to help translate Boomaga or improve an existing translation.
 
 After changing user-facing source strings, refresh the translation catalogs with:

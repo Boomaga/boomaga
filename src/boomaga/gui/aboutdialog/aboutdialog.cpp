@@ -181,7 +181,7 @@ QString AboutDialog::translationsText() const
     TranslatorsInfo translatorsInfo;
     return QString("%1<p><ul>%2</ul>").arg(
                 tr("If you want to help translate, join the Boomaga translation team on <a %1>Weblate</a>.")
-                    .arg(" href='https://hosted.weblate.org/projects/boomaga/boomaga-gui-interface/'"),
+                    .arg(" href='https://hosted.weblate.org/engage/boomaga/'"),
                 translatorsInfo.asHtml()
                 );
 }
