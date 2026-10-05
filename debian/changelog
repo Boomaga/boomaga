@@ -1,3 +1,9 @@
+boomaga (3.9.3-1) resolute; urgency=medium
+
+  * fix landscape imposition
+
+ -- Archisman Panigrahi <apandada1@gmail.com>  Mon, 05 Oct 2026 10:17:01 -0400
+
 boomaga (3.9.2-1) resolute; urgency=medium
 
   * dark theme icons
