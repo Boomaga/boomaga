@@ -23,7 +23,9 @@
       />
     </picture>
   </a>
-  
+
+[![Packaging status](https://repology.org/badge/vertical-allrepos/boomaga.svg?columns=3)](https://repology.org/project/boomaga/versions)
+
 *We are looking for volunteers to help maintain this project.*
 
 
