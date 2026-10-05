@@ -549,7 +549,7 @@ bool Printer::print(const QList<Sheet *> &sheets, const QString &jobName, bool d
     // CUPS does not always infer landscape orientation from a PDF page's
     // /Rotate entry. Pass it explicitly for landscape Boomaga sheets.
     if (!sheets.isEmpty() && isLandscape(sheets.first()->rotation()))
-        args << "-o orientation-requested=4";
+        args << "-o print-scaling=auto";
 
     // Duplex options ...........................
     if (duplexType() == DuplexAuto && doubleSided)
